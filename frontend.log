@@ -1,0 +1,86 @@
+
+> whatsinvoice-frontend@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.5.5
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.101.9:3000
+   - Experiments (use with caution):
+     · serverActions
+
+ ✓ Starting...
+ ✓ Ready in 2.6s
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 1033ms (911 modules)
+ GET /dashboard 200 in 1741ms
+ ✓ Compiled in 7.3s (920 modules)
+ GET /dashboard 200 in 142ms
+ ✓ Compiled in 727ms (355 modules)
+ ⨯ SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>) {
+  page: '/dashboard'
+}
+ ✓ Compiled in 237ms (355 modules)
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 1630ms (1245 modules)
+ GET /dashboard 500 in 2448ms
+ GET /dashboard 200 in 87ms
+ GET /dashboard 200 in 449ms
+ GET /dashboard 200 in 47ms
+ GET /dashboard 200 in 120ms
+ ✓ Compiled in 332ms (506 modules)
+ GET /dashboard 200 in 186ms
+ ✓ Compiled in 942ms (1264 modules)
+ GET /dashboard 200 in 201ms
+ ✓ Compiled in 616ms (1264 modules)
+ GET /dashboard 200 in 427ms
+ GET /dashboard 200 in 19ms
+ ✓ Compiled in 249ms (507 modules)
+ GET /dashboard 200 in 651ms
+ ✓ Compiled in 199ms (507 modules)
+ ⨯ SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>) {
+  page: '/dashboard'
+}
+ ✓ Compiled in 208ms (507 modules)
+ ✓ Compiled /_error in 132ms (1250 modules)
+ GET /dashboard 500 in 576ms
+ GET /dashboard 200 in 65ms
+ GET /dashboard 200 in 208ms
+ ✓ Compiled in 347ms (508 modules)
+ GET /dashboard 200 in 51ms
+ ○ Compiling /dashboard/payroll ...
+ ✓ Compiled /dashboard/payroll in 657ms (1263 modules)
+ GET /dashboard/payroll 200 in 767ms
+ GET /dashboard/payroll 200 in 22ms
+ GET /dashboard 200 in 97ms
+ GET /dashboard/payroll 200 in 51ms
+ ✓ Compiled in 1436ms (1184 modules)
+ GET /dashboard/payroll 200 in 161ms
+ GET /dashboard/payroll 200 in 302ms
+ GET /dashboard 200 in 58ms
+ GET /dashboard 200 in 147ms
+ ⨯ Module not found: Error: Can't resolve 'next-flight-client-entry-loader' in '/Users/ayibatonyeikemike/mywork/sipinvoive/frontend'
+ ⨯ Module not found: Error: Can't resolve 'next-flight-client-entry-loader' in '/Users/ayibatonyeikemike/mywork/sipinvoive/frontend'
+[Error: Cannot find module '@swc/helpers/package.json'
+Require stack:
+- /Users/ayibatonyeikemike/mywork/sipinvoive/frontend/node_modules/next/dist/build/create-compiler-aliases.js
+- /Users/ayibatonyeikemike/mywork/sipinvoive/frontend/node_modules/next/dist/build/webpack-config.js
+- /Users/ayibatonyeikemike/mywork/sipinvoive/frontend/node_modules/next/dist/server/dev/hot-reloader-webpack.js
+- /Users/ayibatonyeikemike/mywork/sipinvoive/frontend/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /Users/ayibatonyeikemike/mywork/sipinvoive/frontend/node_modules/next/dist/server/lib/router-server.js
+- /Users/ayibatonyeikemike/mywork/sipinvoive/frontend/node_modules/next/dist/server/lib/start-server.js] {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+[Error: Cannot find module '@swc/helpers/package.json'
+Require stack:
+- /Users/ayibatonyeikemike/mywork/sipinvoive/frontend/node_modules/next/dist/build/create-compiler-aliases.js
+- /Users/ayibatonyeikemike/mywork/sipinvoive/frontend/node_modules/next/dist/build/webpack-config.js
+- /Users/ayibatonyeikemike/mywork/sipinvoive/frontend/node_modules/next/dist/server/dev/hot-reloader-webpack.js
+- /Users/ayibatonyeikemike/mywork/sipinvoive/frontend/node_modules/next/dist/server/lib/router-utils/setup-dev-bundler.js
+- /Users/ayibatonyeikemike/mywork/sipinvoive/frontend/node_modules/next/dist/server/lib/router-server.js
+- /Users/ayibatonyeikemike/mywork/sipinvoive/frontend/node_modules/next/dist/server/lib/start-server.js] {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
