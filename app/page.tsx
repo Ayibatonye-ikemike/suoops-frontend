@@ -16,28 +16,27 @@ export default function HomePage() {
       </div>
 
       {/* Navigation */}
-            {/* Navigation */}
-      <nav className="border-b border-emerald-800/20 bg-gradient-to-r from-emerald-900 to-emerald-800 backdrop-blur-sm sticky top-0 z-50 shadow-lg">
+      <nav className="border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-emerald-700 text-2xl font-bold text-white shadow-lg">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-2xl font-bold text-white shadow-lg">
                 S
               </div>
-              <span className="text-xl font-bold text-white">SuoOps</span>
+              <span className="text-xl font-bold text-slate-900">SuoOps</span>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <a
                 href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-lg border-2 border-white/90 bg-white/10 backdrop-blur-sm px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20 hover:border-white"
+                className="text-sm font-medium text-slate-600 hover:text-slate-900"
               >
                 Join Waitlist
               </a>
               <Link
                 href="/login"
-                className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-emerald-900 shadow-md transition hover:bg-emerald-50 hover:shadow-lg"
+                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
               >
                 Login
               </Link>

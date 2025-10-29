@@ -149,15 +149,15 @@ export function RegisterForm() {
 
   if (step === "otp") {
     return (
-      <form className="flex w-full max-w-md flex-col gap-6 rounded-2xl border border-emerald-700/30 bg-emerald-900/40 p-10 shadow-2xl backdrop-blur-xl" onSubmit={handleVerifyOTP}>
+      <form className="flex w-full max-w-md flex-col gap-6 rounded-2xl bg-white p-10 shadow-xl" onSubmit={handleVerifyOTP}>
         <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold text-white">Verify your email</h1>
-          <p className="text-sm text-emerald-100">
-            Enter the verification code sent to <span className="font-semibold text-white">{formValues?.email}</span>
+          <h1 className="text-2xl font-semibold text-slate-900">Verify your email</h1>
+          <p className="text-sm text-slate-500">
+            Enter the verification code sent to <span className="font-semibold text-slate-700">{formValues?.email}</span>
           </p>
         </div>
         {error ? (
-          <p className="rounded-lg border border-rose-400/30 bg-rose-900/30 px-3 py-2 text-sm text-rose-200" role="alert">
+          <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-600" role="alert">
             {error}
           </p>
         ) : null}
@@ -166,7 +166,7 @@ export function RegisterForm() {
           <button
             type="submit"
             disabled={loading || otp.length !== 6}
-            className="w-full rounded-lg bg-white px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-70"
+            className="w-full rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-70"
           >
             {loading ? "Verifying..." : "Verify & Continue"}
           </button>
@@ -174,7 +174,7 @@ export function RegisterForm() {
             type="button"
             onClick={handleResend}
             disabled={!canResend || loading}
-            className="text-sm font-medium text-emerald-200 hover:text-white hover:underline disabled:cursor-not-allowed disabled:text-emerald-400"
+            className="text-sm font-medium text-brand-primary hover:underline disabled:cursor-not-allowed disabled:text-slate-400"
           >
             {canResend ? "Resend code" : `Resend available in ${resendTimer}s`}
           </button>
@@ -185,7 +185,7 @@ export function RegisterForm() {
               setError(null);
               setOtp("");
             }}
-            className="text-sm text-emerald-200 hover:text-white"
+            className="text-sm text-slate-500 hover:text-slate-700"
           >
             Use a different email
           </button>
@@ -195,53 +195,53 @@ export function RegisterForm() {
   }
 
   return (
-    <form className="flex w-full max-w-md flex-col gap-6 rounded-2xl border border-emerald-700/30 bg-emerald-900/40 p-10 shadow-2xl backdrop-blur-xl" onSubmit={handleRequestOTP}>
+    <form className="flex w-full max-w-md flex-col gap-6 rounded-2xl bg-white p-10 shadow-xl" onSubmit={handleRequestOTP}>
       <div className="space-y-2 text-center">
-        <h1 className="text-2xl font-semibold text-white">Create account</h1>
-        <p className="text-sm text-emerald-100">We will send an OTP to your email to verify your account.</p>
+        <h1 className="text-2xl font-semibold text-slate-900">Create account</h1>
+        <p className="text-sm text-slate-500">We will send an OTP to your email to verify your account.</p>
       </div>
       {error ? (
-        <p className="rounded-lg border border-rose-400/30 bg-rose-900/30 px-3 py-2 text-sm text-rose-200" role="alert">
+        <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-600" role="alert">
           {error}
         </p>
       ) : null}
-      <label className="flex flex-col gap-2 text-left text-sm font-semibold text-white">
+      <label className="flex flex-col gap-2 text-left text-sm font-semibold text-slate-700">
         Full name
         <input
           name="name"
           placeholder="Jane Doe"
           required
-          className="rounded-lg border border-emerald-700/50 bg-emerald-950/50 px-3 py-2 text-base font-normal text-white placeholder-emerald-300 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
         />
       </label>
-      <label className="flex flex-col gap-2 text-left text-sm font-semibold text-white">
+      <label className="flex flex-col gap-2 text-left text-sm font-semibold text-slate-700">
         Email address
         <input
           name="email"
           type="email"
           placeholder="you@example.com"
           required
-          className="rounded-lg border border-emerald-700/50 bg-emerald-950/50 px-3 py-2 text-base font-normal text-white placeholder-emerald-300 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
         />
       </label>
-      <label className="flex flex-col gap-2 text-left text-sm font-semibold text-white">
-        Business name <span className="text-xs font-normal text-emerald-300">Optional</span>
+      <label className="flex flex-col gap-2 text-left text-sm font-semibold text-slate-700">
+        Business name <span className="text-xs font-normal text-slate-400">Optional</span>
         <input
           name="business-name"
           placeholder="Acme Studios"
-          className="rounded-lg border border-emerald-700/50 bg-emerald-950/50 px-3 py-2 text-base font-normal text-white placeholder-emerald-300 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/30"
+          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
         />
       </label>
       <button
         type="submit"
         disabled={loading}
-        className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-emerald-900 transition hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-70"
+        className="rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-70"
       >
         {loading ? "Sending code..." : "Send verification code"}
       </button>
-      <p className="text-center text-sm text-emerald-200">
+      <p className="text-center text-sm text-slate-600">
         Already have an account?{" "}
-        <Link href="/login" className="font-semibold text-white hover:underline">
+        <Link href="/login" className="font-semibold text-brand-primary hover:underline">
           Sign in
         </Link>
       </p>

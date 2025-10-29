@@ -218,7 +218,7 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
           <button
             type="submit"
             disabled={loading || otp.length !== 6}
-            className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex-1 rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? "Verifying..." : "Verify Number"}
           </button>
@@ -260,7 +260,7 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
           placeholder="0801 234 5678"
           required
           disabled={loading}
-          className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 disabled:cursor-not-allowed disabled:bg-slate-50"
+          className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 disabled:cursor-not-allowed disabled:bg-slate-50"
         />
         <p className="text-xs text-slate-500">
           We'll send a verification code to this WhatsApp number
@@ -269,7 +269,7 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-full rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? "Sending..." : "Send Verification Code"}
       </button>
