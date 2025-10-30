@@ -279,9 +279,9 @@ export default function OcrInvoicePage() {
             </li>
           </ul>
 
-          <div className="mt-4 rounded-lg bg-slate-50 p-4">
-            <p className="text-xs text-slate-600">
-              <strong>Cost:</strong> ~₦20 per photo (~$0.01 USD) • <strong>Speed:</strong> 5-10 seconds • <strong>Accuracy:</strong> 85-95% for clear images
+          <div className="mt-4 rounded-lg bg-blue-50 border border-blue-200 p-4">
+            <p className="text-xs text-blue-800">
+              <strong>🔒 Premium Feature:</strong> Photo invoice OCR requires a paid subscription plan. <strong>Speed:</strong> 5-10 seconds • <strong>Accuracy:</strong> 85-95% for clear images
             </p>
           </div>
         </div>

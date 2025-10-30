@@ -627,12 +627,40 @@ export default function HomePage() {
           <p className="mt-2 text-4xl font-bold text-slate-900">
             Start free, upgrade as you grow
           </p>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
             {[
-              { name: "Free", price: "₦0", invoices: "5/month" },
-              { name: "Starter", price: "₦2,500", invoices: "100/month", popular: false },
-              { name: "Pro", price: "₦7,500", invoices: "1,000/month", popular: true },
-              { name: "Business", price: "₦15,000", invoices: "3,000/month" },
+              { 
+                name: "Free", 
+                price: "₦0", 
+                invoices: "5/month",
+                features: ["Manual invoices only", "WhatsApp bot", "PDF generation", "Email notifications"]
+              },
+              { 
+                name: "Starter", 
+                price: "₦2,500", 
+                invoices: "100/month", 
+                popular: false,
+                features: ["All Free features", "Photo invoice OCR", "Voice invoices", "Custom branding"]
+              },
+              { 
+                name: "Pro", 
+                price: "₦7,500", 
+                invoices: "1,000/month", 
+                popular: true,
+                features: ["All Starter features", "Priority support", "Advanced analytics", "API access"]
+              },
+              { 
+                name: "Business", 
+                price: "₦15,000", 
+                invoices: "3,000/month",
+                features: ["All Pro features", "Dedicated support", "Custom integrations", "Team management"]
+              },
+              { 
+                name: "Enterprise", 
+                price: "₦50,000", 
+                invoices: "Unlimited",
+                features: ["All Business features", "White-label option", "SLA guarantee", "Custom contracts"]
+              },
             ].map((plan, i) => (
               <div
                 key={i}
@@ -648,7 +676,15 @@ export default function HomePage() {
                   <span className="text-3xl font-bold">{plan.price}</span>
                   <span className="text-slate-600">/mo</span>
                 </div>
-                <p className="mt-2 text-sm text-slate-600">{plan.invoices}</p>
+                <p className="mt-2 text-sm font-semibold text-slate-900">{plan.invoices}</p>
+                <ul className="mt-4 space-y-2 text-left text-xs text-slate-600">
+                  {plan.features.map((feature, j) => (
+                    <li key={j} className="flex items-start gap-2">
+                      <span className="text-green-600">✓</span>
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
