@@ -398,7 +398,7 @@ export default function HomePage() {
                     <svg className="h-5 w-5 text-purple-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
-                    <span>Cost: ~₦5 per voice invoice (OpenAI Whisper)</span>
+                    <span>AI-powered transcription with Nigerian English support</span>
                   </li>
                 </ul>
               </div>
@@ -461,7 +461,7 @@ export default function HomePage() {
                     <svg className="h-5 w-5 text-orange-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
-                    <span>Cost: ~₦20 per OCR image (OpenAI Vision)</span>
+                    <span>Available on Starter plan and above</span>
                   </li>
                 </ul>
               </div>
@@ -481,7 +481,7 @@ export default function HomePage() {
                 </div>
                 <h3 className="mt-6 text-2xl font-bold text-slate-900">QR Verification</h3>
                 <p className="mt-2 text-slate-600">
-                  Customer paid? Scan their QR code to verify instantly. No fake screenshots.
+                  Every invoice includes a QR code. Customers scan it to verify authenticity instantly.
                 </p>
                 
                 <div className="mt-6 rounded-xl bg-slate-50 p-4 border border-slate-200">
@@ -494,14 +494,14 @@ export default function HomePage() {
                       </div>
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-slate-700">Scanning QR code...</p>
-                      <p className="text-xs text-slate-500">Verifying payment...</p>
+                      <p className="text-sm font-medium text-slate-700">Customer scanning QR...</p>
+                      <p className="text-xs text-slate-500">Verifying invoice...</p>
                     </div>
                   </div>
                   <div className="mt-3 flex items-center gap-2">
                     <div className="flex-1 rounded-lg bg-green-100 px-3 py-2 text-center">
-                      <p className="text-lg font-bold text-green-700">✅ PAID</p>
-                      <p className="text-xs text-green-600">Payment confirmed</p>
+                      <p className="text-lg font-bold text-green-700">✅ VERIFIED</p>
+                      <p className="text-xs text-green-600">Invoice is authentic</p>
                     </div>
                   </div>
                 </div>
@@ -511,13 +511,13 @@ export default function HomePage() {
                     <svg className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
-                    <span><strong>Perfect for:</strong> Stop fraud - verify bank transfer receipts instantly</span>
+                    <span><strong>Perfect for:</strong> Building customer trust - prove invoices are legitimate</span>
                   </li>
                   <li className="flex items-start gap-3 text-sm text-slate-600">
                     <svg className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
-                    <span>No more fake screenshots - scan and verify in 2 seconds</span>
+                    <span>Stop impersonation - only your real invoices have valid QR codes</span>
                   </li>
                   <li className="flex items-start gap-3 text-sm text-slate-600">
                     <svg className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -549,11 +549,11 @@ export default function HomePage() {
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-red-400 mt-1">✗</span>
-                    <span>Customers send fake payment screenshots</span>
+                    <span>Customers can&apos;t verify if invoices are legitimate</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-red-400 mt-1">✗</span>
-                    <span>Lose money to fraud and payment disputes</span>
+                    <span>Risk of fake invoices impersonating your business</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-red-400 mt-1">✗</span>
@@ -579,11 +579,11 @@ export default function HomePage() {
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-green-400 mt-1">✓</span>
-                    <span>Verify payments instantly with QR scanning</span>
+                    <span>Every invoice has a QR code for authenticity verification</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-green-400 mt-1">✓</span>
-                    <span>Stop fraud before it happens - no fake screenshots</span>
+                    <span>Build trust - customers can verify invoices are legitimate</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-green-400 mt-1">✓</span>
