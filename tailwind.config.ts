@@ -6,7 +6,7 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          primary: "#2563EB",
+          primary: "#16a34a", // green-600 to match background gradient
           dark: "#0F172A",
         },
       },
