@@ -100,6 +100,27 @@ export function InvoiceCreateForm() {
         <h2 className="text-xl font-semibold text-slate-900">Create Invoice</h2>
         <p className="text-sm text-slate-500">Set customer details and line items to generate a payment-ready invoice.</p>
       </div>
+      
+      {/* OCR Photo Upload Option */}
+      <div className="rounded-lg border-2 border-dashed border-blue-300 bg-blue-50 p-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">📸</span>
+              <h3 className="font-semibold text-blue-900">Create from Photo</h3>
+            </div>
+            <p className="mt-1 text-sm text-blue-700">
+              Take a photo of a receipt and AI will extract the details automatically
+            </p>
+          </div>
+          <a
+            href="/dashboard/invoices/create-from-photo"
+            className="whitespace-nowrap rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+          >
+            Upload Photo
+          </a>
+        </div>
+      </div>
       <div className="grid gap-4 md:grid-cols-2">
         <label className="flex flex-col gap-2 text-sm font-semibold text-slate-700">
           Customer name
