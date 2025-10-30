@@ -166,7 +166,7 @@ export function RegisterForm() {
           <button
             type="submit"
             disabled={loading || otp.length !== 6}
-            className="w-full rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-70"
+            className="w-full rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-70"
           >
             {loading ? "Verifying..." : "Verify & Continue"}
           </button>
@@ -174,7 +174,7 @@ export function RegisterForm() {
             type="button"
             onClick={handleResend}
             disabled={!canResend || loading}
-            className="text-sm font-medium text-brand-primary hover:underline disabled:cursor-not-allowed disabled:text-slate-400"
+            className="text-sm font-medium text-green-600 hover:text-green-700 hover:underline disabled:cursor-not-allowed disabled:text-slate-400"
           >
             {canResend ? "Resend code" : `Resend available in ${resendTimer}s`}
           </button>
@@ -211,7 +211,7 @@ export function RegisterForm() {
           name="name"
           placeholder="Jane Doe"
           required
-          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
         />
       </label>
       <label className="flex flex-col gap-2 text-left text-sm font-semibold text-slate-700">
@@ -221,7 +221,7 @@ export function RegisterForm() {
           type="email"
           placeholder="you@example.com"
           required
-          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
         />
       </label>
       <label className="flex flex-col gap-2 text-left text-sm font-semibold text-slate-700">
@@ -229,19 +229,19 @@ export function RegisterForm() {
         <input
           name="business-name"
           placeholder="Acme Studios"
-          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
         />
       </label>
       <button
         type="submit"
         disabled={loading}
-        className="rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-70"
+        className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-70"
       >
         {loading ? "Sending code..." : "Send verification code"}
       </button>
       <p className="text-center text-sm text-slate-600">
         Already have an account?{" "}
-        <Link href="/login" className="font-semibold text-brand-primary hover:underline">
+        <Link href="/login" className="font-semibold text-green-600 hover:text-green-700 hover:underline">
           Sign in
         </Link>
       </p>

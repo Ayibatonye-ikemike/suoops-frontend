@@ -137,7 +137,7 @@ export function LoginForm() {
           <button
             type="submit"
             disabled={loading || otp.length !== 6}
-            className="w-full rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-70"
+            className="w-full rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-70"
           >
             {loading ? "Signing in..." : "Verify & Sign in"}
           </button>
@@ -145,7 +145,7 @@ export function LoginForm() {
             type="button"
             onClick={handleResend}
             disabled={!canResend || loading}
-            className="text-sm font-medium text-brand-primary hover:underline disabled:cursor-not-allowed disabled:text-slate-400"
+            className="text-sm font-medium text-green-600 hover:text-green-700 hover:underline disabled:cursor-not-allowed disabled:text-slate-400"
           >
             {canResend ? "Resend code" : `Resend in ${resendTimer}s`}
           </button>
@@ -184,19 +184,19 @@ export function LoginForm() {
           onChange={(event) => setEmail(event.target.value)}
           placeholder="you@example.com"
           required
-          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
         />
       </label>
       <button
         type="submit"
         disabled={loading}
-        className="rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-70"
+        className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-70"
       >
         {loading ? "Sending code..." : "Send login code"}
       </button>
       <p className="text-center text-sm text-slate-600">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-semibold text-brand-primary hover:underline">
+        <Link href="/register" className="font-semibold text-green-600 hover:text-green-700 hover:underline">
           Create one
         </Link>
       </p>
