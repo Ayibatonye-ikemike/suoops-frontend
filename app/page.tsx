@@ -268,6 +268,358 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* 4 Features Showcase */}
+      <section className="px-4 py-20 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-slate-50">
+        <div className="mx-auto max-w-7xl">
+          <div className="text-center">
+            <h2 className="text-base font-semibold text-blue-600">POWERFUL FEATURES</h2>
+            <p className="mt-2 text-4xl font-bold text-slate-900 sm:text-5xl">
+              4 Ways to Create Invoices
+            </p>
+            <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+              Choose the method that works best for you. All powered by AI, all in seconds.
+            </p>
+          </div>
+
+          <div className="mt-16 grid gap-8 lg:grid-cols-2">
+            {/* Feature 1: WhatsApp Text */}
+            <div className="group relative overflow-hidden rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-lg hover:shadow-2xl hover:border-blue-400 transition-all duration-300">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-3xl"></div>
+              <div className="relative">
+                <div className="flex items-start justify-between">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-3xl shadow-lg">
+                    💬
+                  </div>
+                  <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                    ⚡ 5 seconds
+                  </span>
+                </div>
+                <h3 className="mt-6 text-2xl font-bold text-slate-900">WhatsApp Text</h3>
+                <p className="mt-2 text-slate-600">
+                  Type and send. No forms, no calculations, just simple text.
+                </p>
+                
+                <div className="mt-6 rounded-xl bg-slate-50 p-4 border border-slate-200">
+                  <p className="text-sm font-mono text-slate-700">
+                    &quot;Invoice Jane 50k for logo&quot;
+                  </p>
+                  <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+                    <span className="flex items-center gap-1">
+                      <svg className="h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Invoice created
+                    </span>
+                    <span>→</span>
+                    <span>5 sec</span>
+                  </div>
+                </div>
+
+                <ul className="mt-6 space-y-3">
+                  <li className="flex items-start gap-3 text-sm text-slate-600">
+                    <svg className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span><strong>Perfect for:</strong> When you&apos;re at your desk or prefer typing</span>
+                  </li>
+                  <li className="flex items-start gap-3 text-sm text-slate-600">
+                    <svg className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span>AI understands Nigerian English and currency</span>
+                  </li>
+                  <li className="flex items-start gap-3 text-sm text-slate-600">
+                    <svg className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span>Works offline - sends when you&apos;re back online</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Feature 2: Voice Notes */}
+            <div className="group relative overflow-hidden rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-lg hover:shadow-2xl hover:border-purple-400 transition-all duration-300">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-3xl"></div>
+              <div className="relative">
+                <div className="flex items-start justify-between">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 text-3xl shadow-lg">
+                    🎤
+                  </div>
+                  <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                    ⚡ 10 seconds
+                  </span>
+                </div>
+                <h3 className="mt-6 text-2xl font-bold text-slate-900">Voice Notes</h3>
+                <p className="mt-2 text-slate-600">
+                  Speak naturally. AI transcribes and creates invoice instantly.
+                </p>
+                
+                <div className="mt-6 rounded-xl bg-slate-50 p-4 border border-slate-200">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-500 text-white">
+                      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-slate-700">0:15 audio</p>
+                      <p className="text-xs text-slate-500 italic">
+                        &quot;Invoice Jane fifty thousand for logo&quot;
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+                    <span className="flex items-center gap-1">
+                      <svg className="h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Transcribed + Invoice created
+                    </span>
+                    <span>→</span>
+                    <span>10 sec</span>
+                  </div>
+                </div>
+
+                <ul className="mt-6 space-y-3">
+                  <li className="flex items-start gap-3 text-sm text-slate-600">
+                    <svg className="h-5 w-5 text-purple-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span><strong>Perfect for:</strong> When you&apos;re driving, busy, or prefer talking</span>
+                  </li>
+                  <li className="flex items-start gap-3 text-sm text-slate-600">
+                    <svg className="h-5 w-5 text-purple-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span>Truly hands-free - no typing required</span>
+                  </li>
+                  <li className="flex items-start gap-3 text-sm text-slate-600">
+                    <svg className="h-5 w-5 text-purple-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span>Cost: ~₦5 per voice invoice (OpenAI Whisper)</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Feature 3: Photo OCR */}
+            <div className="group relative overflow-hidden rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-lg hover:shadow-2xl hover:border-orange-400 transition-all duration-300">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-500/10 to-yellow-500/10 rounded-full blur-3xl"></div>
+              <div className="relative">
+                <div className="flex items-start justify-between">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 text-3xl shadow-lg">
+                    📸
+                  </div>
+                  <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                    ⚡ 8 seconds
+                  </span>
+                </div>
+                <h3 className="mt-6 text-2xl font-bold text-slate-900">Photo OCR</h3>
+                <p className="mt-2 text-slate-600">
+                  Snap a receipt photo. AI reads it and creates your invoice.
+                </p>
+                
+                <div className="mt-6 rounded-xl bg-slate-50 p-4 border border-slate-200">
+                  <div className="flex items-center gap-3">
+                    <div className="relative w-16 h-16 rounded-lg bg-slate-200 flex items-center justify-center text-2xl overflow-hidden">
+                      📄
+                      <div className="absolute inset-0 border-2 border-dashed border-slate-400 rounded-lg"></div>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-slate-700">Receipt uploaded</p>
+                      <p className="text-xs text-slate-500">AI extracting data...</p>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+                    <span className="flex items-center gap-1">
+                      <svg className="h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Data extracted + Invoice created
+                    </span>
+                    <span>→</span>
+                    <span>8 sec</span>
+                  </div>
+                </div>
+
+                <ul className="mt-6 space-y-3">
+                  <li className="flex items-start gap-3 text-sm text-slate-600">
+                    <svg className="h-5 w-5 text-orange-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span><strong>Perfect for:</strong> Converting handwritten receipts to digital invoices</span>
+                  </li>
+                  <li className="flex items-start gap-3 text-sm text-slate-600">
+                    <svg className="h-5 w-5 text-orange-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span>No retyping - AI reads customer name, amount, items</span>
+                  </li>
+                  <li className="flex items-start gap-3 text-sm text-slate-600">
+                    <svg className="h-5 w-5 text-orange-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span>Cost: ~₦20 per OCR image (OpenAI Vision)</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Feature 4: QR Verification */}
+            <div className="group relative overflow-hidden rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-lg hover:shadow-2xl hover:border-green-400 transition-all duration-300">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/10 to-emerald-500/10 rounded-full blur-3xl"></div>
+              <div className="relative">
+                <div className="flex items-start justify-between">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-green-600 text-3xl shadow-lg">
+                    🔐
+                  </div>
+                  <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                    ⚡ 2 seconds
+                  </span>
+                </div>
+                <h3 className="mt-6 text-2xl font-bold text-slate-900">QR Verification</h3>
+                <p className="mt-2 text-slate-600">
+                  Customer paid? Scan their QR code to verify instantly. No fake screenshots.
+                </p>
+                
+                <div className="mt-6 rounded-xl bg-slate-50 p-4 border border-slate-200">
+                  <div className="flex items-center gap-3">
+                    <div className="w-16 h-16 bg-slate-900 rounded-lg flex items-center justify-center">
+                      <div className="grid grid-cols-4 gap-0.5">
+                        {[...Array(16)].map((_, i) => (
+                          <div key={i} className="w-1.5 h-1.5 bg-white rounded-sm"></div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-slate-700">Scanning QR code...</p>
+                      <p className="text-xs text-slate-500">Verifying payment...</p>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex items-center gap-2">
+                    <div className="flex-1 rounded-lg bg-green-100 px-3 py-2 text-center">
+                      <p className="text-lg font-bold text-green-700">✅ PAID</p>
+                      <p className="text-xs text-green-600">Payment confirmed</p>
+                    </div>
+                  </div>
+                </div>
+
+                <ul className="mt-6 space-y-3">
+                  <li className="flex items-start gap-3 text-sm text-slate-600">
+                    <svg className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span><strong>Perfect for:</strong> Stop fraud - verify bank transfer receipts instantly</span>
+                  </li>
+                  <li className="flex items-start gap-3 text-sm text-slate-600">
+                    <svg className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span>No more fake screenshots - scan and verify in 2 seconds</span>
+                  </li>
+                  <li className="flex items-start gap-3 text-sm text-slate-600">
+                    <svg className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    <span>Works with any phone camera - no special app needed</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Before/After Comparison */}
+          <div className="mt-20 rounded-3xl bg-gradient-to-r from-slate-900 to-slate-800 p-8 lg:p-12 shadow-2xl">
+            <h3 className="text-center text-3xl font-bold text-white sm:text-4xl">
+              The Problem We Solve
+            </h3>
+            <div className="mt-12 grid gap-8 lg:grid-cols-2">
+              {/* Before */}
+              <div className="rounded-2xl bg-red-900/30 border-2 border-red-500/50 p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-3xl">😓</span>
+                  <h4 className="text-xl font-bold text-red-200">Without SuoOps</h4>
+                </div>
+                <ul className="space-y-3 text-slate-300">
+                  <li className="flex items-start gap-3">
+                    <span className="text-red-400 mt-1">✗</span>
+                    <span>Spend 10+ minutes creating each invoice manually</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-red-400 mt-1">✗</span>
+                    <span>Customers send fake payment screenshots</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-red-400 mt-1">✗</span>
+                    <span>Lose money to fraud and payment disputes</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-red-400 mt-1">✗</span>
+                    <span>Manually retype receipt details (slow & error-prone)</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-red-400 mt-1">✗</span>
+                    <span>Need computer access to create invoices</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* After */}
+              <div className="rounded-2xl bg-green-900/30 border-2 border-green-500/50 p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-3xl">🚀</span>
+                  <h4 className="text-xl font-bold text-green-200">With SuoOps</h4>
+                </div>
+                <ul className="space-y-3 text-slate-300">
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-400 mt-1">✓</span>
+                    <span>Create invoices in 5-10 seconds via WhatsApp</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-400 mt-1">✓</span>
+                    <span>Verify payments instantly with QR scanning</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-400 mt-1">✓</span>
+                    <span>Stop fraud before it happens - no fake screenshots</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-400 mt-1">✓</span>
+                    <span>Snap receipt photos - AI extracts all details automatically</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-400 mt-1">✓</span>
+                    <span>Work from anywhere - just use your phone</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="mt-16 grid gap-6 sm:grid-cols-4">
+            <div className="text-center rounded-2xl bg-blue-50 border border-blue-200 p-6">
+              <div className="text-4xl font-bold text-blue-600">5s</div>
+              <div className="mt-2 text-sm font-medium text-slate-600">Text Invoice</div>
+            </div>
+            <div className="text-center rounded-2xl bg-purple-50 border border-purple-200 p-6">
+              <div className="text-4xl font-bold text-purple-600">10s</div>
+              <div className="mt-2 text-sm font-medium text-slate-600">Voice Invoice</div>
+            </div>
+            <div className="text-center rounded-2xl bg-orange-50 border border-orange-200 p-6">
+              <div className="text-4xl font-bold text-orange-600">8s</div>
+              <div className="mt-2 text-sm font-medium text-slate-600">Photo OCR</div>
+            </div>
+            <div className="text-center rounded-2xl bg-green-50 border border-green-200 p-6">
+              <div className="text-4xl font-bold text-green-600">2s</div>
+              <div className="mt-2 text-sm font-medium text-slate-600">QR Verify</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Pricing Preview */}
       <section id="pricing" className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl text-center">
