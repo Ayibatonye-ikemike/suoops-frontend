@@ -118,6 +118,12 @@ export function LoginForm() {
     }
   }, [canResend, email, startCountdown]);
 
+  const handleGoogleSignIn = useCallback(() => {
+    const redirectUri = encodeURIComponent(`${window.location.origin}/auth/callback`);
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.suoops.com';
+    window.location.href = `${apiUrl}/auth/oauth/google/login?redirect_uri=${redirectUri}`;
+  }, []);
+
   if (step === "otp") {
     return (
       <form className="flex w-full max-w-md flex-col gap-6 rounded-2xl bg-white p-10 shadow-xl" onSubmit={handleVerifyOTP}>
@@ -164,12 +170,6 @@ export function LoginForm() {
       </form>
     );
   }
-
-  const handleGoogleSignIn = useCallback(() => {
-    const redirectUri = encodeURIComponent(`${window.location.origin}/auth/callback`);
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.suoops.com';
-    window.location.href = `${apiUrl}/auth/oauth/google/login?redirect_uri=${redirectUri}`;
-  }, []);
 
   return (
     <form className="flex w-full max-w-md flex-col gap-6 rounded-2xl bg-white p-10 shadow-xl" onSubmit={handleRequestOTP}>
