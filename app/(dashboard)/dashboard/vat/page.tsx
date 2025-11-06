@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "@/src/api/client";
+import { apiClient } from "@/api/client";
 
 interface VATCalculation {
   subtotal: number;
