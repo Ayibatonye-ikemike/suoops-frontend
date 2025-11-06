@@ -1,0 +1,129 @@
+"use client";
+
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAuthStore } from "@/features/auth/auth-store";
+
+function CallbackContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const setTokens = useAuthStore((state) => state.setTokens);
+  const [error, setError] = useState<string | null>(null);
+  const [processing, setProcessing] = useState(true);
+
+  useEffect(() => {
+    const handleOAuthCallback = async () => {
+      try {
+        const code = searchParams?.get("code");
+        const state = searchParams?.get("state");
+        const errorParam = searchParams?.get("error");
+
+        // Check for OAuth error from provider
+        if (errorParam) {
+          setError(errorParam === "access_denied" 
+            ? "Sign in was cancelled. Please try again."
+            : `Authentication failed: ${errorParam}`
+          );
+          setProcessing(false);
+          return;
+        }
+
+        // Validate required parameters
+        if (!code || !state) {
+          setError("Invalid OAuth callback. Missing required parameters.");
+          setProcessing(false);
+          return;
+        }
+
+        // Exchange code for tokens via backend
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.suoops.com';
+        const response = await fetch(
+          `${apiUrl}/auth/oauth/google/callback?code=${code}&state=${state}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ detail: "Authentication failed" }));
+          throw new Error(errorData.detail || "Failed to complete sign in");
+        }
+
+        const data = await response.json();
+
+        // Store tokens in auth store
+        // Calculate expiry time (24 hours from now) in ISO string format
+        const expiryDate = new Date(Date.now() + (24 * 60 * 60 * 1000));
+        setTokens({
+          accessToken: data.access_token,
+          accessExpiresAt: expiryDate.toISOString(),
+        });
+
+        // Redirect to dashboard or specified redirect_uri
+        const redirectTo = data.redirect_uri || "/dashboard";
+        router.replace(redirectTo);
+      } catch (err) {
+        console.error("OAuth callback error:", err);
+        setError(err instanceof Error ? err.message : "An unexpected error occurred");
+        setProcessing(false);
+      }
+    };
+
+    handleOAuthCallback();
+  }, [searchParams, router, setTokens]);
+
+  if (processing) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-600 to-emerald-700">
+        <div className="flex w-full max-w-md flex-col items-center gap-6 rounded-2xl bg-white p-10 shadow-xl">
+          <div className="flex flex-col items-center gap-4">
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-green-600"></div>
+            <div className="space-y-2 text-center">
+              <h1 className="text-xl font-semibold text-slate-900">Completing sign in...</h1>
+              <p className="text-sm text-slate-500">Please wait while we verify your account.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-600 to-emerald-700">
+        <div className="flex w-full max-w-md flex-col gap-6 rounded-2xl bg-white p-10 shadow-xl">
+          <div className="space-y-2 text-center">
+            <h1 className="text-2xl font-semibold text-slate-900">Sign in failed</h1>
+            <p className="text-sm text-slate-500">We couldn&apos;t complete your sign in.</p>
+          </div>
+          <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-600" role="alert">
+            {error}
+          </p>
+          <button
+            onClick={() => router.push("/login")}
+            className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700"
+          >
+            Back to sign in
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+export default function OAuthCallbackPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-600 to-emerald-700">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-white border-t-transparent"></div>
+      </div>
+    }>
+      <CallbackContent />
+    </Suspense>
+  );
+}
