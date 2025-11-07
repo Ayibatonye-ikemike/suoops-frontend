@@ -11,6 +11,7 @@ import { OcrPhotoUpload } from "@/features/invoices/ocr-photo-upload";
 import { OcrReviewModal } from "@/features/invoices/ocr-review-modal";
 import { useParseReceipt } from "@/features/invoices/use-ocr";
 import { useCreateInvoice } from "@/features/invoices/use-create-invoice";
+import { isPremiumFeatureError } from "@/features/invoices/errors";
 import Link from "next/link";
 import { OCRParseResult } from "@/features/invoices/use-ocr";
 
@@ -43,8 +44,8 @@ export default function OcrInvoicePage() {
     }
   };
 
-  // Premium feature error detection (placeholder until implemented)
-  const isPremiumFeatureError = false;
+  // Determine if the current parse error is a premium gating error
+  const premiumError = parseReceipt.isError && isPremiumFeatureError(parseReceipt.error);
 
   const handleConfirmInvoice = async (data: {
     customerName: string;
@@ -186,7 +187,7 @@ export default function OcrInvoicePage() {
           )}
 
           {/* Error state - Premium Feature Required */}
-          {parseReceipt.isError && isPremiumFeatureError && (
+          {parseReceipt.isError && premiumError && (
             <div className="mt-6 rounded-lg border-2 border-yellow-300 bg-gradient-to-r from-yellow-50 to-orange-50 p-6">
               <div className="flex items-start space-x-3">
                 <svg
@@ -241,7 +242,7 @@ export default function OcrInvoicePage() {
           )}
 
           {/* Error state - Other Errors */}
-          {parseReceipt.isError && !isPremiumFeatureError && (
+          {parseReceipt.isError && !premiumError && (
             <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4">
               <div className="flex items-start space-x-3">
                 <svg
