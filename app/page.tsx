@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import RegulatoryNotice from "@/components/regulatory-notice";
 
 export default function HomePage() {
   const [showVideoModal, setShowVideoModal] = useState(false);
@@ -14,11 +13,6 @@ export default function HomePage() {
         <p className="text-sm font-semibold text-slate-900">
           ⏳ <strong>Pre-Launch:</strong> Join our waitlist to get early access + exclusive 50% launch discount! 🚀
         </p>
-      </div>
-
-      {/* Regulatory / Accreditation Notice */}
-      <div className="border-b border-blue-200 bg-blue-50 py-2 px-4">
-        <RegulatoryNotice variant="general" />
       </div>
 
       {/* Navigation */}

@@ -51,17 +51,6 @@ export function useParseReceipt() {
 /**
  * Parse image and create invoice in one step
  */
-export interface CreateInvoiceResponse {
-  invoice_id: string;
-  customer_name: string;
-  amount: number;
-  currency: string;
-  created_at: string;
-}
-
-export function useCreateInvoiceFromPhoto() {
-  return useMutation<
-    CreateInvoiceResponse,
     Error,
     { file: File; customerPhone?: string; context?: string }
   >({
@@ -75,7 +64,6 @@ export function useCreateInvoiceFromPhoto() {
         formData.append("context", context);
       }
 
-      const response = await apiClient.post<CreateInvoiceResponse>("/ocr/create-invoice", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

@@ -40,18 +40,11 @@ export default function OcrInvoicePage() {
 
       setOcrData(result);
       setShowReview(true);
-    } catch (error) {
-      // Narrow known error shape (AxiosError-like) for logging without using `any`
-      const message = (error as { message?: string })?.message || "Unknown error";
-      console.error("OCR parsing failed:", message, error);
       // Error will be handled by the mutation error state with custom message
     }
   };
 
   // Check if error is a premium feature requirement
-  const isPremiumFeatureError = Boolean(
-    parseReceipt.error && (parseReceipt.error as { response?: { status?: number } })?.response?.status === 403
-  );
 
   const handleConfirmInvoice = async (data: {
     customerName: string;
@@ -78,8 +71,6 @@ export default function OcrInvoicePage() {
       // Success! Navigate to invoice detail
       router.push(`/dashboard/invoices/${invoice.invoice_id}`);
     } catch (error) {
-      const message = (error as { message?: string })?.message || "Unknown error";
-      console.error("Invoice creation failed:", message, error);
       // Error will be handled by the mutation error state
     }
   };

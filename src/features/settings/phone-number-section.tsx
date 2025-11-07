@@ -263,7 +263,6 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
           className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 disabled:cursor-not-allowed disabled:bg-slate-50"
         />
         <p className="text-xs text-slate-500">
-          We&apos;ll send a verification code to this WhatsApp number
         </p>
       </div>
       <button

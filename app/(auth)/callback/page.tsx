@@ -1,6 +1,5 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/features/auth/auth-store";
 
@@ -10,14 +9,6 @@ function CallbackContent() {
   const setTokens = useAuthStore((state) => state.setTokens);
   const [error, setError] = useState<string | null>(null);
   const [processing, setProcessing] = useState(true);
-
-  const ranRef = useRef(false);
-
-  useEffect(() => {
-    if (ranRef.current) {
-      return; // guard against double invocation in strict mode / re-renders
-    }
-    ranRef.current = true;
 
     const handleOAuthCallback = async () => {
       try {
@@ -82,28 +73,6 @@ function CallbackContent() {
           accessExpiresAt,
         });
 
-        // Determine final post-auth destination.
-        // If backend returned the callback URI itself (loop), fallback to /dashboard.
-        // Support optional `next` query param on the callback URI for custom destination.
-        const rawRedirect = data.redirect_uri || "/dashboard";
-        let finalRedirect = rawRedirect;
-        try {
-          const urlObj = new URL(rawRedirect, window.location.origin);
-          const nextParam = urlObj.searchParams.get("next");
-          if (nextParam) {
-            // Ensure it is a relative path to prevent open redirects.
-            finalRedirect = nextParam.startsWith("/") ? nextParam : "/dashboard";
-          } else if (urlObj.pathname.endsWith("/auth/callback")) {
-            finalRedirect = "/dashboard";
-          }
-        } catch {
-          if (rawRedirect.endsWith("/auth/callback")) {
-            finalRedirect = "/dashboard";
-          }
-        }
-
-        console.log("[OAuth Callback] Tokens stored, redirecting to:", finalRedirect);
-        router.replace(finalRedirect);
       } catch (err) {
         console.error("[OAuth Callback] Error:", err);
         setError(err instanceof Error ? err.message : "An unexpected error occurred");
@@ -112,7 +81,6 @@ function CallbackContent() {
     };
 
     if (searchParams) {
-      void handleOAuthCallback();
     }
   }, [searchParams, router, setTokens]);
 

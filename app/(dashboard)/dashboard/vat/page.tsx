@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import RegulatoryNotice from "@/components/regulatory-notice";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/api/client";
 
@@ -83,9 +82,6 @@ export default function VATPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">VAT Management</h1>
         <p className="mt-2 text-gray-600">
-          Calculate VAT, track returns, and prepare for evolving fiscalization requirements (illustrative preview)
-        </p>
-        <RegulatoryNotice variant="vat" className="mt-4" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -162,7 +158,6 @@ export default function VATPage() {
           {/* VAT Category Information */}
           <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
             <h3 className="text-sm font-semibold text-blue-900 mb-2">
-              VAT Categories (Illustrative)
             </h3>
             <ul className="space-y-2 text-sm text-blue-700">
               <li>

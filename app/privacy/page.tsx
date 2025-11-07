@@ -29,7 +29,6 @@ export default function PrivacyPage() {
         <p className="mt-4 text-lg text-slate-600">
           Last updated: October 28, 2025
         </p>
-              Welcome to SuoOps (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our invoice management service.
         <div className="mt-12 space-y-8 text-slate-700">
           <section>
             <h2 className="text-2xl font-bold text-slate-900">1. Introduction</h2>

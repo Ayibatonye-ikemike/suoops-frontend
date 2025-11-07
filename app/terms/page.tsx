@@ -34,7 +34,6 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-bold text-slate-900">1. Agreement to Terms</h2>
             <p className="mt-4">
-              By accessing or using SuoOps (&quot;Service&quot;), you agree to be bound by these Terms of Service (&quot;Terms&quot;). If you do not agree to these Terms, you may not use our Service.
             </p>
           </section>
 
@@ -74,7 +73,6 @@ export default function TermsPage() {
               <li><strong>Business Plan:</strong> 3,000 invoices per month for ₦15,000/month</li>
             </ul>
             <p className="mt-4">
-              Prices are in Nigerian Naira (₦) and subject to change with 30 days&apos; notice. Subscriptions renew automatically unless cancelled.
             </p>
           </section>
 
@@ -119,7 +117,6 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-bold text-slate-900">8. WhatsApp Integration</h2>
             <p className="mt-4">
-              Our Service uses WhatsApp Cloud API (Meta). By using SuoOps, you also agree to WhatsApp&apos;s Business Terms and Meta&apos;s Terms of Service. We are not responsible for WhatsApp&apos;s availability or any changes to their API.
             </p>
           </section>
 

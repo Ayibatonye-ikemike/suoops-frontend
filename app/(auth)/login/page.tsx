@@ -1,7 +1,6 @@
 "use client";
 
 import { Suspense } from "react";
-import RegulatoryNotice from "@/components/regulatory-notice";
 import { useSearchParams } from "next/navigation";
 
 import { LoginForm } from "@/features/auth/login-form";
@@ -48,7 +47,6 @@ export default function LoginPage() {
         <Suspense fallback={<div>Loading...</div>}>
           <LoginContent />
         </Suspense>
-        <RegulatoryNotice variant="general" className="mt-2" />
       </div>
     </main>
   );
