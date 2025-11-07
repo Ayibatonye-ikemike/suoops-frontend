@@ -11,7 +11,7 @@ import { PhoneNumberSection } from "@/features/settings/phone-number-section";
 type CurrentUser = components["schemas"]["UserOut"];
 
 export default function SettingsPage() {
-  const { data: user, error } = useQuery<CurrentUser>({
+  const { data: user } = useQuery<CurrentUser>({
     queryKey: ["currentUser"],
     queryFn: async () => {
       const response = await apiClient.get<CurrentUser>("/users/me");

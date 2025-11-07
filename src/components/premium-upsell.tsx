@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { getPremiumFeatureInfo } from '@/features/invoices/errors';
+import { PREMIUM_FEATURES, type PremiumFeatureItem } from '@/config/premium-features';
 
 interface PremiumUpsellProps {
   error: unknown;
@@ -33,11 +34,9 @@ export function PremiumUpsell({ error, onClose }: PremiumUpsellProps) {
           <div className="mt-4 rounded-lg bg-white/60 p-4">
             <p className="text-sm font-semibold text-slate-900 mb-2">✨ Upgrade to unlock:</p>
             <ul className="space-y-1 text-sm text-slate-700">
-              <li>📸 Photo invoice OCR</li>
-              <li>🎙️ Voice message invoices</li>
-              <li>🎨 Custom branding</li>
-              <li>📊 Higher monthly limits</li>
-              <li>💬 Priority support</li>
+              {PREMIUM_FEATURES.map((f: PremiumFeatureItem) => (
+                <li key={f.label}>{f.icon} {f.label}</li>
+              ))}
             </ul>
           </div>
           <div className="mt-4 flex gap-3">

@@ -44,7 +44,7 @@ export default function OcrInvoicePage() {
       setShowReview(true);
       logFeatureEvent({ feature: "ocr", action: "parse_success" });
       toast.success("OCR data extracted");
-    } catch (err) {
+    } catch {
       // Error handled by parseReceipt mutation state
       logFeatureEvent({ feature: "ocr", action: "parse_error" });
       toast.error("Failed to process image");
@@ -81,7 +81,7 @@ export default function OcrInvoicePage() {
 
       // Success! Navigate to invoice detail
       router.push(`/dashboard/invoices/${invoice.invoice_id}`);
-    } catch (error) {
+    } catch {
       // Error will be handled by the mutation error state
     }
   };

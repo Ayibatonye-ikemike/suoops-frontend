@@ -28,10 +28,11 @@ export function isPremiumFeatureError(err: unknown): boolean {
   if (!err) return false;
 
   // Basic message (works for regular Error or unknown objects with message)
-  const baseMessage =
-    (typeof err === "object" && err && "message" in err && typeof (err as any).message === "string"
-      ? (err as any).message
-      : undefined) || undefined;
+  let baseMessage: string | undefined;
+  if (typeof err === "object" && err !== null && "message" in err) {
+    const maybeMsg = (err as { message?: unknown }).message;
+    if (typeof maybeMsg === "string") baseMessage = maybeMsg;
+  }
 
   const { status, data } = extractAxiosParts(err);
   const code = data?.code;

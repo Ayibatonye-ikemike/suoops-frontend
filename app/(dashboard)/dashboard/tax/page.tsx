@@ -98,17 +98,15 @@ export default function TaxCompliancePage() {
   const handleSave = () => {
     const data: Partial<TaxProfile> = {};
     if (formData.annual_turnover) {
-      data.annual_turnover = parseFloat(formData.annual_turnover) as any;
+      const parsedTurnover = Number(formData.annual_turnover);
+      if (!Number.isNaN(parsedTurnover)) data.annual_turnover = parsedTurnover;
     }
     if (formData.fixed_assets) {
-      data.fixed_assets = parseFloat(formData.fixed_assets) as any;
+      const parsedAssets = Number(formData.fixed_assets);
+      if (!Number.isNaN(parsedAssets)) data.fixed_assets = parsedAssets;
     }
-    if (formData.tin) {
-      data.tin = formData.tin;
-    }
-    if (formData.vat_registration_number) {
-      data.vat_number = formData.vat_registration_number;
-    }
+    if (formData.tin) data.tin = formData.tin;
+    if (formData.vat_registration_number) data.vat_number = formData.vat_registration_number;
     updateProfile.mutate(data);
   };
 
