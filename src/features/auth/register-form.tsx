@@ -14,20 +14,7 @@ import { useAuthStore } from "./auth-store";
 import { OTPInput } from "./otp-input";
 
 type Step = "details" | "otp";
-
-function normalizePhone(input: string): string {
-  const trimmed = input.replace(/\s+/g, "");
-  if (trimmed.startsWith("+")) {
-    return trimmed;
-  }
-  if (trimmed.startsWith("0")) {
-    return `+234${trimmed.slice(1)}`;
-  }
-  if (trimmed.startsWith("234")) {
-    return `+${trimmed}`;
-  }
-  return `+${trimmed}`;
-}
+// Removed unused normalizePhone helper (duplicate exists in settings phone-number-section).
 
 export function RegisterForm() {
   const router = useRouter();
