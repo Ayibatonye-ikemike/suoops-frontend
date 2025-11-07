@@ -81,7 +81,7 @@ export default function VATPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">VAT Management</h1>
-        <p className="mt-2 text-gray-600">
+        <p className="mt-2 text-gray-600">Manage VAT calculations, registration status, and recent returns.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -157,8 +157,7 @@ export default function VATPage() {
 
           {/* VAT Category Information */}
           <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="text-sm font-semibold text-blue-900 mb-2">
-            </h3>
+            <h3 className="text-sm font-semibold text-blue-900 mb-2">VAT Category Information</h3>
             <ul className="space-y-2 text-sm text-blue-700">
               <li>
                 <span className="font-medium">Standard (7.5%):</span> Most goods

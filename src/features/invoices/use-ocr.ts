@@ -49,27 +49,21 @@ export function useParseReceipt() {
 }
 
 /**
- * Parse image and create invoice in one step
+ * (Future) Combined parse + create invoice mutation placeholder.
+ * Keeping a stub for potential later implementation.
  */
-    Error,
-    { file: File; customerPhone?: string; context?: string }
-  >({
-    mutationFn: async ({ file, customerPhone, context }) => {
-      const formData = new FormData();
-      formData.append("file", file);
-      if (customerPhone) {
-        formData.append("customer_phone", customerPhone);
-      }
-      if (context) {
-        formData.append("context", context);
-      }
+// export function useParseAndCreateInvoice() {
+//   return useMutation<InvoiceResult, Error, { file: File; customerPhone?: string; context?: string }>({
+//     mutationFn: async ({ file, customerPhone, context }) => {
+//       const formData = new FormData();
+//       formData.append("file", file);
+//       if (customerPhone) formData.append("customer_phone", customerPhone);
+//       if (context) formData.append("context", context);
+//       const response = await apiClient.post("/ocr/parse-and-create", formData, {
+//         headers: { "Content-Type": "multipart/form-data" },
+//       });
+//       return response.data;
+//     },
+//   });
+// }
 
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      return response.data;
-    },
-  });
-}

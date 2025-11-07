@@ -1,5 +1,6 @@
 "use client";
 
+import React, { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/features/auth/auth-store";
 
@@ -10,79 +11,61 @@ function CallbackContent() {
   const [error, setError] = useState<string | null>(null);
   const [processing, setProcessing] = useState(true);
 
-    const handleOAuthCallback = async () => {
+  useEffect(() => {
+    const run = async () => {
       try {
         const code = searchParams?.get("code");
         const state = searchParams?.get("state");
         const errorParam = searchParams?.get("error");
 
-        console.log("[OAuth Callback] Starting with params:", { code: code?.substring(0, 20), state, error: errorParam });
-
-        // Check for OAuth error from provider
+        // Handle provider error
         if (errorParam) {
-          setError(errorParam === "access_denied" 
-            ? "Sign in was cancelled. Please try again."
-            : `Authentication failed: ${errorParam}`
+          setError(
+            errorParam === "access_denied"
+              ? "Sign in was cancelled. Please try again."
+              : `Authentication failed: ${errorParam}`
           );
           setProcessing(false);
           return;
         }
 
-        // Validate required parameters
         if (!code || !state) {
-          console.error("[OAuth Callback] Missing required parameters");
           setError("Invalid OAuth callback. Missing required parameters.");
           setProcessing(false);
           return;
         }
 
-        // Exchange code for tokens via backend
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.suoops.com';
-        console.log("[OAuth Callback] Fetching tokens from:", apiUrl);
-        
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
         const response = await fetch(
           `${apiUrl}/auth/oauth/google/callback?code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}`,
           {
             method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
             credentials: "include",
           }
         );
 
-        console.log("[OAuth Callback] Response status:", response.status);
-
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({ detail: "Authentication failed" }));
-          console.error("[OAuth Callback] Failed:", errorData);
           throw new Error(errorData.detail || "Failed to complete sign in");
         }
 
         const data = await response.json();
-        console.log("[OAuth Callback] Received tokens, access_expires_at:", data.access_expires_at);
-
-        // Store tokens in auth store
         const accessExpiresAt: string =
           typeof data.access_expires_at === "string"
             ? data.access_expires_at
             : new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
-        setTokens({
-          accessToken: data.access_token,
-          accessExpiresAt,
-        });
-
+        setTokens({ accessToken: data.access_token, accessExpiresAt });
+        setProcessing(false);
+        router.replace("/dashboard");
       } catch (err) {
-        console.error("[OAuth Callback] Error:", err);
         setError(err instanceof Error ? err.message : "An unexpected error occurred");
         setProcessing(false);
       }
     };
-
-    if (searchParams) {
-    }
-  }, [searchParams, router, setTokens]);
+    run();
+    // Only run on initial mount/searchParams change
+  }, [searchParams, setTokens, router]);
 
   if (processing) {
     return (
@@ -127,11 +110,13 @@ function CallbackContent() {
 
 export default function OAuthCallbackPage() {
   return (
-    <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-600 to-emerald-700">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-white border-t-transparent"></div>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-600 to-emerald-700">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-white border-t-transparent"></div>
+        </div>
+      }
+    >
       <CallbackContent />
     </Suspense>
   );

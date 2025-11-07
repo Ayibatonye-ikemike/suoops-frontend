@@ -82,6 +82,10 @@ export default function TaxCompliancePage() {
   });
 
   // Update tax profile mutation
+  const updateProfile = useMutation({
+    mutationFn: async (data: Partial<TaxProfile>) => {
+      const response = await apiClient.put("/tax/profile", data);
+      return response.data as TaxProfile;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["taxProfile"] });
@@ -92,19 +96,19 @@ export default function TaxCompliancePage() {
   });
 
   const handleSave = () => {
-    
+    const data: Partial<TaxProfile> = {};
     if (formData.annual_turnover) {
-      data.annual_turnover = parseFloat(formData.annual_turnover);
+      data.annual_turnover = parseFloat(formData.annual_turnover) as any;
     }
     if (formData.fixed_assets) {
-      data.fixed_assets = parseFloat(formData.fixed_assets);
+      data.fixed_assets = parseFloat(formData.fixed_assets) as any;
     }
     if (formData.tin) {
       data.tin = formData.tin;
     }
     if (formData.vat_registration_number) {
+      data.vat_number = formData.vat_registration_number;
     }
-
     updateProfile.mutate(data);
   };
 
@@ -135,7 +139,7 @@ export default function TaxCompliancePage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">
+  <h1 className="text-3xl font-bold text-gray-900">Tax Compliance</h1>
       {compliance && (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
@@ -151,34 +155,26 @@ export default function TaxCompliancePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <div className="flex items-center">
-              <div
-                className={`w-3 h-3 rounded-full mr-2 ${
-                  compliance.requirements.tin_registered
-                    ? "bg-green-500"
-                    : "bg-gray-300"
-                }`}
-              ></div>
-              <span className="text-sm text-gray-700">TIN Registered</span>
-            </div>
-            <div className="flex items-center">
-              <div
-                className={`w-3 h-3 rounded-full mr-2 ${
-                  compliance.requirements.vat_registered
-                    ? "bg-green-500"
-                    : "bg-gray-300"
-                }`}
-              ></div>
-              <span className="text-sm text-gray-700">VAT Registered</span>
-            </div>
-            <div className="flex items-center">
-              <div
-                className={`w-3 h-3 rounded-full mr-2 ${
-                    ? "bg-green-500"
-                    : "bg-gray-300"
-                }`}
-              ></div>
-            </div>
+                <div className="flex items-center">
+                  <div
+                    className={`w-3 h-3 rounded-full mr-2 ${
+                      compliance.requirements.tin_registered ? "bg-green-500" : "bg-gray-300"
+                    }`}
+                  />
+                  <span className="text-sm text-gray-700">TIN Registered</span>
+                </div>
+                <div className="flex items-center">
+                  <div
+                    className={`w-3 h-3 rounded-full mr-2 ${
+                      compliance.requirements.vat_registered ? "bg-green-500" : "bg-gray-300"
+                    }`}
+                  />
+                  <span className="text-sm text-gray-700">VAT Registered</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 rounded-full mr-2 bg-blue-500" />
+                  <span className="text-sm text-gray-700">Active Monitoring</span>
+                </div>
           </div>
 
           {compliance.next_actions.length > 0 && (
@@ -197,6 +193,9 @@ export default function TaxCompliancePage() {
           )}
         </div>
       )}
+
+      {/* End header wrapper */}
+    </div>
 
       {/* Small Business Status */}
       {eligibility && (
@@ -249,6 +248,9 @@ export default function TaxCompliancePage() {
               </div>
 
               <div className="bg-white rounded-lg p-4 mb-4">
+                <p className="text-sm text-gray-700">
+                  You qualify for small business benefits including reduced tax rates and simplified compliance.
+                </p>
               </div>
 
               {eligibility.approaching_limit && (
@@ -422,21 +424,7 @@ export default function TaxCompliancePage() {
         )}
       </div>
 
-        </p>
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-blue-900">
-              Registration Status:{" "}
-                <span className="text-green-600">✓ Registered</span>
-              ) : (
-                <span className="text-yellow-600">⏳ Pending</span>
-              )}
-            </p>
-            <p className="text-xs text-blue-600 mt-1">
-            </button>
-          )}
-        </div>
-      </div>
+      
     </div>
   );
 }

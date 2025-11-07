@@ -31,20 +31,20 @@ export default function OcrInvoicePage() {
 
   const handleProcess = async () => {
     if (!selectedFile) return;
-
     try {
       const result = await parseReceipt.mutateAsync({
         file: selectedFile,
         context: context || undefined,
       });
-
       setOcrData(result);
       setShowReview(true);
-      // Error will be handled by the mutation error state with custom message
+    } catch (err) {
+      // Error handled by parseReceipt mutation state
     }
   };
 
-  // Check if error is a premium feature requirement
+  // Premium feature error detection (placeholder until implemented)
+  const isPremiumFeatureError = false;
 
   const handleConfirmInvoice = async (data: {
     customerName: string;
