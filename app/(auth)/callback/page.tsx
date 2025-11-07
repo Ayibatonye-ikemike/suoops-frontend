@@ -43,7 +43,9 @@ function CallbackContent() {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
+              Accept: "application/json",
             },
+            credentials: "include",
           }
         );
 
@@ -55,11 +57,13 @@ function CallbackContent() {
         const data = await response.json();
 
         // Store tokens in auth store
-        // Calculate expiry time (24 hours from now) in ISO string format
-        const expiryDate = new Date(Date.now() + (24 * 60 * 60 * 1000));
+        const accessExpiresAt: string =
+          typeof data.access_expires_at === "string"
+            ? data.access_expires_at
+            : new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
         setTokens({
           accessToken: data.access_token,
-          accessExpiresAt: expiryDate.toISOString(),
+          accessExpiresAt,
         });
 
         // Redirect to dashboard or specified redirect_uri
