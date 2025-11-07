@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/api/client";
 
@@ -44,6 +45,19 @@ interface SmallBusinessEligibility {
   approaching_limit: boolean;
 }
 
+interface MonthlyReportSummary {
+  year: number;
+  month: number;
+  assessable_profit: number;
+  levy_amount: number;
+  vat_collected: number;
+  taxable_sales: number;
+  zero_rated_sales: number;
+  exempt_sales: number;
+  pdf_url: string | null;
+  basis: string;
+}
+
 export default function TaxCompliancePage() {
   const queryClient = useQueryClient();
   const [editMode, setEditMode] = useState(false);
@@ -53,6 +67,10 @@ export default function TaxCompliancePage() {
     tin: "",
     vat_registration_number: "",
   });
+  const now = new Date();
+  const [reportMonth, setReportMonth] = useState<number>(now.getMonth() || (now.getMonth() === 0 ? 12 : now.getMonth()));
+  const [reportYear, setReportYear] = useState<number>(now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear());
+  const [basis, setBasis] = useState<"paid" | "all">("paid");
 
   // Fetch tax profile
   const { data: profile, isLoading: profileLoading } = useQuery<TaxProfile>({
@@ -79,6 +97,18 @@ export default function TaxCompliancePage() {
       const response = await apiClient.get("/tax/small-business-check");
       return response.data;
     },
+  });
+
+  // Fetch monthly tax report (on-demand refresh when params change)
+  const { data: monthlyReport, isFetching: reportLoading } = useQuery<MonthlyReportSummary>({
+    queryKey: ["monthlyTaxReport", reportYear, reportMonth, basis],
+    queryFn: async () => {
+      const res = await apiClient.post(`/tax/reports/generate`, null, {
+        params: { year: reportYear, month: reportMonth, basis },
+      });
+      return res.data as MonthlyReportSummary;
+    },
+    refetchOnWindowFocus: false,
   });
 
   // Update tax profile mutation
@@ -108,6 +138,23 @@ export default function TaxCompliancePage() {
     if (formData.tin) data.tin = formData.tin;
     if (formData.vat_registration_number) data.vat_number = formData.vat_registration_number;
     updateProfile.mutate(data);
+  };
+
+  const handleDownload = async () => {
+    if (!monthlyReport) return;
+    if (!monthlyReport.pdf_url) {
+      // Force regeneration to attach PDF if missing
+      await apiClient.post(`/tax/reports/generate`, null, { params: { year: reportYear, month: reportMonth, basis, force: true } });
+      await queryClient.invalidateQueries({ queryKey: ["monthlyTaxReport", reportYear, reportMonth, basis] });
+    }
+    const updated = await apiClient.get(`/tax/reports/${reportYear}/${reportMonth}/download`);
+    const url = updated.data.pdf_url;
+    if (url) {
+      window.open(url, "_blank");
+      toast.success("Monthly tax report opened");
+    } else {
+      toast.error("PDF not available yet. Try regenerating.");
+    }
   };
 
   const formatCurrency = (amount: number) => {
@@ -266,6 +313,90 @@ export default function TaxCompliancePage() {
           )}
         </div>
       )}
+
+      {/* Monthly Tax Report */}
+      <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-gray-900">Monthly Tax Report</h2>
+          <div className="flex items-center gap-2">
+            <select
+              value={reportMonth}
+              onChange={(e) => setReportMonth(Number(e.target.value))}
+              className="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm"
+              aria-label="Report month"
+            >
+              {Array.from({ length: 12 }).map((_, i) => (
+                <option key={i + 1} value={i + 1}>{i + 1}</option>
+              ))}
+            </select>
+            <select
+              value={reportYear}
+              onChange={(e) => setReportYear(Number(e.target.value))}
+              className="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm"
+              aria-label="Report year"
+            >
+              {[reportYear - 1, reportYear, reportYear + 1].map(y => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+            <div className="flex rounded-md overflow-hidden border border-gray-300" role="radiogroup" aria-label="Profit basis">
+              {(["paid", "all"] as const).map(opt => {
+                const active = basis === opt;
+                return (
+                  <button
+                    key={opt}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    onClick={() => setBasis(opt)}
+                    className={`px-3 py-1 text-xs font-medium ${active ? "bg-blue-600 text-white" : "bg-white text-gray-600 hover:bg-gray-100"}`}
+                  >{opt === "paid" ? "Paid" : "All"}</button>
+                );
+              })}
+            </div>
+            <button
+              type="button"
+              onClick={() => queryClient.invalidateQueries({ queryKey: ["monthlyTaxReport", reportYear, reportMonth, basis] })}
+              className="rounded-md bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200"
+            >Refresh</button>
+            <button
+              type="button"
+              onClick={handleDownload}
+              disabled={reportLoading}
+              className="rounded-md bg-blue-600 px-3 py-1 text-xs font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+            >{monthlyReport?.pdf_url ? "Download PDF" : "Generate PDF"}</button>
+          </div>
+        </div>
+        {reportLoading && <div className="text-sm text-gray-500">Generating report...</div>}
+        {monthlyReport && !reportLoading && (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2 text-sm">
+            <div>
+              <p className="text-gray-500">Profit ({monthlyReport.basis})</p>
+              <p className="font-semibold">₦{monthlyReport.assessable_profit.toLocaleString()}</p>
+            </div>
+            <div>
+              <p className="text-gray-500">Levy</p>
+              <p className="font-semibold">₦{monthlyReport.levy_amount.toLocaleString()}</p>
+            </div>
+            <div>
+              <p className="text-gray-500">VAT Collected</p>
+              <p className="font-semibold">₦{monthlyReport.vat_collected.toLocaleString()}</p>
+            </div>
+            <div>
+              <p className="text-gray-500">Taxable Sales</p>
+              <p className="font-semibold">₦{monthlyReport.taxable_sales.toLocaleString()}</p>
+            </div>
+            <div>
+              <p className="text-gray-500">Zero-rated Sales</p>
+              <p className="font-semibold">₦{monthlyReport.zero_rated_sales.toLocaleString()}</p>
+            </div>
+            <div>
+              <p className="text-gray-500">Exempt Sales</p>
+              <p className="font-semibold">₦{monthlyReport.exempt_sales.toLocaleString()}</p>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Tax Profile */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
