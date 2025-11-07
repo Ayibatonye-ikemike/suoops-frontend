@@ -56,3 +56,16 @@ export function isPremiumFeatureError(err: unknown): boolean {
 }
 
 export type { AxiosError };
+
+// Provide extra structured information for UI (code + message + upgrade suggestion)
+export function getPremiumFeatureInfo(err: unknown): { required: boolean; code?: string; message?: string } {
+  if (!isPremiumFeatureError(err)) return { required: false };
+  const { data } = extractAxiosParts(err);
+  const code = data?.code;
+  const detail = data?.detail || data?.message;
+  return {
+    required: true,
+    code,
+    message: detail || (code ? `Premium feature (${code})` : 'Premium feature required'),
+  };
+}

@@ -12,6 +12,9 @@ import { OcrReviewModal } from "@/features/invoices/ocr-review-modal";
 import { useParseReceipt } from "@/features/invoices/use-ocr";
 import { useCreateInvoice } from "@/features/invoices/use-create-invoice";
 import { isPremiumFeatureError } from "@/features/invoices/errors";
+import PremiumUpsell from "@/components/premium-upsell";
+import { logFeatureEvent } from "@/lib/telemetry";
+import toast from "react-hot-toast";
 import Link from "next/link";
 import { OCRParseResult } from "@/features/invoices/use-ocr";
 
@@ -39,13 +42,20 @@ export default function OcrInvoicePage() {
       });
       setOcrData(result);
       setShowReview(true);
+      logFeatureEvent({ feature: "ocr", action: "parse_success" });
+      toast.success("OCR data extracted");
     } catch (err) {
       // Error handled by parseReceipt mutation state
+      logFeatureEvent({ feature: "ocr", action: "parse_error" });
+      toast.error("Failed to process image");
     }
   };
 
   // Determine if the current parse error is a premium gating error
   const premiumError = parseReceipt.isError && isPremiumFeatureError(parseReceipt.error);
+  if (premiumError) {
+    logFeatureEvent({ feature: "ocr", action: "premium_block" });
+  }
 
   const handleConfirmInvoice = async (data: {
     customerName: string;
@@ -188,56 +198,8 @@ export default function OcrInvoicePage() {
 
           {/* Error state - Premium Feature Required */}
           {parseReceipt.isError && premiumError && (
-            <div className="mt-6 rounded-lg border-2 border-yellow-300 bg-gradient-to-r from-yellow-50 to-orange-50 p-6">
-              <div className="flex items-start space-x-3">
-                <svg
-                  className="mt-0.5 h-6 w-6 flex-shrink-0 text-yellow-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                  />
-                </svg>
-                <div className="flex-1">
-                  <p className="text-lg font-bold text-yellow-900">
-                    🔒 Premium Feature Required
-                  </p>
-                  <p className="mt-2 text-sm text-yellow-800">
-                    Photo invoice OCR is only available on paid subscription plans.
-                  </p>
-                  <div className="mt-4 rounded-lg bg-white/60 p-4">
-                    <p className="text-sm font-semibold text-slate-900 mb-2">
-                      ✨ Upgrade to unlock:
-                    </p>
-                    <ul className="space-y-1 text-sm text-slate-700">
-                      <li>📸 Photo invoice OCR</li>
-                      <li>🎙️ Voice message invoices</li>
-                      <li>🎨 Custom branding with your logo</li>
-                      <li>📊 More monthly invoices</li>
-                      <li>💬 Priority support</li>
-                    </ul>
-                  </div>
-                  <div className="mt-4 flex gap-3">
-                    <Link
-                      href="/dashboard/subscription"
-                      className="inline-flex items-center rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-2.5 text-sm font-semibold text-white shadow-md hover:from-blue-700 hover:to-purple-700 transition-all"
-                    >
-                      🚀 Upgrade Now
-                    </Link>
-                    <Link
-                      href="/dashboard/invoices"
-                      className="inline-flex items-center rounded-lg border border-slate-300 bg-white px-6 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all"
-                    >
-                      ← Back to Invoices
-                    </Link>
-                  </div>
-                </div>
-              </div>
+            <div className="mt-6">
+              <PremiumUpsell error={parseReceipt.error} onClose={() => {}} />
             </div>
           )}
 
