@@ -31,6 +31,7 @@ export function DevelopmentLevyTile() {
   const { data: taxConfig } = useQuery({
     queryKey: ["tax-config"],
     queryFn: async () => (await apiClient.get<{ [k: string]: number }>("/tax/config")).data,
+    staleTime: 1000 * 60 * 5,
   });
 
   // Compute profit as sum of invoice amounts (simplistic assessable profit approximation)
@@ -40,6 +41,7 @@ export function DevelopmentLevyTile() {
   }, [invoices]);
 
   const [manualProfit, setManualProfit] = useState<number | null>(null);
+  const [basis, setBasis] = useState<"paid" | "all">("paid");
   const now = new Date();
   const [year, setYear] = useState<number>(now.getFullYear());
   const [month, setMonth] = useState<number>(now.getMonth() + 1); // JS month 0-based
@@ -51,12 +53,13 @@ export function DevelopmentLevyTile() {
       setLoading(true);
       setError(null);
       try {
-        const params: Record<string, number> = {};
+        const params: Record<string, number | string> = {};
         if (manualProfit !== null) {
-            params.profit = profit;
+          params.profit = profit;
         } else {
-            params.year = year;
-            params.month = month;
+          params.year = year;
+          params.month = month;
+          params.basis = basis;
         }
         const res = await apiClient.get<LevyResponse>(`/tax/levy`, { params });
         if (!cancelled) setData(res.data);
@@ -71,7 +74,7 @@ export function DevelopmentLevyTile() {
     }
     fetchLevy();
     return () => { cancelled = true; };
-  }, [profit, manualProfit, year, month]);
+  }, [profit, manualProfit, year, month, basis]);
 
   return (
     <section className="rounded-3xl bg-white p-6 shadow-xl ring-1 ring-slate-100">
@@ -89,10 +92,27 @@ export function DevelopmentLevyTile() {
             className="w-36 rounded-lg border border-slate-200 px-2 py-1 text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
             aria-label="Assessable profit"
           />
+          <div className="flex rounded-md border border-slate-200 overflow-hidden text-xs" role="radiogroup" aria-label="Profit basis">
+            {(["paid", "all"] as const).map(opt => {
+              const active = basis === opt;
+              return (
+                <button
+                  key={opt}
+                  type="button"
+                  role="radio"
+                  aria-checked={active}
+                  disabled={manualProfit !== null}
+                  onClick={() => setBasis(opt)}
+                  className={`px-2 py-1 font-medium transition-colors ${active ? "bg-green-600 text-white" : "bg-white text-slate-600 hover:bg-slate-100"} ${manualProfit !== null ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                >{opt === "paid" ? "Paid" : "All"}</button>
+              );
+            })}
+          </div>
           <select
             value={month}
             onChange={(e) => { setMonth(Number(e.target.value)); setManualProfit(null); }}
-            className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-sm focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+            disabled={manualProfit !== null}
+            className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-sm focus:border-green-600 focus:ring-2 focus:ring-green-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Month"
           >
             {Array.from({ length: 12 }).map((_, i) => (
@@ -102,7 +122,8 @@ export function DevelopmentLevyTile() {
           <select
             value={year}
             onChange={(e) => { setYear(Number(e.target.value)); setManualProfit(null); }}
-            className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-sm focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+            disabled={manualProfit !== null}
+            className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-sm focus:border-green-600 focus:ring-2 focus:ring-green-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Year"
           >
             {[year - 1, year, year + 1].map((y) => (
@@ -153,7 +174,14 @@ export function DevelopmentLevyTile() {
         </div>
       )}
       <div className="mt-6 flex flex-wrap items-center gap-4 text-xs text-slate-500">
-        <span>Profit source: {manualProfit !== null ? "Manual override" : data?.source === 'paid_invoices' ? `Paid invoices${data?.period ? ' ' + data.period : ''}` : invoicesLoading ? "Loading invoices" : invoicesError ? "Fallback (static)" : "Unknown"}</span>
+        <span>Profit source: {manualProfit !== null ? "Manual override" : data?.source === 'paid_invoices' ? `Paid invoices${data?.period ? ' ' + data.period : ''}` : data?.source === 'all_invoices' ? `All invoices${data?.period ? ' ' + data.period : ''}` : invoicesLoading ? "Loading invoices" : invoicesError ? "Fallback (static)" : "Unknown"}</span>
+        {manualProfit !== null && (
+          <button
+            type="button"
+            onClick={() => setManualProfit(null)}
+            className="rounded bg-slate-200 px-2 py-1 text-slate-700 hover:bg-slate-300"
+          >Use invoices</button>
+        )}
         {invoicesError && (
           <button
             type="button"
