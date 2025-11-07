@@ -119,10 +119,13 @@ export function LoginForm() {
   }, [canResend, email, startCountdown]);
 
   const handleGoogleSignIn = useCallback(() => {
-    const redirectUri = encodeURIComponent(`${window.location.origin}/auth/callback`);
+    // Provide callback URL with optional next param so backend returns it and callback page can route properly.
+    const callbackBase = `${window.location.origin}/auth/callback`;
+    const withNext = `${callbackBase}?next=${encodeURIComponent(nextRoute)}`;
+    const redirectUri = encodeURIComponent(withNext);
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.suoops.com';
     window.location.href = `${apiUrl}/auth/oauth/google/login?redirect_uri=${redirectUri}`;
-  }, []);
+  }, [nextRoute]);
 
   if (step === "otp") {
     return (
