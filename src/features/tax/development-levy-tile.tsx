@@ -3,8 +3,8 @@
 import { useEffect, useState, useMemo } from "react";
 import { apiClient } from "@/api/client";
 import { toast } from "react-hot-toast";
-import { TAX_CONFIG } from "@/config/tax";
 import { useInvoices } from "@/features/invoices/use-invoices";
+import { useQuery } from "@tanstack/react-query";
 
 interface LevyResponse {
   user_id: number;
@@ -15,6 +15,8 @@ interface LevyResponse {
   levy_applicable: boolean;
   levy_amount: number;
   exemption_reason: string | null;
+  period?: string | null;
+  source?: string | null;
 }
 
 // Simplistic profit placeholder. In future, derive from backend metrics.
@@ -26,6 +28,10 @@ export function DevelopmentLevyTile() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { data: invoices, isLoading: invoicesLoading, error: invoicesError, refetch: refetchInvoices } = useInvoices();
+  const { data: taxConfig } = useQuery({
+    queryKey: ["tax-config"],
+    queryFn: async () => (await apiClient.get<{ [k: string]: number }>("/tax/config")).data,
+  });
 
   // Compute profit as sum of invoice amounts (simplistic assessable profit approximation)
   const computedProfit = useMemo(() => {
@@ -34,6 +40,9 @@ export function DevelopmentLevyTile() {
   }, [invoices]);
 
   const [manualProfit, setManualProfit] = useState<number | null>(null);
+  const now = new Date();
+  const [year, setYear] = useState<number>(now.getFullYear());
+  const [month, setMonth] = useState<number>(now.getMonth() + 1); // JS month 0-based
   const profit = manualProfit !== null ? manualProfit : computedProfit;
 
   useEffect(() => {
@@ -42,7 +51,14 @@ export function DevelopmentLevyTile() {
       setLoading(true);
       setError(null);
       try {
-        const res = await apiClient.get<LevyResponse>(`/tax/levy`, { params: { profit } });
+        const params: Record<string, number> = {};
+        if (manualProfit !== null) {
+            params.profit = profit;
+        } else {
+            params.year = year;
+            params.month = month;
+        }
+        const res = await apiClient.get<LevyResponse>(`/tax/levy`, { params });
         if (!cancelled) setData(res.data);
       } catch {
         if (!cancelled) {
@@ -55,14 +71,14 @@ export function DevelopmentLevyTile() {
     }
     fetchLevy();
     return () => { cancelled = true; };
-  }, [profit]);
+  }, [profit, manualProfit, year, month]);
 
   return (
     <section className="rounded-3xl bg-white p-6 shadow-xl ring-1 ring-slate-100">
       <div className="flex items-start justify-between gap-4">
         <div>
           <h2 className="text-lg font-semibold text-slate-900">Development Levy</h2>
-          <p className="mt-1 text-sm text-slate-500">2026 readiness – {Math.round(TAX_CONFIG.DEVELOPMENT_LEVY_RATE * 100)}% on assessable profits unless small business.</p>
+          <p className="mt-1 text-sm text-slate-500">2026 readiness – {Math.round((taxConfig?.development_levy_rate ?? 0.04) * 100)}% on assessable profits unless small business.</p>
         </div>
         <div className="flex items-center gap-2">
           <input
@@ -73,6 +89,26 @@ export function DevelopmentLevyTile() {
             className="w-36 rounded-lg border border-slate-200 px-2 py-1 text-sm outline-none focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
             aria-label="Assessable profit"
           />
+          <select
+            value={month}
+            onChange={(e) => { setMonth(Number(e.target.value)); setManualProfit(null); }}
+            className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-sm focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+            aria-label="Month"
+          >
+            {Array.from({ length: 12 }).map((_, i) => (
+              <option key={i + 1} value={i + 1}>{i + 1}</option>
+            ))}
+          </select>
+          <select
+            value={year}
+            onChange={(e) => { setYear(Number(e.target.value)); setManualProfit(null); }}
+            className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-sm focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+            aria-label="Year"
+          >
+            {[year - 1, year, year + 1].map((y) => (
+              <option key={y} value={y}>{y}</option>
+            ))}
+          </select>
         </div>
       </div>
       {loading && (
@@ -117,7 +153,7 @@ export function DevelopmentLevyTile() {
         </div>
       )}
       <div className="mt-6 flex flex-wrap items-center gap-4 text-xs text-slate-500">
-        <span>Profit source: {manualProfit !== null ? "Manual override" : invoicesLoading ? "Loading invoices" : invoicesError ? "Fallback (static)" : "Sum of invoices"}</span>
+        <span>Profit source: {manualProfit !== null ? "Manual override" : data?.source === 'paid_invoices' ? `Paid invoices${data?.period ? ' ' + data.period : ''}` : invoicesLoading ? "Loading invoices" : invoicesError ? "Fallback (static)" : "Unknown"}</span>
         {invoicesError && (
           <button
             type="button"
