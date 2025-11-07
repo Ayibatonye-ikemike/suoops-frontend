@@ -18,6 +18,8 @@ function CallbackContent() {
         const state = searchParams?.get("state");
         const errorParam = searchParams?.get("error");
 
+        console.log("[OAuth Callback] Starting with params:", { code: code?.substring(0, 20), state, error: errorParam });
+
         // Check for OAuth error from provider
         if (errorParam) {
           setError(errorParam === "access_denied" 
@@ -30,6 +32,7 @@ function CallbackContent() {
 
         // Validate required parameters
         if (!code || !state) {
+          console.error("[OAuth Callback] Missing required parameters");
           setError("Invalid OAuth callback. Missing required parameters.");
           setProcessing(false);
           return;
@@ -37,8 +40,10 @@ function CallbackContent() {
 
         // Exchange code for tokens via backend
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.suoops.com';
+        console.log("[OAuth Callback] Fetching tokens from:", apiUrl);
+        
         const response = await fetch(
-          `${apiUrl}/auth/oauth/google/callback?code=${code}&state=${state}`,
+          `${apiUrl}/auth/oauth/google/callback?code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}`,
           {
             method: "GET",
             headers: {
@@ -49,12 +54,16 @@ function CallbackContent() {
           }
         );
 
+        console.log("[OAuth Callback] Response status:", response.status);
+
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({ detail: "Authentication failed" }));
+          console.error("[OAuth Callback] Failed:", errorData);
           throw new Error(errorData.detail || "Failed to complete sign in");
         }
 
         const data = await response.json();
+        console.log("[OAuth Callback] Received tokens, access_expires_at:", data.access_expires_at);
 
         // Store tokens in auth store
         const accessExpiresAt: string =
@@ -66,17 +75,21 @@ function CallbackContent() {
           accessExpiresAt,
         });
 
+        console.log("[OAuth Callback] Tokens stored, redirecting to:", data.redirect_uri || "/dashboard");
+
         // Redirect to dashboard or specified redirect_uri
         const redirectTo = data.redirect_uri || "/dashboard";
         router.replace(redirectTo);
       } catch (err) {
-        console.error("OAuth callback error:", err);
+        console.error("[OAuth Callback] Error:", err);
         setError(err instanceof Error ? err.message : "An unexpected error occurred");
         setProcessing(false);
       }
     };
 
-    handleOAuthCallback();
+    if (searchParams) {
+      handleOAuthCallback();
+    }
   }, [searchParams, router, setTokens]);
 
   if (processing) {
