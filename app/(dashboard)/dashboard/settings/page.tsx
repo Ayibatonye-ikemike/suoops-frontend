@@ -7,6 +7,7 @@ import { BankDetailsForm } from "@/features/settings/bank-details-form";
 import { SubscriptionSection } from "@/features/settings/subscription-section";
 import { LogoUpload } from "@/features/settings/logo-upload";
 import { PhoneNumberSection } from "@/features/settings/phone-number-section";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 type CurrentUser = components["schemas"]["UserOut"];
 
@@ -22,56 +23,47 @@ export default function SettingsPage() {
   });
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8">
-      <div className="border-b border-slate-200 pb-4">
-        <h1 className="text-2xl font-bold text-slate-900">Settings</h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Manage your business account and payment settings
-        </p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
+      <div className="mx-auto max-w-4xl px-6 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-slate-900">Settings</h1>
+          <p className="mt-1 text-slate-600">Manage your account</p>
+        </div>
 
-      {/* Subscription Plan */}
-      <SubscriptionSection />
+        {/* Subscription */}
+        <div className="mb-6">
+          <SubscriptionSection />
+        </div>
 
-      {/* Phone Number Verification */}
-      <div className="rounded-lg border border-slate-200 bg-white">
-        <div className="border-b border-slate-200 px-6 py-4">
-          <h2 className="text-lg font-semibold text-slate-900">WhatsApp Number</h2>
-          <p className="mt-1 text-sm text-slate-500">
-            Add your WhatsApp number to enable login and receive invoice notifications
-          </p>
-        </div>
-        <div className="p-6">
-          <PhoneNumberSection 
-            currentPhone={user?.phone_verified && user?.phone ? user.phone : null} 
-          />
-        </div>
-      </div>
+        {/* WhatsApp */}
+        <Card className="mb-6">
+          <CardHeader className="border-b border-slate-200">
+            <h2 className="text-lg font-semibold text-slate-900">WhatsApp</h2>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <PhoneNumberSection currentPhone={user?.phone_verified && user?.phone ? user.phone : null} />
+          </CardContent>
+        </Card>
 
-      {/* Business Branding */}
-      <div className="rounded-lg border border-slate-200 bg-white">
-        <div className="border-b border-slate-200 px-6 py-4">
-          <h2 className="text-lg font-semibold text-slate-900">Business Branding</h2>
-          <p className="mt-1 text-sm text-slate-500">
-            Upload your business logo to appear on invoices and receipts
-          </p>
-        </div>
-        <div className="p-6">
-          <LogoUpload />
-        </div>
-      </div>
+        {/* Logo */}
+        <Card className="mb-6">
+          <CardHeader className="border-b border-slate-200">
+            <h2 className="text-lg font-semibold text-slate-900">Logo</h2>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <LogoUpload />
+          </CardContent>
+        </Card>
 
-      {/* Bank Account Details */}
-      <div className="rounded-lg border border-slate-200 bg-white">
-        <div className="border-b border-slate-200 px-6 py-4">
-          <h2 className="text-lg font-semibold text-slate-900">Bank Account Details</h2>
-          <p className="mt-1 text-sm text-slate-500">
-            Configure your bank account to receive customer payments via bank transfer
-          </p>
-        </div>
-        <div className="p-6">
-          <BankDetailsForm />
-        </div>
+        {/* Bank Details */}
+        <Card>
+          <CardHeader className="border-b border-slate-200">
+            <h2 className="text-lg font-semibold text-slate-900">Bank Account</h2>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <BankDetailsForm />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
