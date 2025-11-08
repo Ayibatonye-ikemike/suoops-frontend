@@ -7,13 +7,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className = "", variant = "primary", size = "md", children, ...props }, ref) => {
-    const baseStyles = "inline-flex items-center justify-center font-medium rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
+  const baseStyles = "inline-flex items-center justify-center font-medium rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-brand-accent focus:ring-offset-2 focus:ring-offset-brand-surface disabled:opacity-50 disabled:cursor-not-allowed";
     
     const variants = {
-      primary: "bg-brand-primary text-white hover:bg-green-700 focus:ring-brand-primary shadow-sm hover:shadow-md",
-      secondary: "bg-slate-900 text-white hover:bg-slate-800 focus:ring-slate-900 shadow-sm hover:shadow-md",
-      outline: "border-2 border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 focus:ring-slate-500",
-      ghost: "text-slate-600 hover:bg-slate-100 hover:text-slate-900 focus:ring-slate-500",
+      primary: "bg-brand-primary text-brand-accent hover:bg-brand-primaryHover shadow-sm hover:shadow-md",
+      secondary: "bg-brand-surface text-brand-accent hover:bg-brand-primary/80 shadow-sm hover:shadow-md",
+      outline: "border-2 border-brand-accentMuted text-brand-primary hover:bg-brand-accent/40 hover:border-brand-accent focus:ring-brand-accent",
+  ghost: "text-brand-accent hover:bg-brand-primary/20 hover:text-brand-accent focus:ring-brand-accent",
       danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-600 shadow-sm hover:shadow-md",
     };
     

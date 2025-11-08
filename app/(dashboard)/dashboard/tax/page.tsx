@@ -95,46 +95,34 @@ export default function TaxPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
-      <div className="mx-auto max-w-7xl px-6 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">Tax Compliance</h1>
-          <p className="mt-1 text-slate-600">Monitor obligations and reports</p>
+    <div className="min-h-screen bg-gradient-to-br from-brand-surface via-brand-primary to-brand-surface">
+      <div className="mx-auto max-w-7xl px-6 py-10 text-brand-accent">
+        <div className="mb-10">
+          <h1 className="text-3xl font-bold">Tax Compliance</h1>
+          <p className="mt-1 text-sm text-brand-accent/80">Monitor obligations and reports</p>
         </div>
 
-        {/* Stats */}
         {compliance && (
-          <div className="mb-6 grid gap-4 md:grid-cols-3">
-            <StatCard
-              label="Compliance Score"
-              value={`${compliance.compliance_score}%`}
-              icon="📊"
-              className={compliance.compliance_score === 100 ? "border-green-200 bg-green-50" : ""}
-            />
-            <StatCard
-              label="Business Size"
-              value={compliance.business_size.toUpperCase()}
-              icon="🏢"
-            />
+          <div className="mb-8 grid gap-4 md:grid-cols-3">
+            <StatCard label="Compliance Score" value={`${compliance.compliance_score}%`} icon="📊" />
+            <StatCard label="Business Size" value={compliance.business_size.toUpperCase()} icon="🏢" />
             <StatCard
               label="Registration"
               value={compliance.requirements.tin_registered && compliance.requirements.vat_registered ? "Complete" : "Pending"}
               icon={compliance.requirements.tin_registered && compliance.requirements.vat_registered ? "✅" : "⚠️"}
-              className={compliance.requirements.tin_registered && compliance.requirements.vat_registered ? "border-green-200 bg-green-50" : "border-amber-200 bg-amber-50"}
             />
           </div>
         )}
 
-        {/* Monthly Report */}
-        <Card className="mb-6">
-          <CardHeader className="border-b border-slate-200">
+        <Card className="mb-8 bg-brand-accent/95 text-brand-primary shadow-md shadow-brand-surface/30">
+          <CardHeader className="border-b border-brand-accentMuted/60">
             <div className="flex flex-wrap items-center justify-between gap-4">
-              <h2 className="text-lg font-semibold text-slate-900">Monthly Report</h2>
+              <h2 className="text-lg font-semibold">Monthly Report</h2>
               <div className="flex flex-wrap items-center gap-2">
                 <select
                   value={reportMonth}
                   onChange={(e) => setReportMonth(Number(e.target.value))}
-                  className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+                  className="rounded-lg border border-brand-accentMuted bg-brand-accent px-3 py-1.5 text-sm text-brand-primary focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30"
                 >
                   {Array.from({ length: 12 }, (_, i) => (
                     <option key={i + 1} value={i + 1}>
@@ -145,18 +133,20 @@ export default function TaxPage() {
                 <select
                   value={reportYear}
                   onChange={(e) => setReportYear(Number(e.target.value))}
-                  className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+                  className="rounded-lg border border-brand-accentMuted bg-brand-accent px-3 py-1.5 text-sm text-brand-primary focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30"
                 >
                   {[reportYear - 1, reportYear, reportYear + 1].map((y) => (
                     <option key={y} value={y}>{y}</option>
                   ))}
                 </select>
-                <div className="flex overflow-hidden rounded-lg border border-slate-300">
+                <div className="flex overflow-hidden rounded-lg border border-brand-accentMuted">
                   {(["paid", "all"] as const).map((opt) => (
                     <button
                       key={opt}
                       onClick={() => setBasis(opt)}
-                      className={`px-3 py-1.5 text-xs font-medium ${basis === opt ? "bg-brand-primary text-white" : "bg-white text-slate-600"}`}
+                      className={`px-3 py-1.5 text-xs font-medium transition-colors ${
+                        basis === opt ? "bg-brand-primary text-brand-accent" : "bg-brand-accent text-brand-primary"
+                      }`}
                     >
                       {opt === "paid" ? "Paid" : "All"}
                     </button>
@@ -171,44 +161,32 @@ export default function TaxPage() {
           <CardContent className="pt-6">
             {reportLoading ? (
               <div className="flex justify-center py-8">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-300 border-t-brand-primary" />
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-accent border-t-brand-primary" />
               </div>
             ) : report ? (
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <div className="rounded-lg bg-slate-50 p-4">
-                  <p className="text-sm text-slate-600">Profit</p>
-                  <p className="mt-1 text-2xl font-bold">₦{report.assessable_profit.toLocaleString()}</p>
-                </div>
-                <div className="rounded-lg bg-slate-50 p-4">
-                  <p className="text-sm text-slate-600">Levy</p>
-                  <p className="mt-1 text-2xl font-bold">₦{report.levy_amount.toLocaleString()}</p>
-                </div>
-                <div className="rounded-lg bg-slate-50 p-4">
-                  <p className="text-sm text-slate-600">VAT</p>
-                  <p className="mt-1 text-2xl font-bold">₦{report.vat_collected.toLocaleString()}</p>
-                </div>
-                <div className="rounded-lg bg-slate-50 p-4">
-                  <p className="text-sm text-slate-600">Taxable</p>
-                  <p className="mt-1 text-2xl font-bold">₦{report.taxable_sales.toLocaleString()}</p>
-                </div>
-                <div className="rounded-lg bg-slate-50 p-4">
-                  <p className="text-sm text-slate-600">Zero-rated</p>
-                  <p className="mt-1 text-2xl font-bold">₦{report.zero_rated_sales.toLocaleString()}</p>
-                </div>
-                <div className="rounded-lg bg-slate-50 p-4">
-                  <p className="text-sm text-slate-600">Exempt</p>
-                  <p className="mt-1 text-2xl font-bold">₦{report.exempt_sales.toLocaleString()}</p>
-                </div>
+                {[
+                  { label: "Profit", value: report.assessable_profit },
+                  { label: "Levy", value: report.levy_amount },
+                  { label: "VAT", value: report.vat_collected },
+                  { label: "Taxable", value: report.taxable_sales },
+                  { label: "Zero-rated", value: report.zero_rated_sales },
+                  { label: "Exempt", value: report.exempt_sales },
+                ].map((item) => (
+                  <div key={item.label} className="rounded-lg bg-brand-accentMuted/80 p-4">
+                    <p className="text-sm text-brand-primary/70">{item.label}</p>
+                    <p className="mt-1 text-2xl font-bold text-brand-primary">₦{item.value.toLocaleString()}</p>
+                  </div>
+                ))}
               </div>
             ) : null}
           </CardContent>
         </Card>
 
-        {/* Profile */}
-        <Card>
-          <CardHeader className="border-b border-slate-200">
+        <Card className="bg-brand-accent/95 text-brand-primary shadow-md shadow-brand-surface/30">
+          <CardHeader className="border-b border-brand-accentMuted/60">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900">Profile</h2>
+              <h2 className="text-lg font-semibold">Profile</h2>
               {!editMode ? (
                 <Button onClick={() => setEditMode(true)}>Edit</Button>
               ) : (
@@ -223,71 +201,52 @@ export default function TaxPage() {
           </CardHeader>
           <CardContent className="pt-6">
             <div className="grid gap-6 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">Annual Turnover</label>
-                {editMode ? (
-                  <input
-                    type="number"
-                    value={formData.annual_turnover}
-                    onChange={(e) => setFormData({ ...formData, annual_turnover: e.target.value })}
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
-                  />
-                ) : (
-                  <p className="text-lg font-semibold">{fmt(profile?.annual_turnover || 0)}</p>
-                )}
-              </div>
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">Fixed Assets</label>
-                {editMode ? (
-                  <input
-                    type="number"
-                    value={formData.fixed_assets}
-                    onChange={(e) => setFormData({ ...formData, fixed_assets: e.target.value })}
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
-                  />
-                ) : (
-                  <p className="text-lg font-semibold">{fmt(profile?.fixed_assets || 0)}</p>
-                )}
-              </div>
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">TIN</label>
-                {editMode ? (
-                  <input
-                    type="text"
-                    value={formData.tin}
-                    onChange={(e) => setFormData({ ...formData, tin: e.target.value })}
-                    placeholder={profile?.tin || "Not set"}
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
-                  />
-                ) : (
-                  <p className="text-lg font-semibold">{profile?.tin || "Not set"}</p>
-                )}
-              </div>
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">VAT Number</label>
-                {editMode ? (
-                  <input
-                    type="text"
-                    value={formData.vat_number}
-                    onChange={(e) => setFormData({ ...formData, vat_number: e.target.value })}
-                    placeholder={profile?.vat_number || "Not set"}
-                    className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
-                  />
-                ) : (
-                  <p className="text-lg font-semibold">{profile?.vat_number || "Not set"}</p>
-                )}
-              </div>
+              {[{
+                label: "Annual Turnover",
+                key: "annual_turnover",
+                value: formData.annual_turnover,
+                display: fmt(profile?.annual_turnover || 0),
+              }, {
+                label: "Fixed Assets",
+                key: "fixed_assets",
+                value: formData.fixed_assets,
+                display: fmt(profile?.fixed_assets || 0),
+              }, {
+                label: "TIN",
+                key: "tin",
+                value: formData.tin,
+                display: profile?.tin || "Not set",
+              }, {
+                label: "VAT Number",
+                key: "vat_number",
+                value: formData.vat_number,
+                display: profile?.vat_number || "Not set",
+              }].map((field) => (
+                <div key={field.key}>
+                  <label className="mb-2 block text-sm font-medium text-brand-primary/80">{field.label}</label>
+                  {editMode ? (
+                    <input
+                      type={field.key === "tin" || field.key === "vat_number" ? "text" : "number"}
+                      value={field.value}
+                      onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value })}
+                      placeholder={field.display}
+                      className="w-full rounded-lg border border-brand-accentMuted bg-brand-accent px-3 py-2 text-sm text-brand-primary focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30"
+                    />
+                  ) : (
+                    <p className="text-lg font-semibold">{field.display}</p>
+                  )}
+                </div>
+              ))}
             </div>
 
-            {/* Tax Rates */}
             {profile && (
-              <div className="mt-6 border-t border-slate-200 pt-6">
-                <h3 className="mb-4 text-sm font-medium">Tax Rates</h3>
+              <div className="mt-6 border-t border-brand-accentMuted/60 pt-6">
+                <h3 className="mb-4 text-sm font-medium text-brand-primary/70">Tax Rates</h3>
                 <div className="grid grid-cols-4 gap-4">
                   {Object.entries(profile.tax_rates).map(([key, value]) => (
-                    <div key={key} className="rounded-lg bg-slate-50 p-3 text-center">
-                      <p className="mb-1 text-xs text-slate-600">{key}</p>
-                      <p className="text-2xl font-bold">{value}%</p>
+                    <div key={key} className="rounded-lg bg-brand-accentMuted/80 p-3 text-center">
+                      <p className="mb-1 text-xs uppercase tracking-wide text-brand-primary/60">{key}</p>
+                      <p className="text-2xl font-bold text-brand-primary">{value}%</p>
                     </div>
                   ))}
                 </div>

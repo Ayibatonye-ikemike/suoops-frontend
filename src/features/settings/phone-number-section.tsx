@@ -167,10 +167,10 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
             {error}
           </div>
         )}
-        <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
+        <div className="flex items-center justify-between rounded-lg border border-brand-accentMuted/60 bg-brand-accent px-4 py-3 text-brand-primary">
           <div>
-            <p className="text-sm font-medium text-slate-700">WhatsApp Number</p>
-            <p className="mt-1 text-base font-semibold text-slate-900">{phone}</p>
+            <p className="text-sm font-medium text-brand-primary/80">WhatsApp Number</p>
+            <p className="mt-1 text-base font-semibold">{phone}</p>
             <p className="mt-1 text-xs text-emerald-600">✓ Verified</p>
           </div>
           <div className="flex gap-2">
@@ -183,7 +183,7 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
                 setSuccess(null);
               }}
               disabled={loading}
-              className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-lg border border-brand-accentMuted bg-brand-accent px-4 py-2 text-sm font-medium text-brand-primary transition hover:bg-brand-accentMuted/40 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Change Number
             </button>
@@ -191,13 +191,13 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
               type="button"
               onClick={handleRemovePhone}
               disabled={loading}
-              className="rounded-lg border border-rose-200 bg-white px-4 py-2 text-sm font-medium text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-lg border border-rose-300 bg-brand-accent px-4 py-2 text-sm font-medium text-rose-700 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? "Removing..." : "Remove"}
             </button>
           </div>
         </div>
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-brand-accent/80">
           You can now use this number to login and receive invoice notifications via WhatsApp.
         </p>
       </div>
@@ -219,7 +219,7 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
           </div>
         )}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700">
+          <label className="text-sm font-medium text-brand-primary/80">
             Enter 6-digit code sent to {phone}
           </label>
           <OTPInput
@@ -233,7 +233,7 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
           <button
             type="submit"
             disabled={loading || otp.length !== 6}
-            className="flex-1 rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-green-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex-1 rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-brand-accent shadow-md transition hover:bg-brand-primary/90 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? "Verifying..." : "Verify Number"}
           </button>
@@ -241,7 +241,7 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
             type="button"
             onClick={handleBackToInput}
             disabled={loading}
-            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg border border-brand-accentMuted bg-brand-accent px-4 py-2 text-sm font-medium text-brand-primary transition hover:bg-brand-accentMuted/40 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Back
           </button>
@@ -264,7 +264,7 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
         </div>
       )}
       <div className="space-y-2">
-        <label htmlFor="phone" className="text-sm font-medium text-slate-700">
+        <label htmlFor="phone" className="text-sm font-medium text-brand-primary/80">
           WhatsApp Number
         </label>
         <input
@@ -275,15 +275,15 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
           placeholder="0801 234 5678"
           required
           disabled={loading}
-          className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 disabled:cursor-not-allowed disabled:bg-slate-50"
+          className="w-full rounded-lg border border-brand-accentMuted bg-brand-accent px-3 py-2 text-sm text-brand-primary outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/30 disabled:cursor-not-allowed disabled:bg-brand-accentMuted/30"
         />
-        <p className="text-xs text-slate-500">
+  <p className="text-xs text-brand-accent/80">
         </p>
       </div>
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-green-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-full rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-brand-accent shadow-md transition hover:bg-brand-primary/90 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? "Sending..." : "Send Verification Code"}
       </button>

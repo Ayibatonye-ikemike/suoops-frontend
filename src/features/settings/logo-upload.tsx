@@ -126,8 +126,8 @@ export function LogoUpload() {
     return (
       <div className="space-y-4">
         <div className="animate-pulse space-y-4">
-          <div className="h-32 w-32 rounded-lg bg-slate-200" />
-          <div className="h-10 w-full rounded bg-slate-200" />
+          <div className="h-32 w-32 rounded-lg bg-brand-accentMuted/60" />
+          <div className="h-10 w-full rounded bg-brand-accentMuted/60" />
         </div>
       </div>
     );
@@ -136,7 +136,7 @@ export function LogoUpload() {
   if (userError || !user) {
     return (
       <div className="space-y-4">
-        <p className="text-sm text-slate-500">Unable to load logo settings.</p>
+        <p className="text-sm text-brand-primary/70">Unable to load logo settings.</p>
       </div>
     );
   }
@@ -148,8 +148,8 @@ export function LogoUpload() {
     <div className="space-y-4">
       {/* Current/Preview Logo */}
       {displayLogo && (
-        <div className="flex items-center gap-4">
-          <div className="relative h-24 w-24 overflow-hidden rounded-lg border border-slate-200 bg-white p-2">
+        <div className="flex items-center gap-4 text-brand-primary">
+          <div className="relative h-24 w-24 overflow-hidden rounded-lg border border-brand-accentMuted bg-brand-accent p-2">
             <Image
               src={displayLogo}
               alt="Business logo"
@@ -160,10 +160,10 @@ export function LogoUpload() {
             />
           </div>
           <div className="flex-1">
-            <p className="text-sm font-medium text-slate-700">
+            <p className="text-sm font-medium text-brand-primary/80">
               {previewUrl ? "Preview" : "Current Logo"}
             </p>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-brand-primary/60">
               This logo will appear on all your invoices and receipts
             </p>
           </div>
@@ -171,7 +171,7 @@ export function LogoUpload() {
             <button
               onClick={handleRemove}
               disabled={deleteMutation.isPending}
-              className="rounded-lg border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-lg border border-rose-300 px-3 py-1.5 text-sm font-medium text-rose-700 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {deleteMutation.isPending ? "Removing..." : "Remove"}
             </button>
@@ -185,7 +185,7 @@ export function LogoUpload() {
           <div className="flex items-center gap-3">
             <label
               htmlFor="logo-upload"
-              className="cursor-pointer rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              className="cursor-pointer rounded-lg border border-brand-accentMuted bg-brand-accent px-4 py-2 text-sm font-medium text-brand-primary transition hover:bg-brand-accentMuted/40"
             >
               {previewUrl ? "Choose Different File" : "Choose File"}
             </label>
@@ -197,7 +197,7 @@ export function LogoUpload() {
               className="hidden"
             />
             {selectedFile && (
-              <span className="text-sm text-slate-600">{selectedFile.name}</span>
+              <span className="text-sm text-brand-primary/70">{selectedFile.name}</span>
             )}
           </div>
 
@@ -206,7 +206,7 @@ export function LogoUpload() {
               <button
                 onClick={handleUpload}
                 disabled={uploadMutation.isPending}
-                className="rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-white shadow-md transition hover:bg-green-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-brand-accent shadow-md transition hover:bg-brand-primary/90 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {uploadMutation.isPending ? "Uploading..." : "Upload Logo"}
               </button>
@@ -216,14 +216,14 @@ export function LogoUpload() {
                   setPreviewUrl(null);
                   setError("");
                 }}
-                className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                className="rounded-lg border border-brand-accentMuted bg-brand-accent px-4 py-2 text-sm font-medium text-brand-primary transition hover:bg-brand-accentMuted/40"
               >
                 Cancel
               </button>
             </div>
           )}
 
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-brand-primary/60">
             Accepted formats: PNG, JPG, JPEG, SVG • Max size: 5MB • Recommended: Square logo,
             minimum 200x200px
           </p>
@@ -231,7 +231,7 @@ export function LogoUpload() {
       ) : (
         <label
           htmlFor="logo-upload-replace"
-          className="inline-block cursor-pointer rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          className="inline-block cursor-pointer rounded-lg border border-brand-accentMuted bg-brand-accent px-4 py-2 text-sm font-medium text-brand-primary transition hover:bg-brand-accentMuted/40"
         >
           Replace Logo
           <input

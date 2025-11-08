@@ -174,7 +174,7 @@ export function BankDetailsForm() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-sm text-slate-500">Loading bank details...</div>
+        <div className="text-sm text-brand-primary/70">Loading bank details...</div>
       </div>
     );
   }
@@ -199,10 +199,10 @@ export function BankDetailsForm() {
             {isConfigured ? "✅" : "⚠️"}
           </span>
           <div>
-            <p className="text-sm font-medium text-slate-900">
+            <p className="text-sm font-medium text-brand-primary">
               {isConfigured ? "Bank details configured" : "Bank details incomplete"}
             </p>
-            <p className="mt-1 text-xs text-slate-600">
+            <p className="mt-1 text-xs text-brand-primary/70">
               {isConfigured
                 ? "New invoices already include your transfer instructions."
                 : "Fill out every field and save to show transfer instructions on invoices."}
@@ -233,8 +233,8 @@ export function BankDetailsForm() {
       )}
 
       <div>
-        <label htmlFor="businessName" className="block text-sm font-medium text-slate-700">
-          Business Name <span className="text-slate-400">(optional)</span>
+        <label htmlFor="businessName" className="block text-sm font-medium text-brand-primary/80">
+          Business Name <span className="text-brand-primary/50">(optional)</span>
         </label>
         <input
           id="businessName"
@@ -243,15 +243,15 @@ export function BankDetailsForm() {
           onChange={(event) => handleFieldChange("businessName", event.target.value)}
           placeholder="Lagos Ventures Ltd"
           autoComplete="organization"
-          className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
+          className="mt-1 block w-full rounded-lg border border-brand-accentMuted bg-brand-accent px-3 py-2 text-sm text-brand-primary focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30"
         />
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-1 text-xs text-brand-primary/70">
           Appears on invoices and receipts sent to customers.
         </p>
       </div>
 
       <div>
-        <label htmlFor="bankName" className="block text-sm font-medium text-slate-700">
+        <label htmlFor="bankName" className="block text-sm font-medium text-brand-primary/80">
           Bank Name <span className="text-red-500">*</span>
         </label>
         <select
@@ -259,7 +259,7 @@ export function BankDetailsForm() {
           value={formState.bankName}
           onChange={(event) => handleFieldChange("bankName", event.target.value)}
           required
-          className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
+          className="mt-1 block w-full rounded-lg border border-brand-accentMuted bg-brand-accent px-3 py-2 text-sm text-brand-primary focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30"
         >
           <option value="">Select your bank</option>
           {NIGERIAN_BANKS.map((bank) => (
@@ -268,11 +268,11 @@ export function BankDetailsForm() {
             </option>
           ))}
         </select>
-        <p className="mt-1 text-xs text-slate-500">Where customers will send their transfers.</p>
+        <p className="mt-1 text-xs text-brand-primary/70">Where customers will send their transfers.</p>
       </div>
 
       <div>
-        <label htmlFor="accountNumber" className="block text-sm font-medium text-slate-700">
+        <label htmlFor="accountNumber" className="block text-sm font-medium text-brand-primary/80">
           Account Number <span className="text-red-500">*</span>
         </label>
         <div className="mt-1 flex gap-2">
@@ -285,24 +285,24 @@ export function BankDetailsForm() {
             inputMode="numeric"
             required
             pattern="\d{10}"
-            className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm tracking-[0.2em] focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
+            className="flex-1 rounded-lg border border-brand-accentMuted bg-brand-accent px-3 py-2 text-sm tracking-[0.2em] text-brand-primary focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30"
           />
           <button
             type="button"
             onClick={() => handleCopy("accountNumber")}
             disabled={formState.accountNumber.length !== 10}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-600 transition hover:border-slate-400 hover:text-slate-900 disabled:opacity-50"
+            className="rounded-lg border border-brand-accentMuted px-3 py-2 text-sm font-medium text-brand-primary transition hover:bg-brand-accentMuted/40 disabled:opacity-50"
           >
             {copiedField === "accountNumber" ? "Copied!" : "Copy"}
           </button>
         </div>
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-1 text-xs text-brand-primary/70">
           Nigerian NUBAN numbers are exactly 10 digits. Customers see it with spaces for readability.
         </p>
       </div>
 
       <div>
-        <label htmlFor="accountName" className="block text-sm font-medium text-slate-700">
+        <label htmlFor="accountName" className="block text-sm font-medium text-brand-primary/80">
           Account Name <span className="text-red-500">*</span>
         </label>
         <div className="mt-1 flex gap-2">
@@ -314,53 +314,53 @@ export function BankDetailsForm() {
             placeholder="Lagos Ventures Ltd"
             autoComplete="name"
             required
-            className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
+            className="flex-1 rounded-lg border border-brand-accentMuted bg-brand-accent px-3 py-2 text-sm text-brand-primary focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30"
           />
           <button
             type="button"
             onClick={() => handleCopy("accountName")}
             disabled={!formState.accountName}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-600 transition hover:border-slate-400 hover:text-slate-900 disabled:opacity-50"
+            className="rounded-lg border border-brand-accentMuted px-3 py-2 text-sm font-medium text-brand-primary transition hover:bg-brand-accentMuted/40 disabled:opacity-50"
           >
             {copiedField === "accountName" ? "Copied!" : "Copy"}
           </button>
         </div>
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-1 text-xs text-brand-primary/70">
           Must match your bank records so customers recognise the beneficiary.
         </p>
       </div>
 
-      <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-4">
-        <h3 className="text-sm font-semibold text-slate-900">Invoice Preview</h3>
-        <p className="mt-1 text-xs text-slate-500">
+      <div className="rounded-lg border border-brand-accentMuted/60 bg-brand-accent px-4 py-4 text-brand-primary">
+        <h3 className="text-sm font-semibold">Invoice Preview</h3>
+        <p className="mt-1 text-xs text-brand-primary/70">
           Customers receive these instructions on the PDF and WhatsApp message once you save.
         </p>
-        <dl className="mt-4 space-y-2 text-sm text-slate-700">
+        <dl className="mt-4 space-y-2 text-sm text-brand-primary/80">
           <div className="flex items-center justify-between">
             <dt className="font-medium">Bank Name</dt>
-            <dd>{formState.bankName || <span className="text-slate-400">Not set</span>}</dd>
+            <dd>{formState.bankName || <span className="text-brand-primary/40">Not set</span>}</dd>
           </div>
           <div className="flex items-center justify-between">
             <dt className="font-medium">Account Number</dt>
             <dd>
               {formState.accountNumber ? formatAccountNumber(formState.accountNumber) : (
-                <span className="text-slate-400">Not set</span>
+                <span className="text-brand-primary/40">Not set</span>
               )}
             </dd>
           </div>
           <div className="flex items-center justify-between">
             <dt className="font-medium">Account Name</dt>
-            <dd>{formState.accountName || <span className="text-slate-400">Not set</span>}</dd>
+            <dd>{formState.accountName || <span className="text-brand-primary/40">Not set</span>}</dd>
           </div>
           <div className="flex items-center justify-between">
             <dt className="font-medium">Business Name</dt>
-            <dd>{formState.businessName || <span className="text-slate-400">Not set</span>}</dd>
+            <dd>{formState.businessName || <span className="text-brand-primary/40">Not set</span>}</dd>
           </div>
         </dl>
       </div>
 
-      <div className="flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
-        <div className="text-xs text-slate-500">
+      <div className="flex flex-col gap-3 border-t border-brand-accentMuted/60 pt-6 text-brand-primary sm:flex-row sm:items-center sm:justify-between">
+        <div className="text-xs text-brand-primary/70">
           <span className="text-red-500">*</span> Required fields
         </div>
         <div className="flex flex-wrap gap-2">
@@ -368,14 +368,14 @@ export function BankDetailsForm() {
             type="button"
             onClick={handleClear}
             disabled={!canClear || deleteMutation.isPending}
-            className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-600 transition hover:border-slate-400 hover:text-slate-900 disabled:opacity-50"
+            className="rounded-lg border border-brand-accentMuted px-4 py-2 text-sm font-medium text-brand-primary transition hover:bg-brand-accentMuted/40 disabled:opacity-50"
           >
             {deleteMutation.isPending ? "Clearing..." : "Clear bank details"}
           </button>
           <button
             type="submit"
             disabled={!hasChanges || updateMutation.isPending}
-            className="rounded-lg bg-brand-primary px-6 py-2 text-sm font-medium text-white shadow-md transition hover:bg-green-700 hover:shadow-lg disabled:opacity-50"
+            className="rounded-lg bg-brand-primary px-6 py-2 text-sm font-medium text-brand-accent shadow-md transition hover:bg-brand-primary/90 hover:shadow-lg disabled:opacity-50"
           >
             {updateMutation.isPending ? "Saving..." : "Save changes"}
           </button>

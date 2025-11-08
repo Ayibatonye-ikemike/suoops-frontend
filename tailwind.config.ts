@@ -6,8 +6,11 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          primary: "#16a34a", // green-600 to match background gradient
-          dark: "#0F172A",
+          primary: "#09351A", // deep logo green
+          primaryHover: "#0F4725",
+          surface: "#041F0F",
+          accent: "#F3E5D3", // warm beige from logo
+          accentMuted: "#E4D2BB",
         },
       },
     },
