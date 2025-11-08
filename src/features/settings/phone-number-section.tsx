@@ -173,14 +173,29 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
             <p className="mt-1 text-base font-semibold text-slate-900">{phone}</p>
             <p className="mt-1 text-xs text-emerald-600">✓ Verified</p>
           </div>
-          <button
-            type="button"
-            onClick={handleRemovePhone}
-            disabled={loading}
-            className="rounded-lg border border-rose-200 bg-white px-4 py-2 text-sm font-medium text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {loading ? "Removing..." : "Remove"}
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                setStep("input");
+                setPhone("");
+                setError(null);
+                setSuccess(null);
+              }}
+              disabled={loading}
+              className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Change Number
+            </button>
+            <button
+              type="button"
+              onClick={handleRemovePhone}
+              disabled={loading}
+              className="rounded-lg border border-rose-200 bg-white px-4 py-2 text-sm font-medium text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {loading ? "Removing..." : "Remove"}
+            </button>
+          </div>
         </div>
         <p className="text-xs text-slate-500">
           You can now use this number to login and receive invoice notifications via WhatsApp.
