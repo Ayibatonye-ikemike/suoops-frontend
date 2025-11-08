@@ -48,13 +48,13 @@ function formatIsoDate(value: string | null | undefined) {
 function statusToneClass(tone: string | undefined) {
   switch (tone) {
     case "success":
-      return "bg-emerald-50 text-emerald-700 border border-emerald-200";
+      return "border border-brand-statusPaidText/20 bg-brand-statusPaidBg text-brand-statusPaidText";
     case "warning":
-      return "bg-amber-50 text-amber-700 border border-amber-200";
+      return "border border-brand-statusPendingText/20 bg-brand-statusPendingBg text-brand-statusPendingText";
     case "danger":
       return "bg-rose-50 text-rose-700 border border-rose-200";
     default:
-      return "bg-slate-100 text-slate-700 border border-slate-200";
+      return "border border-brand-border bg-brand-background text-brand-textMuted";
   }
 }
 

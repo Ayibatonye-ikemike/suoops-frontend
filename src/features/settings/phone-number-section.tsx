@@ -15,6 +15,7 @@
 import { useCallback, useState } from "react";
 import { requestPhoneOTP, verifyPhoneOTP, removePhone } from "./phone-api";
 import { OTPInput } from "@/features/auth/otp-input";
+import { Button } from "@/components/ui/button";
 
 /**
  * Normalize phone number to E.164 format
@@ -167,15 +168,17 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
             {error}
           </div>
         )}
-        <div className="flex items-center justify-between rounded-lg border border-brand-accentMuted/60 bg-brand-accent px-4 py-3 text-brand-primary">
+        <div className="flex flex-col gap-4 rounded-xl border border-brand-border bg-brand-background p-4 text-brand-text md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm font-medium text-brand-primary/80">WhatsApp Number</p>
-            <p className="mt-1 text-base font-semibold">{phone}</p>
-            <p className="mt-1 text-xs text-emerald-600">✓ Verified</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">WhatsApp Number</p>
+            <p className="mt-2 text-lg font-semibold text-brand-text">{phone}</p>
+            <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-brand-primary">✓ Verified</p>
           </div>
           <div className="flex gap-2">
-            <button
+            <Button
               type="button"
+              variant="secondary"
+              size="sm"
               onClick={() => {
                 setStep("input");
                 setPhone("");
@@ -183,22 +186,22 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
                 setSuccess(null);
               }}
               disabled={loading}
-              className="rounded-lg border border-brand-accentMuted bg-brand-accent px-4 py-2 text-sm font-medium text-brand-primary transition hover:bg-brand-accentMuted/40 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Change Number
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="danger"
+              size="sm"
               onClick={handleRemovePhone}
               disabled={loading}
-              className="rounded-lg border border-rose-300 bg-brand-accent px-4 py-2 text-sm font-medium text-rose-700 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {loading ? "Removing..." : "Remove"}
-            </button>
+              {loading ? "Removing" : "Remove"}
+            </Button>
           </div>
         </div>
-        <p className="text-xs text-brand-accent/80">
-          You can now use this number to login and receive invoice notifications via WhatsApp.
+        <p className="text-xs text-brand-textMuted">
+          You can now use this number to log in and receive invoice notifications via WhatsApp.
         </p>
       </div>
     );
@@ -219,7 +222,7 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
           </div>
         )}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-brand-primary/80">
+          <label className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
             Enter 6-digit code sent to {phone}
           </label>
           <OTPInput
@@ -230,21 +233,22 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
           />
         </div>
         <div className="flex gap-3">
-          <button
+          <Button
             type="submit"
             disabled={loading || otp.length !== 6}
-            className="flex-1 rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-brand-accent shadow-md transition hover:bg-brand-primary/90 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex-1"
           >
-            {loading ? "Verifying..." : "Verify Number"}
-          </button>
-          <button
+            {loading ? "Verifying" : "Verify Number"}
+          </Button>
+          <Button
             type="button"
+            variant="secondary"
+            size="sm"
             onClick={handleBackToInput}
             disabled={loading}
-            className="rounded-lg border border-brand-accentMuted bg-brand-accent px-4 py-2 text-sm font-medium text-brand-primary transition hover:bg-brand-accentMuted/40 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Back
-          </button>
+          </Button>
         </div>
       </form>
     );
@@ -264,7 +268,7 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
         </div>
       )}
       <div className="space-y-2">
-        <label htmlFor="phone" className="text-sm font-medium text-brand-primary/80">
+        <label htmlFor="phone" className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
           WhatsApp Number
         </label>
         <input
@@ -275,18 +279,15 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
           placeholder="0801 234 5678"
           required
           disabled={loading}
-          className="w-full rounded-lg border border-brand-accentMuted bg-brand-accent px-3 py-2 text-sm text-brand-primary outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/30 disabled:cursor-not-allowed disabled:bg-brand-accentMuted/30"
+          className="w-full rounded-lg border border-brand-border bg-white px-3 py-3 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 disabled:cursor-not-allowed disabled:bg-brand-background"
         />
-  <p className="text-xs text-brand-accent/80">
+        <p className="text-xs text-brand-textMuted">
+          We use your WhatsApp number to send invoice updates and authentication codes.
         </p>
       </div>
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-brand-accent shadow-md transition hover:bg-brand-primary/90 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        {loading ? "Sending..." : "Send Verification Code"}
-      </button>
+      <Button type="submit" disabled={loading} className="w-full">
+        {loading ? "Sending" : "Send Verification Code"}
+      </Button>
     </form>
   );
 }

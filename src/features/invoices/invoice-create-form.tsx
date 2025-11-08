@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { isAxiosError } from "axios";
 
+import { Button } from "@/components/ui/button";
+
 import { useCreateInvoice, type InvoiceLineInput } from "./use-create-invoice";
 import { PlanSelectionModal } from "../settings/plan-selection-modal";
 
@@ -97,60 +99,60 @@ export function InvoiceCreateForm() {
   return (
     <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
       <div className="space-y-2">
-        <h2 className="text-xl font-semibold text-slate-900">Create Invoice</h2>
-        <p className="text-sm text-slate-500">Set customer details and line items to generate a payment-ready invoice.</p>
+        <h2 className="text-[22px] font-semibold text-brand-text">Create Invoice</h2>
+        <p className="text-sm text-brand-textMuted">Set customer details and line items to generate a payment-ready invoice.</p>
       </div>
       
       {/* OCR Photo Upload Option */}
-      <div className="rounded-lg border-2 border-dashed border-blue-300 bg-blue-50 p-4">
+      <div className="rounded-2xl border border-brand-primary/20 bg-brand-primary/5 p-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
             <div className="flex items-center gap-2">
               <span className="text-2xl">📸</span>
-              <h3 className="font-semibold text-blue-900">Create from Photo</h3>
+              <h3 className="text-base font-semibold text-brand-primary">Create from Photo</h3>
             </div>
-            <p className="mt-1 text-sm text-blue-700">
+            <p className="mt-1 text-sm text-brand-textMuted">
               Take a photo of a receipt and AI will extract the details automatically
             </p>
           </div>
           <a
             href="/dashboard/invoices/create-from-photo"
-            className="whitespace-nowrap rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+            className="whitespace-nowrap rounded-lg bg-brand-primary px-5 py-3 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-brand-primaryHover"
           >
             Upload Photo
           </a>
         </div>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
-        <label className="flex flex-col gap-2 text-sm font-semibold text-slate-700">
+        <label className="flex flex-col gap-2 text-sm font-semibold text-brand-text">
           Customer name
           <input
             value={customerName}
             onChange={(event) => setCustomerName(event.target.value)}
             required
-            className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+            className="rounded-lg border border-brand-border bg-white px-3 py-2 text-base font-normal text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
           />
         </label>
-        <label className="flex flex-col gap-2 text-sm font-semibold text-slate-700">
+        <label className="flex flex-col gap-2 text-sm font-semibold text-brand-text">
           Customer phone
           <input
             value={customerPhone}
             onChange={(event) => setCustomerPhone(event.target.value)}
             placeholder="Optional (e.g., +2348012345678)"
-            className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+            className="rounded-lg border border-brand-border bg-white px-3 py-2 text-base font-normal text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
           />
         </label>
-        <label className="flex flex-col gap-2 text-sm font-semibold text-slate-700">
+        <label className="flex flex-col gap-2 text-sm font-semibold text-brand-text">
           Customer email
           <input
             type="email"
             value={customerEmail}
             onChange={(event) => setCustomerEmail(event.target.value)}
             placeholder="Optional (e.g., customer@example.com)"
-            className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+            className="rounded-lg border border-brand-border bg-white px-3 py-2 text-base font-normal text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
           />
         </label>
-        <label className="flex flex-col gap-2 text-sm font-semibold text-slate-700">
+        <label className="flex flex-col gap-2 text-sm font-semibold text-brand-text">
           Total amount
           <input
             value={amount}
@@ -159,20 +161,16 @@ export function InvoiceCreateForm() {
             min="0"
             step="0.01"
             required
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+            className="w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-base font-normal text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
           />
         </label>
       </div>
-      <section className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+      <section className="rounded-2xl border border-brand-border bg-white p-5 shadow-sm">
         <header className="mb-3 flex flex-wrap items-center justify-between gap-3">
-          <h3 className="text-base font-semibold text-slate-800">Line items</h3>
-          <button
-            type="button"
-            onClick={() => setLines((current) => [...current, emptyLine()])}
-            className="inline-flex items-center gap-2 rounded-lg border border-brand-primary bg-brand-primary px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-brand-primary/90"
-          >
+          <h3 className="text-base font-semibold text-brand-text">Line items</h3>
+          <Button type="button" size="sm" onClick={() => setLines((current) => [...current, emptyLine()])}>
             Add line
-          </button>
+          </Button>
         </header>
         <div className="space-y-3">
           {lines.map((line) => (
@@ -181,14 +179,14 @@ export function InvoiceCreateForm() {
                 value={line.description}
                 onChange={(event) => updateLine(line.id, { description: event.target.value })}
                 placeholder="Description"
-                className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+                className="rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
               />
               <input
                 type="number"
                 min="1"
                 value={line.quantity}
                 onChange={(event) => updateLine(line.id, { quantity: Number(event.target.value) })}
-                className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+                className="rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
               />
               <input
                 type="number"
@@ -196,13 +194,13 @@ export function InvoiceCreateForm() {
                 step="0.01"
                 value={line.unit_price}
                 onChange={(event) => updateLine(line.id, { unit_price: Number(event.target.value) })}
-                className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+                className="rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
               />
               <button
                 type="button"
                 onClick={() => removeLine(line.id)}
                 disabled={lines.length === 1}
-                className="justify-self-start text-sm font-semibold text-rose-600 transition hover:text-rose-700 disabled:cursor-not-allowed disabled:opacity-40"
+                className="justify-self-start text-sm font-semibold text-brand-text transition hover:text-brand-primary disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Remove
               </button>
@@ -210,25 +208,17 @@ export function InvoiceCreateForm() {
           ))}
         </div>
       </section>
-      <button
-        type="submit"
-        disabled={mutation.isPending}
-        className="w-fit rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        {mutation.isPending ? "Creating…" : "Create invoice"}
-      </button>
+      <Button type="submit" disabled={mutation.isPending} className="w-fit">
+        {mutation.isPending ? "Creating…" : "Create Invoice"}
+      </Button>
       {error ? <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-600">{error}</p> : null}
       {quotaError ? (
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
           <p className="text-sm font-semibold text-amber-900">⚠️ Invoice Limit Reached</p>
           <p className="mt-1 text-sm text-amber-800">{quotaError}</p>
-          <button
-            type="button"
-            onClick={() => setShowUpgradeModal(true)}
-            className="mt-3 rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700"
-          >
+          <Button type="button" onClick={() => setShowUpgradeModal(true)} className="mt-3" variant="secondary">
             View Upgrade Options
-          </button>
+          </Button>
         </div>
       ) : null}
       {lastPdfUrl ? (

@@ -6,11 +6,21 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          primary: "#09351A", // deep logo green
-          primaryHover: "#0F4725",
-          surface: "#041F0F",
-          accent: "#F3E5D3", // warm beige from logo
-          accentMuted: "#E4D2BB",
+          primary: "#004225",
+          primaryHover: "#007A4D",
+          secondary: "#007A4D",
+          background: "#F9F9F6",
+          card: "#FFFFFF",
+          border: "#E1E1DC",
+          text: "#1A1A1A",
+          textMuted: "#4F4F4F",
+          statusPaidBg: "#DFF0D8",
+          statusPaidText: "#3C763D",
+          statusPendingBg: "#FCF8E3",
+          statusPendingText: "#8A6D3B",
+          accent: "#FFFFFF",
+          accentMuted: "#E1E1DC",
+          surface: "#F9F9F6",
         },
       },
     },

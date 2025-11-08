@@ -4,19 +4,19 @@ import { InvoiceList } from "@/features/invoices/invoice-list";
 
 export default function DashboardPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-brand-surface via-brand-primary to-brand-surface">
+    <main className="min-h-screen bg-brand-background">
       <div className="mx-auto max-w-7xl px-6 py-10">
-        <div className="mb-10 text-brand-accent">
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="mt-1 text-sm text-brand-accent/80">Create invoices and review activity</p>
+        <div className="mb-10">
+          <h1>Dashboard</h1>
+          <p className="mt-1 text-sm text-brand-textMuted">Create invoices and review activity</p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-2">
-          <div className="rounded-2xl border border-brand-accentMuted/60 bg-brand-accent/95 p-6 shadow-md shadow-brand-surface/40">
+          <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-sm">
             <InvoiceCreateForm />
           </div>
-          <div className="rounded-2xl border border-brand-accentMuted/60 bg-brand-accent/95 p-6 shadow-md shadow-brand-surface/40">
-            <Suspense fallback={<div className="h-64 animate-pulse rounded-xl bg-brand-accentMuted/60" />}>
+          <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-sm">
+            <Suspense fallback={<div className="h-64 animate-pulse rounded-xl bg-brand-background" />}>
               <InvoiceList />
             </Suspense>
           </div>

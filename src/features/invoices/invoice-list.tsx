@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
+import { Button } from "@/components/ui/button";
+
 import { InvoiceDetailPanel } from "./invoice-detail";
 import { invoiceStatusHelpText, invoiceStatusLabels } from "./status-map";
 import { type Invoice, useInvoices } from "./use-invoices";
@@ -80,73 +82,64 @@ export function InvoiceList() {
     return <p>Failed to load invoices. Please refresh.</p>;
   }
 
+  const badgeToneClass = (tone: string | undefined) => {
+    switch (tone) {
+      case "success":
+        return "bg-brand-statusPaidBg text-brand-statusPaidText";
+      case "warning":
+        return "bg-brand-statusPendingBg text-brand-statusPendingText";
+      case "danger":
+        return "bg-red-100 text-red-700";
+      default:
+        return "bg-brand-background text-brand-textMuted";
+    }
+  };
+
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)]">
-      <div className="space-y-4">
-        <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500">
-          <span>Keep invoice statuses in sync after you confirm customer payments.</span>
-          <button
-            type="button"
-            onClick={() => refetch()}
-            disabled={isFetching}
-            className="inline-flex items-center gap-2 rounded-lg border border-brand-primary bg-brand-primary px-3 py-1.5 font-semibold text-white transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {isFetching ? "Refreshing…" : "Refresh"}
-          </button>
-          {lastUpdated ? <span className="ml-auto italic">Updated {lastUpdated}</span> : null}
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
+      <div className="space-y-5">
+        <div className="rounded-2xl border border-brand-border bg-white p-4 shadow-sm">
+          <div className="flex flex-wrap items-center gap-3 text-sm text-brand-textMuted">
+            <span>Keep invoice statuses in sync after you confirm customer payments.</span>
+            <Button
+              size="sm"
+              onClick={() => refetch()}
+              disabled={isFetching}
+              className="ml-auto"
+            >
+              {isFetching ? "Refreshing…" : "Refresh"}
+            </Button>
+            {lastUpdated ? <span className="text-xs italic text-brand-textMuted">Updated {lastUpdated}</span> : null}
+          </div>
         </div>
 
-        {/* Search Bar */}
         <input
           type="text"
           placeholder="Search by invoice ID or amount..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm text-slate-900 outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+          className="w-full rounded-lg border border-brand-border bg-white px-4 py-3 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
         />
 
-        {/* Status Filter Buttons */}
         <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => setStatusFilter("all")}
-            className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
-              statusFilter === "all"
-                ? "bg-brand-primary text-white"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            All ({statusCounts.all})
-          </button>
-          <button
-            onClick={() => setStatusFilter("pending")}
-            className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
-              statusFilter === "pending"
-                ? "bg-amber-500 text-white"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            Pending ({statusCounts.pending})
-          </button>
-          <button
-            onClick={() => setStatusFilter("awaiting_confirmation")}
-            className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
-              statusFilter === "awaiting_confirmation"
-                ? "bg-blue-500 text-white"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            Awaiting ({statusCounts.awaiting_confirmation})
-          </button>
-          <button
-            onClick={() => setStatusFilter("paid")}
-            className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
-              statusFilter === "paid"
-                ? "bg-emerald-500 text-white"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            Paid ({statusCounts.paid})
-          </button>
+          {([
+            { key: "all", label: "All" },
+            { key: "pending", label: "Pending" },
+            { key: "awaiting_confirmation", label: "Awaiting" },
+            { key: "paid", label: "Paid" },
+          ] as const).map((filter) => (
+            <button
+              key={filter.key}
+              onClick={() => setStatusFilter(filter.key)}
+              className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide transition ${
+                statusFilter === filter.key
+                  ? "border-brand-primary bg-brand-primary text-white"
+                  : "border-brand-border bg-white text-brand-textMuted hover:bg-brand-primary/10"
+              }`}
+            >
+              {filter.label} ({statusCounts[filter.key] as number})
+            </button>
+          ))}
         </div>
 
         {hasFilteredInvoices ? (
@@ -158,14 +151,6 @@ export function InvoiceList() {
               };
               const helpText = invoiceStatusHelpText[invoice.status];
               const isSelected = selectedInvoiceId === invoice.invoice_id;
-              const borderClass =
-                status.tone === "success"
-                  ? "border-emerald-200"
-                  : status.tone === "warning"
-                    ? "border-amber-200"
-                    : status.tone === "danger"
-                      ? "border-rose-200"
-                      : "border-slate-200";
 
               const selectInvoice = () => setSelectedInvoiceId(invoice.invoice_id);
 
@@ -182,18 +167,20 @@ export function InvoiceList() {
                         selectInvoice();
                       }
                     }}
-                    className={`rounded-2xl border bg-white p-5 text-left shadow-sm transition ${borderClass} ${
+                    className={`rounded-2xl border border-brand-border bg-white p-5 text-left shadow-sm transition ${
                       isSelected ? "ring-2 ring-brand-primary" : "hover:shadow-md"
                     }`}
                   >
                     <div className="flex items-start justify-between gap-3 text-sm">
-                      <strong className="font-semibold text-slate-900">{invoice.invoice_id}</strong>
-                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold uppercase tracking-wide text-slate-600">
+                      <strong className="font-semibold text-brand-text">{invoice.invoice_id}</strong>
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ${badgeToneClass(status.tone)}`}
+                      >
                         {status.label}
                       </span>
                     </div>
-                    <p className="text-2xl font-bold text-slate-900">₦ {invoice.amount}</p>
-                    {helpText ? <p className="text-sm text-slate-500">{helpText}</p> : null}
+                    <p className="text-2xl font-bold text-brand-primary">₦ {invoice.amount}</p>
+                    {helpText ? <p className="text-sm text-brand-textMuted">{helpText}</p> : null}
                     <div className="mt-3 flex flex-wrap items-center gap-3">
                       {invoice.pdf_url ? (
                         <Link
@@ -212,20 +199,20 @@ export function InvoiceList() {
             })}
           </ul>
         ) : hasInvoices ? (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm text-slate-500">
+          <div className="rounded-2xl border border-dashed border-brand-border bg-brand-background p-6 text-center text-sm text-brand-textMuted">
             No invoices match your filters.
             <button
               onClick={() => {
                 setStatusFilter("all");
                 setSearchQuery("");
               }}
-              className="mt-2 block w-full rounded-lg bg-brand-primary px-4 py-2 text-white hover:bg-brand-primary/90"
+              className="mt-3 inline-flex rounded-lg border border-brand-primary px-4 py-2 text-sm font-semibold uppercase tracking-wide text-brand-primary hover:bg-brand-primary hover:text-white"
             >
               Clear Filters
             </button>
           </div>
         ) : (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-500">
+          <div className="rounded-2xl border border-dashed border-brand-border bg-brand-background p-6 text-sm text-brand-textMuted">
             No invoices yet. Create one from WhatsApp or the API to see it here.
           </div>
         )}

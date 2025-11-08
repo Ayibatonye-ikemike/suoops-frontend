@@ -2,18 +2,20 @@ import { describe, it, expect } from 'vitest';
 import { isPremiumFeatureError } from './errors';
 import type { AxiosError, AxiosResponse } from 'axios';
 
+type MockResponseData = Record<string, unknown>;
+
 function mockAxiosError({
   status,
   data,
   message,
-}: { status: number; data: any; message?: string }): AxiosError<any> {
-  const response: AxiosResponse = {
+}: { status: number; data: MockResponseData; message?: string }): AxiosError<MockResponseData> {
+  const response = {
     status,
     data,
     statusText: 'ERROR',
     headers: {},
     config: {},
-  } as AxiosResponse;
+  } as unknown as AxiosResponse<MockResponseData>;
 
   return {
     name: 'AxiosError',
@@ -24,7 +26,7 @@ function mockAxiosError({
     response,
     isAxiosError: true,
     toJSON() { return {}; },
-  } as AxiosError<any>;
+  } as unknown as AxiosError<MockResponseData>;
 }
 
 describe('isPremiumFeatureError', () => {

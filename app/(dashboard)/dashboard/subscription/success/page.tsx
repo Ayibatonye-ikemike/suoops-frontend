@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { verifySubscription } from "@/api/subscription";
+import { Button } from "@/components/ui/button";
 
 export default function SubscriptionSuccessPage() {
   const searchParams = useSearchParams();
@@ -43,70 +44,74 @@ export default function SubscriptionSuccessPage() {
   }, [searchParams]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-lg">
+    <div className="flex min-h-screen items-center justify-center bg-brand-background px-4 py-10">
+      <div className="w-full max-w-md rounded-2xl border border-brand-border bg-white p-8 text-brand-text shadow-xl shadow-brand-border/20">
         {status === "verifying" && (
           <div className="text-center">
-            <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
-            <h2 className="text-xl font-bold text-slate-900">Verifying Payment...</h2>
-            <p className="mt-2 text-sm text-slate-600">Please wait while we confirm your payment.</p>
+            <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-brand-border border-t-brand-primary"></div>
+            <h2 className="text-2xl font-semibold">Verifying Payment…</h2>
+            <p className="mt-2 text-sm text-brand-textMuted">Please wait while we confirm your payment.</p>
           </div>
         )}
 
         {status === "success" && (
           <div className="text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-              <span className="text-4xl">✓</span>
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-brand-primary/10">
+              <span className="text-4xl text-brand-primary">✓</span>
             </div>
-            <h2 className="text-xl font-bold text-green-700">Payment Successful!</h2>
-            <p className="mt-2 text-sm text-slate-700">{message}</p>
+            <h2 className="text-2xl font-semibold text-brand-primary">Payment Successful!</h2>
+            <p className="mt-2 text-sm text-brand-text">{message}</p>
 
             {planInfo && (
-              <div className="mt-4 rounded-lg bg-slate-50 p-4 text-left">
-                <p className="text-sm text-slate-600">
-                  <strong>Previous Plan:</strong> {planInfo.old_plan}
+              <div className="mt-6 rounded-xl border border-brand-border bg-brand-background p-4 text-left">
+                <p className="text-sm text-brand-textMuted">
+                  <span className="font-semibold text-brand-text">Previous Plan:</span> {planInfo.old_plan || "N/A"}
                 </p>
-                <p className="text-sm text-slate-600">
-                  <strong>New Plan:</strong> <span className="text-green-600">{planInfo.new_plan}</span>
+                <p className="mt-2 text-sm text-brand-textMuted">
+                  <span className="font-semibold text-brand-text">New Plan:</span> <span className="text-brand-primary">{planInfo.new_plan}</span>
                 </p>
                 {planInfo.amount_paid && (
-                  <p className="text-sm text-slate-600">
-                    <strong>Amount Paid:</strong> ₦{planInfo.amount_paid.toLocaleString()}
+                  <p className="mt-2 text-sm text-brand-textMuted">
+                    <span className="font-semibold text-brand-text">Amount Paid:</span> ₦{planInfo.amount_paid.toLocaleString()}
                   </p>
                 )}
               </div>
             )}
 
-            <button
+            <Button
+              className="mt-6 w-full"
               onClick={() => router.push("/dashboard/settings")}
-              className="mt-6 w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-medium text-white hover:bg-blue-700"
             >
               Go to Settings
-            </button>
+            </Button>
           </div>
         )}
 
         {status === "error" && (
           <div className="text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
-              <span className="text-4xl">✗</span>
+              <span className="text-4xl text-red-600">✗</span>
             </div>
-            <h2 className="text-xl font-bold text-red-700">Payment Failed</h2>
-            <p className="mt-2 text-sm text-slate-700">{message}</p>
+            <h2 className="text-2xl font-semibold text-red-700">Payment Failed</h2>
+            <p className="mt-2 text-sm text-brand-text">{message}</p>
 
             <div className="mt-6 flex gap-3">
-              <button
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="flex-1"
                 onClick={() => router.push("/dashboard/settings")}
-                className="flex-1 rounded-lg border border-slate-200 px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50"
               >
                 Back to Settings
-              </button>
-              <button
+              </Button>
+              <Button
+                type="button"
+                className="flex-1"
                 onClick={() => window.location.reload()}
-                className="flex-1 rounded-lg bg-blue-600 px-4 py-3 text-sm font-medium text-white hover:bg-blue-700"
               >
                 Retry Verification
-              </button>
+              </Button>
             </div>
           </div>
         )}

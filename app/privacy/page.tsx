@@ -33,7 +33,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-2xl font-bold text-slate-900">1. Introduction</h2>
             <p className="mt-4">
-              Welcome to SuoOps ("we," "our," or "us"). We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our invoice management service.
+              Welcome to SuoOps (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;). We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our invoice management service.
             </p>
           </section>
 
@@ -132,7 +132,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-slate-900">9. Children's Privacy</h2>
+            <h2 className="text-2xl font-bold text-slate-900">9. Children&apos;s Privacy</h2>
             <p className="mt-4">
               Our service is not intended for children under 18. We do not knowingly collect information from children. If you believe we have collected information from a child, please contact us immediately.
             </p>
