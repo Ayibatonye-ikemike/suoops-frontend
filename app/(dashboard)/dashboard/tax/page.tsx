@@ -236,6 +236,16 @@ export default function TaxCompliancePage() {
               </ul>
             </div>
           )}
+
+          {/* VAT Info Alert - Automation Reminder */}
+          <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <h3 className="text-sm font-semibold text-blue-900 mb-2">💡 VAT Automation</h3>
+            <p className="text-sm text-blue-700">
+              VAT is automatically calculated on all invoices and aggregated in monthly reports above. 
+              Your invoices use the correct rates: 7.5% standard, 0% zero-rated (medical/education/food), 
+              and exempt (financial services).
+            </p>
+          </div>
         </div>
       )}
 
@@ -383,11 +393,11 @@ export default function TaxCompliancePage() {
               <p className="font-semibold">₦{monthlyReport.vat_collected.toLocaleString()}</p>
             </div>
             <div>
-              <p className="text-gray-500">Taxable Sales</p>
+              <p className="text-gray-500">Taxable Sales (7.5%)</p>
               <p className="font-semibold">₦{monthlyReport.taxable_sales.toLocaleString()}</p>
             </div>
             <div>
-              <p className="text-gray-500">Zero-rated Sales</p>
+              <p className="text-gray-500">Zero-rated Sales (0%)</p>
               <p className="font-semibold">₦{monthlyReport.zero_rated_sales.toLocaleString()}</p>
             </div>
             <div>
