@@ -111,7 +111,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
   }
 
   if (detailQuery.isLoading) {
-    return <div className="rounded-2xl border border-brand-accent/40 bg-brand-accent/80 p-6 text-brand-primary">Loading invoice…</div>;
+    return <div className="rounded-2xl border border-brand-primary/20 bg-white p-6 text-brand-primary shadow-sm">Loading invoice…</div>;
   }
 
   if (detailQuery.isError) {
@@ -124,7 +124,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
 
   // Type guard: after this point, invoice is defined
   if (!invoice) {
-    return <div className="rounded-2xl border border-brand-accent/40 bg-brand-accent/80 p-6 text-brand-primary">No invoice data available.</div>;
+    return <div className="rounded-2xl border border-brand-primary/20 bg-white p-6 text-brand-primary shadow-sm">No invoice data available.</div>;
   }
 
   const helpText = invoiceStatusHelpText[invoice.status];
@@ -137,7 +137,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
   };
 
   return (
-    <div className="grid gap-6 rounded-2xl border border-brand-accent/40 bg-brand-accent/95 p-6 text-brand-primary shadow-lg shadow-brand-surface/40">
+    <div className="grid gap-6 rounded-2xl border border-brand-primary/20 bg-white p-6 text-brand-primary shadow-xl">
       <header className="flex flex-wrap items-start gap-3">
         <div className="space-y-1">
           <h2 className="text-lg font-semibold text-brand-primary">Invoice {invoice.invoice_id}</h2>
@@ -150,13 +150,13 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
 
       <section className="grid gap-4 text-sm text-brand-primary/80">
         {shareLink ? (
-          <div className="rounded-xl border border-brand-primary/10 bg-white p-4 shadow-sm shadow-brand-surface/20">
+          <div className="rounded-xl border border-brand-primary/15 bg-brand-primary/5 p-4">
             <p className="text-sm font-semibold text-brand-primary">Customer link</p>
             <p className="mt-1 text-xs text-brand-primary/60">
               Share this link so your customer can view payment instructions and tap “I&apos;ve sent the transfer”.
             </p>
             <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
-              <code className="flex-1 truncate rounded-lg bg-brand-primary/10 px-3 py-2 text-xs text-brand-primary shadow-inner shadow-brand-primary/30">
+              <code className="flex-1 truncate rounded-lg bg-white px-3 py-2 text-xs text-brand-primary shadow-inner shadow-brand-primary/20">
                 {shareLink}
               </code>
               <button
@@ -206,13 +206,13 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
         </dl>
         {helpText ? <p className="text-xs text-brand-primary/60">{helpText}</p> : null}
         {invoice.status === "awaiting_confirmation" ? (
-          <div className="rounded-xl border border-amber-200 bg-amber-100/80 p-3 text-xs text-amber-900">
+          <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
             Customer reported that they have transferred the funds. Please check your bank and move the status to
             “Paid” once cleared to automatically send their receipt.
           </div>
         ) : null}
         {invoice.customer ? (
-          <div className="rounded-xl border border-brand-primary/10 bg-white p-3">
+          <div className="rounded-xl border border-brand-primary/15 bg-brand-primary/5 p-3">
             <p className="text-sm font-semibold text-brand-primary">{invoice.customer.name}</p>
             {invoice.customer.phone ? (
               <p className="text-xs text-brand-primary/70">{invoice.customer.phone}</p>
@@ -226,7 +226,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
         {!invoice.lines || invoice.lines.length === 0 ? (
           <p className="text-sm text-brand-primary/70">No line items on this invoice.</p>
         ) : (
-          <div className="overflow-hidden rounded-xl border border-brand-primary/10 bg-white">
+          <div className="overflow-hidden rounded-xl border border-brand-primary/15">
             <table className="min-w-full divide-y divide-brand-primary/10 text-sm text-brand-primary">
               <thead className="bg-brand-primary/5 text-left text-xs font-semibold uppercase tracking-wide text-brand-primary/60">
                 <tr>
@@ -249,7 +249,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
         )}
       </section>
 
-      <section className="rounded-2xl border border-dashed border-brand-primary/20 bg-brand-primary/10 p-4 text-sm text-brand-primary/80">
+      <section className="rounded-2xl border border-dashed border-brand-primary/20 bg-brand-primary/5 p-4 text-sm text-brand-primary/80">
         Keep the status in sync as you reconcile payments. Customers can flag transfers via the shared link, and
         marking an invoice as paid automatically triggers the WhatsApp receipt when configured.
       </section>
