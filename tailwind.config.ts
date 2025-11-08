@@ -9,19 +9,24 @@ const config: Config = {
           primary: "#004225",
           primaryHover: "#007A4D",
           secondary: "#007A4D",
-          background: "#F9F9F6",
+          background: "#F4F4F4", // Soft gray as per guidelines
+          backgroundAlt: "#F3F7F5", // Muted green tint alternative
           card: "#FFFFFF",
-          border: "#E1E1DC",
+          border: "#E5E7EB",
           text: "#1A1A1A",
-          textMuted: "#4F4F4F",
-          statusPaidBg: "#DFF0D8",
-          statusPaidText: "#3C763D",
-          statusPendingBg: "#FCF8E3",
-          statusPendingText: "#8A6D3B",
+          textMuted: "#6B7280",
+          statusPaidBg: "#DCFCE7", // Green-50 for paid status
+          statusPaidText: "#166534", // Green-800 for paid text
+          statusPendingBg: "#FEF3C7", // Amber-100 for pending status
+          statusPendingText: "#92400E", // Amber-800 for pending text
           accent: "#FFFFFF",
-          accentMuted: "#E1E1DC",
-          surface: "#F9F9F6",
+          accentMuted: "#E5E7EB",
+          surface: "#F4F4F4",
         },
+      },
+      boxShadow: {
+        'card': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+        'card-hover': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.05)',
       },
     },
   },

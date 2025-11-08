@@ -108,7 +108,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
 
   if (detailQuery.isLoading) {
     return (
-      <div className="rounded-lg border border-brand-border bg-white p-6 shadow-sm">
+      <div className="rounded-lg border border-brand-border bg-white p-6 shadow-card">
         <div className="animate-pulse space-y-4">
           <div className="h-4 w-1/3 rounded bg-brand-background" />
           <div className="h-20 w-full rounded bg-brand-background" />
@@ -119,7 +119,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
 
   if (detailQuery.isError) {
     return (
-      <div className="rounded-lg border border-rose-200 bg-rose-50 p-6">
+      <div className="rounded-lg border border-rose-200 bg-rose-50 p-6 shadow-card">
         <p className="text-sm text-rose-800">Failed to load invoice details. Please refresh.</p>
       </div>
     );
@@ -128,7 +128,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
   // Type guard: after this point, invoice is defined
   if (!invoice) {
     return (
-      <div className="rounded-lg border border-brand-border bg-white p-6 shadow-sm">
+      <div className="rounded-lg border border-brand-border bg-white p-6 shadow-card">
         <p className="text-sm text-brand-textMuted">No invoice data available.</p>
       </div>
     );
@@ -144,7 +144,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
   };
 
   return (
-    <div className="space-y-6 rounded-lg border border-brand-border bg-white p-6 shadow-lg">
+    <div className="space-y-6 rounded-lg border border-brand-border bg-white p-6 shadow-card">
       {/* Header */}
       <header className="flex flex-wrap items-start justify-between gap-4 border-b border-brand-border pb-4">
         <div>

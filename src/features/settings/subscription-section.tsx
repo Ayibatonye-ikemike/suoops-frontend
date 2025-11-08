@@ -63,7 +63,7 @@ export function SubscriptionSection() {
 
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-brand-border/60 bg-white p-6 shadow-lg shadow-brand-border/20">
+      <div className="rounded-lg border border-brand-border bg-white p-6 shadow-card">
         <div className="animate-pulse space-y-4">
           <div className="h-4 w-1/3 rounded bg-brand-background" />
           <div className="h-20 w-full rounded bg-brand-background" />
@@ -74,7 +74,7 @@ export function SubscriptionSection() {
 
   if (error || !user) {
     return (
-      <div className="rounded-2xl border border-brand-border/60 bg-white p-6 text-sm text-brand-text shadow-lg shadow-brand-border/20">
+      <div className="rounded-lg border border-brand-border bg-white p-6 text-sm text-brand-text shadow-card">
         Unable to load subscription details.
       </div>
     );
@@ -90,8 +90,8 @@ export function SubscriptionSection() {
     : Math.min((invoicesUsed / invoiceLimitValue) * 100, 100);
 
   return (
-    <div className="rounded-2xl border border-brand-border bg-white text-brand-text shadow-xl shadow-brand-border/20">
-      <div className="border-b border-brand-border/60 px-6 py-5 sm:px-8">
+    <div className="rounded-lg border border-brand-border bg-white text-brand-text shadow-card">
+      <div className="border-b border-brand-border px-6 py-5 sm:px-8">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
           <h2 className="text-[22px] font-semibold text-brand-text">Subscription Plan</h2>
           <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-textMuted">

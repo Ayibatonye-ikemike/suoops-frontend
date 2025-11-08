@@ -165,7 +165,7 @@ export function InvoiceCreateForm() {
           />
         </label>
       </div>
-      <section className="rounded-2xl border border-brand-border bg-white p-5 shadow-sm">
+      <section className="rounded-lg border border-brand-border bg-white p-6 shadow-card">
         <header className="mb-3 flex flex-wrap items-center justify-between gap-3">
           <h3 className="text-base font-semibold text-brand-text">Line items</h3>
           <Button type="button" size="sm" onClick={() => setLines((current) => [...current, emptyLine()])}>
