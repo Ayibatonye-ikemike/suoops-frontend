@@ -103,28 +103,35 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
   }, [shareLink]);
 
   if (!invoiceId) {
+    return null;
+  }
+
+  if (detailQuery.isLoading) {
     return (
-      <div className="rounded-2xl border border-dashed border-brand-accent/30 bg-brand-accent/20 p-6 text-sm text-brand-primary/80">
-        Select an invoice to see full details and update its status after confirming payment.
+      <div className="rounded-lg border border-brand-border bg-white p-6 shadow-sm">
+        <div className="animate-pulse space-y-4">
+          <div className="h-4 w-1/3 rounded bg-brand-background" />
+          <div className="h-20 w-full rounded bg-brand-background" />
+        </div>
       </div>
     );
   }
 
-  if (detailQuery.isLoading) {
-    return <div className="rounded-2xl border border-brand-primary/20 bg-white p-6 text-brand-primary shadow-sm">Loading invoice…</div>;
-  }
-
   if (detailQuery.isError) {
     return (
-      <div className="rounded-2xl border border-rose-300 bg-rose-100/80 p-6 text-sm text-rose-800">
-        Failed to load invoice details. Please refresh.
+      <div className="rounded-lg border border-rose-200 bg-rose-50 p-6">
+        <p className="text-sm text-rose-800">Failed to load invoice details. Please refresh.</p>
       </div>
     );
   }
 
   // Type guard: after this point, invoice is defined
   if (!invoice) {
-    return <div className="rounded-2xl border border-brand-primary/20 bg-white p-6 text-brand-primary shadow-sm">No invoice data available.</div>;
+    return (
+      <div className="rounded-lg border border-brand-border bg-white p-6 shadow-sm">
+        <p className="text-sm text-brand-textMuted">No invoice data available.</p>
+      </div>
+    );
   }
 
   const helpText = invoiceStatusHelpText[invoice.status];
@@ -137,110 +144,132 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
   };
 
   return (
-    <div className="grid gap-6 rounded-2xl border border-brand-primary/20 bg-white p-6 text-brand-primary shadow-xl">
-      <header className="flex flex-wrap items-start gap-3">
-        <div className="space-y-1">
-          <h2 className="text-lg font-semibold text-brand-primary">Invoice {invoice.invoice_id}</h2>
-          <p className="text-sm text-brand-primary/70">Created {formatIsoDate(invoice.created_at ?? null)}</p>
+    <div className="space-y-6 rounded-lg border border-brand-border bg-white p-6 shadow-lg">
+      {/* Header */}
+      <header className="flex flex-wrap items-start justify-between gap-4 border-b border-brand-border pb-4">
+        <div>
+          <h2 className="text-xl font-bold text-brand-text">Invoice {invoice.invoice_id}</h2>
+          <p className="mt-1 text-sm text-brand-textMuted">Created {formatIsoDate(invoice.created_at ?? null)}</p>
         </div>
-        <span className={`ml-auto inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${statusToneClass(statusMeta.tone)}`}>
+        <span className={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-wide ${statusToneClass(statusMeta.tone)}`}>
           {statusMeta.label}
         </span>
       </header>
 
-      <section className="grid gap-4 text-sm text-brand-primary/80">
-        {shareLink ? (
-          <div className="rounded-xl border border-brand-primary/15 bg-brand-primary/5 p-4">
-            <p className="text-sm font-semibold text-brand-primary">Customer link</p>
-            <p className="mt-1 text-xs text-brand-primary/60">
-              Share this link so your customer can view payment instructions and tap “I&apos;ve sent the transfer”.
+      {/* Body - Key Details */}
+      <section className="space-y-5">
+        {/* Amount Card */}
+        <div className="rounded-lg border border-brand-border bg-brand-background p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">Total Amount</p>
+          <p className="mt-2 text-3xl font-bold text-brand-primary">{formatCurrency(invoice.amount)}</p>
+          {invoice.discount_amount && (
+            <p className="mt-1 text-sm text-brand-textMuted">Discount: {formatCurrency(invoice.discount_amount)}</p>
+          )}
+        </div>
+
+        {/* Customer Info */}
+        {invoice.customer && (
+          <div className="rounded-lg border border-brand-border bg-brand-background p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">Customer</p>
+            <p className="mt-2 text-base font-semibold text-brand-text">{invoice.customer.name}</p>
+            {invoice.customer.phone && (
+              <p className="mt-1 text-sm text-brand-textMuted">{invoice.customer.phone}</p>
+            )}
+          </div>
+        )}
+
+        {/* Status & Due Date */}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label htmlFor="status-select" className="block text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
+              Status
+            </label>
+            <select
+              id="status-select"
+              value={invoice.status}
+              onChange={handleStatusChange}
+              disabled={mutation.isPending}
+              className="mt-2 w-full rounded-lg border border-brand-border bg-white px-3 py-2.5 text-sm font-medium text-brand-text shadow-sm transition focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
+            >
+              {statusOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            {mutation.isPending && (
+              <p className="mt-1 text-xs text-brand-textMuted">Updating status…</p>
+            )}
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">Due Date</p>
+            <p className="mt-2 text-sm font-medium text-brand-text">{formatIsoDate(invoice.due_date ?? null)}</p>
+          </div>
+        </div>
+
+        {helpText && (
+          <p className="text-xs text-brand-textMuted">{helpText}</p>
+        )}
+
+        {/* Awaiting Confirmation Alert */}
+        {invoice.status === "awaiting_confirmation" && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+            <p className="text-sm font-medium text-amber-900">
+              ⚠️ Customer reported that they have transferred the funds. Please check your bank and move the status to &ldquo;Paid&rdquo; once cleared to automatically send their receipt.
+            </p>
+          </div>
+        )}
+
+        {/* Share Link */}
+        {shareLink && (
+          <div className="rounded-lg border border-brand-border bg-brand-background p-4">
+            <p className="text-sm font-semibold text-brand-text">Customer Payment Link</p>
+            <p className="mt-1 text-xs text-brand-textMuted">
+              Share this link so your customer can view payment instructions and confirm their transfer.
             </p>
             <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
-              <code className="flex-1 truncate rounded-lg bg-white px-3 py-2 text-xs text-brand-primary shadow-inner shadow-brand-primary/20">
+              <code className="flex-1 truncate rounded-lg border border-brand-border bg-white px-3 py-2 text-xs text-brand-text">
                 {shareLink}
               </code>
               <button
                 type="button"
                 onClick={handleCopyLink}
-                className="w-full rounded-lg border border-brand-primary px-3 py-2 text-sm font-medium text-brand-primary transition hover:bg-brand-primary hover:text-brand-accent sm:w-auto"
+                className="w-full rounded-lg border border-brand-primary bg-white px-3 py-2 text-xs font-semibold uppercase tracking-wide text-brand-primary transition hover:bg-brand-primary hover:text-white sm:w-auto"
               >
-                {linkCopied ? "Copied!" : "Copy link"}
+                {linkCopied ? "Copied!" : "Copy Link"}
               </button>
             </div>
           </div>
-        ) : null}
-
-        <dl className="grid gap-3 sm:grid-cols-2 text-brand-primary">
-          <div>
-            <dt className="text-xs uppercase tracking-wide text-brand-primary/60">Amount</dt>
-            <dd className="text-base font-semibold">{formatCurrency(invoice.amount)}</dd>
-          </div>
-          <div>
-            <dt className="text-xs uppercase tracking-wide text-brand-primary/60">Discount</dt>
-            <dd className="text-sm text-brand-primary/80">{formatCurrency(invoice.discount_amount ?? null)}</dd>
-          </div>
-          <div>
-            <dt className="text-xs uppercase tracking-wide text-brand-primary/60">Due Date</dt>
-            <dd className="text-sm text-brand-primary/80">{formatIsoDate(invoice.due_date ?? null)}</dd>
-          </div>
-          <div>
-            <dt className="text-xs uppercase tracking-wide text-brand-primary/60">Status</dt>
-            <dd>
-              <select
-                value={invoice.status}
-                onChange={handleStatusChange}
-                disabled={mutation.isPending}
-                className="mt-1 w-full rounded-lg border border-brand-primary/20 bg-white px-3 py-2 text-sm font-medium text-brand-primary shadow-sm focus:border-brand-primary focus:outline-none"
-              >
-                {statusOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              {mutation.isPending ? (
-                <p className="mt-1 text-xs text-brand-primary/60">Updating status…</p>
-              ) : null}
-            </dd>
-          </div>
-        </dl>
-        {helpText ? <p className="text-xs text-brand-primary/60">{helpText}</p> : null}
-        {invoice.status === "awaiting_confirmation" ? (
-          <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
-            Customer reported that they have transferred the funds. Please check your bank and move the status to
-            “Paid” once cleared to automatically send their receipt.
-          </div>
-        ) : null}
-        {invoice.customer ? (
-          <div className="rounded-xl border border-brand-primary/15 bg-brand-primary/5 p-3">
-            <p className="text-sm font-semibold text-brand-primary">{invoice.customer.name}</p>
-            {invoice.customer.phone ? (
-              <p className="text-xs text-brand-primary/70">{invoice.customer.phone}</p>
-            ) : null}
-          </div>
-        ) : null}
+        )}
       </section>
 
-      <section>
-        <h3 className="mb-3 text-sm font-semibold text-brand-primary">Line items</h3>
+      {/* Line Items */}
+      <section className="border-t border-brand-border pt-5">
+        <h3 className="mb-4 text-base font-bold text-brand-text">Line Items</h3>
         {!invoice.lines || invoice.lines.length === 0 ? (
-          <p className="text-sm text-brand-primary/70">No line items on this invoice.</p>
+          <p className="text-sm text-brand-textMuted">No line items on this invoice.</p>
         ) : (
-          <div className="overflow-hidden rounded-xl border border-brand-primary/15">
-            <table className="min-w-full divide-y divide-brand-primary/10 text-sm text-brand-primary">
-              <thead className="bg-brand-primary/5 text-left text-xs font-semibold uppercase tracking-wide text-brand-primary/60">
+          <div className="overflow-hidden rounded-lg border border-brand-border">
+            <table className="min-w-full divide-y divide-brand-border text-sm">
+              <thead className="bg-brand-background">
                 <tr>
-                  <th className="px-4 py-3">Description</th>
-                  <th className="px-4 py-3">Qty</th>
-                  <th className="px-4 py-3">Unit price</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
+                    Description
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
+                    Qty
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
+                    Unit Price
+                  </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-brand-primary/10">
+              <tbody className="divide-y divide-brand-border bg-white">
                 {invoice.lines.map((line) => (
                   <tr key={line.id}>
-                    <td className="px-4 py-3 text-brand-primary/90">{line.description}</td>
-                    <td className="px-4 py-3 text-brand-primary/70">{line.quantity}</td>
-                    <td className="px-4 py-3 text-brand-primary/70">{formatCurrency(line.unit_price)}</td>
+                    <td className="px-4 py-3 font-medium text-brand-text">{line.description}</td>
+                    <td className="px-4 py-3 text-brand-textMuted">{line.quantity}</td>
+                    <td className="px-4 py-3 text-brand-textMuted">{formatCurrency(line.unit_price)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -249,10 +278,12 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
         )}
       </section>
 
-      <section className="rounded-2xl border border-dashed border-brand-primary/20 bg-brand-primary/5 p-4 text-sm text-brand-primary/80">
-        Keep the status in sync as you reconcile payments. Customers can flag transfers via the shared link, and
-        marking an invoice as paid automatically triggers the WhatsApp receipt when configured.
-      </section>
+      {/* Footer Help Text */}
+      <footer className="rounded-lg border border-dashed border-brand-border bg-brand-background p-4">
+        <p className="text-xs text-brand-textMuted">
+          💡 Keep the status in sync as you reconcile payments. Customers can flag transfers via the shared link, and marking an invoice as paid automatically triggers the WhatsApp receipt when configured.
+        </p>
+      </footer>
     </div>
   );
 }

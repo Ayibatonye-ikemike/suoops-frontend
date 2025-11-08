@@ -96,23 +96,32 @@ export function InvoiceList() {
   };
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
-      <div className="space-y-5">
-        <div className="rounded-2xl border border-brand-border bg-white p-4 shadow-sm">
-          <div className="flex flex-wrap items-center gap-3 text-sm text-brand-textMuted">
-            <span>Keep invoice statuses in sync after you confirm customer payments.</span>
-            <Button
-              size="sm"
-              onClick={() => refetch()}
-              disabled={isFetching}
-              className="ml-auto"
-            >
-              {isFetching ? "Refreshing…" : "Refresh"}
-            </Button>
-            {lastUpdated ? <span className="text-xs italic text-brand-textMuted">Updated {lastUpdated}</span> : null}
+    <div className="space-y-6">
+      {/* Status Overview Card */}
+      <div className="rounded-xl border border-brand-border bg-white p-5 shadow-sm">
+        <div className="mb-4 flex items-start justify-between gap-4">
+          <div>
+            <h2 className="text-lg font-bold text-brand-text">Invoice Status</h2>
+            <p className="mt-1 text-xs text-brand-textMuted">
+              Keep invoice statuses in sync after you confirm customer payments.
+            </p>
           </div>
+          <Button
+            size="sm"
+            onClick={() => refetch()}
+            disabled={isFetching}
+          >
+            {isFetching ? "Refreshing…" : "Refresh"}
+          </Button>
         </div>
+        
+        {lastUpdated && (
+          <p className="text-xs italic text-brand-textMuted">Last updated: {lastUpdated}</p>
+        )}
+      </div>
 
+      {/* Search & Filters */}
+      <div className="space-y-4">
         <input
           type="text"
           placeholder="Search by invoice ID or amount..."
@@ -131,94 +140,104 @@ export function InvoiceList() {
             <button
               key={filter.key}
               onClick={() => setStatusFilter(filter.key)}
-              className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide transition ${
+              className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition ${
                 statusFilter === filter.key
                   ? "border-brand-primary bg-brand-primary text-white"
-                  : "border-brand-border bg-white text-brand-textMuted hover:bg-brand-primary/10"
+                  : "border-brand-border bg-white text-brand-textMuted hover:border-brand-primary/40"
               }`}
             >
               {filter.label} ({statusCounts[filter.key] as number})
             </button>
           ))}
         </div>
-
-        {hasFilteredInvoices ? (
-          <ul className="grid gap-3">
-            {filteredInvoices.map((invoice: Invoice) => {
-              const status = invoiceStatusLabels[invoice.status] ?? {
-                label: invoice.status,
-                tone: "neutral" as const,
-              };
-              const helpText = invoiceStatusHelpText[invoice.status];
-              const isSelected = selectedInvoiceId === invoice.invoice_id;
-
-              const selectInvoice = () => setSelectedInvoiceId(invoice.invoice_id);
-
-              return (
-                <li key={invoice.invoice_id}>
-                  <div
-                    role="button"
-                    tabIndex={0}
-                    aria-pressed={isSelected}
-                    onClick={selectInvoice}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        selectInvoice();
-                      }
-                    }}
-                    className={`rounded-2xl border border-brand-border bg-white p-5 text-left shadow-sm transition ${
-                      isSelected ? "ring-2 ring-brand-primary" : "hover:shadow-md"
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-3 text-sm">
-                      <strong className="font-semibold text-brand-text">{invoice.invoice_id}</strong>
-                      <span
-                        className={`rounded-full px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ${badgeToneClass(status.tone)}`}
-                      >
-                        {status.label}
-                      </span>
-                    </div>
-                    <p className="text-2xl font-bold text-brand-primary">₦ {invoice.amount}</p>
-                    {helpText ? <p className="text-sm text-brand-textMuted">{helpText}</p> : null}
-                    <div className="mt-3 flex flex-wrap items-center gap-3">
-                      {invoice.pdf_url ? (
-                        <Link
-                          href={`${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/invoices/${invoice.invoice_id}/pdf`}
-                          target="_blank"
-                          className="inline-flex items-center gap-2 text-sm font-semibold text-brand-primary hover:underline"
-                          onClick={(event) => event.stopPropagation()}
-                        >
-                          📄 View PDF
-                        </Link>
-                      ) : null}
-                    </div>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        ) : hasInvoices ? (
-          <div className="rounded-2xl border border-dashed border-brand-border bg-brand-background p-6 text-center text-sm text-brand-textMuted">
-            No invoices match your filters.
-            <button
-              onClick={() => {
-                setStatusFilter("all");
-                setSearchQuery("");
-              }}
-              className="mt-3 inline-flex rounded-lg border border-brand-primary px-4 py-2 text-sm font-semibold uppercase tracking-wide text-brand-primary hover:bg-brand-primary hover:text-white"
-            >
-              Clear Filters
-            </button>
-          </div>
-        ) : (
-          <div className="rounded-2xl border border-dashed border-brand-border bg-brand-background p-6 text-sm text-brand-textMuted">
-            No invoices yet. Create one from WhatsApp or the API to see it here.
-          </div>
-        )}
       </div>
 
-      <InvoiceDetailPanel invoiceId={hasFilteredInvoices ? selectedInvoiceId : null} />
+      {/* Invoice List */}
+      {hasFilteredInvoices ? (
+        <div className="space-y-3">
+          {filteredInvoices.map((invoice: Invoice) => {
+            const status = invoiceStatusLabels[invoice.status] ?? {
+              label: invoice.status,
+              tone: "neutral" as const,
+            };
+            const helpText = invoiceStatusHelpText[invoice.status];
+            const isSelected = selectedInvoiceId === invoice.invoice_id;
+
+            const selectInvoice = () => setSelectedInvoiceId(invoice.invoice_id);
+
+            return (
+              <div key={invoice.invoice_id}>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={isSelected}
+                  onClick={selectInvoice}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      selectInvoice();
+                    }
+                  }}
+                  className={`rounded-xl border bg-white p-5 text-left shadow-sm transition ${
+                    isSelected 
+                      ? "border-brand-primary ring-2 ring-brand-primary/20" 
+                      : "border-brand-border hover:border-brand-primary/40 hover:shadow-md"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <strong className="text-base font-bold text-brand-text">{invoice.invoice_id}</strong>
+                        <span
+                          className={`rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide ${badgeToneClass(status.tone)}`}
+                        >
+                          {status.label}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-2xl font-bold text-brand-primary">₦{invoice.amount.toLocaleString()}</p>
+                      {helpText && <p className="mt-1 text-sm text-brand-textMuted">{helpText}</p>}
+                    </div>
+                  </div>
+                  {invoice.pdf_url && (
+                    <div className="mt-4 flex items-center gap-3">
+                      <Link
+                        href={`${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/invoices/${invoice.invoice_id}/pdf`}
+                        target="_blank"
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-brand-primary hover:underline"
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        📄 View PDF
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : hasInvoices ? (
+        <div className="rounded-xl border border-dashed border-brand-border bg-brand-background p-6 text-center">
+          <p className="text-sm text-brand-textMuted">No invoices match your filters.</p>
+          <button
+            onClick={() => {
+              setStatusFilter("all");
+              setSearchQuery("");
+            }}
+            className="mt-4 inline-flex rounded-lg border border-brand-primary bg-white px-4 py-2 text-sm font-semibold uppercase tracking-wide text-brand-primary transition hover:bg-brand-primary hover:text-white"
+          >
+            Clear Filters
+          </button>
+        </div>
+      ) : (
+        <div className="rounded-xl border border-dashed border-brand-border bg-brand-background p-6 text-center text-sm text-brand-textMuted">
+          No invoices yet. Create one from WhatsApp or the API to see it here.
+        </div>
+      )}
+
+      {/* Invoice Detail Panel */}
+      {hasFilteredInvoices && selectedInvoiceId && (
+        <InvoiceDetailPanel invoiceId={selectedInvoiceId} />
+      )}
     </div>
   );
 }
