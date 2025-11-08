@@ -111,7 +111,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
   }
 
   if (detailQuery.isLoading) {
-    return <div className="rounded-2xl border border-brand-accent/15 bg-brand-surface/60 p-6 text-brand-accent">Loading invoice…</div>;
+    return <div className="rounded-2xl border border-brand-accent/40 bg-brand-accent/80 p-6 text-brand-primary">Loading invoice…</div>;
   }
 
   if (detailQuery.isError) {
@@ -124,7 +124,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
 
   // Type guard: after this point, invoice is defined
   if (!invoice) {
-    return <div className="rounded-2xl border border-brand-accent/15 bg-brand-surface/60 p-6 text-brand-accent">No invoice data available.</div>;
+    return <div className="rounded-2xl border border-brand-accent/40 bg-brand-accent/80 p-6 text-brand-primary">No invoice data available.</div>;
   }
 
   const helpText = invoiceStatusHelpText[invoice.status];
@@ -137,32 +137,32 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
   };
 
   return (
-    <div className="grid gap-6 rounded-2xl border border-brand-accent/15 bg-gradient-to-br from-brand-surface via-brand-primary/90 to-brand-surface p-6 text-brand-accent shadow-2xl shadow-brand-surface/80">
+    <div className="grid gap-6 rounded-2xl border border-brand-accent/40 bg-brand-accent/95 p-6 text-brand-primary shadow-lg shadow-brand-surface/40">
       <header className="flex flex-wrap items-start gap-3">
         <div className="space-y-1">
-          <h2 className="text-lg font-semibold text-brand-accent">Invoice {invoice.invoice_id}</h2>
-          <p className="text-sm text-brand-accent/70">Created {formatIsoDate(invoice.created_at ?? null)}</p>
+          <h2 className="text-lg font-semibold text-brand-primary">Invoice {invoice.invoice_id}</h2>
+          <p className="text-sm text-brand-primary/70">Created {formatIsoDate(invoice.created_at ?? null)}</p>
         </div>
         <span className={`ml-auto inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ${statusToneClass(statusMeta.tone)}`}>
           {statusMeta.label}
         </span>
       </header>
 
-      <section className="grid gap-4 text-sm">
+      <section className="grid gap-4 text-sm text-brand-primary/80">
         {shareLink ? (
-          <div className="rounded-xl border border-brand-accent/20 bg-brand-surface/50 p-4 shadow-inner shadow-brand-surface/40">
-            <p className="text-sm font-semibold text-brand-accent">Customer link</p>
-            <p className="mt-1 text-xs text-brand-accent/70">
+          <div className="rounded-xl border border-brand-primary/10 bg-white p-4 shadow-sm shadow-brand-surface/20">
+            <p className="text-sm font-semibold text-brand-primary">Customer link</p>
+            <p className="mt-1 text-xs text-brand-primary/60">
               Share this link so your customer can view payment instructions and tap “I&apos;ve sent the transfer”.
             </p>
             <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
-              <code className="flex-1 truncate rounded-lg bg-brand-surface/80 px-3 py-2 text-xs text-brand-accent shadow-inner shadow-brand-surface/60">
+              <code className="flex-1 truncate rounded-lg bg-brand-primary/10 px-3 py-2 text-xs text-brand-primary shadow-inner shadow-brand-primary/30">
                 {shareLink}
               </code>
               <button
                 type="button"
                 onClick={handleCopyLink}
-                className="w-full rounded-lg border border-brand-accent/30 px-3 py-2 text-sm font-medium text-brand-accent transition hover:border-brand-accent/50 hover:text-brand-accent sm:w-auto"
+                className="w-full rounded-lg border border-brand-primary px-3 py-2 text-sm font-medium text-brand-primary transition hover:bg-brand-primary hover:text-brand-accent sm:w-auto"
               >
                 {linkCopied ? "Copied!" : "Copy link"}
               </button>
@@ -170,27 +170,27 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
           </div>
         ) : null}
 
-        <dl className="grid gap-3 sm:grid-cols-2 text-brand-accent">
+        <dl className="grid gap-3 sm:grid-cols-2 text-brand-primary">
           <div>
-            <dt className="text-xs uppercase tracking-wide text-brand-accent/70">Amount</dt>
+            <dt className="text-xs uppercase tracking-wide text-brand-primary/60">Amount</dt>
             <dd className="text-base font-semibold">{formatCurrency(invoice.amount)}</dd>
           </div>
           <div>
-            <dt className="text-xs uppercase tracking-wide text-brand-accent/70">Discount</dt>
-            <dd className="text-sm">{formatCurrency(invoice.discount_amount ?? null)}</dd>
+            <dt className="text-xs uppercase tracking-wide text-brand-primary/60">Discount</dt>
+            <dd className="text-sm text-brand-primary/80">{formatCurrency(invoice.discount_amount ?? null)}</dd>
           </div>
           <div>
-            <dt className="text-xs uppercase tracking-wide text-brand-accent/70">Due Date</dt>
-            <dd className="text-sm">{formatIsoDate(invoice.due_date ?? null)}</dd>
+            <dt className="text-xs uppercase tracking-wide text-brand-primary/60">Due Date</dt>
+            <dd className="text-sm text-brand-primary/80">{formatIsoDate(invoice.due_date ?? null)}</dd>
           </div>
           <div>
-            <dt className="text-xs uppercase tracking-wide text-brand-accent/70">Status</dt>
+            <dt className="text-xs uppercase tracking-wide text-brand-primary/60">Status</dt>
             <dd>
               <select
                 value={invoice.status}
                 onChange={handleStatusChange}
                 disabled={mutation.isPending}
-                className="mt-1 w-full rounded-lg border border-brand-accent/20 bg-brand-surface/80 px-3 py-2 text-sm font-medium text-brand-accent shadow-inner shadow-brand-surface/60 focus:border-brand-accent focus:outline-none"
+                className="mt-1 w-full rounded-lg border border-brand-primary/20 bg-white px-3 py-2 text-sm font-medium text-brand-primary shadow-sm focus:border-brand-primary focus:outline-none"
               >
                 {statusOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -199,12 +199,12 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
                 ))}
               </select>
               {mutation.isPending ? (
-                <p className="mt-1 text-xs text-brand-accent/70">Updating status…</p>
+                <p className="mt-1 text-xs text-brand-primary/60">Updating status…</p>
               ) : null}
             </dd>
           </div>
         </dl>
-        {helpText ? <p className="text-xs text-brand-accent/70">{helpText}</p> : null}
+        {helpText ? <p className="text-xs text-brand-primary/60">{helpText}</p> : null}
         {invoice.status === "awaiting_confirmation" ? (
           <div className="rounded-xl border border-amber-200 bg-amber-100/80 p-3 text-xs text-amber-900">
             Customer reported that they have transferred the funds. Please check your bank and move the status to
@@ -212,35 +212,35 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
           </div>
         ) : null}
         {invoice.customer ? (
-          <div className="rounded-xl border border-brand-accent/20 bg-brand-surface/50 p-3">
-            <p className="text-sm font-semibold text-brand-accent">{invoice.customer.name}</p>
+          <div className="rounded-xl border border-brand-primary/10 bg-white p-3">
+            <p className="text-sm font-semibold text-brand-primary">{invoice.customer.name}</p>
             {invoice.customer.phone ? (
-              <p className="text-xs text-brand-accent/70">{invoice.customer.phone}</p>
+              <p className="text-xs text-brand-primary/70">{invoice.customer.phone}</p>
             ) : null}
           </div>
         ) : null}
       </section>
 
       <section>
-        <h3 className="mb-3 text-sm font-semibold text-brand-accent">Line items</h3>
+        <h3 className="mb-3 text-sm font-semibold text-brand-primary">Line items</h3>
         {!invoice.lines || invoice.lines.length === 0 ? (
-          <p className="text-sm text-brand-accent/70">No line items on this invoice.</p>
+          <p className="text-sm text-brand-primary/70">No line items on this invoice.</p>
         ) : (
-          <div className="overflow-hidden rounded-xl border border-brand-accent/20">
-            <table className="min-w-full divide-y divide-brand-accent/20 text-sm text-brand-accent">
-              <thead className="bg-brand-surface/60 text-left text-xs font-semibold uppercase tracking-wide text-brand-accent/70">
+          <div className="overflow-hidden rounded-xl border border-brand-primary/10 bg-white">
+            <table className="min-w-full divide-y divide-brand-primary/10 text-sm text-brand-primary">
+              <thead className="bg-brand-primary/5 text-left text-xs font-semibold uppercase tracking-wide text-brand-primary/60">
                 <tr>
                   <th className="px-4 py-3">Description</th>
                   <th className="px-4 py-3">Qty</th>
                   <th className="px-4 py-3">Unit price</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-brand-accent/15 bg-brand-surface/40">
+              <tbody className="divide-y divide-brand-primary/10">
                 {invoice.lines.map((line) => (
                   <tr key={line.id}>
-                    <td className="px-4 py-3">{line.description}</td>
-                    <td className="px-4 py-3 text-brand-accent/80">{line.quantity}</td>
-                    <td className="px-4 py-3 text-brand-accent/80">{formatCurrency(line.unit_price)}</td>
+                    <td className="px-4 py-3 text-brand-primary/90">{line.description}</td>
+                    <td className="px-4 py-3 text-brand-primary/70">{line.quantity}</td>
+                    <td className="px-4 py-3 text-brand-primary/70">{formatCurrency(line.unit_price)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -249,7 +249,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
         )}
       </section>
 
-      <section className="rounded-2xl border border-dashed border-brand-accent/30 bg-brand-surface/40 p-4 text-sm text-brand-accent/80">
+      <section className="rounded-2xl border border-dashed border-brand-primary/20 bg-brand-primary/10 p-4 text-sm text-brand-primary/80">
         Keep the status in sync as you reconcile payments. Customers can flag transfers via the shared link, and
         marking an invoice as paid automatically triggers the WhatsApp receipt when configured.
       </section>
