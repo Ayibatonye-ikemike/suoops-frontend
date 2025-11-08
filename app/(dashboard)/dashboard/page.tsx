@@ -1,6 +1,8 @@
+"use client";
+
 import { Suspense } from "react";
 import { InvoiceCreateForm } from "@/features/invoices/invoice-create-form";
-import { InvoiceList } from "@/features/invoices/invoice-list-simple";
+import { InvoiceListWithDetail } from "@/features/invoices/invoice-list-with-detail";
 import { InvoiceStatusCard } from "@/features/invoices/invoice-status-card";
 
 export default function DashboardPage() {
@@ -12,26 +14,29 @@ export default function DashboardPage() {
           <p className="mt-1 text-sm text-brand-textMuted">Create invoices and review activity</p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-          {/* Create Invoice - Left side (6 columns) */}
-          <div className="lg:col-span-6">
-            <div className="rounded-lg border border-brand-border bg-white p-6 shadow-card">
-              <InvoiceCreateForm />
+        <div className="space-y-6">
+          {/* 3-Column Grid */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+            {/* Create Invoice - Left side (6 columns) */}
+            <div className="lg:col-span-6">
+              <div className="rounded-lg border border-brand-border bg-white p-6 shadow-card">
+                <InvoiceCreateForm />
+              </div>
             </div>
-          </div>
 
-          {/* Invoice Status - Middle (3 columns) */}
-          <div className="lg:col-span-3">
-            <Suspense fallback={<div className="h-64 animate-pulse rounded-lg bg-brand-background" />}>
-              <InvoiceStatusCard />
-            </Suspense>
-          </div>
+            {/* Invoice Status - Middle (3 columns) */}
+            <div className="lg:col-span-3">
+              <Suspense fallback={<div className="h-64 animate-pulse rounded-lg bg-brand-background" />}>
+                <InvoiceStatusCard />
+              </Suspense>
+            </div>
 
-          {/* Invoice List - Right side (3 columns) */}
-          <div className="lg:col-span-3">
-            <Suspense fallback={<div className="h-64 animate-pulse rounded-lg bg-brand-background" />}>
-              <InvoiceList />
-            </Suspense>
+            {/* Invoice List - Right side (3 columns) */}
+            <div className="lg:col-span-3">
+              <Suspense fallback={<div className="h-64 animate-pulse rounded-lg bg-brand-background" />}>
+                <InvoiceListWithDetail />
+              </Suspense>
+            </div>
           </div>
         </div>
       </div>
