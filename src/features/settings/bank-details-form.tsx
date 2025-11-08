@@ -375,7 +375,7 @@ export function BankDetailsForm() {
           <button
             type="submit"
             disabled={!hasChanges || updateMutation.isPending}
-            className="rounded-lg bg-brand-primary px-6 py-2 text-sm font-medium text-white transition hover:bg-brand-primary/90 disabled:opacity-50"
+            className="rounded-lg bg-brand-primary px-6 py-2 text-sm font-medium text-white shadow-md transition hover:bg-green-700 hover:shadow-lg disabled:opacity-50"
           >
             {updateMutation.isPending ? "Saving..." : "Save changes"}
           </button>

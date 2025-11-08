@@ -233,7 +233,7 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
           <button
             type="submit"
             disabled={loading || otp.length !== 6}
-            className="flex-1 rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex-1 rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-green-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? "Verifying..." : "Verify Number"}
           </button>
@@ -283,7 +283,7 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-full rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-green-700 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? "Sending..." : "Send Verification Code"}
       </button>
