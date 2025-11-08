@@ -233,7 +233,7 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
           <button
             type="submit"
             disabled={loading || otp.length !== 6}
-            className="flex-1 rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex-1 rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? "Verifying..." : "Verify Number"}
           </button>
@@ -241,7 +241,7 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
             type="button"
             onClick={handleBackToInput}
             disabled={loading}
-            className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Back
           </button>
