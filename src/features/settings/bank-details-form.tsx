@@ -119,6 +119,14 @@ export function BankDetailsForm() {
     [formState, initialValues],
   );
 
+  const isFormValid = useMemo(() => {
+    // All required fields must be filled
+    const hasAllFields = formState.bankName && formState.accountNumber && formState.accountName;
+    // Account number must be exactly 10 digits
+    const isAccountNumberValid = formState.accountNumber.length === 10 && /^\d{10}$/.test(formState.accountNumber);
+    return hasAllFields && isAccountNumberValid;
+  }, [formState]);
+
   const canClear = useMemo(
     () => Object.values(initialValues).some((value) => value.length > 0),
     [initialValues],
@@ -285,7 +293,6 @@ export function BankDetailsForm() {
             placeholder="0123 4567 89"
             inputMode="numeric"
             required
-            pattern="\d{10}"
             className="flex-1 rounded-lg border border-brand-border bg-white px-3 py-3 text-sm tracking-[0.2em] text-brand-text focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
           />
           <Button
@@ -302,6 +309,11 @@ export function BankDetailsForm() {
         <p className="mt-2 text-xs text-brand-textMuted">
           Nigerian NUBAN numbers are exactly 10 digits. Customers see it with spaces for readability.
         </p>
+        {formState.accountNumber && formState.accountNumber.length !== 10 && (
+          <p className="mt-1 text-xs text-red-600">
+            Account number must be exactly 10 digits (currently {formState.accountNumber.length})
+          </p>
+        )}
       </div>
 
       <div>
@@ -381,7 +393,7 @@ export function BankDetailsForm() {
           </Button>
           <Button
             type="submit"
-            disabled={!hasChanges || updateMutation.isPending}
+            disabled={!hasChanges || !isFormValid || updateMutation.isPending}
             className="min-w-[160px]"
           >
             {updateMutation.isPending ? "Saving" : "Save Changes"}
