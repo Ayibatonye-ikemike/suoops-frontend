@@ -88,8 +88,9 @@ export function PlanSelectionModal({ isOpen, onClose, currentPlan }: PlanModalPr
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-brand-accentMuted/60 bg-brand-accent/95 p-6 text-brand-primary shadow-2xl shadow-brand-surface/50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-8 sm:px-6">
+      <div className="relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-brand-accentMuted/60 bg-gradient-to-br from-brand-accent via-brand-accent/95 to-brand-accent p-6 text-brand-primary shadow-2xl shadow-brand-surface/60 sm:p-8">
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-primary/20 via-brand-primary/40 to-brand-primary/20" />
         {/* Close button */}
         <button
           onClick={onClose}
@@ -101,7 +102,7 @@ export function PlanSelectionModal({ isOpen, onClose, currentPlan }: PlanModalPr
 
         {/* Header */}
         <div className="mb-6">
-          <h2 className="text-2xl font-bold">Choose Your Plan</h2>
+          <h2 className="text-2xl font-bold tracking-tight">Choose Your Plan</h2>
           <p className="mt-2 text-sm text-brand-primary/70">
             Select a plan and pay securely via Paystack. Your plan will be upgraded immediately after
             payment.
@@ -109,7 +110,7 @@ export function PlanSelectionModal({ isOpen, onClose, currentPlan }: PlanModalPr
         </div>
 
         {/* Plans grid */}
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2">
           {PLANS.map((plan) => {
             const isCurrent = plan.value === currentPlan;
             const isSelected = plan.value === selectedPlan;
@@ -118,7 +119,7 @@ export function PlanSelectionModal({ isOpen, onClose, currentPlan }: PlanModalPr
               <div
                 key={plan.value}
                 onClick={() => !isCurrent && setSelectedPlan(plan.value)}
-                className={`relative cursor-pointer rounded-xl border-2 p-4 transition-all ${
+                className={`relative flex h-full cursor-pointer flex-col gap-4 rounded-xl border-2 p-4 transition-all ${
                   isCurrent
                     ? "cursor-not-allowed border-emerald-400 bg-emerald-100/70 opacity-60"
                     : isSelected
@@ -139,21 +140,21 @@ export function PlanSelectionModal({ isOpen, onClose, currentPlan }: PlanModalPr
                 )}
 
                 <div className="flex items-center gap-3">
-                  <div className="text-3xl">{plan.icon}</div>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-primary/15 text-2xl">{plan.icon}</div>
                   <div>
                     <h3 className="text-lg font-bold">{plan.name}</h3>
                     <p className="text-sm text-brand-primary/70">{plan.limit}</p>
                   </div>
                 </div>
 
-                <div className="mt-3">
+                <div>
                   <p className="text-2xl font-bold">
                     {plan.price}
                     <span className="text-sm font-normal text-brand-primary/60">/month</span>
                   </p>
                 </div>
 
-                <ul className="mt-4 space-y-2">
+                <ul className="flex-1 space-y-2">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-2 text-sm text-brand-primary/80">
                       <span className="text-brand-primary">✓</span>
@@ -163,7 +164,7 @@ export function PlanSelectionModal({ isOpen, onClose, currentPlan }: PlanModalPr
                 </ul>
 
                 {isSelected && !isCurrent && (
-                  <div className="mt-3 rounded-md bg-brand-primary/15 p-2 text-center text-sm font-medium text-brand-primary">
+                  <div className="mt-auto rounded-md bg-brand-primary/15 p-2 text-center text-sm font-medium text-brand-primary">
                     Selected
                   </div>
                 )}
@@ -177,7 +178,7 @@ export function PlanSelectionModal({ isOpen, onClose, currentPlan }: PlanModalPr
           <p className="text-sm text-brand-primary/70">
             💳 Secure payment powered by <strong>Paystack</strong>
           </p>
-          <div className="flex gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row">
             <button
               onClick={onClose}
               disabled={initializeMutation.isPending}

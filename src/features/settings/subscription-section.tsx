@@ -58,15 +58,16 @@ export function SubscriptionSection() {
       return response.data;
     },
     retry: false,
-    staleTime: 60000, // 1 minute
+    staleTime: 60000,
   });
 
   if (isLoading) {
     return (
-      <div className="rounded-xl border border-brand-accentMuted/60 bg-brand-accent/90 p-6 text-brand-primary">
+      <div className="relative overflow-hidden rounded-2xl border border-brand-accentMuted/60 bg-gradient-to-br from-brand-accent via-brand-accent/95 to-brand-accent p-6 text-brand-primary shadow-lg shadow-brand-surface/40">
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-primary/20 via-brand-primary/40 to-brand-primary/20" />
         <div className="animate-pulse space-y-4">
-          <div className="h-4 w-1/3 rounded bg-brand-accentMuted/70" />
-          <div className="h-20 w-full rounded bg-brand-accentMuted/70" />
+          <div className="h-4 w-1/3 rounded bg-brand-accentMuted/60" />
+          <div className="h-20 w-full rounded bg-brand-accentMuted/60" />
         </div>
       </div>
     );
@@ -74,7 +75,8 @@ export function SubscriptionSection() {
 
   if (error || !user) {
     return (
-      <div className="rounded-xl border border-brand-accentMuted/60 bg-brand-accent/90 p-6 text-sm text-brand-primary/70">
+      <div className="relative overflow-hidden rounded-2xl border border-brand-accentMuted/60 bg-gradient-to-br from-brand-accent via-brand-accent/95 to-brand-accent p-6 text-sm text-brand-primary/80 shadow-lg shadow-brand-surface/40">
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-primary/20 via-brand-primary/40 to-brand-primary/20" />
         Unable to load subscription details.
       </div>
     );
@@ -86,39 +88,57 @@ export function SubscriptionSection() {
   const invoiceLimit = currentPlan === "ENTERPRISE" ? "∞" : (planDetails.limit?.split(" ")[0] || "5");
 
   return (
-    <div className="rounded-xl border border-brand-accentMuted/60 bg-brand-accent/95 text-brand-primary">
-      <div className="border-b border-brand-accentMuted/60 px-6 py-4">
-        <h2 className="text-lg font-semibold">Subscription Plan</h2>
-        <p className="mt-1 text-sm text-brand-primary/70">Manage your subscription and view usage</p>
+    <div className="relative overflow-hidden rounded-2xl border border-brand-accentMuted/60 bg-gradient-to-br from-brand-accent via-brand-accent/95 to-brand-accent text-brand-primary shadow-lg shadow-brand-surface/40">
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-primary/15 via-brand-primary/40 to-brand-primary/15" />
+      <div className="border-b border-brand-accentMuted/60 px-6 py-5 sm:px-8">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
+          <h2 className="text-lg font-semibold tracking-tight">Subscription Plan</h2>
+          <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-primary/70">
+            <span className="block h-1 w-6 rounded-full bg-brand-primary/60" />
+            Stay compliant &amp; connected
+          </span>
+        </div>
+        <p className="mt-2 text-sm text-brand-primary/70">Manage your subscription, usage, and upgrade options in one place.</p>
       </div>
-      <div className="p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-brand-primary/20">
-                <span className="text-2xl">
-                  {currentPlan === "FREE" && "🆓"}
-                  {currentPlan === "STARTER" && "🚀"}
-                  {currentPlan === "PRO" && "⭐"}
-                  {currentPlan === "BUSINESS" && "💼"}
-                  {currentPlan === "ENTERPRISE" && "👑"}
-                </span>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold">{planDetails.name} Plan</h3>
-                <p className="text-sm text-brand-primary/70">{planDetails.price}</p>
+
+      <div className="px-6 py-6 sm:px-8 sm:py-8">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex flex-1 flex-col gap-6">
+            <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-primary/15 shadow-inner shadow-brand-primary/20">
+                  <span className="text-2xl">
+                    {currentPlan === "FREE" && "🆓"}
+                    {currentPlan === "STARTER" && "🚀"}
+                    {currentPlan === "PRO" && "⭐"}
+                    {currentPlan === "BUSINESS" && "💼"}
+                    {currentPlan === "ENTERPRISE" && "👑"}
+                  </span>
+                </div>
+                <div>
+                  <div className="inline-flex items-center gap-2 rounded-full bg-brand-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-brand-primary">
+                    Current Plan
+                    {planDetails.name !== "Free" && <span className="text-brand-primary/70">•</span>}
+                    <span>{planDetails.name}</span>
+                  </div>
+                  <p className="mt-2 text-2xl font-semibold leading-tight">{planDetails.price}</p>
+                  <p className="text-sm text-brand-primary/70">{planDetails.limit}</p>
+                </div>
               </div>
             </div>
 
-            <div className="mt-4 space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-brand-primary/70">Invoice usage this month</span>
-                <span className="font-semibold">
+            <div className="rounded-2xl border border-brand-accentMuted/60 bg-brand-accent p-5 shadow-sm shadow-brand-surface/20">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm font-medium text-brand-primary/80">Invoice usage this month</p>
+                  <p className="text-xs text-brand-primary/60">Usage resets on the 1st of every month.</p>
+                </div>
+                <span className="text-base font-semibold">
                   {invoicesUsed} of {invoiceLimit}
                 </span>
               </div>
               {currentPlan !== "ENTERPRISE" && (
-                <div className="h-2 w-full overflow-hidden rounded-full bg-brand-accentMuted/70">
+                <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-brand-primary/15">
                   <div
                     className="h-full rounded-full bg-brand-primary transition-all"
                     style={{
@@ -129,11 +149,14 @@ export function SubscriptionSection() {
               )}
             </div>
 
-            <div className="mt-4">
-              <p className="text-sm font-medium text-brand-primary/80">Plan features:</p>
-              <ul className="mt-2 space-y-1">
+            <div>
+              <p className="text-sm font-medium text-brand-primary/80">Plan features</p>
+              <ul className="mt-3 grid gap-2 sm:grid-cols-2">
                 {planDetails.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-2 text-sm text-brand-primary/70">
+                  <li
+                    key={feature}
+                    className="flex items-center gap-2 rounded-xl border border-brand-accentMuted/60 bg-brand-accent px-3 py-2 text-sm text-brand-primary shadow-sm shadow-brand-surface/10"
+                  >
                     <span className="text-brand-primary">✓</span>
                     {feature}
                   </li>
@@ -144,21 +167,25 @@ export function SubscriptionSection() {
         </div>
 
         {currentPlan !== "ENTERPRISE" && (
-          <div className="mt-6 rounded-lg bg-brand-primary/15 p-4 text-brand-primary">
-            <p className="text-sm">
-              💡 <strong>Want more invoices?</strong> Upgrade your plan to increase your monthly limit and unlock advanced features.
-            </p>
-            <Button
-              onClick={() => setIsModalOpen(true)}
-              size="sm"
-              className="mt-3"
-            >
-              Upgrade Plan
-            </Button>
+          <div className="mt-8 rounded-2xl border border-brand-accentMuted/60 bg-brand-primary/10 p-5 text-brand-primary shadow-sm shadow-brand-surface/20">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-sm font-semibold">Need more headroom?</p>
+                <p className="text-sm text-brand-primary/70">
+                  Upgrade your plan to expand invoice limits, unlock automation, and priority support.
+                </p>
+              </div>
+              <Button
+                onClick={() => setIsModalOpen(true)}
+                size="sm"
+                className="w-full md:w-auto"
+              >
+                Choose Your Plan
+              </Button>
+            </div>
           </div>
         )}
 
-        {/* Plan Selection Modal */}
         <PlanSelectionModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
