@@ -31,7 +31,7 @@ export default function SettingsPage() {
         </div>
 
         <div className="mb-8">
-          <SubscriptionSection />
+          <SubscriptionSection user={user} />
         </div>
 
         <Card className="mb-8">

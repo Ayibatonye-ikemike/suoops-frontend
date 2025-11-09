@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { PlanSelectionModal } from "./plan-selection-modal";
 
@@ -13,6 +11,13 @@ interface PlanDetails {
   price: string;
   limit: string;
   features: string[];
+}
+
+interface SubscriptionSectionProps {
+  user?: {
+    plan?: string;
+    invoices_this_month?: number;
+  };
 }
 
 const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
@@ -48,20 +53,10 @@ const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
   },
 };
 
-export function SubscriptionSection() {
+export function SubscriptionSection({ user }: SubscriptionSectionProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data: user, isLoading, error } = useQuery({
-    queryKey: ["currentUser"],
-    queryFn: async () => {
-      const response = await apiClient.get("/users/me");
-      return response.data;
-    },
-    retry: false,
-    staleTime: 60000,
-  });
-
-  if (isLoading) {
+  if (!user) {
     return (
       <div className="rounded-lg border border-brand-border bg-white p-6 shadow-card">
         <div className="animate-pulse space-y-4">
@@ -72,15 +67,7 @@ export function SubscriptionSection() {
     );
   }
 
-  if (error || !user) {
-    return (
-      <div className="rounded-lg border border-brand-border bg-white p-6 text-sm text-brand-text shadow-card">
-        Unable to load subscription details.
-      </div>
-    );
-  }
-
-  const currentPlan = (user?.plan || "FREE") as SubscriptionPlan;
+  const currentPlan = (user?.plan?.toUpperCase() || "FREE") as SubscriptionPlan;
   const planDetails = PLAN_DETAILS[currentPlan] || PLAN_DETAILS.FREE;
   const invoicesUsed = user?.invoices_this_month || 0;
   const invoiceLimit = currentPlan === "ENTERPRISE" ? "∞" : (planDetails.limit?.split(" ")[0] || "5");
