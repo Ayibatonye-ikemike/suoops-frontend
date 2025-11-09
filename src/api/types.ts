@@ -43,19 +43,23 @@ export interface components {
       amount: string;
       status: string;
       pdf_url: string | null;
+      receipt_pdf_url?: string | null;
       created_at?: string | null;
       due_date?: string | null;
+      paid_at?: string | null;
     };
     InvoiceOutDetailed: {
       invoice_id: string;
       amount: string;
       status: string;
       pdf_url: string | null;
+      receipt_pdf_url?: string | null;
       created_at?: string | null;
       due_date?: string | null;
       discount_amount?: string | null;
       customer?: components["schemas"]["CustomerOut"] | null;
       lines?: components["schemas"]["InvoiceLineOut"][];
+      paid_at?: string | null;
     };
     InvoiceStatusUpdate: {
       status: "pending" | "awaiting_confirmation" | "paid" | "failed";
@@ -73,6 +77,7 @@ export interface components {
       bank_name?: string | null;
       account_number?: string | null;
       account_name?: string | null;
+      paid_at?: string | null;
     };
     RefreshRequest: {
       refresh_token?: string | null;

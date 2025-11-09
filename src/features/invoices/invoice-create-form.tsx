@@ -6,6 +6,8 @@ import { isAxiosError } from "axios";
 import { Button } from "@/components/ui/button";
 
 import { useCreateInvoice, type InvoiceLineInput } from "./use-create-invoice";
+import { useInvoiceQuota } from "./use-invoice-quota";
+import { parseFeatureGateError } from "@/lib/feature-gate";
 import { PlanSelectionModal } from "../settings/plan-selection-modal";
 
 type LineDraft = InvoiceLineInput & { id: string };
@@ -30,8 +32,10 @@ export function InvoiceCreateForm() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [quotaError, setQuotaError] = useState<string | null>(null);
   const [currentPlan, setCurrentPlan] = useState<string>("FREE");
+  const [upgradeUrl, setUpgradeUrl] = useState<string | null>(null);
 
   const mutation = useCreateInvoice();
+  const { data: quota, isLoading: quotaLoading, isError: quotaErrorState } = useInvoiceQuota();
 
   function updateLine(id: string, patch: Partial<LineDraft>) {
     setLines((current) => current.map((line) => (line.id === id ? { ...line, ...patch } : line)));
@@ -74,24 +78,23 @@ export function InvoiceCreateForm() {
       setLines([emptyLine()]);
     } catch (submitError) {
       console.error(submitError);
-      
-      // Check if it's a quota limit error
-      if (isAxiosError(submitError) && submitError.response?.status === 400) {
-        const errorMessage = submitError.response?.data?.detail || "";
-        if (errorMessage.includes("Invoice limit reached") || errorMessage.includes("Upgrade")) {
-          setQuotaError(errorMessage);
-          setShowUpgradeModal(true);
-          
-          // Extract current plan from error message or default to FREE
-          if (errorMessage.includes("Starter")) setCurrentPlan("FREE");
-          else if (errorMessage.includes("Pro")) setCurrentPlan("STARTER");
-          else if (errorMessage.includes("Business")) setCurrentPlan("PRO");
-          else setCurrentPlan("FREE");
-          
-          return;
-        }
+
+      // Robust handling for structured feature gate errors (403)
+      const gate = parseFeatureGateError(submitError);
+      if (gate?.type === "invoice_limit") {
+        const composed = [
+          gate.message,
+          gate.currentCount != null && gate.limit != null ? `You have used ${gate.currentCount} of ${gate.limit}.` : null,
+          "Upgrade now to unlock more invoices and premium automation."
+        ].filter(Boolean).join(" ");
+        setQuotaError(composed);
+        setCurrentPlan(gate.currentPlan || currentPlan);
+        setUpgradeUrl(gate.upgradeUrl || "/dashboard/upgrade");
+        setShowUpgradeModal(true);
+        return;
       }
-      
+
+      // Fallback generic error
       setError("Failed to create invoice. Check inputs and try again.");
     }
   }
@@ -208,17 +211,39 @@ export function InvoiceCreateForm() {
           ))}
         </div>
       </section>
-      <Button type="submit" disabled={mutation.isPending} className="w-fit">
-        {mutation.isPending ? "Creating…" : "Create Invoice"}
+      <Button
+        type="submit"
+        disabled={mutation.isPending || quotaLoading || (quota && !quota.can_create)}
+        className="w-fit"
+      >
+        {mutation.isPending ? "Creating…" : quota && !quota.can_create ? "Limit Reached" : "Create Invoice"}
       </Button>
+      {quota && quota.limit !== null && (
+        <p className="text-xs text-brand-textMuted">
+          {quota.current_count}/{quota.limit} invoices used this month • Plan: {quota.current_plan}
+        </p>
+      )}
+      {quotaErrorState && (
+        <p className="text-xs text-rose-600">Failed to load quota info</p>
+      )}
       {error ? <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-600">{error}</p> : null}
       {quotaError ? (
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
           <p className="text-sm font-semibold text-amber-900">⚠️ Invoice Limit Reached</p>
-          <p className="mt-1 text-sm text-amber-800">{quotaError}</p>
-          <Button type="button" onClick={() => setShowUpgradeModal(true)} className="mt-3" variant="secondary">
-            View Upgrade Options
-          </Button>
+          <p className="mt-1 text-sm text-amber-800 whitespace-pre-line">{quotaError}</p>
+          <div className="mt-3 flex flex-wrap gap-3">
+            <Button type="button" onClick={() => setShowUpgradeModal(true)} variant="secondary">
+              View Plans
+            </Button>
+            {upgradeUrl && (
+              <a
+                href={upgradeUrl}
+                className="inline-flex items-center rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-amber-700 transition"
+              >
+                Upgrade Now
+              </a>
+            )}
+          </div>
         </div>
       ) : null}
       {lastPdfUrl ? (

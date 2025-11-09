@@ -1,11 +1,14 @@
 "use client";
 
 import { ChangeEvent, useCallback, useMemo, useState } from "react";
+import { toast } from "react-hot-toast";
 
 import type { components } from "@/api/types";
 
 import { invoiceStatusHelpText, invoiceStatusLabels } from "./status-map";
-import { useInvoiceDetail } from "./use-invoice-detail";
+import { formatPaidAt } from "../../utils/formatDate";
+import { useInvoiceDetail, InvoiceDetail } from "./use-invoice-detail";
+import { buildInvoiceShareLink } from "@/lib/share-link";
 import { useUpdateInvoiceStatus } from "./use-update-invoice-status";
 
 const STATUS_ORDER = ["pending", "awaiting_confirmation", "paid", "failed"] as const;
@@ -62,7 +65,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
   const detailQuery = useInvoiceDetail(invoiceId);
   const mutation = useUpdateInvoiceStatus(invoiceId);
   const [linkCopied, setLinkCopied] = useState(false);
-  const invoice = detailQuery.data;
+  const invoice = detailQuery.data as InvoiceDetail | undefined;
 
   // Compute status metadata - must be called before any conditional returns
   const statusMeta = useMemo(() => {
@@ -77,28 +80,36 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
     );
   }, [invoice]);
 
-  const shareLink = useMemo(() => {
-    if (!invoice?.invoice_id) {
-      return "";
+  const shareLink = invoice?.invoice_id ? buildInvoiceShareLink(invoice.invoice_id) : "";
+  const handlePrint = useCallback(() => {
+    if (!invoice) return;
+    try {
+      // Prefer opening the invoice PDF if available for cleaner print formatting
+      if (invoice.pdf_url) {
+        const pdfHref = `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/invoices/${invoice.invoice_id}/pdf`;
+        window.open(pdfHref, "_blank", "noopener,noreferrer");
+        return;
+      }
+      window.print();
+    } catch (err) {
+      console.error("Print failed", err);
+      toast.error("Unable to initiate print");
     }
-    const envUrl = process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXT_PUBLIC_FRONTEND_URL ?? "";
-    const origin = envUrl || (typeof window !== "undefined" ? window.location.origin : "");
-    if (!origin) {
-      return "";
-    }
-    return `${origin.replace(/\/$/, "")}/pay/${invoice.invoice_id}`;
-  }, [invoice?.invoice_id]);
+  }, [invoice]);
 
   const handleCopyLink = useCallback(async () => {
     if (!shareLink || typeof navigator === "undefined" || !navigator.clipboard) {
+      toast.error("Copy not supported in this environment");
       return;
     }
     try {
       await navigator.clipboard.writeText(shareLink);
       setLinkCopied(true);
+      toast.success("Payment link copied");
       setTimeout(() => setLinkCopied(false), 2000);
     } catch (copyError) {
       console.error("Failed to copy invoice link", copyError);
+      toast.error("Failed to copy link");
     }
   }, [shareLink]);
 
@@ -150,9 +161,16 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
         <div>
           <h2 className="text-xl font-bold text-brand-text">Invoice {invoice.invoice_id}</h2>
           <p className="mt-1 text-sm text-brand-textMuted">Created {formatIsoDate(invoice.created_at ?? null)}</p>
+          {invoice.paid_at && (
+            <p className="mt-1 text-xs font-medium text-emerald-700">Paid {formatPaidAt(invoice.paid_at)}</p>
+          )}
         </div>
         <div className="flex items-center gap-2">
-          <span className={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-wide ${statusToneClass(statusMeta.tone)}`}>
+          <span
+            className={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-wide ${statusToneClass(statusMeta.tone)}`}
+            aria-live="polite"
+            aria-label={`Invoice status: ${statusMeta.label}`}
+          >
             {statusMeta.label}
           </span>
           {invoice.pdf_url && (
@@ -163,6 +181,24 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
               className="inline-flex items-center gap-1.5 rounded-lg border border-brand-primary bg-white px-3 py-1.5 text-xs font-semibold text-brand-primary transition hover:bg-brand-primary hover:text-white"
             >
               📄 PDF
+            </a>
+          )}
+          <button
+            type="button"
+            onClick={handlePrint}
+            aria-label="Print invoice"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border bg-white px-3 py-1.5 text-xs font-semibold text-brand-text transition hover:border-brand-primary hover:text-brand-primary"
+          >
+            🖨 Print
+          </button>
+          {invoice.receipt_pdf_url && invoice.status === "paid" && (
+            <a
+              href={invoice.receipt_pdf_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-600 bg-white px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-600 hover:text-white"
+            >
+              ✅ Receipt
             </a>
           )}
         </div>
@@ -245,11 +281,15 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
               </code>
               <button
                 type="button"
+                aria-label="Copy customer payment link to clipboard"
                 onClick={handleCopyLink}
                 className="w-full rounded-lg border border-brand-primary bg-white px-3 py-2 text-xs font-semibold uppercase tracking-wide text-brand-primary transition hover:bg-brand-primary hover:text-white sm:w-auto"
               >
                 {linkCopied ? "Copied!" : "Copy Link"}
               </button>
+              <div aria-live="polite" className="sr-only">
+                {linkCopied ? "Payment link copied to clipboard" : ""}
+              </div>
             </div>
           </div>
         )}
