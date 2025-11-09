@@ -41,7 +41,7 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
   const [invoice, setInvoice] = useState<InvoicePublic>(initialInvoice);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
-  const [copyField, setCopyField] = useState<"account" | "name" | null>(null);
+  const [copyField, setCopyField] = useState<"account" | "name" | "all" | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const isPaid = invoice.status === "paid";
@@ -93,7 +93,7 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
   }, [apiBaseUrl, invoiceId, isAwaiting, isClosed, isPaid, isSubmitting]);
 
   const copyToClipboard = useCallback(
-    async (value: string, field: "account" | "name") => {
+    async (value: string, field: "account" | "name" | "all") => {
       if (!value || typeof navigator === "undefined" || !navigator.clipboard) {
         return;
       }
@@ -136,6 +136,7 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
 
       <section className="rounded-2xl border border-brand-primary/40 bg-brand-primary/5 p-6">
         <h2 className="text-sm font-semibold text-slate-900">Transfer to</h2>
+        <p className="mt-2 text-xs text-slate-600">You can copy any detail or all of them for faster mobile banking entry.</p>
         <dl className="mt-4 space-y-3 text-sm text-slate-800">
           {invoice.business_name ? (
             <div>
@@ -178,6 +179,22 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
                 className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-slate-400 hover:text-slate-900"
               >
                 {copyField === "name" ? "Copied!" : "Copy"}
+              </button>
+            </div>
+          ) : null}
+          {invoice.bank_name && invoice.account_number && invoice.account_name ? (
+            <div className="flex flex-wrap items-center gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() =>
+                  copyToClipboard(
+                    `${invoice.bank_name} | ${invoice.account_number} | ${invoice.account_name}`,
+                    "all",
+                  )
+                }
+                className="rounded-lg border border-brand-primary/40 bg-white px-3 py-1.5 text-xs font-semibold text-brand-primary shadow-sm transition hover:bg-brand-primary/10"
+              >
+                {copyField === "all" ? "All copied!" : "Copy all details"}
               </button>
             </div>
           ) : null}
