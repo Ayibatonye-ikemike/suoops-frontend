@@ -61,7 +61,7 @@ export default function HomePage() {
                 Invoice via
                 <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   {" "}
-                  WhatsApp
+                  WhatsApp or Email
                 </span>
                 <br />
                 Get Paid Faster
@@ -580,7 +580,7 @@ export default function HomePage() {
                 <ul className="space-y-3 text-slate-300">
                   <li className="flex items-start gap-3">
                     <span className="text-green-400 mt-1">✓</span>
-                    <span>Create invoices in 5-10 seconds via WhatsApp</span>
+                    <span>Create invoices in 5-10 seconds via WhatsApp or Email</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-green-400 mt-1">✓</span>
@@ -588,7 +588,7 @@ export default function HomePage() {
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-green-400 mt-1">✓</span>
-                    <span>Automated tax reports - VAT returns & development levy calculated monthly</span>
+                    <span>Automated monthly tax reports with VAT & development levy calculations</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-green-400 mt-1">✓</span>
