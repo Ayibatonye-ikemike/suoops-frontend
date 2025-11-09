@@ -25,19 +25,19 @@ const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
     name: "Free",
     price: "₦0/month",
     limit: "5 invoices/month",
-    features: ["Basic invoice generation", "PDF exports", "WhatsApp integration"],
+    features: ["WhatsApp bot access", "Email delivery", "PDF generation", "QR verification"],
   },
   STARTER: {
     name: "Starter",
     price: "₦2,500/month",
     limit: "100 invoices/month",
-    features: ["WhatsApp invoicing", "PDF generation", "Email delivery", "Payment tracking"],
+    features: ["Everything in Free", "Voice invoices", "Photo OCR", "Custom branding", "Monthly tax reports"],
   },
   PRO: {
     name: "Pro",
     price: "₦7,500/month",
     limit: "1,000 invoices/month",
-    features: ["Everything in Starter", "Logo branding", "Phone verification", "Voice notes"],
+    features: ["Everything in Starter", "Priority processing", "Advanced analytics", "Email support"],
   },
   BUSINESS: {
     name: "Business",
@@ -152,13 +152,13 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
           </div>
         </div>
 
-        {currentPlan !== "ENTERPRISE" && (
+        {currentPlan !== "PRO" && currentPlan !== "BUSINESS" && currentPlan !== "ENTERPRISE" && (
           <div className="mt-8 rounded-2xl border border-brand-border bg-brand-background p-5">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
                 <p className="text-sm font-semibold text-brand-text">Need more headroom?</p>
                 <p className="text-sm text-brand-textMuted">
-                  Upgrade your plan to expand invoice limits, unlock automation, and priority support.
+                  Upgrade your plan to unlock voice invoices, photo OCR, custom branding, and higher invoice limits.
                 </p>
               </div>
               <Button
