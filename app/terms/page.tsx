@@ -27,27 +27,33 @@ export default function TermsPage() {
       <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
         <h1 className="text-4xl font-bold text-slate-900">Terms of Service</h1>
         <p className="mt-4 text-lg text-slate-600">
-          Last updated: October 28, 2025
+          Last updated: November 9, 2025
         </p>
 
         <div className="mt-12 space-y-8 text-slate-700">
           <section>
             <h2 className="text-2xl font-bold text-slate-900">1. Agreement to Terms</h2>
             <p className="mt-4">
+              By accessing or using SuoOps (&quot;the Service&quot;), you agree to be bound by these Terms of Service (&quot;Terms&quot;). If you disagree with any part of these Terms, you may not use our Service. These Terms apply to all visitors, users, and others who access the Service.
+            </p>
+            <p className="mt-4">
+              We reserve the right to update these Terms at any time. We will notify you of significant changes via email or through the Service. Your continued use after changes constitutes acceptance of the new Terms.
             </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-bold text-slate-900">2. Description of Service</h2>
             <p className="mt-4">
-              SuoOps is a WhatsApp-based invoice management platform that allows businesses to:
+              SuoOps is a WhatsApp and Email-based invoice management platform that allows businesses to:
             </p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
-              <li>Create invoices via voice notes or text messages</li>
-              <li>Send invoices to customers via WhatsApp</li>
-              <li>Track invoice status and payments</li>
-              <li>Generate PDF receipts and invoices</li>
+              <li>Create invoices via voice notes, text messages, or receipt photos on WhatsApp</li>
+              <li>Send invoices to customers via WhatsApp and Email</li>
+              <li>Generate professional PDF invoices with custom branding (logos)</li>
+              <li>Track invoice status and payments with QR code verification</li>
+              <li>Receive automated tax compliance reports (VAT and development levy calculations)</li>
               <li>Manage customer information and payment details</li>
+              <li>Sign in securely using Google OAuth (optional)</li>
             </ul>
           </section>
 
@@ -68,11 +74,14 @@ export default function TermsPage() {
             <p className="mt-4">SuoOps offers the following subscription plans:</p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
               <li><strong>Free Plan:</strong> 5 invoices per month at no cost</li>
-              <li><strong>Starter Plan:</strong> 100 invoices per month for ₦2,500/month</li>
-              <li><strong>Pro Plan:</strong> 1,000 invoices per month for ₦7,500/month</li>
-              <li><strong>Business Plan:</strong> 3,000 invoices per month for ₦15,000/month</li>
+              <li><strong>Starter Plan:</strong> 100 invoices per month for ₦2,500/month (includes voice invoices, photo OCR, and custom branding)</li>
+              <li><strong>Pro Plan:</strong> 1,000 invoices per month for ₦7,500/month (includes all Starter features)</li>
             </ul>
             <p className="mt-4">
+              All plans include: WhatsApp bot access, email delivery, PDF generation, QR code verification, and automated monthly tax compliance reports.
+            </p>
+            <p className="mt-4">
+              Prices are in Nigerian Naira (₦) and may be subject to change with 30 days notice. We reserve the right to modify pricing for new subscribers while honoring existing subscription rates.
             </p>
           </section>
 
@@ -117,6 +126,49 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-bold text-slate-900">8. WhatsApp Integration</h2>
             <p className="mt-4">
+              Our Service integrates with WhatsApp via the WhatsApp Cloud API. By using our WhatsApp features, you agree that:
+            </p>
+            <ul className="mt-4 list-disc space-y-2 pl-6">
+              <li>You must comply with WhatsApp&apos;s Terms of Service and Business Policy</li>
+              <li>We are not responsible for WhatsApp service interruptions or delivery failures</li>
+              <li>Voice notes sent to our bot are transcribed using AI and immediately deleted</li>
+              <li>Receipt photos sent for OCR processing are analyzed and deleted (not stored)</li>
+              <li>Messages must be sent to our official WhatsApp number only</li>
+              <li>We may suspend service if WhatsApp flags your account for spam or violations</li>
+            </ul>
+            <p className="mt-4">
+              <strong>Email Delivery:</strong> Invoices are also sent via email using Brevo SMTP. We are not responsible for email delivery failures due to spam filters, invalid addresses, or recipient email service issues.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-slate-900">8.1. Premium Features</h2>
+            <p className="mt-4">
+              The following features require a paid subscription (Starter plan or higher):
+            </p>
+            <ul className="mt-4 list-disc space-y-2 pl-6">
+              <li><strong>Voice Invoices:</strong> Create invoices by sending voice notes via WhatsApp (AI transcription)</li>
+              <li><strong>Photo OCR:</strong> Snap receipt photos and AI automatically extracts invoice details</li>
+              <li><strong>Custom Branding:</strong> Upload your business logo to appear on invoices</li>
+            </ul>
+            <p className="mt-4">
+              <strong>Important:</strong> Voice recordings and receipt photos are processed using AI and immediately deleted after extraction. We do not store these files permanently.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-slate-900">8.2. Tax Compliance Automation</h2>
+            <p className="mt-4">
+              All users (including Free plan) receive automated monthly tax compliance reports that include:
+            </p>
+            <ul className="mt-4 list-disc space-y-2 pl-6">
+              <li>VAT (Value Added Tax) calculations on taxable sales</li>
+              <li>Development Levy calculations (4% for non-small businesses)</li>
+              <li>Taxable, zero-rated, and exempt sales breakdowns</li>
+              <li>Assessable profit calculations based on paid invoices</li>
+            </ul>
+            <p className="mt-4">
+              <strong>Disclaimer:</strong> Tax reports are generated automatically based on your invoice data and Nigerian tax laws as of the last update. These are for informational purposes and should be reviewed by a tax professional. We are not responsible for tax filing accuracy or compliance with FIRS (Federal Inland Revenue Service) regulations. You are solely responsible for filing taxes and verifying calculations.
             </p>
           </section>
 

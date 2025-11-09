@@ -27,7 +27,7 @@ export default function PrivacyPage() {
       <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
         <h1 className="text-4xl font-bold text-slate-900">Privacy Policy</h1>
         <p className="mt-4 text-lg text-slate-600">
-          Last updated: October 28, 2025
+          Last updated: November 9, 2025
         </p>
         <div className="mt-12 space-y-8 text-slate-700">
           <section>
@@ -42,10 +42,14 @@ export default function PrivacyPage() {
             <p className="mt-4">We collect the following types of information:</p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
               <li><strong>Account Information:</strong> Name, email address, phone number, and business details when you register</li>
-              <li><strong>Invoice Data:</strong> Customer names, phone numbers, amounts, and invoice details you create</li>
+              <li><strong>Google Account Data:</strong> When you sign in with Google, we receive your name, email, and profile picture (you can revoke access anytime)</li>
+              <li><strong>Invoice Data:</strong> Customer names, phone numbers, email addresses, amounts, and invoice details you create</li>
               <li><strong>Payment Information:</strong> Bank account details for receiving payments (we do NOT store card details)</li>
               <li><strong>WhatsApp Messages:</strong> Messages sent to our WhatsApp bot for invoice creation</li>
-              <li><strong>Voice Recordings:</strong> Voice notes sent via WhatsApp (transcribed and deleted after processing)</li>
+              <li><strong>Voice Recordings:</strong> Voice notes sent via WhatsApp (transcribed using AI and immediately deleted after processing)</li>
+              <li><strong>Receipt Images:</strong> Photos of receipts sent for OCR processing (processed by AI to extract invoice details, then deleted)</li>
+              <li><strong>Custom Branding:</strong> Business logos uploaded for invoice customization (stored securely on AWS S3)</li>
+              <li><strong>Tax Data:</strong> VAT rates, development levy calculations, and tax compliance reports generated from your invoices</li>
               <li><strong>Usage Data:</strong> Information about how you use our service, including access times and features used</li>
             </ul>
           </section>
@@ -55,12 +59,15 @@ export default function PrivacyPage() {
             <p className="mt-4">We use your information to:</p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
               <li>Provide and maintain our invoice management service</li>
-              <li>Process and send invoices to your customers via WhatsApp</li>
-              <li>Generate PDF invoices and receipts</li>
-              <li>Send you notifications about invoice status and payments</li>
+              <li>Process and send invoices to your customers via WhatsApp and Email</li>
+              <li>Generate PDF invoices and receipts with your custom branding</li>
+              <li>Process voice notes and receipt photos using AI to extract invoice details</li>
+              <li>Calculate and generate automated tax compliance reports (VAT, development levy)</li>
+              <li>Send you notifications about invoice status, payments, and tax deadlines</li>
               <li>Process subscription payments and manage your account</li>
+              <li>Authenticate your account using Google OAuth (if you choose this option)</li>
               <li>Improve our service and develop new features</li>
-              <li>Comply with legal obligations</li>
+              <li>Comply with legal obligations and tax regulations</li>
             </ul>
           </section>
 
@@ -71,10 +78,13 @@ export default function PrivacyPage() {
             </p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
               <li>Data encrypted in transit using TLS/SSL</li>
-              <li>Secure cloud storage on AWS (S3 for files, RDS for database)</li>
+              <li>Secure cloud storage on AWS (S3 for files and logos, RDS for database)</li>
               <li>Regular security audits and updates</li>
               <li>Access controls and authentication for all systems</li>
-              <li>Voice recordings are transcribed and immediately deleted</li>
+              <li>Voice recordings are transcribed using AI and immediately deleted (not stored)</li>
+              <li>Receipt photos are processed for OCR and deleted (not permanently stored)</li>
+              <li>Custom logos stored securely with access controls</li>
+              <li>Tax reports encrypted and accessible only to you</li>
             </ul>
           </section>
 
@@ -82,11 +92,13 @@ export default function PrivacyPage() {
             <h2 className="text-2xl font-bold text-slate-900">5. Third-Party Services</h2>
             <p className="mt-4">We use the following third-party services:</p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
+              <li><strong>Google OAuth:</strong> For secure single sign-on authentication (optional)</li>
               <li><strong>WhatsApp Cloud API (Meta):</strong> For sending and receiving messages</li>
+              <li><strong>Brevo (formerly Sendinblue):</strong> For sending email notifications and invoice delivery</li>
               <li><strong>Paystack:</strong> For processing subscription payments</li>
-              <li><strong>AWS:</strong> For cloud infrastructure and storage</li>
-              <li><strong>OpenAI Whisper:</strong> For voice note transcription</li>
-              <li><strong>Amazon SES:</strong> For sending email notifications</li>
+              <li><strong>AWS:</strong> For cloud infrastructure and storage (S3 for files, RDS for database)</li>
+              <li><strong>OpenAI Whisper:</strong> For AI-powered voice note transcription</li>
+              <li><strong>OCR AI Services:</strong> For extracting invoice details from receipt photos</li>
             </ul>
             <p className="mt-4">
               These services have their own privacy policies and we encourage you to review them.
