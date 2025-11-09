@@ -3,52 +3,14 @@
 import { useMutation } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { useState } from "react";
-
 import { initializeSubscription } from "@/api/subscription";
+import { PAID_PLANS, type Plan } from "../../constants/pricing";
 
 interface PlanModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentPlan: string;
 }
-
-interface PlanOption {
-  name: string;
-  value: string;
-  price: string;
-  limit: string;
-  features: string[];
-  icon: string;
-  popular?: boolean;
-}
-
-const PLANS: PlanOption[] = [
-  {
-    name: "Starter",
-    value: "STARTER",
-    price: "₦4,500",
-    limit: "100 invoices/month",
-    icon: "🚀",
-    popular: true,
-    features: ["Everything in Free", "Tax reports", "Monthly tax automation"],
-  },
-  {
-    name: "Pro",
-    value: "PRO",
-    price: "₦8,000",
-    limit: "200 invoices/month",
-    icon: "⭐",
-    features: ["Everything in Starter", "Custom logo branding", "Priority support"],
-  },
-  {
-    name: "Business",
-    value: "BUSINESS",
-    price: "₦16,000",
-    limit: "300 invoices/month",
-    icon: "💼",
-    features: ["Everything in Pro", "Voice invoices (15/mo)", "Photo OCR (15/mo)", "API access"],
-  },
-];
 
 export function PlanSelectionModal({ isOpen, onClose, currentPlan }: PlanModalProps) {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
@@ -85,108 +47,111 @@ export function PlanSelectionModal({ isOpen, onClose, currentPlan }: PlanModalPr
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 text-2xl text-brand-textMuted transition hover:text-brand-text"
-          disabled={initializeMutation.isPending}
+          className="absolute right-4 top-4 rounded-lg p-2 hover:bg-brand-background transition-colors"
+          aria-label="Close"
         >
-          ×
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
         </button>
 
-        {/* Header */}
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold tracking-tight text-brand-text">Choose Your Plan</h2>
-          <p className="mt-2 text-sm text-brand-textMuted">
-            Select a plan and pay securely via Paystack. Your plan will be upgraded immediately after
-            payment.
+        {/* Modal header */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold sm:text-3xl">Choose Your Plan</h2>
+          <p className="mt-2 text-brand-textMuted">
+            Upgrade to unlock tax automation (Starter), custom branding (Pro), or voice+OCR (Business)
           </p>
         </div>
 
-        {/* Plans grid */}
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {PLANS.map((plan) => {
-            const isCurrent = plan.value === currentPlan;
-            const isSelected = plan.value === selectedPlan;
+        {/* Plan grid */}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {PAID_PLANS.map((plan: Plan) => {
+            const isCurrent = plan.id === currentPlan;
+            const isSelected = selectedPlan === plan.id;
 
             return (
-              <div
-                key={plan.value}
-                onClick={() => !isCurrent && setSelectedPlan(plan.value)}
-                className={`relative flex h-full cursor-pointer flex-col gap-4 rounded-xl border-2 p-4 transition-all ${
+              <button
+                key={plan.id}
+                type="button"
+                disabled={isCurrent}
+                onClick={() => setSelectedPlan(plan.id)}
+                className={`group relative rounded-xl border-2 p-6 text-left transition-all ${
                   isCurrent
-                    ? "cursor-not-allowed border-brand-border bg-white text-brand-textMuted"
+                    ? "border-brand-border bg-brand-background cursor-not-allowed opacity-60"
                     : isSelected
-                    ? "border-brand-primary bg-brand-primary text-white shadow-xl shadow-brand-border/40"
-                    : "border-brand-border bg-brand-background text-brand-text hover:border-brand-primary/40"
-                } ${plan.popular ? "ring-2 ring-brand-primary/40 ring-offset-2 ring-offset-white" : ""}`}
+                      ? "border-brand-primary bg-brand-primary/5 shadow-lg"
+                      : "border-brand-border bg-white hover:border-brand-primary/50 hover:shadow-md"
+                }`}
               >
-                {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand-primary px-3 py-1 text-xs font-semibold text-white">
-                    Most Popular
+                {plan.popular && !isCurrent && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="rounded-full bg-brand-primary px-3 py-1 text-xs font-semibold text-white">
+                      MOST POPULAR
+                    </span>
                   </div>
                 )}
 
                 {isCurrent && (
-                  <div className="absolute -top-3 right-4 rounded-full bg-brand-background px-3 py-1 text-xs font-semibold text-brand-text">
-                    Current Plan
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="rounded-full bg-brand-textMuted px-3 py-1 text-xs font-semibold text-white">
+                      CURRENT PLAN
+                    </span>
                   </div>
                 )}
 
-                <div className="flex items-center gap-3">
-                  <div className={`flex h-12 w-12 items-center justify-center rounded-xl text-2xl ${
-                    isSelected ? "bg-white/20 text-white" : "bg-brand-background text-brand-text"
-                  }`}>{plan.icon}</div>
-                  <div>
-                    <h3 className={`text-lg font-bold ${isSelected ? "text-white" : "text-brand-text"}`}>{plan.name}</h3>
-                    <p className={`text-sm ${isSelected ? "text-white/80" : "text-brand-textMuted"}`}>{plan.limit}</p>
-                  </div>
+                <div className="mb-4">
+                  <div className="text-4xl mb-2">{plan.icon}</div>
+                  <h3 className="text-xl font-bold">{plan.name}</h3>
                 </div>
 
-                <div>
-                  <p className={`text-2xl font-bold ${isSelected ? "text-white" : "text-brand-text"}`}>
-                    {plan.price}
-                    <span className={`text-sm font-normal ${isSelected ? "text-white/80" : "text-brand-textMuted"}`}>/month</span>
-                  </p>
+                <div className="mb-4">
+                  <div className="text-3xl font-bold">{plan.priceDisplay}</div>
+                  <div className="text-sm text-brand-textMuted">/month</div>
                 </div>
 
-                <ul className="flex-1 space-y-2">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className={`flex items-start gap-2 text-sm ${isSelected ? "text-white/80" : "text-brand-textMuted"}`}>
-                      <span className={isSelected ? "text-white" : "text-brand-primary"}>✓</span>
-                      {feature}
+                <div className="mb-4 text-sm font-semibold text-brand-textMuted">
+                  {plan.invoiceLimitDisplay}
+                </div>
+
+                <ul className="space-y-2 text-sm text-brand-textMuted">
+                  {plan.features.map((feature: string, i: number) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <svg className="h-5 w-5 flex-shrink-0 text-brand-success" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      <span>{feature}</span>
                     </li>
                   ))}
                 </ul>
 
                 {isSelected && !isCurrent && (
-                  <div className="mt-auto rounded-md bg-white/20 p-2 text-center text-sm font-medium text-white">
+                  <div className="mt-4 flex items-center gap-2 text-sm font-semibold text-brand-primary">
+                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
                     Selected
                   </div>
                 )}
-              </div>
+              </button>
             );
           })}
         </div>
 
-        {/* Footer */}
-        <div className="mt-6 flex flex-col gap-4 border-t border-brand-border/60 pt-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-brand-textMuted">
-            💳 Secure payment powered by <strong>Paystack</strong>
-          </p>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <button
-              onClick={onClose}
-              disabled={initializeMutation.isPending}
-              className="rounded-lg border border-brand-border px-4 py-2 text-sm font-semibold text-brand-text transition hover:bg-brand-background disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleUpgrade}
-              disabled={!selectedPlan || initializeMutation.isPending}
-              className="rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {initializeMutation.isPending ? "Processing..." : "Proceed to Payment"}
-            </button>
-          </div>
+        {/* Action buttons */}
+        <div className="mt-8 flex justify-end gap-4">
+          <button
+            onClick={onClose}
+            className="rounded-lg border border-brand-border bg-white px-6 py-2.5 text-sm font-semibold text-brand-text hover:bg-brand-background transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleUpgrade}
+            disabled={!selectedPlan || initializeMutation.isPending}
+            className="rounded-lg bg-brand-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
+          >
+            {initializeMutation.isPending ? "Processing..." : "Continue to Payment"}
+          </button>
         </div>
       </div>
     </div>

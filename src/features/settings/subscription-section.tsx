@@ -3,15 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PlanSelectionModal } from "./plan-selection-modal";
-
-type SubscriptionPlan = "FREE" | "STARTER" | "PRO" | "BUSINESS" | "ENTERPRISE";
-
-interface PlanDetails {
-  name: string;
-  price: string;
-  limit: string;
-  features: string[];
-}
+import { ALL_PLANS, type PlanTier, getPlan } from "../../constants/pricing";
 
 interface SubscriptionSectionProps {
   user?: {
@@ -19,39 +11,6 @@ interface SubscriptionSectionProps {
     invoices_this_month?: number;
   };
 }
-
-const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
-  FREE: {
-    name: "Free",
-    price: "₦0/month",
-    limit: "5 invoices/month",
-    features: ["Manual invoices only", "WhatsApp & Email", "PDF generation", "QR verification"],
-  },
-  STARTER: {
-    name: "Starter",
-    price: "₦4,500/month",
-    limit: "100 invoices/month",
-    features: ["Everything in Free", "Tax reports", "Monthly tax automation"],
-  },
-  PRO: {
-    name: "Pro",
-    price: "₦8,000/month",
-    limit: "200 invoices/month",
-    features: ["Everything in Starter", "Custom logo branding", "Priority support"],
-  },
-  BUSINESS: {
-    name: "Business",
-    price: "₦16,000/month",
-    limit: "300 invoices/month",
-    features: ["Everything in Pro", "Voice invoices (15/mo)", "Photo OCR (15/mo)", "API access"],
-  },
-  ENTERPRISE: {
-    name: "Enterprise",
-    price: "₦50,000/month",
-    limit: "Unlimited invoices",
-    features: ["Everything in Business", "Unlimited Voice & OCR", "Custom features", "Dedicated support"],
-  },
-};
 
 export function SubscriptionSection({ user }: SubscriptionSectionProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -67,12 +26,12 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
     );
   }
 
-  const currentPlan = (user?.plan?.toUpperCase() || "FREE") as SubscriptionPlan;
-  const planDetails = PLAN_DETAILS[currentPlan] || PLAN_DETAILS.FREE;
+  const currentPlan = (user?.plan?.toUpperCase() || "FREE") as PlanTier;
+  const planDetails = getPlan(currentPlan);
   const invoicesUsed = user?.invoices_this_month || 0;
-  const invoiceLimit = currentPlan === "ENTERPRISE" ? "∞" : (planDetails.limit?.split(" ")[0] || "5");
-  const invoiceLimitValue = invoiceLimit === "∞" ? Number.POSITIVE_INFINITY : Number(invoiceLimit) || 0;
-  const usagePercent = invoiceLimitValue === Number.POSITIVE_INFINITY || invoiceLimitValue === 0
+  const invoiceLimit = planDetails.invoiceLimit === Infinity ? "∞" : planDetails.invoiceLimit.toString();
+  const invoiceLimitValue = planDetails.invoiceLimit;
+  const usagePercent = invoiceLimitValue === Infinity || invoiceLimitValue === 0
     ? 0
     : Math.min((invoicesUsed / invoiceLimitValue) * 100, 100);
 
@@ -108,7 +67,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                     <span>{planDetails.name}</span>
                   </div>
                   <p className="mt-2 text-2xl font-semibold leading-tight text-brand-text">{planDetails.price}</p>
-                  <p className="text-sm text-brand-textMuted">{planDetails.limit}</p>
+                  <p className="text-sm text-brand-textMuted">{planDetails.invoiceLimitDisplay}</p>
                 </div>
               </div>
             </div>
