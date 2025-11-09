@@ -132,7 +132,7 @@ export function InvoiceListWithDetail() {
         </div>
 
         {/* Invoice List */}
-        <div className="max-h-[500px] space-y-3 overflow-y-auto">
+        <div className="max-h-[500px] space-y-2 overflow-y-auto">
           {hasFilteredInvoices ? (
             filteredInvoices.map((invoice: Invoice) => {
               const status = invoiceStatusLabels[invoice.status] ?? {
@@ -154,37 +154,23 @@ export function InvoiceListWithDetail() {
                       setSelectedInvoiceId(invoice.invoice_id);
                     }
                   }}
-                  className={`cursor-pointer rounded-lg border bg-brand-background p-4 transition ${
+                  className={`cursor-pointer rounded-lg border bg-white p-3 transition ${
                     isSelected
                       ? "border-brand-primary ring-2 ring-brand-primary/20"
-                      : "border-brand-border hover:border-brand-primary/40 hover:shadow-card-hover"
+                      : "border-brand-border hover:border-brand-primary/40 hover:shadow-sm"
                   }`}
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <strong className="text-sm font-bold text-brand-text">{invoice.invoice_id}</strong>
-                        <span
-                          className={`rounded-full px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ${badgeToneClass(status.tone)}`}
-                        >
-                          {status.label}
-                        </span>
-                      </div>
-                      <p className="mt-1 text-lg font-bold text-brand-primary">₦{invoice.amount.toLocaleString()}</p>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-bold text-brand-text truncate">{invoice.invoice_id}</p>
+                      <p className="mt-0.5 text-sm font-bold text-brand-primary">₦{invoice.amount.toLocaleString()}</p>
                     </div>
+                    <span
+                      className={`flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ${badgeToneClass(status.tone)}`}
+                    >
+                      {status.label}
+                    </span>
                   </div>
-                  {invoice.pdf_url && (
-                    <div className="mt-3">
-                      <Link
-                        href={`${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/invoices/${invoice.invoice_id}/pdf`}
-                        target="_blank"
-                        className="inline-flex items-center gap-2 text-xs font-semibold text-brand-primary hover:underline"
-                        onClick={(event) => event.stopPropagation()}
-                      >
-                        📄 View PDF
-                      </Link>
-                    </div>
-                  )}
                 </div>
               );
             })

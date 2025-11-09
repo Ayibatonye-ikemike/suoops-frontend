@@ -151,9 +151,21 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
           <h2 className="text-xl font-bold text-brand-text">Invoice {invoice.invoice_id}</h2>
           <p className="mt-1 text-sm text-brand-textMuted">Created {formatIsoDate(invoice.created_at ?? null)}</p>
         </div>
-        <span className={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-wide ${statusToneClass(statusMeta.tone)}`}>
-          {statusMeta.label}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-wide ${statusToneClass(statusMeta.tone)}`}>
+            {statusMeta.label}
+          </span>
+          {invoice.pdf_url && (
+            <a
+              href={`${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/invoices/${invoice.invoice_id}/pdf`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-brand-primary bg-white px-3 py-1.5 text-xs font-semibold text-brand-primary transition hover:bg-brand-primary hover:text-white"
+            >
+              📄 PDF
+            </a>
+          )}
+        </div>
       </header>
 
       {/* Body - Key Details */}
