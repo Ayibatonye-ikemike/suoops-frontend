@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { verifySubscription } from "@/api/subscription";
 import { Button } from "@/components/ui/button";
 
 export default function SubscriptionSuccessPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [status, setStatus] = useState<"verifying" | "success" | "error">("verifying");
   const [message, setMessage] = useState("");
   const [planInfo, setPlanInfo] = useState<{ old_plan?: string; new_plan?: string; amount_paid?: number } | null>(null);
@@ -32,6 +34,9 @@ export default function SubscriptionSuccessPage() {
             new_plan: data.new_plan,
             amount_paid: data.amount_paid,
           });
+          
+          // Invalidate user data cache so settings page shows updated plan
+          queryClient.invalidateQueries({ queryKey: ["currentUser"] });
         } else {
           setStatus("error");
           setMessage(data.message || "Payment verification failed");
@@ -41,7 +46,7 @@ export default function SubscriptionSuccessPage() {
         setStatus("error");
         setMessage(error.response?.data?.detail || "Failed to verify payment. Please contact support.");
       });
-  }, [searchParams]);
+  }, [searchParams, queryClient]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-brand-background px-4 py-10">
@@ -80,7 +85,11 @@ export default function SubscriptionSuccessPage() {
 
             <Button
               className="mt-6 w-full"
-              onClick={() => router.push("/dashboard/settings")}
+              onClick={() => {
+                // Invalidate cache again before navigation to ensure fresh data
+                queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+                router.push("/dashboard/settings");
+              }}
             >
               Go to Settings
             </Button>
