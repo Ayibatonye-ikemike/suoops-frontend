@@ -621,178 +621,116 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Enterprise Features Section */}
+      {/* Premium Features Section */}
       <section className="px-4 py-20 sm:px-6 lg:px-8 bg-white">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <h2 className="text-base font-semibold text-blue-600">BUILT FOR NIGERIAN BUSINESSES</h2>
+            <h2 className="text-base font-semibold text-blue-600">PREMIUM FEATURES</h2>
             <p className="mt-2 text-4xl font-bold text-slate-900 sm:text-5xl">
-              Enterprise-Grade Features
+              Upgrade to unlock more
             </p>
             <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-              Everything you need to run a compliant, professional business
+              Advanced features for growing businesses
             </p>
           </div>
 
           <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {/* Google OAuth SSO */}
+            {/* Voice Invoices */}
             <div className="rounded-2xl border-2 border-slate-200 bg-white p-8 shadow-sm hover:shadow-lg transition-all">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 to-orange-500 text-3xl shadow-lg">
-                🔐
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 text-3xl shadow-lg">
+                🎤
               </div>
-              <h3 className="mt-6 text-xl font-bold text-slate-900">Google OAuth SSO</h3>
+              <h3 className="mt-6 text-xl font-bold text-slate-900">Voice Invoices</h3>
               <p className="mt-2 text-slate-600">
-                Enterprise single sign-on with Google authentication. Secure, fast, and familiar.
+                Send a voice note on WhatsApp and AI creates your invoice instantly. Hands-free invoicing.
               </p>
               <ul className="mt-4 space-y-2 text-sm text-slate-600">
                 <li className="flex items-start gap-2">
                   <span className="text-green-600">✓</span>
-                  <span>One-click sign-in with Google</span>
+                  <span>WhatsApp voice notes</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-600">✓</span>
-                  <span>No password management</span>
+                  <span>AI transcription</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-600">✓</span>
-                  <span>Enterprise-grade security</span>
+                  <span>Works while driving</span>
                 </li>
               </ul>
+              <div className="mt-6 rounded-lg bg-purple-50 px-3 py-2 text-center">
+                <p className="text-sm font-semibold text-purple-700">Starter plan & above</p>
+              </div>
             </div>
 
-            {/* Email Authentication */}
+            {/* Photo OCR */}
             <div className="rounded-2xl border-2 border-slate-200 bg-white p-8 shadow-sm hover:shadow-lg transition-all">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 text-3xl shadow-lg">
-                ✉️
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 text-3xl shadow-lg">
+                📸
               </div>
-              <h3 className="mt-6 text-xl font-bold text-slate-900">Multi-Channel Delivery</h3>
+              <h3 className="mt-6 text-xl font-bold text-slate-900">Photo OCR</h3>
               <p className="mt-2 text-slate-600">
-                Send invoices via WhatsApp AND email automatically. Reach customers on their preferred channel.
+                Snap a photo of any receipt and AI extracts customer name, amount, and items automatically.
               </p>
               <ul className="mt-4 space-y-2 text-sm text-slate-600">
                 <li className="flex items-start gap-2">
                   <span className="text-green-600">✓</span>
-                  <span>WhatsApp + Email delivery</span>
+                  <span>Upload receipt photos</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-600">✓</span>
-                  <span>Professional email invoices</span>
+                  <span>AI data extraction</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-600">✓</span>
-                  <span>Email OTP authentication</span>
+                  <span>No manual typing</span>
                 </li>
               </ul>
+              <div className="mt-6 rounded-lg bg-orange-50 px-3 py-2 text-center">
+                <p className="text-sm font-semibold text-orange-700">Starter plan & above</p>
+              </div>
             </div>
 
             {/* Custom Branding */}
             <div className="rounded-2xl border-2 border-slate-200 bg-white p-8 shadow-sm hover:shadow-lg transition-all">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 text-3xl shadow-lg">
-                🎨
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-3xl shadow-lg">
+                �
               </div>
-              <h3 className="mt-6 text-xl font-bold text-slate-900">Professional Branding</h3>
+              <h3 className="mt-6 text-xl font-bold text-slate-900">Custom Logo Branding</h3>
               <p className="mt-2 text-slate-600">
-                Upload your business logo to appear on all invoices. Build brand trust with every invoice.
+                Upload your business logo to appear on all invoices. Build brand recognition with every invoice.
               </p>
               <ul className="mt-4 space-y-2 text-sm text-slate-600">
                 <li className="flex items-start gap-2">
                   <span className="text-green-600">✓</span>
-                  <span>Custom logo on invoices</span>
+                  <span>Custom logo on PDFs</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-600">✓</span>
-                  <span>Branded PDFs</span>
+                  <span>Branded invoices</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-600">✓</span>
                   <span>Professional appearance</span>
                 </li>
               </ul>
-            </div>
-
-            {/* Tax Compliance */}
-            <div className="rounded-2xl border-2 border-slate-200 bg-white p-8 shadow-sm hover:shadow-lg transition-all">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 text-3xl shadow-lg">
-                📊
+              <div className="mt-6 rounded-lg bg-blue-50 px-3 py-2 text-center">
+                <p className="text-sm font-semibold text-blue-700">Pro plan & above</p>
               </div>
-              <h3 className="mt-6 text-xl font-bold text-slate-900">Tax Compliance Tools</h3>
-              <p className="mt-2 text-slate-600">
-                Automated development levy calculation, VAT returns, and fiscal invoice generation.
-              </p>
-              <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                <li className="flex items-start gap-2">
-                  <span className="text-green-600">✓</span>
-                  <span>Development levy automation</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-600">✓</span>
-                  <span>Monthly VAT reports</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-600">✓</span>
-                  <span>Fiscal compliance ready</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Bank Validation */}
-            <div className="rounded-2xl border-2 border-slate-200 bg-white p-8 shadow-sm hover:shadow-lg transition-all">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-yellow-500 to-amber-500 text-3xl shadow-lg">
-                🏦
-              </div>
-              <h3 className="mt-6 text-xl font-bold text-slate-900">Payment Validation</h3>
-              <p className="mt-2 text-slate-600">
-                Ensures bank details are configured before invoice creation. No incomplete invoices sent to customers.
-              </p>
-              <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                <li className="flex items-start gap-2">
-                  <span className="text-green-600">✓</span>
-                  <span>Bank details validation</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-600">✓</span>
-                  <span>Payment tracking</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-600">✓</span>
-                  <span>Customer payment portal</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Security Features */}
-            <div className="rounded-2xl border-2 border-slate-200 bg-white p-8 shadow-sm hover:shadow-lg transition-all">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-700 to-slate-900 text-3xl shadow-lg">
-                🛡️
-              </div>
-              <h3 className="mt-6 text-xl font-bold text-slate-900">Enterprise Security</h3>
-              <p className="mt-2 text-slate-600">
-                Bank-grade encryption, OAuth 2.0, secure file storage, and comprehensive error handling.
-              </p>
-              <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                <li className="flex items-start gap-2">
-                  <span className="text-green-600">✓</span>
-                  <span>TLS/SSL encryption</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-600">✓</span>
-                  <span>Secure cloud storage (AWS S3)</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-600">✓</span>
-                  <span>Graceful error handling</span>
-                </li>
-              </ul>
             </div>
           </div>
 
           {/* Trust Indicators */}
           <div className="mt-16 rounded-3xl border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-cyan-50 p-8 lg:p-12">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-bold text-slate-900">Built with Enterprise-Grade Technology</h3>
+              <p className="mt-2 text-sm text-slate-600">Security and reliability you can trust</p>
+            </div>
             <div className="grid gap-8 lg:grid-cols-3">
               <div className="text-center">
                 <div className="text-4xl font-bold text-blue-600">99.9%</div>
                 <div className="mt-2 text-sm font-medium text-slate-600">Uptime SLA</div>
-                <div className="mt-1 text-xs text-slate-500">Enterprise reliability</div>
+                <div className="mt-1 text-xs text-slate-500">Always available</div>
               </div>
               <div className="text-center">
                 <div className="text-4xl font-bold text-blue-600">256-bit</div>
@@ -801,8 +739,8 @@ export default function HomePage() {
               </div>
               <div className="text-center">
                 <div className="text-4xl font-bold text-blue-600">FIRS</div>
-                <div className="mt-2 text-sm font-medium text-slate-600">Tax Compliant</div>
-                <div className="mt-1 text-xs text-slate-500">Ready for fiscalization</div>
+                <div className="mt-2 text-sm font-medium text-slate-600">Tax Ready</div>
+                <div className="mt-1 text-xs text-slate-500">Compliance built-in</div>
               </div>
             </div>
           </div>
