@@ -634,7 +634,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             {/* Voice Invoices */}
             <div className="rounded-2xl border-2 border-slate-200 bg-white p-8 shadow-sm hover:shadow-lg transition-all">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 text-3xl shadow-lg">
@@ -715,7 +715,35 @@ export default function HomePage() {
                 </li>
               </ul>
               <div className="mt-6 rounded-lg bg-blue-50 px-3 py-2 text-center">
-                <p className="text-sm font-semibold text-blue-700">Pro plan & above</p>
+                <p className="text-sm font-semibold text-blue-700">Starter plan & above</p>
+              </div>
+            </div>
+
+            {/* Monthly Tax Automation */}
+            <div className="rounded-2xl border-2 border-slate-200 bg-white p-8 shadow-sm hover:shadow-lg transition-all">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 text-3xl shadow-lg">
+                📊
+              </div>
+              <h3 className="mt-6 text-xl font-bold text-slate-900">Monthly Tax Automation</h3>
+              <p className="mt-2 text-slate-600">
+                Automated monthly tax reports, VAT returns, and development levy calculations. Stay FIRS-compliant effortlessly.
+              </p>
+              <ul className="mt-4 space-y-2 text-sm text-slate-600">
+                <li className="flex items-start gap-2">
+                  <span className="text-green-600">✓</span>
+                  <span>Monthly tax reports</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-600">✓</span>
+                  <span>VAT return generation</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-green-600">✓</span>
+                  <span>Development levy tracking</span>
+                </li>
+              </ul>
+              <div className="mt-6 rounded-lg bg-green-50 px-3 py-2 text-center">
+                <p className="text-sm font-semibold text-green-700">Starter plan & above</p>
               </div>
             </div>
           </div>
@@ -759,7 +787,7 @@ export default function HomePage() {
               { 
                 name: "Free", 
                 price: "₦0", 
-                invoices: "10/month",
+                invoices: "5/month",
                 features: ["Manual invoices", "WhatsApp bot", "PDF generation", "Email delivery", "QR verification"]
               },
               { 
@@ -767,7 +795,7 @@ export default function HomePage() {
                 price: "₦2,500", 
                 invoices: "100/month", 
                 popular: false,
-                features: ["All Free features", "Photo invoice OCR", "Voice invoices", "Custom logo branding", "Tax compliance tools"]
+                features: ["All Free features", "Photo invoice OCR", "Voice invoices", "Custom logo branding", "Monthly tax automation"]
               },
               { 
                 name: "Pro", 
