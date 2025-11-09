@@ -50,15 +50,15 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
 
   const paymentMessage = useMemo(() => {
     if (isPaid) {
-      return "Thanks! The business has marked this invoice as paid.";
+      return "✅ Payment confirmed! Your receipt has been sent.";
     }
     if (isAwaiting) {
-      return "Thanks! The business has been notified. They will confirm once the transfer lands.";
+      return "⏳ Thanks! We've notified the business. You'll receive your receipt once they confirm the transfer.";
     }
     if (isClosed) {
-      return "This invoice is closed. Reach out to the business if you need a fresh invoice.";
+      return "This invoice is closed. Contact the business if you need a new invoice.";
     }
-    return "Kindly make a bank transfer using the details below. Tap the button once you’ve sent it.";
+    return "Please make a bank transfer using the details below.";
   }, [isPaid, isAwaiting, isClosed]);
 
   const handleConfirmTransfer = useCallback(async () => {
@@ -197,17 +197,17 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
       ) : null}
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="text-sm font-semibold text-slate-900">Tell the business once you’ve paid</h2>
+        <h2 className="text-sm font-semibold text-slate-900">Confirm your transfer</h2>
         <p className="mt-2 text-sm text-slate-600">
-          Tap the button after completing the transfer. The business will double-check and send your receipt once the payment clears.
+          After completing the bank transfer, tap the button below to notify the business. They'll verify the payment and send your receipt.
         </p>
         <button
           type="button"
           onClick={handleConfirmTransfer}
           disabled={isSubmitting || isAwaiting || isPaid || isClosed}
-          className="mt-4 w-full rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+          className="mt-4 w-full rounded-lg bg-brand-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isPaid ? "Already marked as paid" : isAwaiting ? "Waiting for confirmation" : isSubmitting ? "Sending..." : "I’ve sent the transfer"}
+          {isPaid ? "✓ Payment confirmed" : isAwaiting ? "✓ Business notified" : isSubmitting ? "Notifying..." : "I've sent the transfer"}
         </button>
       </section>
 
