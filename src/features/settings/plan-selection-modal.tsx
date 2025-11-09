@@ -30,7 +30,7 @@ const PLANS: PlanOption[] = [
     limit: "100 invoices/month",
     icon: "🚀",
     popular: true,
-    features: ["Voice invoices", "Photo OCR", "Custom branding", "Email delivery", "Monthly tax reports"],
+    features: ["Photo invoice OCR", "Voice invoices", "Custom logo branding", "VAT returns", "Development levy tracking"],
   },
   {
     name: "Pro",
@@ -38,7 +38,7 @@ const PLANS: PlanOption[] = [
     price: "₦7,500",
     limit: "1,000 invoices/month",
     icon: "⭐",
-    features: ["Everything in Starter", "Priority processing", "Advanced analytics", "Email support"],
+    features: ["Higher invoice limits", "Priority email support", "Early access to new features"],
   },
 ];
 
