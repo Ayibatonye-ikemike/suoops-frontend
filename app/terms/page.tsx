@@ -71,21 +71,21 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-2xl font-bold text-slate-900">4. Subscription Plans</h2>
-            <p className="mt-4">SuoOps offers the following subscription plans:</p>
+            <p className="mt-4">We offer the following subscription tiers:</p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
-              <li><strong>Free Plan:</strong> 5 invoices per month at no cost</li>
-              <li><strong>Starter Plan:</strong> 100 invoices per month for ₦2,500/month (includes voice invoices, photo OCR, and custom branding)</li>
-              <li><strong>Pro Plan:</strong> 1,000 invoices per month for ₦7,500/month (includes all Starter features)</li>
+              <li><strong>Free Plan:</strong> ₦0/month - 5 invoices/month (manual WhatsApp & Email only)</li>
+              <li><strong>Starter Plan:</strong> ₦4,500/month - 100 invoices/month + Tax reports & automation</li>
+              <li><strong>Pro Plan:</strong> ₦8,000/month - 200 invoices/month + Custom logo branding + Priority support</li>
+              <li><strong>Business Plan:</strong> ₦16,000/month - 300 invoices/month + Voice invoices (15/mo) + Photo OCR (15/mo) + API access</li>
+              <li><strong>Enterprise Plan:</strong> ₦50,000/month - Unlimited invoices + Unlimited Voice & OCR + Custom features + Dedicated support</li>
             </ul>
             <p className="mt-4">
-              All plans include: WhatsApp bot access, email delivery, PDF generation, QR code verification, and automated monthly tax compliance reports.
+              <strong>Business Plan Voice & OCR Quota:</strong> The Business plan includes up to 15 voice invoices and 15 photo OCR invoices per month (5% of your 300 invoice limit). The remaining 285 invoices must be created manually via WhatsApp text or dashboard. This quota resets on the 1st of each month. Enterprise plan has unlimited premium features.
             </p>
             <p className="mt-4">
-              Prices are in Nigerian Naira (₦) and may be subject to change with 30 days notice. We reserve the right to modify pricing for new subscribers while honoring existing subscription rates.
+              Invoice limits reset on the 1st of every month. Unused invoices do not roll over. If you exceed your limit, you must upgrade or wait until the next billing cycle.
             </p>
-          </section>
-
-          <section>
+          </section>          <section>
             <h2 className="text-2xl font-bold text-slate-900">5. Payment Terms</h2>
             <p className="mt-4">
               Subscription payments are processed securely through Paystack. By subscribing, you authorize us to charge your payment method on a recurring basis. We do not store your card details.
@@ -142,21 +142,40 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-slate-900">8.1. Premium Features</h2>
+            <h2 className="text-2xl font-bold text-slate-900">8.1. Premium Features (Business+ Plans)</h2>
             <p className="mt-4">
-              The following features require a paid subscription (Starter plan or higher):
+              The following premium features are available exclusively on Business and Enterprise plans:
             </p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
               <li><strong>Voice Invoices:</strong> Create invoices by sending voice notes via WhatsApp (AI transcription)</li>
               <li><strong>Photo OCR:</strong> Snap receipt photos and AI automatically extracts invoice details</li>
-              <li><strong>Custom Branding:</strong> Upload your business logo to appear on invoices</li>
             </ul>
+            <p className="mt-4">
+              <strong>Custom Branding</strong> (logo upload) is available on Pro, Business, and Enterprise plans.
+            </p>
             <p className="mt-4">
               <strong>Important:</strong> Voice recordings and receipt photos are processed using AI and immediately deleted after extraction. We do not store these files permanently.
             </p>
           </section>
 
           <section>
+            <h2 className="text-2xl font-bold text-slate-900">8.2. Tax Compliance Automation</h2>
+            <p className="mt-4">
+              Starter, Pro, Business, and Enterprise plans receive automated monthly tax compliance reports that include:
+            </p>
+            <ul className="mt-4 list-disc space-y-2 pl-6">
+              <li>VAT (Value Added Tax) calculations on taxable sales</li>
+              <li>Development Levy calculations (4% for non-small businesses)</li>
+              <li>Taxable, zero-rated, and exempt sales breakdowns</li>
+              <li>Assessable profit calculations based on paid invoices</li>
+            </ul>
+            <p className="mt-4">
+              Free plan users do NOT receive automated tax reports. Upgrade to Starter or higher to unlock this feature.
+            </p>
+            <p className="mt-4">
+              <strong>Disclaimer:</strong> Tax reports are generated automatically based on your invoice data and Nigerian tax laws as of the last update. These are for informational purposes and should be reviewed by a tax professional. We are not responsible for tax filing accuracy or compliance with FIRS (Federal Inland Revenue Service) regulations. You are solely responsible for filing taxes and verifying calculations.
+            </p>
+          </section>          <section>
             <h2 className="text-2xl font-bold text-slate-900">8.2. Tax Compliance Automation</h2>
             <p className="mt-4">
               All users (including Free plan) receive automated monthly tax compliance reports that include:

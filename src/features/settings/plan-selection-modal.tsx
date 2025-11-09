@@ -26,19 +26,27 @@ const PLANS: PlanOption[] = [
   {
     name: "Starter",
     value: "STARTER",
-    price: "₦2,500",
+    price: "₦4,500",
     limit: "100 invoices/month",
     icon: "🚀",
     popular: true,
-    features: ["Photo invoice OCR", "Voice invoices", "Custom logo branding", "VAT returns", "Development levy tracking"],
+    features: ["Everything in Free", "Tax reports", "Monthly tax automation"],
   },
   {
     name: "Pro",
     value: "PRO",
-    price: "₦7,500",
-    limit: "1,000 invoices/month",
+    price: "₦8,000",
+    limit: "200 invoices/month",
     icon: "⭐",
-    features: ["Higher invoice limits", "Priority email support", "Early access to new features"],
+    features: ["Everything in Starter", "Custom logo branding", "Priority support"],
+  },
+  {
+    name: "Business",
+    value: "BUSINESS",
+    price: "₦16,000",
+    limit: "300 invoices/month",
+    icon: "💼",
+    features: ["Everything in Pro", "Voice invoices (15/mo)", "Photo OCR (15/mo)", "API access"],
   },
 ];
 
@@ -93,7 +101,7 @@ export function PlanSelectionModal({ isOpen, onClose, currentPlan }: PlanModalPr
         </div>
 
         {/* Plans grid */}
-        <div className="grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {PLANS.map((plan) => {
             const isCurrent = plan.value === currentPlan;
             const isSelected = plan.value === selectedPlan;

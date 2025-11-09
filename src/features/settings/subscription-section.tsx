@@ -25,31 +25,31 @@ const PLAN_DETAILS: Record<SubscriptionPlan, PlanDetails> = {
     name: "Free",
     price: "₦0/month",
     limit: "5 invoices/month",
-    features: ["Manual invoices", "WhatsApp bot", "PDF generation", "Email delivery", "QR verification", "Tax reports"],
+    features: ["Manual invoices only", "WhatsApp & Email", "PDF generation", "QR verification"],
   },
   STARTER: {
     name: "Starter",
-    price: "₦2,500/month",
+    price: "₦4,500/month",
     limit: "100 invoices/month",
-    features: ["Photo invoice OCR", "Voice invoices", "Custom logo branding", "VAT returns", "Development levy tracking"],
+    features: ["Everything in Free", "Tax reports", "Monthly tax automation"],
   },
   PRO: {
     name: "Pro",
-    price: "₦7,500/month",
-    limit: "1,000 invoices/month",
-    features: ["Higher invoice limits", "Priority email support", "Early access to new features"],
+    price: "₦8,000/month",
+    limit: "200 invoices/month",
+    features: ["Everything in Starter", "Custom logo branding", "Priority support"],
   },
   BUSINESS: {
     name: "Business",
-    price: "₦15,000/month",
-    limit: "3,000 invoices/month",
-    features: ["Everything in Pro", "Priority processing", "Email support", "Lower rates"],
+    price: "₦16,000/month",
+    limit: "300 invoices/month",
+    features: ["Everything in Pro", "Voice invoices (15/mo)", "Photo OCR (15/mo)", "API access"],
   },
   ENTERPRISE: {
     name: "Enterprise",
     price: "₦50,000/month",
     limit: "Unlimited invoices",
-    features: ["Everything in Business", "Custom features", "Direct support", "Volume discount"],
+    features: ["Everything in Business", "Unlimited Voice & OCR", "Custom features", "Dedicated support"],
   },
 };
 
@@ -158,7 +158,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
               <div>
                 <p className="text-sm font-semibold text-brand-text">Need more headroom?</p>
                 <p className="text-sm text-brand-textMuted">
-                  Upgrade to unlock photo OCR, voice invoices, custom branding, and higher invoice limits.
+                  Upgrade to unlock tax automation (Starter), custom branding (Pro), or voice+OCR (Business).
                 </p>
               </div>
               <Button
