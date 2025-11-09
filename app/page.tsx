@@ -638,7 +638,7 @@ export default function HomePage() {
               Unlock Premium Features
             </p>
             <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-              Start with free WhatsApp invoicing. Upgrade to Starter for voice, photo OCR, and custom branding.
+              Start with free manual invoicing. Upgrade for tax automation (Starter), custom branding (Pro), or voice+OCR (Business).
             </p>
           </div>
 
@@ -667,7 +667,7 @@ export default function HomePage() {
                 </li>
               </ul>
               <div className="mt-6 rounded-lg bg-purple-50 px-3 py-2 text-center">
-                <p className="text-sm font-semibold text-purple-700">Starter plan & above</p>
+                <p className="text-sm font-semibold text-purple-700">Business plan (15/mo)</p>
               </div>
             </div>
 
@@ -695,7 +695,7 @@ export default function HomePage() {
                 </li>
               </ul>
               <div className="mt-6 rounded-lg bg-orange-50 px-3 py-2 text-center">
-                <p className="text-sm font-semibold text-orange-700">Starter plan & above</p>
+                <p className="text-sm font-semibold text-orange-700">Business plan (15/mo)</p>
               </div>
             </div>
 
@@ -723,7 +723,7 @@ export default function HomePage() {
                 </li>
               </ul>
               <div className="mt-6 rounded-lg bg-blue-50 px-3 py-2 text-center">
-                <p className="text-sm font-semibold text-blue-700">Starter plan & above</p>
+                <p className="text-sm font-semibold text-blue-700">Pro plan & above</p>
               </div>
             </div>
           </div>
@@ -762,27 +762,34 @@ export default function HomePage() {
           <p className="mt-2 text-4xl font-bold text-slate-900">
             Start free, upgrade as you grow
           </p>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto">
             {[
               { 
                 name: "Free", 
                 price: "₦0", 
                 invoices: "5/month",
-                features: ["Manual invoices", "WhatsApp bot", "PDF generation", "Email delivery", "QR verification", "Tax reports"]
+                features: ["Manual invoices only", "WhatsApp & Email", "PDF generation", "QR verification"]
               },
               { 
                 name: "Starter", 
-                price: "₦2,500", 
+                price: "₦4,500", 
                 invoices: "100/month", 
                 popular: true,
-                features: ["Photo invoice OCR", "Voice invoices", "Custom logo branding", "VAT returns", "Development levy tracking"]
+                features: ["Everything in Free", "Tax reports", "Monthly tax automation"]
               },
               { 
                 name: "Pro", 
-                price: "₦7,500", 
-                invoices: "1,000/month", 
+                price: "₦8,000", 
+                invoices: "200/month", 
                 popular: false,
-                features: ["Higher invoice limits", "Priority email support", "Early access to new features"]
+                features: ["Everything in Starter", "Custom logo branding", "Priority support"]
+              },
+              { 
+                name: "Business", 
+                price: "₦16,000", 
+                invoices: "300/month", 
+                popular: false,
+                features: ["Everything in Pro", "Voice invoices (15/mo)", "Photo OCR (15/mo)", "API access"]
               },
             ].map((plan, i) => (
               <div
