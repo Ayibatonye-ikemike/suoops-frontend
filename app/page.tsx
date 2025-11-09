@@ -273,7 +273,7 @@ export default function HomePage() {
       <section className="px-4 py-20 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-slate-50">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <h2 className="text-base font-semibold text-blue-600">HOW IT WORKS</h2>
+            <h2 className="text-base font-semibold text-blue-600">FEATURES</h2>
             <p className="mt-2 text-4xl font-bold text-slate-900 sm:text-5xl">
               Create Invoices Your Way
             </p>
@@ -554,7 +554,11 @@ export default function HomePage() {
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-red-400 mt-1">✗</span>
-                    <span>Risk of fake invoices impersonating your business</span>
+                    <span>Manually calculate VAT and development levy for tax compliance</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-red-400 mt-1">✗</span>
+                    <span>Risk missing tax filing deadlines - no reminders or tracking</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-red-400 mt-1">✗</span>
@@ -584,7 +588,11 @@ export default function HomePage() {
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-green-400 mt-1">✓</span>
-                    <span>Build trust - customers can verify invoices are legitimate</span>
+                    <span>Automated tax reports - VAT returns & development levy calculated monthly</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-400 mt-1">✓</span>
+                    <span>Stay FIRS-compliant effortlessly - never miss a deadline</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-green-400 mt-1">✓</span>
