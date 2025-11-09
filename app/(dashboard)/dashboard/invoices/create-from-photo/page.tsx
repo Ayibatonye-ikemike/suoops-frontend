@@ -12,6 +12,7 @@ import { OcrReviewModal } from "@/features/invoices/ocr-review-modal";
 import { useParseReceipt } from "@/features/invoices/use-ocr";
 import { useCreateInvoice } from "@/features/invoices/use-create-invoice";
 import { isPremiumFeatureError } from "@/features/invoices/errors";
+import { parseFeatureGateError } from "@/lib/feature-gate";
 import PremiumUpsell from "@/components/premium-upsell";
 import { logFeatureEvent } from "@/lib/telemetry";
 import toast from "react-hot-toast";
@@ -81,8 +82,14 @@ export default function OcrInvoicePage() {
 
       // Success! Navigate to invoice detail
       router.push(`/dashboard/invoices/${invoice.invoice_id}`);
-    } catch {
-      // Error will be handled by the mutation error state
+    } catch (err) {
+      const gate = parseFeatureGateError(err);
+      if (gate?.type === "invoice_limit") {
+        toast.error("Invoice limit reached – upgrade to continue.");
+      } else if (gate?.type === "premium_required") {
+        toast.error("Premium feature – upgrade required.");
+      }
+      // Other errors already reflected in mutation state
     }
   };
 
@@ -238,33 +245,54 @@ export default function OcrInvoicePage() {
             </div>
           )}
 
-          {/* Invoice creation error */}
+          {/* Invoice creation & gating errors */}
           {createInvoice.isError && (
-            <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4">
-              <div className="flex items-start space-x-3">
-                <svg
-                  className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <div>
-                  <p className="font-medium text-red-900">
-                    Failed to create invoice
-                  </p>
-                  <p className="mt-1 text-sm text-red-700">
-                    {createInvoice.error?.message || "Please try again"}
-                  </p>
+            (() => {
+              const gate = parseFeatureGateError(createInvoice.error);
+              if (gate?.type === "invoice_limit") {
+                return (
+                  <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4">
+                    <p className="text-sm font-semibold text-amber-900">⚠️ Invoice Limit Reached</p>
+                    <p className="mt-1 text-sm text-amber-800">{gate.message}</p>
+                    <div className="mt-3 flex gap-3">
+                      <a
+                        href={gate.upgradeUrl || "/dashboard/upgrade"}
+                        className="rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700"
+                      >
+                        Upgrade Plan
+                      </a>
+                    </div>
+                  </div>
+                );
+              }
+              if (gate?.type === "premium_required") {
+                return (
+                  <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
+                    <p className="text-sm font-semibold text-blue-900">🔒 Premium Feature</p>
+                    <p className="mt-1 text-sm text-blue-800">{gate.message}</p>
+                    <a
+                      href={gate.upgradeUrl || "/dashboard/upgrade"}
+                      className="mt-3 inline-flex rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                    >
+                      View Plans
+                    </a>
+                  </div>
+                );
+              }
+              return (
+                <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4">
+                  <div className="flex items-start space-x-3">
+                    <svg className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="font-medium text-red-900">Failed to create invoice</p>
+                      <p className="mt-1 text-sm text-red-700">{createInvoice.error?.message || "Please try again"}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              );
+            })()
           )}
         </div>
 

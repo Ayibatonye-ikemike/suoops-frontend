@@ -52,6 +52,7 @@ export function InvoiceList() {
     };
   }, [invoices]);
 
+  // Auto-select first filtered invoice
   useEffect(() => {
     if (!hasInvoices) {
       setSelectedInvoiceId(null);
@@ -66,6 +67,21 @@ export function InvoiceList() {
       setSelectedInvoiceId(null);
     }
   }, [hasInvoices, filteredInvoices, selectedInvoiceId]);
+
+  // Determine if auto-refresh should be active (pending or awaiting_confirmation invoices exist)
+  const shouldAutoRefresh = useMemo(
+    () => invoices.some((inv) => inv.status === "pending" || inv.status === "awaiting_confirmation"),
+    [invoices]
+  );
+
+  // Interval-based refetch while invoices are in a transitional state
+  useEffect(() => {
+    if (!shouldAutoRefresh) return;
+    const id = setInterval(() => {
+      refetch();
+    }, 5000);
+    return () => clearInterval(id);
+  }, [shouldAutoRefresh, refetch]);
 
   const lastUpdated = useMemo(() => {
     if (!dataUpdatedAt) {
@@ -114,10 +130,16 @@ export function InvoiceList() {
             {isFetching ? "Refreshing…" : "Refresh"}
           </Button>
         </div>
-        
-        {lastUpdated && (
-          <p className="text-xs italic text-brand-textMuted">Last updated: {lastUpdated}</p>
-        )}
+        <div className="space-y-1">
+          {lastUpdated && (
+            <p className="text-xs italic text-brand-textMuted">Last updated: {lastUpdated}</p>
+          )}
+          {shouldAutoRefresh && (
+            <p className="text-[11px] text-brand-textMuted" aria-live="polite">
+              Auto-refresh active (every 5s while pending invoices exist)
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Search & Filters */}
