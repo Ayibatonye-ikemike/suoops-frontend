@@ -782,39 +782,27 @@ export default function HomePage() {
           <p className="mt-2 text-4xl font-bold text-slate-900">
             Start free, upgrade as you grow
           </p>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
             {[
               { 
                 name: "Free", 
                 price: "₦0", 
                 invoices: "5/month",
-                features: ["Manual invoices", "WhatsApp bot", "PDF generation", "Email delivery", "QR verification"]
+                features: ["Manual invoices", "WhatsApp bot", "PDF generation", "Email delivery", "QR verification", "Tax reports"]
               },
               { 
                 name: "Starter", 
                 price: "₦2,500", 
                 invoices: "100/month", 
-                popular: false,
-                features: ["All Free features", "Photo invoice OCR", "Voice invoices", "Custom logo branding", "Monthly tax automation"]
+                popular: true,
+                features: ["Photo invoice OCR", "Voice invoices", "Custom logo branding", "VAT returns", "Development levy tracking"]
               },
               { 
                 name: "Pro", 
                 price: "₦7,500", 
                 invoices: "1,000/month", 
-                popular: true,
-                features: ["All Starter features", "Google OAuth SSO", "Priority support", "Advanced tax reports", "API access"]
-              },
-              { 
-                name: "Business", 
-                price: "₦15,000", 
-                invoices: "3,000/month",
-                features: ["All Pro features", "Dedicated support", "Custom integrations", "Team management", "VAT automation"]
-              },
-              { 
-                name: "Enterprise", 
-                price: "₦50,000", 
-                invoices: "Unlimited",
-                features: ["All Business features", "White-label option", "SLA guarantee", "Custom contracts", "Full tax automation"]
+                popular: false,
+                features: ["Higher invoice limits", "Priority email support", "Early access to new features"]
               },
             ].map((plan, i) => (
               <div
