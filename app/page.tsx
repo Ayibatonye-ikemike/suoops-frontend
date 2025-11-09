@@ -273,12 +273,12 @@ export default function HomePage() {
       <section className="px-4 py-20 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-slate-50">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <h2 className="text-base font-semibold text-blue-600">POWERFUL FEATURES</h2>
+            <h2 className="text-base font-semibold text-blue-600">HOW IT WORKS</h2>
             <p className="mt-2 text-4xl font-bold text-slate-900 sm:text-5xl">
-              4 Ways to Create Invoices
+              Create Invoices Your Way
             </p>
             <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-              Choose the method that works best for you. All powered by AI, all in seconds.
+              Free WhatsApp text + voice. Upgrade for photo OCR. Every invoice includes QR verification.
             </p>
           </div>
 
@@ -625,16 +625,16 @@ export default function HomePage() {
       <section className="px-4 py-20 sm:px-6 lg:px-8 bg-white">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <h2 className="text-base font-semibold text-blue-600">PREMIUM FEATURES</h2>
+            <h2 className="text-base font-semibold text-blue-600">UPGRADE BENEFITS</h2>
             <p className="mt-2 text-4xl font-bold text-slate-900 sm:text-5xl">
-              Upgrade to unlock more
+              Unlock Premium Features
             </p>
             <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-              Advanced features for growing businesses
+              Start with free WhatsApp invoicing. Upgrade to Starter for voice, photo OCR, and custom branding.
             </p>
           </div>
 
-          <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
             {/* Voice Invoices */}
             <div className="rounded-2xl border-2 border-slate-200 bg-white p-8 shadow-sm hover:shadow-lg transition-all">
               <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 text-3xl shadow-lg">
@@ -642,20 +642,20 @@ export default function HomePage() {
               </div>
               <h3 className="mt-6 text-xl font-bold text-slate-900">Voice Invoices</h3>
               <p className="mt-2 text-slate-600">
-                Send a voice note on WhatsApp and AI creates your invoice instantly. Hands-free invoicing.
+                Speak naturally on WhatsApp. AI transcribes and creates invoices - truly hands-free.
               </p>
               <ul className="mt-4 space-y-2 text-sm text-slate-600">
                 <li className="flex items-start gap-2">
                   <span className="text-green-600">✓</span>
-                  <span>WhatsApp voice notes</span>
+                  <span>Nigerian English support</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-600">✓</span>
-                  <span>AI transcription</span>
+                  <span>Works while driving/busy</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-green-600">✓</span>
-                  <span>Works while driving</span>
+                  <span>10 second invoices</span>
                 </li>
               </ul>
               <div className="mt-6 rounded-lg bg-purple-50 px-3 py-2 text-center">
@@ -716,34 +716,6 @@ export default function HomePage() {
               </ul>
               <div className="mt-6 rounded-lg bg-blue-50 px-3 py-2 text-center">
                 <p className="text-sm font-semibold text-blue-700">Starter plan & above</p>
-              </div>
-            </div>
-
-            {/* Monthly Tax Automation */}
-            <div className="rounded-2xl border-2 border-slate-200 bg-white p-8 shadow-sm hover:shadow-lg transition-all">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 text-3xl shadow-lg">
-                📊
-              </div>
-              <h3 className="mt-6 text-xl font-bold text-slate-900">Monthly Tax Automation</h3>
-              <p className="mt-2 text-slate-600">
-                Automated monthly tax reports, VAT returns, and development levy calculations. Stay FIRS-compliant effortlessly.
-              </p>
-              <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                <li className="flex items-start gap-2">
-                  <span className="text-green-600">✓</span>
-                  <span>Monthly tax reports</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-600">✓</span>
-                  <span>VAT return generation</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-green-600">✓</span>
-                  <span>Development levy tracking</span>
-                </li>
-              </ul>
-              <div className="mt-6 rounded-lg bg-green-50 px-3 py-2 text-center">
-                <p className="text-sm font-semibold text-green-700">Starter plan & above</p>
               </div>
             </div>
           </div>
