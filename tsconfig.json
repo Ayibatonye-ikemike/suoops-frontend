@@ -32,6 +32,9 @@
       ],
       "@/config/*": [
         "src/config/*"
+      ],
+      "@/utils/*": [
+        "src/utils/*"
       ]
     },
     "incremental": true,
