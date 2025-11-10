@@ -67,7 +67,7 @@ export default function TaxPage() {
   const { data: report, isFetching: reportLoading } = useQuery<MonthlyReport>({
     queryKey: ["taxReport", periodType, reportYear, reportMonth, reportDay, reportWeek, basis],
     queryFn: async () => {
-      const params: any = { period_type: periodType, year: reportYear, basis };
+      const params: any = { period_type: periodType, year: reportYear, basis, force: true };
       if (periodType === "month") {
         params.month = reportMonth;
       } else if (periodType === "day") {
