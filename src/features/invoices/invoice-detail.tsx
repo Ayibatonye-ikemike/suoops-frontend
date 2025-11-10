@@ -86,8 +86,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
     try {
       // Prefer opening the invoice PDF if available for cleaner print formatting
       if (invoice.pdf_url) {
-        const pdfHref = `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/invoices/${invoice.invoice_id}/pdf`;
-        window.open(pdfHref, "_blank", "noopener,noreferrer");
+        window.open(invoice.pdf_url, "_blank", "noopener,noreferrer");
         return;
       }
       window.print();
@@ -177,7 +176,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
           </span>
           {invoice.pdf_url && (
             <a
-              href={`${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/invoices/${invoice.invoice_id}/pdf`}
+              href={invoice.pdf_url}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 rounded-lg border border-brand-primary bg-white px-3 py-1.5 text-xs font-semibold text-brand-primary transition hover:bg-brand-primary hover:text-white"

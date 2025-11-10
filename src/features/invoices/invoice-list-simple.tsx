@@ -143,7 +143,7 @@ export function InvoiceList() {
                   {invoice.pdf_url && (
                     <div className="mt-3">
                       <Link
-                        href={`${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000"}/invoices/${invoice.invoice_id}/pdf`}
+                        href={invoice.pdf_url}
                         target="_blank"
                         className="inline-flex items-center gap-2 text-xs font-semibold text-brand-primary hover:underline"
                       >
