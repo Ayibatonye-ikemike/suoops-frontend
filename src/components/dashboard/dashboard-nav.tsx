@@ -6,6 +6,7 @@ import { useLogout } from "@/features/auth/use-auth-session";
 
 const navItems = [
   { href: "/dashboard", label: "Invoices", icon: "📄" },
+  { href: "/dashboard/expenses", label: "Expenses", icon: "💸" },
   { href: "/dashboard/tax", label: "Tax", icon: "💼" },
   { href: "/dashboard/settings", label: "Settings", icon: "⚙️" },
 ];
