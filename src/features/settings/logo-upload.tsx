@@ -11,9 +11,29 @@ import { Button } from "@/components/ui/button";
 
 type CurrentUser = components["schemas"]["UserOut"];
 
-const getErrorMessage = (err: unknown, fallback: string) => {
+interface PlanFeatureError {
+  error: string;
+  message: string;
+  current_plan: string;
+  required_feature: string;
+  upgrade_url: string;
+}
+
+const getErrorMessage = (err: unknown, fallback: string): string => {
   if (isAxiosError(err)) {
-    return err.response?.data?.detail || err.message || fallback;
+    const detail = err.response?.data?.detail;
+    
+    // Handle plan feature errors (object with message property)
+    if (detail && typeof detail === 'object' && 'message' in detail) {
+      return String(detail.message);
+    }
+    
+    // Handle string detail
+    if (typeof detail === 'string') {
+      return detail;
+    }
+    
+    return err.message || fallback;
   }
   if (err instanceof Error) {
     return err.message;
@@ -24,10 +44,17 @@ const getErrorMessage = (err: unknown, fallback: string) => {
   return fallback;
 };
 
+const isPlanFeatureError = (err: unknown): err is { response: { data: { detail: PlanFeatureError } } } => {
+  if (!isAxiosError(err)) return false;
+  const detail = err.response?.data?.detail;
+  return detail && typeof detail === 'object' && 'upgrade_url' in detail;
+};
+
 export function LogoUpload() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string>("");
+  const [planError, setPlanError] = useState<PlanFeatureError | null>(null);
   const queryClient = useQueryClient();
 
   const { data: user, isLoading, error: userError } = useQuery<CurrentUser>({
@@ -57,9 +84,16 @@ export function LogoUpload() {
       setSelectedFile(null);
       setPreviewUrl(null);
       setError("");
+      setPlanError(null);
     },
     onError: (err: unknown) => {
-      setError(getErrorMessage(err, "Failed to upload logo"));
+      if (isPlanFeatureError(err)) {
+        setPlanError(err.response.data.detail);
+        setError("");
+      } else {
+        setError(getErrorMessage(err, "Failed to upload logo"));
+        setPlanError(null);
+      }
     },
   });
 
@@ -73,9 +107,16 @@ export function LogoUpload() {
       setSelectedFile(null);
       setPreviewUrl(null);
       setError("");
+      setPlanError(null);
     },
     onError: (err: unknown) => {
-      setError(getErrorMessage(err, "Failed to remove logo"));
+      if (isPlanFeatureError(err)) {
+        setPlanError(err.response.data.detail);
+        setError("");
+      } else {
+        setError(getErrorMessage(err, "Failed to remove logo"));
+        setPlanError(null);
+      }
     },
   });
 
@@ -97,6 +138,7 @@ export function LogoUpload() {
     }
 
     setError("");
+    setPlanError(null);
     setSelectedFile(file);
 
     const reader = new FileReader();
@@ -220,6 +262,7 @@ export function LogoUpload() {
                   setSelectedFile(null);
                   setPreviewUrl(null);
                   setError("");
+                  setPlanError(null);
                 }}
               >
                 Cancel
@@ -265,6 +308,40 @@ export function LogoUpload() {
       {error && (
         <div className="rounded-lg bg-red-50 p-3 text-sm text-red-800">
           {error}
+        </div>
+      )}
+
+      {/* Plan Upgrade Required */}
+      {planError && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 space-y-3">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 text-amber-600">
+              <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-amber-800">
+                {planError.message}
+              </p>
+              <p className="mt-1 text-xs text-amber-700">
+                You're currently on the <span className="font-semibold capitalize">{planError.current_plan}</span> plan.
+              </p>
+            </div>
+          </div>
+          <div>
+            <Button
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.location.href = planError.upgrade_url;
+                }
+              }}
+              className="w-full sm:w-auto"
+              size="sm"
+            >
+              Upgrade Plan
+            </Button>
+          </div>
         </div>
       )}
     </div>
