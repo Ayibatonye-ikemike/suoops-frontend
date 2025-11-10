@@ -39,6 +39,10 @@ export function emitNow(type: string, detail?: Record<string, unknown>) {
   void emit({ type, detail, ts: new Date().toISOString(), trace_id: getTraceId() });
 }
 
+export function logFeatureEvent(detail: { feature: string; action: string; [key: string]: unknown }) {
+  emitNow("feature_event", detail);
+}
+
 export const telemetry = {
   oauthStart(codePresent: boolean, statePresent: boolean) {
     emitNow("oauth_start", { codePresent, statePresent });
