@@ -272,31 +272,33 @@ export default function TaxPage() {
                 )}
 
                 {/* PIT Band Information */}
-                <div className="mb-6 rounded-lg border border-brand-border bg-gradient-to-r from-purple-50 to-blue-50 p-4">
-                  <p className="text-sm font-medium text-gray-700">
-                    <strong>Tax Band:</strong> {report.pit_band_info}
-                  </p>
-                  {report.user_plan === "free" && (
-                    <p className="mt-2 text-xs text-gray-600">
-                      💡 <strong>Free Plan:</strong> Basic income/expense summary. Upgrade to <strong>Starter</strong> for automated PIT calculations and VAT alerts.
+                {report.pit_band_info && (
+                  <div className="mb-6 rounded-lg border border-brand-border bg-gradient-to-r from-purple-50 to-blue-50 p-4">
+                    <p className="text-sm font-medium text-gray-700">
+                      <strong>Tax Band:</strong> {report.pit_band_info}
                     </p>
-                  )}
-                  {report.user_plan === "starter" && (
-                    <p className="mt-2 text-xs text-gray-600">
-                      🚀 <strong>Starter Plan:</strong> Automated PIT calculation with expense deductions. Upgrade to <strong>Pro</strong> for VAT tracking and custom branding.
-                    </p>
-                  )}
-                  {report.user_plan === "pro" && (
-                    <p className="mt-2 text-xs text-gray-600">
-                      ⭐ <strong>Pro Plan:</strong> PIT + VAT hybrid reporting. Upgrade to <strong>Business</strong> for CIT/VAT e-invoice compliant reports and API access.
-                    </p>
-                  )}
-                  {report.user_plan === "business" && (
-                    <p className="mt-2 text-xs text-gray-600">
-                      💼 <strong>Business Plan:</strong> Full CIT + VAT e-invoice compliant reports, ready for FIRS filing.
-                    </p>
-                  )}
-                </div>
+                    {report.user_plan === "free" && (
+                      <p className="mt-2 text-xs text-gray-600">
+                        💡 <strong>Free Plan:</strong> Basic income/expense summary. Upgrade to <strong>Starter</strong> for automated PIT calculations and VAT alerts.
+                      </p>
+                    )}
+                    {report.user_plan === "starter" && (
+                      <p className="mt-2 text-xs text-gray-600">
+                        🚀 <strong>Starter Plan:</strong> Automated PIT calculation with expense deductions. Upgrade to <strong>Pro</strong> for VAT tracking and custom branding.
+                      </p>
+                    )}
+                    {report.user_plan === "pro" && (
+                      <p className="mt-2 text-xs text-gray-600">
+                        ⭐ <strong>Pro Plan:</strong> PIT + VAT hybrid reporting. Upgrade to <strong>Business</strong> for CIT/VAT e-invoice compliant reports and API access.
+                      </p>
+                    )}
+                    {report.user_plan === "business" && (
+                      <p className="mt-2 text-xs text-gray-600">
+                        💼 <strong>Business Plan:</strong> Full CIT + VAT e-invoice compliant reports, ready for FIRS filing.
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {/* PIT fields - always shown for all plans */}
@@ -307,7 +309,7 @@ export default function TaxPage() {
                   ].map((item) => (
                     <div key={item.label} className="rounded-xl border border-brand-border bg-brand-background p-4">
                       <p className="text-sm font-medium text-brand-textMuted">{item.label}</p>
-                      <p className="mt-2 text-2xl font-semibold text-brand-primary">₦{item.value.toLocaleString()}</p>
+                      <p className="mt-2 text-2xl font-semibold text-brand-primary">₦{(item.value || 0).toLocaleString()}</p>
                     </div>
                   ))}
                   
@@ -320,7 +322,7 @@ export default function TaxPage() {
                   ].map((item) => (
                     <div key={item.label} className="rounded-xl border border-brand-border bg-brand-background p-4">
                       <p className="text-sm font-medium text-brand-textMuted">{item.label}</p>
-                      <p className="mt-2 text-2xl font-semibold text-brand-primary">₦{item.value.toLocaleString()}</p>
+                      <p className="mt-2 text-2xl font-semibold text-brand-primary">₦{(item.value || 0).toLocaleString()}</p>
                     </div>
                   ))}
                   
