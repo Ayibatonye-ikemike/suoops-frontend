@@ -159,7 +159,9 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
       {/* Header */}
       <header className="flex flex-wrap items-start justify-between gap-4 border-b border-brand-border pb-4">
         <div>
-          <h2 className="text-xl font-bold text-brand-text">Invoice {invoice.invoice_id}</h2>
+          <h2 className="text-xl font-bold text-brand-text">
+            {invoice.invoice_type === "expense" ? "Expense" : "Invoice"} {invoice.invoice_id}
+          </h2>
           <p className="mt-1 text-sm text-brand-textMuted">Created {formatIsoDate(invoice.created_at ?? null)}</p>
           {invoice.paid_at && (
             <p className="mt-1 text-xs font-medium text-emerald-700">Paid {formatPaidAt(invoice.paid_at)}</p>
@@ -215,8 +217,49 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
           )}
         </div>
 
-        {/* Customer Info */}
-        {invoice.customer && (
+        {/* Expense-specific fields */}
+        {invoice.invoice_type === "expense" && (
+          <>
+            {invoice.vendor_name && (
+              <div className="rounded-lg border border-brand-border bg-brand-background p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">Vendor</p>
+                <p className="mt-2 text-base font-semibold text-brand-text">{invoice.vendor_name}</p>
+              </div>
+            )}
+            {invoice.category && (
+              <div className="rounded-lg border border-brand-border bg-brand-background p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">Category</p>
+                <p className="mt-2 text-base font-semibold text-brand-text">{invoice.category}</p>
+              </div>
+            )}
+            {invoice.receipt_url && (
+              <div className="rounded-lg border border-brand-border bg-brand-background p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted mb-3">Receipt / Proof of Purchase</p>
+                <a
+                  href={invoice.receipt_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg border border-brand-primary bg-white px-4 py-2.5 text-sm font-semibold text-brand-primary transition hover:bg-brand-primary hover:text-white"
+                >
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  View Receipt
+                </a>
+              </div>
+            )}
+            {invoice.notes && (
+              <div className="rounded-lg border border-brand-border bg-brand-background p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">Notes</p>
+                <p className="mt-2 text-sm text-brand-text">{invoice.notes}</p>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Customer Info - Only for revenue invoices */}
+        {invoice.invoice_type !== "expense" && invoice.customer && (
           <div className="rounded-lg border border-brand-border bg-brand-background p-4">
             <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">Customer</p>
             <p className="mt-2 text-base font-semibold text-brand-text">{invoice.customer.name}</p>
@@ -226,41 +269,49 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
           </div>
         )}
 
-        {/* Status & Due Date */}
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label htmlFor="status-select" className="block text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
-              Status
-            </label>
-            <select
-              id="status-select"
-              value={invoice.status}
-              onChange={handleStatusChange}
-              disabled={mutation.isPending}
-              className="mt-2 w-full rounded-lg border border-brand-border bg-white px-3 py-2.5 text-sm font-medium text-brand-text shadow-sm transition focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
-            >
-              {statusOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            {mutation.isPending && (
-              <p className="mt-1 text-xs text-brand-textMuted">Updating status…</p>
-            )}
+        {/* Status & Due Date - Hide status selector for expenses (auto-paid) */}
+        {invoice.invoice_type === "expense" ? (
+          <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
+            <p className="text-sm font-medium text-emerald-900">
+              ✅ This expense was automatically marked as paid when recorded for tax tracking purposes.
+            </p>
           </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">Due Date</p>
-            <p className="mt-2 text-sm font-medium text-brand-text">{formatIsoDate(invoice.due_date ?? null)}</p>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="status-select" className="block text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
+                Status
+              </label>
+              <select
+                id="status-select"
+                value={invoice.status}
+                onChange={handleStatusChange}
+                disabled={mutation.isPending}
+                className="mt-2 w-full rounded-lg border border-brand-border bg-white px-3 py-2.5 text-sm font-medium text-brand-text shadow-sm transition focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
+              >
+                {statusOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              {mutation.isPending && (
+                <p className="mt-1 text-xs text-brand-textMuted">Updating status…</p>
+              )}
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">Due Date</p>
+              <p className="mt-2 text-sm font-medium text-brand-text">{formatIsoDate(invoice.due_date ?? null)}</p>
+            </div>
           </div>
-        </div>
+        )}
 
-        {helpText && (
+        {helpText && invoice.invoice_type !== "expense" && (
           <p className="text-xs text-brand-textMuted">{helpText}</p>
         )}
 
-        {/* Awaiting Confirmation Alert */}
-        {invoice.status === "awaiting_confirmation" && (
+        {/* Awaiting Confirmation Alert - Only for revenue invoices */}
+        {invoice.invoice_type !== "expense" && invoice.status === "awaiting_confirmation" && (
           <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
             <p className="text-sm font-medium text-amber-900">
               ⚠️ Customer reported that they have transferred the funds. Please check your bank and move the status to &ldquo;Paid&rdquo; once cleared to automatically send their receipt.
@@ -268,8 +319,8 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
           </div>
         )}
 
-        {/* Share Link */}
-        {shareLink && (
+        {/* Share Link - Only for revenue invoices */}
+        {invoice.invoice_type !== "expense" && shareLink && (
           <div className="rounded-lg border border-brand-border bg-brand-background p-4">
             <p className="text-sm font-semibold text-brand-text">Customer Payment Link</p>
             <p className="mt-1 text-xs text-brand-textMuted">
@@ -333,7 +384,10 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
       {/* Footer Help Text */}
       <footer className="rounded-lg border border-dashed border-brand-border bg-brand-background p-4">
         <p className="text-xs text-brand-textMuted">
-          💡 Keep the status in sync as you reconcile payments. Customers can flag transfers via the shared link, and marking an invoice as paid automatically triggers the WhatsApp receipt when configured.
+          {invoice.invoice_type === "expense" 
+            ? "💡 Expenses are automatically marked as paid for tax tracking. View the QR code verification by clicking the PDF button above."
+            : "💡 Keep the status in sync as you reconcile payments. Customers can flag transfers via the shared link, and marking an invoice as paid automatically triggers the WhatsApp receipt when configured."
+          }
         </p>
       </footer>
     </div>

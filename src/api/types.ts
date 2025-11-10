@@ -47,6 +47,13 @@ export interface components {
       created_at?: string | null;
       due_date?: string | null;
       paid_at?: string | null;
+      // Unified invoice/expense fields
+      invoice_type?: string;
+      category?: string | null;
+      vendor_name?: string | null;
+      merchant?: string | null;
+      verified?: boolean | null;
+      notes?: string | null;
     };
     InvoiceOutDetailed: {
       invoice_id: string;
@@ -60,6 +67,13 @@ export interface components {
       customer?: components["schemas"]["CustomerOut"] | null;
       lines?: components["schemas"]["InvoiceLineOut"][];
       paid_at?: string | null;
+      // Unified invoice/expense fields
+      invoice_type?: string;
+      category?: string | null;
+      vendor_name?: string | null;
+      merchant?: string | null;
+      verified?: boolean | null;
+      notes?: string | null;
     };
     InvoiceStatusUpdate: {
       status: "pending" | "awaiting_confirmation" | "paid" | "failed";
