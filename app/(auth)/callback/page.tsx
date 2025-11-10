@@ -3,6 +3,8 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/features/auth/auth-store";
+import { exchangeOAuthCode, OAuthExchangeError } from "@/features/auth/oauth-client";
+import { telemetry } from "@/lib/telemetry";
 
 function CallbackContent() {
   const router = useRouter();
@@ -16,50 +18,62 @@ function CallbackContent() {
       try {
         const code = searchParams?.get("code");
         const state = searchParams?.get("state");
-        const errorParam = searchParams?.get("error");
+        const providerError = searchParams?.get("error");
 
-        // Handle provider error
-        if (errorParam) {
-          setError(
-            errorParam === "access_denied"
-              ? "Sign in was cancelled. Please try again."
-              : `Authentication failed: ${errorParam}`
-          );
-          setProcessing(false);
-          return;
+        if (providerError) {
+          const message = providerError === "access_denied"
+            ? "Sign in cancelled. You can try again."
+            : `Provider returned error: ${providerError}`;
+          throw new OAuthExchangeError("provider_cancelled", message);
         }
 
-        if (!code || !state) {
-          setError("Invalid OAuth callback. Missing required parameters.");
-          setProcessing(false);
-          return;
-        }
-
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
-        const response = await fetch(
-          `${apiUrl}/auth/oauth/google/callback?code=${encodeURIComponent(code)}&state=${encodeURIComponent(state)}`,
-          {
-            method: "GET",
-            headers: { "Content-Type": "application/json", Accept: "application/json" },
-            credentials: "include",
-          }
-        );
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({ detail: "Authentication failed" }));
-          throw new Error(errorData.detail || "Failed to complete sign in");
-        }
-
-        const data = await response.json();
-        const accessExpiresAt: string =
-          typeof data.access_expires_at === "string"
-            ? data.access_expires_at
-            : new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+        const data = await exchangeOAuthCode(code, state, { provider: "google", retries: 2, timeoutMs: 12000 });
+        const accessExpiresAt = typeof data.access_expires_at === "string"
+          ? data.access_expires_at
+          : new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
         setTokens({ accessToken: data.access_token, accessExpiresAt });
         setProcessing(false);
+        telemetry.oauthCallbackSuccess();
         router.replace("/dashboard");
       } catch (err) {
-        setError(err instanceof Error ? err.message : "An unexpected error occurred");
+        let message = "We couldn't complete your sign in. Please try again.";
+        if (err instanceof OAuthExchangeError) {
+          switch (err.kind) {
+            case "invalid_state":
+              message = "Security check failed. Please start sign in again from the beginning.";
+              break;
+            case "missing_params":
+              message = "Missing sign in information. Please try signing in again.";
+              break;
+            case "provider_cancelled":
+              message = err.message;
+              break;
+            case "network":
+              message = "Connection issue. Please check your internet and try again.";
+              break;
+            case "server":
+              // User-friendly message for server errors (500)
+              message = "Our sign in service is temporarily unavailable. Please try again in a few moments.";
+              break;
+            case "client":
+              // For 400/401/403 errors, show more specific messages if available
+              if (err.message && !err.message.includes("Internal server")) {
+                message = err.message;
+              } else {
+                message = "Invalid sign in request. Please try again.";
+              }
+              break;
+            default:
+              message = "Sign in failed. Please try again.";
+          }
+        } else if (err instanceof Error) {
+          // Don't show technical error messages to users
+          if (!err.message.includes("Internal server") && !err.message.includes("500")) {
+            message = err.message;
+          }
+        }
+        telemetry.oauthCallbackError(err instanceof OAuthExchangeError ? err.kind : "unknown", message);
+        setError(message);
         setProcessing(false);
       }
     };
@@ -69,13 +83,13 @@ function CallbackContent() {
 
   if (processing) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-600 to-emerald-700">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-600 to-emerald-700" role="status" aria-live="polite">
         <div className="flex w-full max-w-md flex-col items-center gap-6 rounded-2xl bg-white p-10 shadow-xl">
           <div className="flex flex-col items-center gap-4">
-            <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-green-600"></div>
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-green-600" aria-label="Loading" />
             <div className="space-y-2 text-center">
-              <h1 className="text-xl font-semibold text-slate-900">Completing sign in...</h1>
-              <p className="text-sm text-slate-500">Please wait while we verify your account.</p>
+              <h1 className="text-xl font-semibold text-slate-900">Completing sign in…</h1>
+              <p className="text-sm text-slate-500">Verifying your account. This may take a few seconds.</p>
             </div>
           </div>
         </div>
@@ -86,7 +100,7 @@ function CallbackContent() {
   if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-600 to-emerald-700">
-        <div className="flex w-full max-w-md flex-col gap-6 rounded-2xl bg-white p-10 shadow-xl">
+        <div className="flex w-full max-w-md flex-col gap-6 rounded-2xl bg-white p-10 shadow-xl" aria-live="assertive">
           <div className="space-y-2 text-center">
             <h1 className="text-2xl font-semibold text-slate-900">Sign in failed</h1>
             <p className="text-sm text-slate-500">We couldn&apos;t complete your sign in.</p>
@@ -94,12 +108,48 @@ function CallbackContent() {
           <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-600" role="alert">
             {error}
           </p>
-          <button
-            onClick={() => router.push("/login")}
-            className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700"
-          >
-            Back to sign in
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => router.push("/login")}
+              className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700"
+            >
+              Back to sign in
+            </button>
+            <button
+              onClick={() => {
+                setError(null); setProcessing(true);
+                // Re-run attempt with existing params
+                const code = searchParams?.get("code");
+                const state = searchParams?.get("state");
+                exchangeOAuthCode(code, state, { provider: "google", retries: 2, timeoutMs: 12000 })
+                  .then(data => {
+                    const accessExpiresAt = typeof data.access_expires_at === "string" ? data.access_expires_at : new Date(Date.now() + 24*60*60*1000).toISOString();
+                    setTokens({ accessToken: data.access_token, accessExpiresAt });
+                    setProcessing(false);
+                    telemetry.oauthCallbackSuccess();
+                    router.replace("/dashboard");
+                  })
+                  .catch(err => {
+                    let message = "Sign in failed. Please try again.";
+                    if (err instanceof OAuthExchangeError) {
+                      if (err.kind === "network") {
+                        message = "Still having connection issues. Please check your internet.";
+                      } else if (err.kind === "server") {
+                        message = "Our service is still unavailable. Please try again later.";
+                      } else if (err.kind === "invalid_state") {
+                        message = "This sign in link has expired. Please start over.";
+                      }
+                    }
+                    telemetry.oauthCallbackError(err instanceof OAuthExchangeError ? err.kind : "unknown", message);
+                    setError(message);
+                    setProcessing(false);
+                  });
+              }}
+              className="rounded-lg bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-300"
+            >
+              Retry
+            </button>
+          </div>
         </div>
       </div>
     );
