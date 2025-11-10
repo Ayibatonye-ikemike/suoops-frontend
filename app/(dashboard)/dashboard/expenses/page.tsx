@@ -125,14 +125,14 @@ export default function ExpensesPage() {
       {/* Stats */}
       {stats && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <StatCard title="Total Expenses" value={fmt(stats.total_expenses)} />
-          <StatCard title="Total Revenue" value={fmt(stats.total_revenue)} />
+          <StatCard label="Total Expenses" value={fmt(stats.total_expenses)} />
+          <StatCard label="Total Revenue" value={fmt(stats.total_revenue)} />
           <StatCard
-            title="Actual Profit"
+            label="Actual Profit"
             value={fmt(stats.actual_profit)}
-            valueClassName={stats.actual_profit >= 0 ? "text-green-600" : "text-red-600"}
+            className={stats.actual_profit >= 0 ? "text-green-600" : "text-red-600"}
           />
-          <StatCard title="Expense Ratio" value={`${stats.expense_to_revenue_ratio.toFixed(1)}%`} description="of revenue" />
+          <StatCard label="Expense Ratio" value={`${stats.expense_to_revenue_ratio.toFixed(1)}%`} />
         </div>
       )}
 
