@@ -20,16 +20,21 @@ type AuthState = {
   clearTokens: () => void;
   markSessionExpired: () => void;
   refresh: (options?: { markLoading?: boolean }) => Promise<SessionTokens>;
+  scheduleAutoRefresh: () => void;
 };
 
 let refreshInFlight: Promise<SessionTokens> | null = null;
 
-export const useAuthStore = create<AuthState>()((set) => ({
+let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+
+export const useAuthStore = create<AuthState>()((set, get) => ({
   accessToken: null,
   accessExpiresAt: null,
   status: "idle",
-  setTokens: ({ accessToken, accessExpiresAt }) =>
-    set({ accessToken, accessExpiresAt, status: "authenticated" }),
+  setTokens: ({ accessToken, accessExpiresAt }) => {
+    set({ accessToken, accessExpiresAt, status: "authenticated" });
+    get().scheduleAutoRefresh();
+  },
   clearTokens: () => set({ accessToken: null, accessExpiresAt: null, status: "unauthenticated" }),
   markSessionExpired: () => set({ accessToken: null, accessExpiresAt: null, status: "expired" }),
   refresh: async ({ markLoading } = {}) => {
@@ -62,7 +67,31 @@ export const useAuthStore = create<AuthState>()((set) => ({
         refreshInFlight = null;
       });
 
-    return refreshInFlight;
+    const result = await refreshInFlight;
+    get().scheduleAutoRefresh();
+    return result;
+  },
+  scheduleAutoRefresh: () => {
+    if (typeof window === "undefined") return;
+    if (refreshTimer) {
+      clearTimeout(refreshTimer);
+      refreshTimer = null;
+    }
+    const { accessExpiresAt, refresh } = get();
+    if (!accessExpiresAt) return;
+    const expiryMs = Date.parse(accessExpiresAt);
+    if (Number.isNaN(expiryMs)) return;
+    const now = Date.now();
+    // Refresh 60 seconds before expiry; never schedule negative.
+    const bufferMs = 60_000;
+    let delay = expiryMs - now - bufferMs;
+    if (delay < 10_000) {
+      // If too close, schedule a quick refresh in 5s to avoid race.
+      delay = 5_000;
+    }
+    refreshTimer = setTimeout(() => {
+      refresh().catch(() => {/* ignore; store will mark expired */});
+    }, delay);
   },
 }));
 
