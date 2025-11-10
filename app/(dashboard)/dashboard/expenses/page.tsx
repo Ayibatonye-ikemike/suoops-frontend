@@ -10,6 +10,7 @@ import { StatCard } from "@/components/ui/stat-card";
 // Types
 interface Expense {
   id: number;
+  invoice_id: string;  // Invoice ID for deletion
   amount: number;
   expense_date: string;
   category: string;
@@ -60,7 +61,26 @@ export default function ExpensesPage() {
     queryFn: async () => {
       const start = `${year}-${String(month).padStart(2, "0")}-01`;
       const end = `${year}-${String(month).padStart(2, "0")}-${new Date(year, month, 0).getDate()}`;
-      return (await apiClient.get("/expenses/", { params: { start_date: start, end_date: end } })).data;
+      // Use unified invoice endpoint with invoice_type filter
+      const response = await apiClient.get("/invoices/", { 
+        params: { 
+          invoice_type: "expense",
+          start_date: start, 
+          end_date: end 
+        } 
+      });
+      // Map invoice format to expense format for display
+      return response.data.map((inv: any) => ({
+        id: inv.id,
+        invoice_id: inv.invoice_id,  // For deletion
+        amount: parseFloat(inv.amount),
+        expense_date: inv.due_date || inv.created_at,
+        category: inv.category || "other",
+        description: inv.lines?.[0]?.description || null,
+        merchant: inv.vendor_name || inv.merchant,
+        verified: inv.verified || false,
+        channel: inv.channel,
+      }));
     },
   });
 
@@ -75,7 +95,25 @@ export default function ExpensesPage() {
 
   const createExpense = useMutation({
     mutationFn: async (data: typeof form) => {
-      return (await apiClient.post("/expenses/", { ...data, amount: parseFloat(data.amount) })).data;
+      // Create expense as invoice with type='expense'
+      return (await apiClient.post("/invoices/", {
+        invoice_type: "expense",
+        amount: parseFloat(data.amount),
+        due_date: data.expense_date,
+        category: data.category,
+        vendor_name: data.merchant || "Unknown Vendor",
+        merchant: data.merchant,
+        lines: [{
+          description: data.description || data.category,
+          quantity: 1,
+          unit_price: parseFloat(data.amount),
+        }],
+        notes: data.description,
+        channel: "dashboard",
+        input_method: "manual",
+        verified: true,
+        status: "paid",  // Expenses are immediately marked as paid
+      })).data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
@@ -86,7 +124,7 @@ export default function ExpensesPage() {
   });
 
   const deleteExpense = useMutation({
-    mutationFn: async (id: number) => (await apiClient.delete(`/expenses/${id}`)).data,
+    mutationFn: async (invoiceId: string) => (await apiClient.delete(`/invoices/${invoiceId}`)).data,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
       queryClient.invalidateQueries({ queryKey: ["expenseStats"] });
@@ -208,7 +246,7 @@ export default function ExpensesPage() {
                       {new Date(exp.expense_date).toLocaleDateString()} {exp.channel && `• via ${exp.channel}`}
                     </p>
                   </div>
-                  <Button onClick={() => confirm("Delete?") && deleteExpense.mutate(exp.id)} disabled={deleteExpense.isPending}>
+                  <Button onClick={() => confirm("Delete?") && deleteExpense.mutate(exp.invoice_id)} disabled={deleteExpense.isPending}>
                     🗑️
                   </Button>
                 </div>
