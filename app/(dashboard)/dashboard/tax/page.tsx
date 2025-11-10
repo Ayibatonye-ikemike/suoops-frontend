@@ -23,8 +23,13 @@ interface ComplianceSummary {
 }
 
 interface MonthlyReport {
+  id: number;
+  period_type: "day" | "week" | "month" | "year";
+  period_label: string;
+  start_date: string | null;
+  end_date: string | null;
   year: number;
-  month: number;
+  month: number | null;
   assessable_profit: number;
   levy_amount: number;
   vat_collected: number;
@@ -40,8 +45,13 @@ export default function TaxPage() {
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({ annual_turnover: "", fixed_assets: "", tin: "", vat_number: "" });
   const now = new Date();
+  
+  // Period type state
+  const [periodType, setPeriodType] = useState<"day" | "week" | "month" | "year">("month");
   const [reportMonth, setReportMonth] = useState(now.getMonth() || 12);
   const [reportYear, setReportYear] = useState(now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear());
+  const [reportDay, setReportDay] = useState(1);
+  const [reportWeek, setReportWeek] = useState(1);
   const [basis, setBasis] = useState<"paid" | "all">("paid");
 
   const { data: profile, isLoading } = useQuery<TaxProfile>({
@@ -55,8 +65,20 @@ export default function TaxPage() {
   });
 
   const { data: report, isFetching: reportLoading } = useQuery<MonthlyReport>({
-    queryKey: ["monthlyTaxReport", reportYear, reportMonth, basis],
-    queryFn: async () => (await apiClient.post(`/tax/reports/generate`, null, { params: { year: reportYear, month: reportMonth, basis } })).data,
+    queryKey: ["taxReport", periodType, reportYear, reportMonth, reportDay, reportWeek, basis],
+    queryFn: async () => {
+      const params: any = { period_type: periodType, year: reportYear, basis };
+      if (periodType === "month") {
+        params.month = reportMonth;
+      } else if (periodType === "day") {
+        params.month = reportMonth;
+        params.day = reportDay;
+      } else if (periodType === "week") {
+        params.week = reportWeek;
+      }
+      // year period only needs year parameter
+      return (await apiClient.post(`/tax/reports/generate`, null, { params })).data;
+    },
     refetchOnWindowFocus: false,
   });
 
@@ -79,8 +101,8 @@ export default function TaxPage() {
   };
 
   const handleDownload = async () => {
-    if (!report) return;
-    const res = await apiClient.get(`/tax/reports/${reportYear}/${reportMonth}/download`);
+    if (!report || !report.id) return;
+    const res = await apiClient.get(`/tax/reports/${report.id}/download`);
     if (res.data.pdf_url) window.open(res.data.pdf_url, "_blank");
   };
 
@@ -117,19 +139,21 @@ export default function TaxPage() {
         <Card className="mb-8">
           <CardHeader className="border-b border-brand-border/60">
             <div className="flex flex-wrap items-center justify-between gap-4">
-              <h2 className="text-[22px] font-semibold text-brand-text">Monthly Report</h2>
+              <h2 className="text-[22px] font-semibold text-brand-text">Tax Report - {report?.period_label}</h2>
               <div className="flex flex-wrap items-center gap-2">
+                {/* Period Type Selector */}
                 <select
-                  value={reportMonth}
-                  onChange={(e) => setReportMonth(Number(e.target.value))}
+                  value={periodType}
+                  onChange={(e) => setPeriodType(e.target.value as any)}
                   className="rounded-lg border border-brand-border bg-white px-3 py-1.5 text-sm text-brand-text focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
                 >
-                  {Array.from({ length: 12 }, (_, i) => (
-                    <option key={i + 1} value={i + 1}>
-                      {new Date(2000, i).toLocaleString("default", { month: "short" })}
-                    </option>
-                  ))}
+                  <option value="day">Daily</option>
+                  <option value="week">Weekly</option>
+                  <option value="month">Monthly</option>
+                  <option value="year">Yearly</option>
                 </select>
+
+                {/* Year Selector (for all period types) */}
                 <select
                   value={reportYear}
                   onChange={(e) => setReportYear(Number(e.target.value))}
@@ -139,6 +163,49 @@ export default function TaxPage() {
                     <option key={y} value={y}>{y}</option>
                   ))}
                 </select>
+
+                {/* Month Selector (for month and day periods) */}
+                {(periodType === "month" || periodType === "day") && (
+                  <select
+                    value={reportMonth}
+                    onChange={(e) => setReportMonth(Number(e.target.value))}
+                    className="rounded-lg border border-brand-border bg-white px-3 py-1.5 text-sm text-brand-text focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
+                  >
+                    {Array.from({ length: 12 }, (_, i) => (
+                      <option key={i + 1} value={i + 1}>
+                        {new Date(2000, i).toLocaleString("default", { month: "short" })}
+                      </option>
+                    ))}
+                  </select>
+                )}
+
+                {/* Day Selector (for day period) */}
+                {periodType === "day" && (
+                  <select
+                    value={reportDay}
+                    onChange={(e) => setReportDay(Number(e.target.value))}
+                    className="rounded-lg border border-brand-border bg-white px-3 py-1.5 text-sm text-brand-text focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
+                  >
+                    {Array.from({ length: 31 }, (_, i) => (
+                      <option key={i + 1} value={i + 1}>{i + 1}</option>
+                    ))}
+                  </select>
+                )}
+
+                {/* Week Selector (for week period) */}
+                {periodType === "week" && (
+                  <select
+                    value={reportWeek}
+                    onChange={(e) => setReportWeek(Number(e.target.value))}
+                    className="rounded-lg border border-brand-border bg-white px-3 py-1.5 text-sm text-brand-text focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
+                  >
+                    {Array.from({ length: 53 }, (_, i) => (
+                      <option key={i + 1} value={i + 1}>Week {i + 1}</option>
+                    ))}
+                  </select>
+                )}
+
+                {/* Basis Selector */}
                 <div className="flex overflow-hidden rounded-lg border border-brand-border">
                   {(["paid", "all"] as const).map((opt) => (
                     <button
@@ -152,7 +219,7 @@ export default function TaxPage() {
                     </button>
                   ))}
                 </div>
-                <Button size="sm" onClick={handleDownload} disabled={reportLoading}>
+                <Button size="sm" onClick={handleDownload} disabled={reportLoading || !report?.pdf_url}>
                   Download
                 </Button>
               </div>
