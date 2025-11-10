@@ -54,6 +54,7 @@ export interface components {
       merchant?: string | null;
       verified?: boolean | null;
       notes?: string | null;
+      receipt_url?: string | null;  // Uploaded receipt/proof of purchase
     };
     InvoiceOutDetailed: {
       invoice_id: string;
@@ -74,6 +75,7 @@ export interface components {
       merchant?: string | null;
       verified?: boolean | null;
       notes?: string | null;
+      receipt_url?: string | null;  // Uploaded receipt/proof of purchase
     };
     InvoiceStatusUpdate: {
       status: "pending" | "awaiting_confirmation" | "paid" | "failed";
