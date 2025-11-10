@@ -14,6 +14,17 @@ type RetriableRequestConfig = InternalAxiosRequestConfig & { _retry?: boolean };
 
 const { apiBaseUrl } = getConfig();
 
+/**
+ * Get CSRF token from cookie.
+ * The backend sets this token on successful authentication.
+ */
+function getCsrfToken(): string | null {
+  if (typeof document === "undefined") return null;
+  
+  const match = document.cookie.match(/(?:^|;\s*)csrf_token=([^;]*)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
 export const apiClient = axios.create({
   baseURL: apiBaseUrl,
   headers: {
@@ -26,10 +37,25 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   if (typeof window === "undefined") {
     return config;
   }
+  
+  // Add Authorization header if we have an access token
   const token = useAuthStore.getState().accessToken;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  
+  // Add CSRF token for state-changing requests
+  // Auth endpoints are exempt on the backend, but we include it anyway for consistency
+  const method = config.method?.toUpperCase();
+  const isStateChanging = ["POST", "PUT", "DELETE", "PATCH"].includes(method || "");
+  
+  if (isStateChanging) {
+    const csrfToken = getCsrfToken();
+    if (csrfToken) {
+      config.headers["X-CSRF-Token"] = csrfToken;
+    }
+  }
+  
   return config;
 });
 
