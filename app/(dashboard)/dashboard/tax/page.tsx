@@ -134,7 +134,8 @@ export default function TaxPage() {
           <p className="mt-1 text-sm text-brand-textMuted">Monitor obligations and reports</p>
         </div>
 
-        {compliance && (
+        {/* Compliance Summary - BUSINESS Plan Only */}
+        {compliance && report?.user_plan === "business" && (
           <div className="mb-8 grid gap-4 md:grid-cols-3">
             <StatCard label="Compliance Score" value={`${compliance.compliance_score}%`} icon="📊" />
             <StatCard label="Business Size" value={compliance.business_size.toUpperCase()} icon="🏢" />
@@ -143,6 +144,13 @@ export default function TaxPage() {
               value={compliance.requirements.tin_registered && compliance.requirements.vat_registered ? "Complete" : "Pending"}
               icon={compliance.requirements.tin_registered && compliance.requirements.vat_registered ? "✅" : "⚠️"}
             />
+          </div>
+        )}
+
+        {/* Business Size Only - For FREE, STARTER, PRO Plans */}
+        {compliance && report?.user_plan !== "business" && (
+          <div className="mb-8">
+            <StatCard label="Business Size" value={compliance.business_size.toUpperCase()} icon="🏢" />
           </div>
         )}
 
