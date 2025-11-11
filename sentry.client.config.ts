@@ -1,13 +1,32 @@
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN || "https://490683a93af4c0821f8faccc3a05f22d@o4510345511370752.ingest.us.sentry.io/4510345513205760",
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN || "https://392f23be94c8731f0f45d3059639eda9@o4510345511370752.ingest.us.sentry.io/4510345539289088",
   
   // Set environment
   environment: process.env.NEXT_PUBLIC_ENV || "development",
   
-  // Adjust this value in production, or use tracesSampler for greater control
+  // Performance Monitoring
+  integrations: [
+    Sentry.replayIntegration({
+      // Additional Replay configuration goes in here, for example:
+      maskAllText: true,
+      blockAllMedia: true,
+    }),
+    Sentry.browserTracingIntegration(),
+  ],
+  
+  // Set tracesSampleRate to 1.0 to capture 100%
+  // of transactions for performance monitoring.
+  // We recommend adjusting this value in production
   tracesSampleRate: process.env.NEXT_PUBLIC_ENV === "production" ? 0.1 : 1.0,
+  
+  // Set `tracePropagationTargets` to control for which URLs distributed tracing should be enabled
+  tracePropagationTargets: [
+    "localhost",
+    /^https:\/\/suoops\.com/,
+    /^https:\/\/api\.suoops\.com/,
+  ],
   
   // Setting this option to true will print useful information to the console while you're setting up Sentry.
   debug: false,
@@ -20,13 +39,4 @@ Sentry.init({
   
   // Send default PII data (IP, user data)
   sendDefaultPii: true,
-  
-  // You can remove this option if you're not planning to use the Sentry Session Replay feature:
-  integrations: [
-    Sentry.replayIntegration({
-      // Additional Replay configuration goes in here, for example:
-      maskAllText: true,
-      blockAllMedia: true,
-    }),
-  ],
 });
