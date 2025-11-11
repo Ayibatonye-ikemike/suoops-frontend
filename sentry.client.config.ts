@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN || "https://490683a93af4c0821f8faccc3a05f22d@o4510345511370752.ingest.us.sentry.io/4510345513205760",
   
   // Set environment
   environment: process.env.NEXT_PUBLIC_ENV || "development",
@@ -18,6 +18,14 @@ Sentry.init({
   // in development and sample at a lower rate in production
   replaysSessionSampleRate: process.env.NEXT_PUBLIC_ENV === "production" ? 0.1 : 1.0,
   
+  // Send default PII data (IP, user data)
+  sendDefaultPii: true,
+  
+  // Enable logs
+  _experiments: {
+    enableLogs: true,
+  },
+  
   // You can remove this option if you're not planning to use the Sentry Session Replay feature:
   integrations: [
     Sentry.replayIntegration({
@@ -25,5 +33,7 @@ Sentry.init({
       maskAllText: true,
       blockAllMedia: true,
     }),
+    // Send console.log, console.warn, and console.error calls as logs to Sentry
+    Sentry.consoleIntegration({ levels: ["log", "warn", "error"] }),
   ],
 });
