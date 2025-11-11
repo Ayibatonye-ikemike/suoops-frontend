@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import type { AxiosError } from "axios";
+import * as Sentry from "@sentry/nextjs";
 
 import { refreshSession, type TokenPayload } from "./auth-api";
 
@@ -34,8 +35,25 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   setTokens: ({ accessToken, accessExpiresAt }) => {
     set({ accessToken, accessExpiresAt, status: "authenticated" });
     get().scheduleAutoRefresh();
+    
+    // Set Sentry user context when tokens are set
+    if (typeof window !== "undefined") {
+      // Decode JWT to get user ID (simple base64 decode of payload)
+      try {
+        const payload = JSON.parse(atob(accessToken.split('.')[1]));
+        Sentry.setUser({ id: payload.sub });
+      } catch (e) {
+        // Ignore decode errors
+      }
+    }
   },
-  clearTokens: () => set({ accessToken: null, accessExpiresAt: null, status: "unauthenticated" }),
+  clearTokens: () => {
+    set({ accessToken: null, accessExpiresAt: null, status: "unauthenticated" });
+    // Clear Sentry user context on logout
+    if (typeof window !== "undefined") {
+      Sentry.setUser(null);
+    }
+  },
   markSessionExpired: () => set({ accessToken: null, accessExpiresAt: null, status: "expired" }),
   refresh: async ({ markLoading } = {}) => {
     if (refreshInFlight) {

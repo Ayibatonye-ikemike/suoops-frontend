@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "@/api/client";
 import { useLogout } from "@/features/auth/use-auth-session";
 
 const navItems = [
@@ -15,19 +13,6 @@ const navItems = [
 export function DashboardNav() {
   const pathname = usePathname();
   const logout = useLogout();
-
-  // Check if user is admin
-  const { data: user } = useQuery({
-    queryKey: ["currentUser"],
-    queryFn: async () => {
-      const response = await apiClient.get("/users/me");
-      return response.data;
-    },
-    retry: false,
-    staleTime: 60000,
-  });
-
-  const isAdmin = user?.role === "admin";
 
   return (
     <nav className="border-b border-brand-border bg-brand-primary text-white shadow-sm">
@@ -52,19 +37,6 @@ export function DashboardNav() {
                 </Link>
               );
             })}
-            {isAdmin && (
-              <Link
-                href="/admin"
-                className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold uppercase tracking-wide transition ${
-                  pathname === "/admin"
-                    ? "bg-white text-brand-primary shadow-md"
-                    : "text-white/80 hover:bg-brand-primaryHover/80 hover:text-white"
-                }`}
-              >
-                <span>👤</span>
-                <span>Admin</span>
-              </Link>
-            )}
           </div>
         </div>
         <button
