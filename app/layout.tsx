@@ -8,8 +8,12 @@ import { Toaster } from "react-hot-toast";
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
-  title: "SuoOps Dashboard",
-  description: "Create and send invoices for your business",
+  title: "SuoOps - Invoice & Expense Management",
+  description: "Create and send invoices for your business. Professional invoicing and expense tracking made simple.",
+  icons: {
+    icon: '/icon.png',
+    apple: '/apple-icon.png',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
