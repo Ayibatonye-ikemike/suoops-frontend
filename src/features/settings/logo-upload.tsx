@@ -325,7 +325,7 @@ export function LogoUpload() {
                 {planError.message}
               </p>
               <p className="mt-1 text-xs text-amber-700">
-                You're currently on the <span className="font-semibold capitalize">{planError.current_plan}</span> plan.
+                You&apos;re currently on the <span className="font-semibold capitalize">{planError.current_plan}</span> plan.
               </p>
             </div>
           </div>

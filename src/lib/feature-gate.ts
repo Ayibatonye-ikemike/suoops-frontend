@@ -26,7 +26,7 @@ export interface FeatureGateParsed {
   rawCode?: string;
 }
 
-function getAxiosParts(err: unknown): { status?: number; data?: any } {
+function getAxiosParts(err: unknown): { status?: number; data?: unknown } {
   const ax = err as AxiosError;
   if (ax && typeof ax === "object" && "isAxiosError" in ax) {
     return { status: ax.response?.status, data: ax.response?.data };
@@ -38,7 +38,18 @@ export function parseFeatureGateError(err: unknown): FeatureGateParsed | null {
   const { status, data } = getAxiosParts(err);
   if (!status || (status !== 403 && status !== 402)) return null;
   let detail: RawGateDetail | undefined;
-  if (data?.detail && typeof data.detail === "object") detail = data.detail as RawGateDetail; else if (typeof data === "object") detail = data as RawGateDetail;
+  
+  // Type guard for data with detail property
+  const hasDetail = (obj: unknown): obj is { detail: unknown } => {
+    return typeof obj === "object" && obj !== null && "detail" in obj;
+  };
+  
+  if (hasDetail(data) && typeof data.detail === "object") {
+    detail = data.detail as RawGateDetail;
+  } else if (typeof data === "object" && data !== null) {
+    detail = data as RawGateDetail;
+  }
+  
   if (!detail) return null;
 
   const code = detail.error;

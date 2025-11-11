@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PlanSelectionModal } from "./plan-selection-modal";
-import { ALL_PLANS, type PlanTier, getPlan } from "../../constants/pricing";
+import { type PlanTier, getPlan } from "../../constants/pricing";
 
 interface SubscriptionSectionProps {
   user?: {

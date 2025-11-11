@@ -13,9 +13,4 @@ Sentry.init({
   
   // Send default PII data
   sendDefaultPii: true,
-  
-  // Enable logs
-  _experiments: {
-    enableLogs: true,
-  },
 });
