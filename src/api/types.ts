@@ -19,13 +19,24 @@ export interface components {
       detail?: components["schemas"]["ValidationError"][];
     };
     InvoiceCreate: {
-      customer_name: string;
-      customer_phone?: string | null;
-      customer_email?: string | null;
       amount: number | string;
       due_date?: string | null;
       lines?: components["schemas"]["InvoiceLineIn"][] | null;
       discount_amount?: number | string | null;
+      invoice_type?: "revenue" | "expense";
+      customer_name?: string | null;
+      customer_phone?: string | null;
+      customer_email?: string | null;
+      vendor_name?: string | null;
+      category?: string | null;
+      merchant?: string | null;
+      description?: string | null;
+      receipt_url?: string | null;
+      receipt_text?: string | null;
+      input_method?: string | null;
+      channel?: string | null;
+      verified?: boolean;
+      notes?: string | null;
     };
     InvoiceLineIn: {
       description: string;

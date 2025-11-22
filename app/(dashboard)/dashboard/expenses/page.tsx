@@ -93,7 +93,7 @@ export default function ExpensesPage() {
         description: inv.lines?.[0]?.description || null,
         merchant: inv.vendor_name || inv.merchant || null,
         verified: Boolean(inv.verified),
-        channel: inv.channel,
+        channel: inv.channel ?? null,
       }));
     },
   });

@@ -70,6 +70,7 @@ export default function OcrInvoicePage() {
   }) => {
     try {
       const invoice = await createInvoice.mutateAsync({
+        invoice_type: "revenue",
         customer_name: data.customerName,
         customer_phone: data.customerPhone || undefined,
         amount: parseFloat(data.amount),
