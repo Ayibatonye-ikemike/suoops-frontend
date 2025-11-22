@@ -27,6 +27,20 @@ interface ExpenseStats {
   expense_to_revenue_ratio: number;
 }
 
+interface ExpenseInvoiceResponse {
+  id: number;
+  invoice_id: string;
+  amount: string | number;
+  due_date?: string | null;
+  created_at?: string | null;
+  category?: string | null;
+  lines?: Array<{ description?: string | null }>;
+  vendor_name?: string | null;
+  merchant?: string | null;
+  verified?: boolean;
+  channel?: string | null;
+}
+
 const CATEGORIES = [
   { value: "rent", label: "Rent" },
   { value: "utilities", label: "Utilities" },
@@ -62,7 +76,7 @@ export default function ExpensesPage() {
       const start = `${year}-${String(month).padStart(2, "0")}-01`;
       const end = `${year}-${String(month).padStart(2, "0")}-${new Date(year, month, 0).getDate()}`;
       // Use unified invoice endpoint with invoice_type filter
-      const response = await apiClient.get("/invoices/", { 
+      const response = await apiClient.get<ExpenseInvoiceResponse[]>("/invoices/", { 
         params: { 
           invoice_type: "expense",
           start_date: start, 
@@ -70,15 +84,15 @@ export default function ExpensesPage() {
         } 
       });
       // Map invoice format to expense format for display
-      return response.data.map((inv: any) => ({
+      return response.data.map((inv) => ({
         id: inv.id,
         invoice_id: inv.invoice_id,  // For deletion
-        amount: parseFloat(inv.amount),
-        expense_date: inv.due_date || inv.created_at,
+        amount: typeof inv.amount === "string" ? parseFloat(inv.amount) : inv.amount ?? 0,
+        expense_date: inv.due_date || inv.created_at || start,
         category: inv.category || "other",
         description: inv.lines?.[0]?.description || null,
-        merchant: inv.vendor_name || inv.merchant,
-        verified: inv.verified || false,
+        merchant: inv.vendor_name || inv.merchant || null,
+        verified: Boolean(inv.verified),
         channel: inv.channel,
       }));
     },

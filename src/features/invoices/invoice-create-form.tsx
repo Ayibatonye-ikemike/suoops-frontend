@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useCreateInvoice, type InvoiceLineInput } from "./use-create-invoice";
+import { useCreateInvoice, type InvoiceLineInput, type InvoiceCreatePayload } from "./use-create-invoice";
 import { useInvoiceQuota } from "./use-invoice-quota";
 import { parseFeatureGateError } from "@/lib/feature-gate";
 import { PlanSelectionModal } from "../settings/plan-selection-modal";
@@ -159,7 +159,7 @@ export function InvoiceCreateForm() {
       }));
 
     try {
-      const payload: any = {
+      const payload: InvoiceCreatePayload = {
         invoice_type: invoiceType,
         amount: parsedAmount,
         lines: preparedLines.length > 0 ? preparedLines : [{ 
@@ -284,7 +284,6 @@ export function InvoiceCreateForm() {
       <InvoiceFormMessages
         invoiceType={invoiceType}
         quota={quota}
-        quotaLoading={quotaLoading}
         quotaError={quotaErrorState}
         error={error}
         quotaErrorMessage={quotaError}

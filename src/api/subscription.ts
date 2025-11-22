@@ -76,7 +76,7 @@ export interface PaymentDetailResponse extends PaymentTransaction {
   customer_phone?: string;
   paystack_transaction_id?: string;
   updated_at: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   ip_address?: string;
 }
 

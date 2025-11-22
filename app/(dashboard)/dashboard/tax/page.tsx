@@ -22,9 +22,21 @@ interface ComplianceSummary {
   business_size: string;
 }
 
+type TaxPeriodType = "day" | "week" | "month" | "year";
+
+interface GenerateReportParams {
+  period_type: TaxPeriodType;
+  year: number;
+  basis: "paid" | "all";
+  force: boolean;
+  month?: number;
+  day?: number;
+  week?: number;
+}
+
 interface MonthlyReport {
   id: number;
-  period_type: "day" | "week" | "month" | "year";
+  period_type: TaxPeriodType;
   period_label: string;
   start_date: string | null;
   end_date: string | null;
@@ -57,7 +69,7 @@ export default function TaxPage() {
   const now = new Date();
   
   // Period type state
-  const [periodType, setPeriodType] = useState<"day" | "week" | "month" | "year">("month");
+  const [periodType, setPeriodType] = useState<TaxPeriodType>("month");
   const [reportMonth, setReportMonth] = useState(now.getMonth() || 12);
   const [reportYear, setReportYear] = useState(now.getMonth() === 0 ? now.getFullYear() - 1 : now.getFullYear());
   const [reportDay, setReportDay] = useState(1);
@@ -77,7 +89,7 @@ export default function TaxPage() {
   const { data: report, isFetching: reportLoading } = useQuery<MonthlyReport>({
     queryKey: ["taxReport", periodType, reportYear, reportMonth, reportDay, reportWeek, basis],
     queryFn: async () => {
-      const params: any = { period_type: periodType, year: reportYear, basis, force: true };
+      const params: GenerateReportParams = { period_type: periodType, year: reportYear, basis, force: true };
       if (periodType === "month") {
         params.month = reportMonth;
       } else if (periodType === "day") {
@@ -162,7 +174,7 @@ export default function TaxPage() {
                 {/* Period Type Selector */}
                 <select
                   value={periodType}
-                  onChange={(e) => setPeriodType(e.target.value as any)}
+                  onChange={(e) => setPeriodType(e.target.value as TaxPeriodType)}
                   className="rounded-lg border border-brand-border bg-white px-3 py-1.5 text-sm text-brand-text focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
                 >
                   <option value="day">Daily</option>

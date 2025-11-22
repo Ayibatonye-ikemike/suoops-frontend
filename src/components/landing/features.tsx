@@ -57,7 +57,6 @@ export function Features() {
               description="Type and send. No forms, no calculations, just simple text."
               speed="5 seconds"
               example='"Invoice Jane 50k for logo"'
-              color="blue"
               benefits={[
                 { text: "Perfect for: When you're at your desk or prefer typing", bold: true },
                 { text: "AI understands Nigerian English and currency" },
@@ -71,7 +70,6 @@ export function Features() {
               speed="10 seconds"
               example='"Invoice Jane fifty thousand for logo"'
               exampleType="voice"
-              color="purple"
               benefits={[
                 { text: "Perfect for: When you're driving, busy, or prefer talking", bold: true },
                 { text: "Truly hands-free - no typing required" },
@@ -84,7 +82,6 @@ export function Features() {
               description="Snap a receipt photo. AI reads it and creates your invoice."
               speed="8 seconds"
               exampleType="photo"
-              color="orange"
               benefits={[
                 { text: "Perfect for: Converting handwritten receipts to digital invoices", bold: true },
                 { text: "No retyping - AI reads customer name, amount, items" },
@@ -97,7 +94,6 @@ export function Features() {
               description="Every invoice includes a QR code. Customers scan it to verify authenticity instantly."
               speed="2 seconds"
               exampleType="qr"
-              color="green"
               benefits={[
                 { text: "Perfect for: Building customer trust - prove invoices are legitimate", bold: true },
                 { text: "Stop impersonation - only your real invoices have valid QR codes" },
@@ -148,11 +144,10 @@ interface FeatureCardProps {
   speed: string;
   example?: string;
   exampleType?: "text" | "voice" | "photo" | "qr";
-  color: "blue" | "purple" | "orange" | "green";
   benefits: Benefit[];
 }
 
-function FeatureCard({ emoji, title, description, speed, example, exampleType = "text", color, benefits }: FeatureCardProps) {
+function FeatureCard({ emoji, title, description, speed, example, exampleType = "text", benefits }: FeatureCardProps) {
   const accentClass = "bg-brand-mint";
 
   return (

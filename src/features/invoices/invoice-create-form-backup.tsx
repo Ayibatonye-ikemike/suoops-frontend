@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { isAxiosError } from "axios";
 
 import { Button } from "@/components/ui/button";
 
-import { useCreateInvoice, type InvoiceLineInput } from "./use-create-invoice";
+import { useCreateInvoice, type InvoiceLineInput, type InvoiceCreatePayload } from "./use-create-invoice";
 import { useInvoiceQuota } from "./use-invoice-quota";
 import { parseFeatureGateError } from "@/lib/feature-gate";
 import { PlanSelectionModal } from "../settings/plan-selection-modal";
@@ -133,7 +132,7 @@ export function InvoiceCreateForm() {
       }));
 
     try {
-      const payload: any = {
+      const payload: InvoiceCreatePayload = {
         invoice_type: invoiceType,
         amount: parsedAmount,
         lines: preparedLines.length > 0 ? preparedLines : [{ description: "Item", quantity: 1, unit_price: parsedAmount }],
@@ -474,7 +473,7 @@ export function InvoiceCreateForm() {
       )}
       {invoiceType === "expense" && (
         <p className="text-xs text-brand-textMuted">
-          ✅ Expenses don't count against your invoice limit
+          ✅ Expenses don&apos;t count against your invoice limit
         </p>
       )}
       {quotaErrorState && (

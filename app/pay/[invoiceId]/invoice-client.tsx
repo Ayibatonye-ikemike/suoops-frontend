@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { components } from "@/api/types";
-import { formatPaidAt } from "@/utils/formatDate";
+import { formatPaidAt } from "../../../src/utils/formatDate";
 
 // Extend public invoice schema to optionally include PDF URLs if backend exposes them.
 type InvoicePublic = components["schemas"]["InvoicePublicOut"] & {
@@ -136,7 +136,7 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
       } else {
         setShareStatus("Sharing unsupported");
       }
-    } catch (e) {
+    } catch {
       setShareStatus("Share failed");
     } finally {
       setTimeout(() => setShareStatus(null), 3000);
@@ -272,7 +272,7 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm" aria-labelledby="confirm-transfer-heading">
         <h2 id="confirm-transfer-heading" className="text-sm font-semibold text-slate-900">Confirm your transfer</h2>
         <p className="mt-2 text-sm text-slate-600">
-          After completing the bank transfer, tap the button below to notify the business. They'll verify the payment and send your receipt.
+          After completing the bank transfer, tap the button below to notify the business. They&apos;ll verify the payment and send your receipt.
         </p>
         <button
           type="button"
@@ -281,7 +281,7 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
           className="mt-4 w-full rounded-lg bg-brand-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
           aria-disabled={isSubmitting || isAwaiting || isPaid || isClosed}
         >
-          {isPaid ? "✓ Payment confirmed" : isAwaiting ? "✓ Business notified" : isSubmitting ? "Notifying..." : "I've sent the transfer"}
+          {isPaid ? "✓ Payment confirmed" : isAwaiting ? "✓ Business notified" : isSubmitting ? "Notifying..." : "I&apos;ve sent the transfer"}
         </button>
         {isPolling && !isPaid && !isClosed && (
           <p className="mt-2 text-xs text-slate-500" aria-live="polite">Checking status…</p>

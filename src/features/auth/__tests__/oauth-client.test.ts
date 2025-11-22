@@ -1,23 +1,27 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { exchangeOAuthCode, OAuthExchangeError } from "../oauth-client";
+import { exchangeOAuthCode } from "../oauth-client";
 
 // Helper: set session storage expected state
 function setState(value: string) {
   sessionStorage.setItem("oauth_expected_state", value);
 }
 
+type FetchMock = ReturnType<typeof vi.fn<Parameters<typeof fetch>, ReturnType<typeof fetch>>>;
+
 describe("exchangeOAuthCode", () => {
   const provider = "google";
+  let fetchMock: FetchMock;
 
   beforeEach(() => {
     vi.clearAllMocks();
     sessionStorage.clear();
-    (global as any).fetch = vi.fn();
+    fetchMock = vi.fn<Parameters<typeof fetch>, ReturnType<typeof fetch>>();
+    global.fetch = fetchMock as unknown as typeof fetch;
   });
 
   it("successfully exchanges code/state", async () => {
     setState("abc123");
-    (fetch as any).mockResolvedValueOnce({
+    fetchMock.mockResolvedValueOnce({
       ok: true,
       json: async () => ({ access_token: "tok", access_expires_at: new Date(Date.now() + 3600_000).toISOString() }),
     });
@@ -33,23 +37,23 @@ describe("exchangeOAuthCode", () => {
 
   it("retries on server error then succeeds", async () => {
     setState("vv" );
-    (fetch as any)
+    fetchMock
       .mockResolvedValueOnce({ ok: false, status: 500, json: async () => ({ detail: "boom" }) })
       .mockResolvedValueOnce({ ok: true, json: async () => ({ access_token: "after-retry", access_expires_at: new Date(Date.now() + 60000).toISOString() }) });
     const result = await exchangeOAuthCode("codeX", "vv", { provider, retries: 2 });
     expect(result.access_token).toBe("after-retry");
-    expect((fetch as any).mock.calls.length).toBe(2);
+    expect(fetchMock.mock.calls.length).toBe(2);
   });
 
   it("classifies network timeout", async () => {
     setState("st" );
-    (fetch as any).mockImplementation(() => new Promise((_r,_j)=>{})); // never resolves
+    fetchMock.mockImplementation(() => new Promise(() => {})); // never resolves
     await expect(exchangeOAuthCode("c","st", { provider, timeoutMs: 10, retries: 0 })).rejects.toMatchObject({ kind: "network" });
   });
 
   it("returns server classification after retries fail", async () => {
     setState("zz" );
-    (fetch as any)
+    fetchMock
       .mockResolvedValue({ ok: false, status: 502, json: async () => ({ detail: "bad gateway" }) });
     await expect(exchangeOAuthCode("code","zz", { provider, retries: 1 })).rejects.toMatchObject({ kind: "server" });
   });

@@ -42,7 +42,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
       try {
         const payload = JSON.parse(atob(accessToken.split('.')[1]));
         Sentry.setUser({ id: payload.sub });
-      } catch (e) {
+      } catch {
         // Ignore decode errors
       }
     }

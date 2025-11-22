@@ -21,7 +21,13 @@ vi.mock("@/features/auth/oauth-client", () => ({
 }));
 
 // Mock auth store
-vi.mock("@/features/auth/auth-store", () => ({ useAuthStore: (fn: any) => fn({ setTokens: vi.fn() }) }));
+vi.mock("@/features/auth/auth-store", () => {
+  const setTokens = vi.fn();
+  return {
+    useAuthStore: (selector: (state: { setTokens: typeof setTokens }) => unknown) =>
+      selector({ setTokens }),
+  };
+});
 
 declare global { var __TEST_PARAMS__: string | undefined; }
 

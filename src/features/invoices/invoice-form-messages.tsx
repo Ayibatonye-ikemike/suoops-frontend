@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 interface InvoiceFormMessagesProps {
   invoiceType: "revenue" | "expense";
   quota: { current_count: number; limit: number | null; current_plan: string; can_create: boolean } | undefined;
-  quotaLoading: boolean;
   quotaError: boolean;
   error: string | null;
   quotaErrorMessage: string | null;
@@ -15,7 +14,6 @@ interface InvoiceFormMessagesProps {
 export function InvoiceFormMessages({
   invoiceType,
   quota,
-  quotaLoading,
   quotaError,
   error,
   quotaErrorMessage,
@@ -34,7 +32,7 @@ export function InvoiceFormMessages({
       
       {invoiceType === "expense" && (
         <p className="text-xs text-brand-textMuted">
-          ✅ Expenses don't count against your invoice limit
+          ✅ Expenses don&apos;t count against your invoice limit
         </p>
       )}
       
