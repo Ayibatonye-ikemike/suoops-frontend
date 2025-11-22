@@ -8,27 +8,27 @@ interface HeroProps {
 
 export function Hero({ onWatchDemo }: HeroProps) {
   return (
-    <section className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden bg-gradient-to-b from-brand-mint to-white px-4 py-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-8">
           <div className="flex flex-col justify-center">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-4 py-1.5 text-sm font-medium text-orange-700 w-fit">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand-citrus/50 bg-brand-citrus/30 px-4 py-1.5 text-sm font-medium text-brand-evergreen w-fit">
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-400 opacity-75"></span>
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-orange-500"></span>
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-jade opacity-75"></span>
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-jade"></span>
               </span>
               Coming Soon • Join Waitlist 🚀
             </div>
-            <h1 className="text-5xl font-bold tracking-tight text-slate-900 sm:text-6xl lg:text-7xl">
+            <h1 className="text-5xl font-bold tracking-tight text-brand-evergreen sm:text-6xl lg:text-7xl">
               Invoice via
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-brand-jade to-brand-teal bg-clip-text text-transparent">
                 {" "}
                 WhatsApp or Email
               </span>
               <br />
               Get Paid Faster
             </h1>
-            <p className="mt-6 text-lg text-slate-600 sm:text-xl">
+            <p className="mt-6 text-lg text-brand-charcoal/80 sm:text-xl">
               Create professional invoices by sending a voice note or text message on WhatsApp.
               AI-powered invoice creation, automatic tax compliance, and multi-channel delivery (WhatsApp + Email).
               No apps to download, no complex software—just speak or type and get paid.
@@ -38,26 +38,26 @@ export function Hero({ onWatchDemo }: HeroProps) {
                 href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-4 text-center text-base font-semibold text-white shadow-lg hover:from-blue-700 hover:to-purple-700 transition-all hover:shadow-xl hover:scale-105"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-jade px-8 py-4 text-center text-base font-semibold text-white shadow-lg hover:bg-brand-teal transition-all hover:shadow-xl hover:scale-105"
               >
                 Join Waitlist - Get Early Access 🚀
               </a>
               <button
                 onClick={onWatchDemo}
-                className="rounded-lg border-2 border-slate-200 bg-white px-8 py-4 text-center text-base font-semibold text-slate-700 hover:border-slate-300 hover:bg-slate-50 transition-all"
+                className="rounded-lg border-2 border-brand-teal/30 bg-white px-8 py-4 text-center text-base font-semibold text-brand-evergreen hover:border-brand-teal hover:bg-brand-mint transition-all"
               >
                 Watch Demo →
               </button>
             </div>
-            <div className="mt-8 flex items-center gap-6 text-sm text-slate-500">
+            <div className="mt-8 flex items-center gap-6 text-sm text-brand-charcoal/70">
               <div className="flex items-center gap-2">
-                <svg className="h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="h-5 w-5 text-brand-jade" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
                 50% launch discount
               </div>
               <div className="flex items-center gap-2">
-                <svg className="h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="h-5 w-5 text-brand-jade" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
                 Priority early access
@@ -105,7 +105,7 @@ function PhoneMockup() {
               <div className="flex justify-start">
                 <div className="max-w-[80%] rounded-lg bg-white px-4 py-2 shadow-sm">
                   <p className="text-sm text-slate-800">👋 Hi! Send me a voice note to create an invoice.</p>
-                  <p className="mt-1 text-xs text-slate-500">9:40 AM</p>
+                  <p className="mt-1 text-xs text-brand-charcoal/60">9:40 AM</p>
                 </div>
               </div>
               {/* Voice Note */}
@@ -121,10 +121,10 @@ function PhoneMockup() {
                       <div className="h-1 w-full rounded-full bg-emerald-300">
                         <div className="h-1 w-3/4 rounded-full bg-emerald-600"></div>
                       </div>
-                      <p className="mt-1 text-xs text-slate-600">0:15</p>
+                      <p className="mt-1 text-xs text-brand-charcoal/70">0:15</p>
                     </div>
                   </div>
-                  <p className="mt-2 text-xs text-slate-600 italic">
+                  <p className="mt-2 text-xs text-brand-charcoal/70 italic">
                     &quot;Invoice Jane fifty thousand naira for logo design&quot;
                   </p>
                 </div>
@@ -133,22 +133,22 @@ function PhoneMockup() {
               <div className="flex justify-start">
                 <div className="max-w-[80%] rounded-lg bg-white px-4 py-3 shadow-sm">
                   <p className="text-sm font-semibold text-slate-800">✅ Invoice Created!</p>
-                  <div className="mt-2 space-y-1 text-sm text-slate-600">
+                  <div className="mt-2 space-y-1 text-sm text-brand-charcoal/70">
                     <p>📄 ID: INV-2024-001</p>
                     <p>👤 Customer: Jane</p>
                     <p>💰 Amount: ₦50,000</p>
                   </div>
-                  <button className="mt-3 w-full rounded-lg bg-blue-600 py-2 text-sm font-semibold text-white">
+                  <button className="mt-3 w-full rounded-lg bg-brand-jade py-2 text-sm font-semibold text-white">
                     View Invoice →
                   </button>
-                  <p className="mt-2 text-xs text-slate-500">9:41 AM</p>
+                  <p className="mt-2 text-xs text-brand-charcoal/60">9:41 AM</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
         {/* Decorative Elements */}
-        <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-blue-100 opacity-50 blur-2xl"></div>
+        <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-brand-mint opacity-50 blur-2xl"></div>
         <div className="absolute -bottom-4 -left-4 h-32 w-32 rounded-full bg-purple-100 opacity-50 blur-2xl"></div>
       </div>
     </div>

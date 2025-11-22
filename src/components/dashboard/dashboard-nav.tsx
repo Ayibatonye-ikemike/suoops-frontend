@@ -15,10 +15,18 @@ export function DashboardNav() {
   const logout = useLogout();
 
   return (
-    <nav className="border-b border-brand-border bg-brand-primary text-white shadow-sm">
+    <nav className="border-b border-brand-teal/30 bg-brand-evergreen text-white shadow-sm">
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8">
-          <span className="text-xl font-semibold tracking-tight sm:text-2xl">SuoOps</span>
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-2xl shadow-lg">
+              <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6">
+                <path d="M9 12h6M9 16h6M9 8h6M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="#0B3318" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M16 4v4M8 4v4" stroke="#14B56A" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <span className="text-xl font-semibold tracking-tight sm:text-2xl">SuoOps</span>
+          </div>
           <div className="flex flex-wrap gap-2">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
@@ -28,8 +36,8 @@ export function DashboardNav() {
                   href={item.href}
                   className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold uppercase tracking-wide transition sm:px-4 sm:text-sm ${
                     isActive
-                      ? "bg-white text-brand-primary shadow-md"
-                      : "text-white/80 hover:bg-brand-primaryHover/80 hover:text-white"
+                      ? "bg-brand-jade text-white shadow-md"
+                      : "text-white/80 hover:bg-brand-teal hover:text-white"
                   }`}
                 >
                   <span>{item.icon}</span>
@@ -41,7 +49,7 @@ export function DashboardNav() {
         </div>
         <button
           onClick={logout}
-          className="w-full rounded-lg border border-white/30 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-white hover:text-brand-primary sm:w-auto sm:text-sm"
+          className="w-full rounded-lg border border-white/30 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-brand-jade hover:border-brand-jade sm:w-auto sm:text-sm"
         >
           Logout
         </button>

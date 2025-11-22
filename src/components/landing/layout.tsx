@@ -2,45 +2,48 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-white px-4 py-12 sm:px-6 lg:px-8">
+    <footer className="border-t border-brand-teal/20 bg-brand-mint px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-8 md:grid-cols-4">
           <div>
-            <div className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-2xl font-bold text-white">
-                S
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-evergreen text-2xl font-bold text-white shadow-lg">
+                <svg viewBox="0 0 24 24" fill="none" className="h-8 w-8">
+                  <path d="M9 12h6M9 16h6M9 8h6M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  <path d="M16 4v4M8 4v4" stroke="#14B56A" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
               </div>
-              <span className="text-xl font-bold text-slate-900">SuoOps</span>
+              <span className="text-xl font-bold text-brand-evergreen">SuoOps</span>
             </div>
-            <p className="mt-4 text-sm text-slate-600">
+            <p className="mt-4 text-sm text-brand-charcoal/70">
               The easiest way for Nigerian businesses to create invoices and get paid.
             </p>
           </div>
           <div>
-            <h3 className="font-semibold text-slate-900">Product</h3>
-            <ul className="mt-4 space-y-2 text-sm text-slate-600">
-              <li><a href="#features" className="hover:text-slate-900">Features</a></li>
-              <li><a href="#pricing" className="hover:text-slate-900">Pricing</a></li>
-              <li><Link href="/dashboard" className="hover:text-slate-900">Dashboard</Link></li>
+            <h3 className="font-semibold text-brand-evergreen">Product</h3>
+            <ul className="mt-4 space-y-2 text-sm text-brand-charcoal/70">
+              <li><a href="#features" className="hover:text-brand-jade transition-colors">Features</a></li>
+              <li><a href="#pricing" className="hover:text-brand-jade transition-colors">Pricing</a></li>
+              <li><Link href="/dashboard" className="hover:text-brand-jade transition-colors">Dashboard</Link></li>
             </ul>
           </div>
           <div>
-            <h3 className="font-semibold text-slate-900">Company</h3>
-            <ul className="mt-4 space-y-2 text-sm text-slate-600">
-              <li><a href="mailto:info@suoops.com" className="hover:text-slate-900">Contact</a></li>
-              <li><a href="https://api.suoops.com/healthz" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900">Status</a></li>
-              <li><Link href="/login" className="hover:text-slate-900">Login</Link></li>
+            <h3 className="font-semibold text-brand-evergreen">Company</h3>
+            <ul className="mt-4 space-y-2 text-sm text-brand-charcoal/70">
+              <li><a href="mailto:info@suoops.com" className="hover:text-brand-jade transition-colors">Contact</a></li>
+              <li><a href="https://api.suoops.com/healthz" target="_blank" rel="noopener noreferrer" className="hover:text-brand-jade transition-colors">Status</a></li>
+              <li><Link href="/login" className="hover:text-brand-jade transition-colors">Login</Link></li>
             </ul>
           </div>
           <div>
-            <h3 className="font-semibold text-slate-900">Legal</h3>
-            <ul className="mt-4 space-y-2 text-sm text-slate-600">
-              <li><Link href="/privacy" className="hover:text-slate-900">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-slate-900">Terms of Service</Link></li>
+            <h3 className="font-semibold text-brand-evergreen">Legal</h3>
+            <ul className="mt-4 space-y-2 text-sm text-brand-charcoal/70">
+              <li><Link href="/privacy" className="hover:text-brand-jade transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-brand-jade transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
         </div>
-        <div className="mt-12 border-t border-slate-200 pt-8 text-center text-sm text-slate-500">
+        <div className="mt-12 border-t border-brand-teal/20 pt-8 text-center text-sm text-brand-charcoal/60">
           © 2025 SuoOps. All rights reserved. Made with ❤️ in Nigeria 🇳🇬
         </div>
       </div>
@@ -50,8 +53,8 @@ export function Footer() {
 
 export function PreLaunchBanner() {
   return (
-    <div className="bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400 px-4 py-3 text-center">
-      <p className="text-sm font-semibold text-slate-900">
+    <div className="bg-brand-citrus px-4 py-3 text-center">
+      <p className="text-sm font-semibold text-brand-evergreen">
         ⏳ <strong>Pre-Launch:</strong> Join our waitlist to get early access + exclusive 50% launch discount! 🚀
       </p>
     </div>
@@ -60,27 +63,30 @@ export function PreLaunchBanner() {
 
 export function Navigation() {
   return (
-    <nav className="border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+    <nav className="border-b border-brand-teal/20 bg-white/95 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-2xl font-bold text-white shadow-lg">
-              S
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-evergreen text-2xl font-bold text-white shadow-lg">
+              <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6">
+                <path d="M9 12h6M9 16h6M9 8h6M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M16 4v4M8 4v4" stroke="#14B56A" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
             </div>
-            <span className="text-xl font-bold text-slate-900">SuoOps</span>
+            <span className="text-xl font-bold text-brand-evergreen">SuoOps</span>
           </div>
           <div className="flex items-center gap-4">
             <a
               href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-medium text-slate-600 hover:text-slate-900"
+              className="text-sm font-medium text-brand-charcoal/70 hover:text-brand-jade transition-colors"
             >
               Join Waitlist
             </a>
             <Link
               href="/login"
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+              className="rounded-lg bg-brand-jade px-4 py-2 text-sm font-semibold text-white hover:bg-brand-teal transition-colors shadow-sm"
             >
               Login
             </Link>
@@ -93,23 +99,23 @@ export function Navigation() {
 
 export function WaitlistCounter() {
   return (
-    <section className="border-y border-slate-200 bg-white px-4 py-12 sm:px-6 lg:px-8">
+    <section className="border-y border-brand-teal/20 bg-brand-mint px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl text-center">
-        <div className="inline-flex items-center gap-4 rounded-2xl border-2 border-blue-200 bg-blue-50 px-8 py-6">
+        <div className="inline-flex items-center gap-4 rounded-2xl border-2 border-brand-jade/30 bg-white px-8 py-6 shadow-lg">
           <div className="text-left">
-            <p className="text-4xl font-bold text-blue-600">50+</p>
-            <p className="text-sm font-medium text-slate-600">Businesses Waiting</p>
+            <p className="text-4xl font-bold text-brand-jade">50+</p>
+            <p className="text-sm font-medium text-brand-charcoal/70">Businesses Waiting</p>
           </div>
-          <div className="h-16 w-px bg-blue-200"></div>
+          <div className="h-16 w-px bg-brand-teal/30"></div>
           <div className="text-left">
-            <p className="text-sm font-semibold text-slate-900">Join the waitlist today</p>
-            <p className="text-xs text-slate-600">Limited early access spots</p>
+            <p className="text-sm font-semibold text-brand-evergreen">Join the waitlist today</p>
+            <p className="text-xs text-brand-charcoal/60">Limited early access spots</p>
           </div>
           <a
             href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition-colors"
+            className="rounded-lg bg-brand-jade px-6 py-3 text-sm font-semibold text-white hover:bg-brand-teal transition-colors shadow-sm"
           >
             Join Now →
           </a>
@@ -121,12 +127,12 @@ export function WaitlistCounter() {
 
 export function CTASection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 to-purple-600 px-4 py-20 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden bg-gradient-to-br from-brand-evergreen to-brand-teal px-4 py-20 sm:px-6 lg:px-8">
       <div className="relative mx-auto max-w-4xl text-center">
         <h2 className="text-4xl font-bold text-white sm:text-5xl">
           Be the first to experience it
         </h2>
-        <p className="mt-4 text-xl text-blue-100">
+        <p className="mt-4 text-xl text-brand-mint">
           Join our waitlist and get exclusive early access when we launch!
         </p>
         <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
@@ -134,12 +140,12 @@ export function CTASection() {
             href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-8 py-4 text-center text-base font-semibold text-blue-600 shadow-lg hover:bg-blue-50 transition-all hover:scale-105"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-jade px-8 py-4 text-center text-base font-semibold text-white shadow-lg hover:bg-white hover:text-brand-jade transition-all hover:scale-105"
           >
             🚀 Join Waitlist Now
           </a>
         </div>
-        <p className="mt-6 text-sm text-blue-100">
+        <p className="mt-6 text-sm text-brand-mint">
           ✓ 50% launch discount · ✓ Priority early access · ✓ Exclusive updates
         </p>
       </div>

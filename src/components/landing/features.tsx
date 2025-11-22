@@ -5,11 +5,11 @@ export function Features() {
       <section id="features" className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <h2 className="text-base font-semibold text-blue-600">HOW IT WORKS</h2>
-            <p className="mt-2 text-4xl font-bold text-slate-900 sm:text-5xl">
+            <h2 className="text-base font-semibold text-brand-jade">HOW IT WORKS</h2>
+            <p className="mt-2 text-4xl font-bold text-brand-evergreen sm:text-5xl">
               Simple as sending a message
             </p>
-            <p className="mt-4 text-lg text-slate-600">
+            <p className="mt-4 text-lg text-brand-charcoal/70">
               No apps, no training, no hassle. Just WhatsApp—use voice notes or text messages.
             </p>
           </div>
@@ -44,11 +44,11 @@ export function Features() {
       <section className="px-4 py-20 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-slate-50">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <h2 className="text-base font-semibold text-blue-600">FEATURES</h2>
-            <p className="mt-2 text-4xl font-bold text-slate-900 sm:text-5xl">
+            <h2 className="text-base font-semibold text-brand-jade">FEATURES</h2>
+            <p className="mt-2 text-4xl font-bold text-brand-evergreen sm:text-5xl">
               Create Invoices Your Way
             </p>
-            <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+            <p className="mt-4 text-lg text-brand-charcoal/70 max-w-2xl mx-auto">
               Free WhatsApp text + voice. Upgrade for photo OCR. Every invoice includes QR verification.
             </p>
           </div>
@@ -133,21 +133,21 @@ function StepCard({ number, emoji, title, description, color }: StepCardProps) {
   };
 
   const bgColors = {
-    blue: "bg-blue-100",
+    blue: "bg-brand-mint",
     purple: "bg-purple-100",
     green: "bg-green-100",
   };
 
   return (
-    <div className="relative rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-lg transition-shadow">
+    <div className="relative rounded-2xl border border-brand-teal/20 bg-white p-8 shadow-sm hover:shadow-lg transition-shadow">
       <div className={`absolute -top-4 left-8 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${colors[color]} text-xl font-bold text-white shadow-lg`}>
         {number}
       </div>
       <div className={`mt-8 flex h-16 w-16 items-center justify-center rounded-2xl ${bgColors[color]} text-3xl`}>
         {emoji}
       </div>
-      <h3 className="mt-6 text-xl font-bold text-slate-900">{title}</h3>
-      <p className="mt-2 text-slate-600">{description}</p>
+      <h3 className="mt-6 text-xl font-bold text-brand-evergreen">{title}</h3>
+      <p className="mt-2 text-brand-charcoal/70">{description}</p>
     </div>
   );
 }
@@ -170,14 +170,14 @@ interface FeatureCardProps {
 
 function FeatureCard({ emoji, title, description, speed, example, exampleType = "text", color, benefits }: FeatureCardProps) {
   const colors = {
-    blue: { gradient: "from-blue-500 to-blue-600", bg: "from-blue-500/10 to-purple-500/10", border: "hover:border-blue-400", icon: "text-blue-500" },
+    blue: { gradient: "from-blue-500 to-blue-600", bg: "from-blue-500/10 to-purple-500/10", border: "hover:border-brand-jade", icon: "text-brand-jade" },
     purple: { gradient: "from-purple-500 to-purple-600", bg: "from-purple-500/10 to-pink-500/10", border: "hover:border-purple-400", icon: "text-purple-500" },
     orange: { gradient: "from-orange-500 to-orange-600", bg: "from-orange-500/10 to-yellow-500/10", border: "hover:border-orange-400", icon: "text-orange-500" },
     green: { gradient: "from-green-500 to-green-600", bg: "from-green-500/10 to-emerald-500/10", border: "hover:border-green-400", icon: "text-green-500" },
   };
 
   return (
-    <div className={`group relative overflow-hidden rounded-3xl border-2 border-slate-200 bg-white p-8 shadow-lg hover:shadow-2xl ${colors[color].border} transition-all duration-300`}>
+    <div className={`group relative overflow-hidden rounded-3xl border-2 border-brand-teal/20 bg-white p-8 shadow-lg hover:shadow-2xl ${colors[color].border} transition-all duration-300`}>
       <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${colors[color].bg} rounded-full blur-3xl`}></div>
       <div className="relative">
         <div className="flex items-start justify-between">
@@ -188,14 +188,14 @@ function FeatureCard({ emoji, title, description, speed, example, exampleType = 
             ⚡ {speed}
           </span>
         </div>
-        <h3 className="mt-6 text-2xl font-bold text-slate-900">{title}</h3>
-        <p className="mt-2 text-slate-600">{description}</p>
+        <h3 className="mt-6 text-2xl font-bold text-brand-evergreen">{title}</h3>
+        <p className="mt-2 text-brand-charcoal/70">{description}</p>
 
         <ExamplePreview type={exampleType} example={example} />
 
         <ul className="mt-6 space-y-3">
           {benefits.map((benefit, i) => (
-            <li key={i} className="flex items-start gap-3 text-sm text-slate-600">
+            <li key={i} className="flex items-start gap-3 text-sm text-brand-charcoal/70">
               <svg className={`h-5 w-5 ${colors[color].icon} mt-0.5 flex-shrink-0`} fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
@@ -211,9 +211,9 @@ function FeatureCard({ emoji, title, description, speed, example, exampleType = 
 function ExamplePreview({ type, example }: { type: string; example?: string }) {
   if (type === "text" && example) {
     return (
-      <div className="mt-6 rounded-xl bg-slate-50 p-4 border border-slate-200">
+      <div className="mt-6 rounded-xl bg-brand-mint p-4 border border-brand-teal/20">
         <p className="text-sm font-mono text-slate-700">{example}</p>
-        <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+        <div className="mt-3 flex items-center gap-2 text-xs text-brand-charcoal/60">
           <span className="flex items-center gap-1">
             <svg className="h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -229,7 +229,7 @@ function ExamplePreview({ type, example }: { type: string; example?: string }) {
 
   if (type === "voice" && example) {
     return (
-      <div className="mt-6 rounded-xl bg-slate-50 p-4 border border-slate-200">
+      <div className="mt-6 rounded-xl bg-brand-mint p-4 border border-brand-teal/20">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-500 text-white">
             <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
@@ -238,10 +238,10 @@ function ExamplePreview({ type, example }: { type: string; example?: string }) {
           </div>
           <div className="flex-1">
             <p className="text-sm font-medium text-slate-700">0:15 audio</p>
-            <p className="text-xs text-slate-500 italic">{example}</p>
+            <p className="text-xs text-brand-charcoal/60 italic">{example}</p>
           </div>
         </div>
-        <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+        <div className="mt-3 flex items-center gap-2 text-xs text-brand-charcoal/60">
           <span className="flex items-center gap-1">
             <svg className="h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -257,7 +257,7 @@ function ExamplePreview({ type, example }: { type: string; example?: string }) {
 
   if (type === "photo") {
     return (
-      <div className="mt-6 rounded-xl bg-slate-50 p-4 border border-slate-200">
+      <div className="mt-6 rounded-xl bg-brand-mint p-4 border border-brand-teal/20">
         <div className="flex items-center gap-3">
           <div className="relative w-16 h-16 rounded-lg bg-slate-200 flex items-center justify-center text-2xl overflow-hidden">
             📄
@@ -265,10 +265,10 @@ function ExamplePreview({ type, example }: { type: string; example?: string }) {
           </div>
           <div className="flex-1">
             <p className="text-sm font-medium text-slate-700">Receipt uploaded</p>
-            <p className="text-xs text-slate-500">AI extracting data...</p>
+            <p className="text-xs text-brand-charcoal/60">AI extracting data...</p>
           </div>
         </div>
-        <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+        <div className="mt-3 flex items-center gap-2 text-xs text-brand-charcoal/60">
           <span className="flex items-center gap-1">
             <svg className="h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -284,7 +284,7 @@ function ExamplePreview({ type, example }: { type: string; example?: string }) {
 
   if (type === "qr") {
     return (
-      <div className="mt-6 rounded-xl bg-slate-50 p-4 border border-slate-200">
+      <div className="mt-6 rounded-xl bg-brand-mint p-4 border border-brand-teal/20">
         <div className="flex items-center gap-3">
           <div className="w-16 h-16 bg-slate-900 rounded-lg flex items-center justify-center">
             <div className="grid grid-cols-4 gap-0.5">
@@ -295,7 +295,7 @@ function ExamplePreview({ type, example }: { type: string; example?: string }) {
           </div>
           <div className="flex-1">
             <p className="text-sm font-medium text-slate-700">Customer scanning QR...</p>
-            <p className="text-xs text-slate-500">Verifying invoice...</p>
+            <p className="text-xs text-brand-charcoal/60">Verifying invoice...</p>
           </div>
         </div>
         <div className="mt-3 flex items-center gap-2">
@@ -381,7 +381,7 @@ function QuickStats() {
       {stats.map((stat, i) => (
         <div key={i} className={`text-center rounded-2xl bg-${stat.color}-50 border border-${stat.color}-200 p-6`}>
           <div className={`text-4xl font-bold text-${stat.color}-600`}>{stat.value}</div>
-          <div className="mt-2 text-sm font-medium text-slate-600">{stat.label}</div>
+          <div className="mt-2 text-sm font-medium text-brand-charcoal/70">{stat.label}</div>
         </div>
       ))}
     </div>
