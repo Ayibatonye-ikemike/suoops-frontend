@@ -108,42 +108,43 @@ export default function PaymentHistoryPage() {
 
   if (loading && payments.length === 0) {
     return (
-      <div className="container mx-auto p-6">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="animate-pulse space-y-4">
-          <div className="h-8 w-1/3 rounded bg-brand-background" />
-          <div className="h-32 w-full rounded bg-brand-background" />
-          <div className="h-64 w-full rounded bg-brand-background" />
+          <div className="h-6 w-1/2 rounded bg-brand-background sm:h-8 sm:w-1/3" />
+          <div className="h-24 w-full rounded bg-brand-background sm:h-32" />
+          <div className="h-48 w-full rounded bg-brand-background sm:h-64" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-7xl">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex flex-col gap-3">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => router.push("/dashboard/settings")}
+            className="w-fit"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Settings
           </Button>
           <div>
-            <h1 className="text-2xl font-bold text-brand-text">Payment History</h1>
-            <p className="text-sm text-brand-textMuted">
+            <h1 className="text-xl font-bold text-brand-text sm:text-2xl">Payment History</h1>
+            <p className="mt-1 text-xs text-brand-textMuted sm:text-sm">
               View all your subscription payments and transactions
             </p>
           </div>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={handleRefresh}>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" onClick={handleRefresh} className="flex-1 sm:flex-none">
             <RefreshCw className="mr-2 h-4 w-4" />
             Refresh
           </Button>
-          <Button variant="outline" size="sm" onClick={handleExportCSV}>
+          <Button variant="outline" size="sm" onClick={handleExportCSV} className="flex-1 sm:flex-none">
             <Download className="mr-2 h-4 w-4" />
             Export CSV
           </Button>
@@ -151,33 +152,34 @@ export default function PaymentHistoryPage() {
       </div>
 
       {/* Summary Cards */}
-      <div className="mb-6 grid gap-4 md:grid-cols-4">
-        <div className="rounded-lg border border-brand-border bg-white p-4 shadow-sm">
-          <p className="text-sm text-brand-textMuted">Total Paid</p>
-          <p className="text-2xl font-bold text-brand-primary">
+      <div className="mb-6 grid gap-3 sm:gap-4 grid-cols-2 md:grid-cols-4">
+        <div className="rounded-lg border border-brand-border bg-white p-3 shadow-sm sm:p-4">
+          <p className="text-xs text-brand-textMuted sm:text-sm">Total Paid</p>
+          <p className="text-lg font-bold text-brand-primary sm:text-2xl">
             ₦{summary.total_paid.toLocaleString()}
           </p>
         </div>
-        <div className="rounded-lg border border-brand-border bg-white p-4 shadow-sm">
-          <p className="text-sm text-brand-textMuted">Successful</p>
-          <p className="text-2xl font-bold text-green-600">{summary.successful_count}</p>
+        <div className="rounded-lg border border-brand-border bg-white p-3 shadow-sm sm:p-4">
+          <p className="text-xs text-brand-textMuted sm:text-sm">Successful</p>
+          <p className="text-lg font-bold text-green-600 sm:text-2xl">{summary.successful_count}</p>
         </div>
-        <div className="rounded-lg border border-brand-border bg-white p-4 shadow-sm">
-          <p className="text-sm text-brand-textMuted">Pending</p>
-          <p className="text-2xl font-bold text-yellow-600">{summary.pending_count}</p>
+        <div className="rounded-lg border border-brand-border bg-white p-3 shadow-sm sm:p-4">
+          <p className="text-xs text-brand-textMuted sm:text-sm">Pending</p>
+          <p className="text-lg font-bold text-yellow-600 sm:text-2xl">{summary.pending_count}</p>
         </div>
-        <div className="rounded-lg border border-brand-border bg-white p-4 shadow-sm">
-          <p className="text-sm text-brand-textMuted">Failed</p>
-          <p className="text-2xl font-bold text-red-600">{summary.failed_count}</p>
+        <div className="rounded-lg border border-brand-border bg-white p-3 shadow-sm sm:p-4">
+          <p className="text-xs text-brand-textMuted sm:text-sm">Failed</p>
+          <p className="text-lg font-bold text-red-600 sm:text-2xl">{summary.failed_count}</p>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="mb-4 flex gap-2">
+      <div className="mb-4 flex flex-wrap gap-2">
         <Button
           variant={statusFilter === "" ? "primary" : "outline"}
           size="sm"
           onClick={() => handleFilterChange("")}
+          className="flex-1 sm:flex-none"
         >
           All
         </Button>
@@ -185,6 +187,7 @@ export default function PaymentHistoryPage() {
           variant={statusFilter === "success" ? "primary" : "outline"}
           size="sm"
           onClick={() => handleFilterChange("success")}
+          className="flex-1 sm:flex-none"
         >
           Successful
         </Button>
@@ -192,6 +195,7 @@ export default function PaymentHistoryPage() {
           variant={statusFilter === "pending" ? "primary" : "outline"}
           size="sm"
           onClick={() => handleFilterChange("pending")}
+          className="flex-1 sm:flex-none"
         >
           Pending
         </Button>
@@ -199,39 +203,41 @@ export default function PaymentHistoryPage() {
           variant={statusFilter === "failed" ? "primary" : "outline"}
           size="sm"
           onClick={() => handleFilterChange("failed")}
+          className="flex-1 sm:flex-none"
         >
           Failed
         </Button>
       </div>
 
       {/* Payment Table */}
-      <div className="rounded-lg border border-brand-border bg-white shadow-sm">
+      <div className="overflow-hidden rounded-lg border border-brand-border bg-white shadow-sm">
         {payments.length === 0 ? (
-          <div className="p-12 text-center">
+          <div className="p-8 text-center sm:p-12">
             <p className="text-brand-textMuted">No payment history found</p>
-            <p className="mt-2 text-sm text-brand-textMuted">
+            <p className="mt-2 text-xs text-brand-textMuted sm:text-sm">
               Your subscription payments will appear here
             </p>
           </div>
         ) : (
           <>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Reference</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Plan Upgrade</TableHead>
-                  <TableHead>Payment Method</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Billing Period</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="whitespace-nowrap">Date</TableHead>
+                    <TableHead className="whitespace-nowrap">Reference</TableHead>
+                    <TableHead className="whitespace-nowrap">Amount</TableHead>
+                    <TableHead className="whitespace-nowrap">Plan Upgrade</TableHead>
+                    <TableHead className="whitespace-nowrap">Payment Method</TableHead>
+                    <TableHead className="whitespace-nowrap">Status</TableHead>
+                    <TableHead className="whitespace-nowrap">Billing Period</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                 {payments.map((payment) => (
                   <TableRow key={payment.id}>
                     <TableCell>
-                      <div className="text-sm">
+                      <div className="text-xs sm:text-sm">
                         {new Date(payment.created_at).toLocaleDateString()}
                         <div className="text-xs text-brand-textMuted">
                           {new Date(payment.created_at).toLocaleTimeString()}
@@ -244,12 +250,12 @@ export default function PaymentHistoryPage() {
                       </code>
                     </TableCell>
                     <TableCell>
-                      <span className="font-semibold">
+                      <span className="text-sm font-semibold sm:text-base">
                         ₦{payment.amount.toLocaleString()}
                       </span>
                     </TableCell>
                     <TableCell>
-                      <div className="text-sm">
+                      <div className="text-xs sm:text-sm">
                         <span className="capitalize text-brand-textMuted">
                           {payment.plan_before}
                         </span>
@@ -261,7 +267,7 @@ export default function PaymentHistoryPage() {
                     </TableCell>
                     <TableCell>
                       {payment.payment_method ? (
-                        <div className="text-sm">
+                        <div className="text-xs sm:text-sm">
                           <span className="capitalize">{payment.payment_method}</span>
                           {payment.card_last4 && (
                             <div className="text-xs text-brand-textMuted">
@@ -275,7 +281,7 @@ export default function PaymentHistoryPage() {
                           )}
                         </div>
                       ) : (
-                        <span className="text-sm text-brand-textMuted">—</span>
+                        <span className="text-xs text-brand-textMuted sm:text-sm">—</span>
                       )}
                     </TableCell>
                     <TableCell>
@@ -290,25 +296,27 @@ export default function PaymentHistoryPage() {
                           {new Date(payment.billing_end_date).toLocaleDateString()}
                         </div>
                       ) : (
-                        <span className="text-sm text-brand-textMuted">—</span>
+                        <span className="text-xs text-brand-textMuted sm:text-sm">—</span>
                       )}
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+            </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between border-t border-brand-border px-6 py-4">
+            <div className="flex flex-col gap-3 border-t border-brand-border px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <Button
                 variant="outline"
                 size="sm"
                 disabled={page === 0}
                 onClick={() => setPage(page - 1)}
+                className="w-full sm:w-auto"
               >
                 Previous
               </Button>
-              <span className="text-sm text-brand-textMuted">
+              <span className="text-center text-xs text-brand-textMuted sm:text-sm">
                 Page {page + 1}
               </span>
               <Button
@@ -316,6 +324,7 @@ export default function PaymentHistoryPage() {
                 size="sm"
                 disabled={!hasMore}
                 onClick={() => setPage(page + 1)}
+                className="w-full sm:w-auto"
               >
                 Next
               </Button>

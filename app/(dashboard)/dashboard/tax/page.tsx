@@ -128,15 +128,15 @@ export default function TaxPage() {
 
   return (
     <div className="min-h-screen bg-brand-background">
-      <div className="mx-auto max-w-7xl px-6 py-10 text-brand-text">
-        <div className="mb-10">
-          <h1>Tax Compliance</h1>
-          <p className="mt-1 text-sm text-brand-textMuted">Monitor obligations and reports</p>
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10 text-brand-text">
+        <div className="mb-6 sm:mb-10">
+          <h1 className="text-xl font-bold sm:text-2xl">Tax Compliance</h1>
+          <p className="mt-1 text-xs text-brand-textMuted sm:text-sm">Monitor obligations and reports</p>
         </div>
 
         {/* Compliance Summary - BUSINESS Plan Only */}
         {compliance && report?.user_plan === "business" && (
-          <div className="mb-8 grid gap-4 md:grid-cols-3">
+          <div className="mb-6 grid gap-3 sm:mb-8 sm:gap-4 md:grid-cols-3">
             <StatCard label="Compliance Score" value={`${compliance.compliance_score}%`} icon="📊" />
             <StatCard label="Business Size" value={compliance.business_size.toUpperCase()} icon="🏢" />
             <StatCard
@@ -149,15 +149,15 @@ export default function TaxPage() {
 
         {/* Business Size Only - For FREE, STARTER, PRO Plans */}
         {compliance && report?.user_plan !== "business" && (
-          <div className="mb-8">
+          <div className="mb-6 sm:mb-8">
             <StatCard label="Business Size" value={compliance.business_size.toUpperCase()} icon="🏢" />
           </div>
         )}
 
-        <Card className="mb-8">
-          <CardHeader className="border-b border-brand-border/60">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <h2 className="text-[22px] font-semibold text-brand-text">Tax Report - {report?.period_label}</h2>
+        <Card className="mb-6 sm:mb-8">
+          <CardHeader className="border-b border-brand-border/60 px-4 sm:px-6">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+              <h2 className="text-lg font-semibold text-brand-text sm:text-[22px]">Tax Report - {report?.period_label}</h2>
               <div className="flex flex-wrap items-center gap-2">
                 {/* Period Type Selector */}
                 <select

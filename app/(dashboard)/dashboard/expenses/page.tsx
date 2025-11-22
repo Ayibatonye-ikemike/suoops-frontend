@@ -135,23 +135,23 @@ export default function ExpensesPage() {
   const catLabel = (c: string) => CATEGORIES.find(x => x.value === c)?.label || c;
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex justify-between items-center">
+    <div className="mx-auto max-w-7xl space-y-4 px-4 py-6 sm:space-y-6 sm:px-6 lg:px-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Expense Tracking</h1>
-          <p className="text-gray-600">Track business expenses and analyze spending</p>
+          <h1 className="text-xl font-bold sm:text-2xl md:text-3xl">Expense Tracking</h1>
+          <p className="mt-1 text-xs text-gray-600 sm:text-sm">Track business expenses and analyze spending</p>
         </div>
-        <Button onClick={() => setShowForm(!showForm)}>+ Add Expense</Button>
+        <Button onClick={() => setShowForm(!showForm)} className="w-full sm:w-auto">+ Add Expense</Button>
       </div>
 
       {/* Period Selector */}
       <Card>
-        <CardContent className="pt-6">
-          <div className="flex gap-4">
-            <select className="border rounded px-3 py-2" value={year} onChange={(e) => setYear(Number(e.target.value))}>
+        <CardContent className="px-4 pt-4 sm:px-6 sm:pt-6">
+          <div className="flex flex-wrap gap-3 sm:gap-4">
+            <select className="flex-1 rounded border px-3 py-2 text-sm sm:flex-none sm:text-base" value={year} onChange={(e) => setYear(Number(e.target.value))}>
               {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
             </select>
-            <select className="border rounded px-3 py-2" value={month} onChange={(e) => setMonth(Number(e.target.value))}>
+            <select className="flex-1 rounded border px-3 py-2 text-sm sm:flex-none sm:text-base" value={month} onChange={(e) => setMonth(Number(e.target.value))}>
               {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
                 <option key={m} value={m}>{new Date(2025, m - 1).toLocaleString("default", { month: "long" })}</option>
               ))}
@@ -162,7 +162,7 @@ export default function ExpensesPage() {
 
       {/* Stats */}
       {stats && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
           <StatCard label="Total Expenses" value={fmt(stats.total_expenses)} />
           <StatCard label="Total Revenue" value={fmt(stats.total_revenue)} />
           <StatCard
@@ -177,8 +177,8 @@ export default function ExpensesPage() {
       {/* Add Form */}
       {showForm && (
         <Card>
-          <CardHeader><h3 className="text-xl font-semibold">Add New Expense</h3></CardHeader>
-          <CardContent>
+          <CardHeader className="px-4 sm:px-6"><h3 className="text-lg font-semibold sm:text-xl">Add New Expense</h3></CardHeader>
+          <CardContent className="px-4 sm:px-6">
             <form onSubmit={(e) => { e.preventDefault(); createExpense.mutate(form); }} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
