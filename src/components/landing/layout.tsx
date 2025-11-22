@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export function Footer() {
@@ -7,13 +8,10 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-4">
           <div>
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm text-2xl font-bold text-white shadow-lg border border-white/20">
-                <svg viewBox="0 0 24 24" fill="none" className="h-8 w-8">
-                  <path d="M9 12h6M9 16h6M9 8h6M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                  <path d="M16 4v4M8 4v4" stroke="#2e7d4e" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm shadow-lg border border-white/20">
+                <Image src="/icon.png" alt="SuoOps logo" width={48} height={48} className="h-10 w-10 object-contain" priority />
               </div>
-              <span className="text-xl font-bold text-white">SuoOps</span>
+              <span className="text-xl font-heading font-bold text-white">SuoOps</span>
             </div>
             <p className="mt-4 text-sm text-white/70">
               The easiest way for Nigerian businesses to create invoices and get paid.
@@ -63,30 +61,30 @@ export function PreLaunchBanner() {
 
 export function Navigation() {
   return (
-    <nav className="border-b border-brand-teal/20 bg-white/95 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+    <nav className="sticky top-0 z-50 border-b border-white/10 bg-brand-evergreen/95 backdrop-blur-md text-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-evergreen text-2xl font-bold text-white shadow-lg">
-              <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6">
-                <path d="M9 12h6M9 16h6M9 8h6M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                <path d="M16 4v4M8 4v4" stroke="#2e7d4e" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 shadow-lg ring-1 ring-white/20">
+              <Image src="/icon.png" alt="SuoOps icon" width={40} height={40} className="h-8 w-8 object-contain" priority />
             </div>
-            <span className="text-xl font-bold text-brand-evergreen">SuoOps</span>
+            <div>
+              <span className="block text-base uppercase tracking-[0.3em] text-white/80">SuoOps</span>
+              <p className="text-xs text-brand-mint">Smart invoicing, simplified.</p>
+            </div>
           </div>
           <div className="flex items-center gap-4">
             <a
               href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-medium text-brand-charcoal/70 hover:text-brand-jade transition-colors"
+              className="text-sm font-semibold text-white/80 hover:text-white transition-colors"
             >
               Join Waitlist
             </a>
             <Link
               href="/login"
-              className="rounded-lg bg-brand-jade px-4 py-2 text-sm font-semibold text-white hover:bg-brand-teal transition-colors shadow-sm"
+              className="rounded-lg bg-brand-jade px-4 py-2 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-brand-teal"
             >
               Login
             </Link>
@@ -99,7 +97,7 @@ export function Navigation() {
 
 export function WaitlistCounter() {
   return (
-    <section className="border-y border-brand-teal/20 bg-brand-mint px-4 py-12 sm:px-6 lg:px-8">
+    <section className="border-y border-brand-teal/10 bg-brand-mint px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl text-center">
         <div className="inline-flex items-center gap-4 rounded-2xl border-2 border-brand-jade/30 bg-white px-8 py-6 shadow-lg">
           <div className="text-left">
@@ -108,8 +106,8 @@ export function WaitlistCounter() {
           </div>
           <div className="h-16 w-px bg-brand-teal/30"></div>
           <div className="text-left">
-            <p className="text-sm font-semibold text-white">Join the waitlist today</p>
-            <p className="text-xs text-white/70">Limited early access spots</p>
+            <p className="text-sm font-semibold text-brand-evergreen">Join the waitlist today</p>
+            <p className="text-xs text-brand-charcoal/60">Limited early access spots</p>
           </div>
           <a
             href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"

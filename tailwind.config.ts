@@ -6,34 +6,38 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          // Primary & Neutrals
-          evergreen: "#1e4d2b", // Deep forest green from logo background
-          charcoal: "#0F1E17", // Text and icons on light surfaces (accessible)
+          // Primary & Neutrals (exact brand guidelines)
+          evergreen: "#0B3318", // Background, main brand colour
+          charcoal: "#0F1E17", // Text on light backgrounds
           
           // Accents & Surfaces
-          jade: "#2e7d4e", // Forest green accent for CTAs
-          teal: "#0F766E", // Secondary buttons, chips, charts, focus rings
-          citrus: "#8fbc4f", // Muted olive accent (not Nigerian flag yellow)
-          mint: "#E8F5EC", // Light cards/surfaces
+          jade: "#14B56A", // Primary CTA buttons
+          teal: "#0F766E", // Secondary UI elements
+          citrus: "#BFF74A", // Promo highlights (<10%)
+          mint: "#E8F5EC", // Light surfaces/cards
           
           // Legacy mappings for compatibility
-          primary: "#1e4d2b", // Evergreen
-          primaryHover: "#2e7d4e", // Jade
-          secondary: "#0F766E", // Deep Teal
-          background: "#E8F5EC", // Mint Mist
+          primary: "#0B3318",
+          primaryHover: "#14B56A",
+          secondary: "#0F766E",
+          background: "#E8F5EC",
           backgroundAlt: "#FFFFFF",
           card: "#FFFFFF",
-          border: "#0F766E20", // Teal with opacity
-          text: "#0F1E17", // Charcoal Green
-          textMuted: "#0F1E1780", // Charcoal with opacity
-          statusPaidBg: "#2e7d4e20", // Jade light
-          statusPaidText: "#1e4d2b", // Evergreen
-          statusPendingBg: "#8fbc4f40", // Citrus light
-          statusPendingText: "#0F1E17", // Charcoal
-          accent: "#2e7d4e", // Jade
-          accentMuted: "#0F766E", // Teal
-          surface: "#E8F5EC", // Mint
+          border: "#0F766E20",
+          text: "#0F1E17",
+          textMuted: "#0F1E1780",
+          statusPaidBg: "#14B56A20",
+          statusPaidText: "#0B3318",
+          statusPendingBg: "#BFF74A40",
+          statusPendingText: "#0F1E17",
+          accent: "#14B56A",
+          accentMuted: "#0F766E",
+          surface: "#E8F5EC",
         },
+      },
+      fontFamily: {
+        heading: ["var(--font-heading)", "Poppins", "Inter", "sans-serif"],
+        body: ["var(--font-body)", "Inter", "system-ui", "sans-serif"],
       },
       boxShadow: {
         'card': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.05)',

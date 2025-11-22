@@ -8,18 +8,19 @@ interface HeroProps {
 
 export function Hero({ onWatchDemo }: HeroProps) {
   return (
-    <section className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden bg-brand-evergreen px-4 py-20 text-white sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-8">
           <div className="flex flex-col justify-center">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand-citrus/80 bg-brand-citrus px-4 py-1.5 text-sm font-medium text-brand-evergreen w-fit shadow-lg">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-brand-citrus/80 bg-brand-citrus/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-brand-evergreen w-fit shadow-lg">
               <span className="relative flex h-2 w-2">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-jade opacity-75"></span>
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-jade"></span>
               </span>
               Coming Soon • Join Waitlist 🚀
             </div>
-            <h1 className="text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.4em] text-brand-mint/80">Smart invoicing, simplified</p>
+            <h1 className="mt-4 font-heading text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
               Invoice via
               <span className="bg-gradient-to-r from-brand-jade to-brand-citrus bg-clip-text text-transparent">
                 {" "}
@@ -28,7 +29,7 @@ export function Hero({ onWatchDemo }: HeroProps) {
               <br />
               Get Paid Faster
             </h1>
-            <p className="mt-6 text-lg text-white/90 sm:text-xl">
+            <p className="mt-6 text-lg text-white/85 sm:text-xl">
               Create professional invoices by sending a voice note or text message on WhatsApp.
               AI-powered invoice creation, automatic tax compliance, and multi-channel delivery (WhatsApp + Email).
               No apps to download, no complex software—just speak or type and get paid.
@@ -38,13 +39,13 @@ export function Hero({ onWatchDemo }: HeroProps) {
                 href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-jade px-8 py-4 text-center text-base font-semibold text-white shadow-lg hover:bg-brand-teal transition-all hover:shadow-xl hover:scale-105"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-jade px-8 py-4 text-center text-base font-semibold text-white shadow-lg transition-all hover:scale-105 hover:bg-brand-teal"
               >
                 Join Waitlist - Get Early Access 🚀
               </a>
               <button
                 onClick={onWatchDemo}
-                className="rounded-lg border-2 border-white/30 bg-white/10 backdrop-blur-sm px-8 py-4 text-center text-base font-semibold text-white hover:bg-white/20 transition-all"
+                className="rounded-lg border border-white/30 bg-white/5 backdrop-blur-sm px-8 py-4 text-center text-base font-semibold text-white transition-all hover:bg-white/15"
               >
                 Watch Demo →
               </button>

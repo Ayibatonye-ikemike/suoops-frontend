@@ -5,7 +5,9 @@
 }
 
 body {
-  color: #1a1a1a;
+  font-family: var(--font-body), Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #0F1E17;
+  background-color: #0B3318;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -15,25 +17,18 @@ a {
   text-decoration: none;
 }
 
-h1 {
-  font-size: 28px;
-  font-weight: 700;
-  color: #1a1a1a;
-}
-
-h2 {
-  font-size: 22px;
-  font-weight: 600;
-  color: #1a1a1a;
-}
-
-h3 {
-  font-size: 18px;
-  font-weight: 500;
-  color: #1a1a1a;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading), Poppins, Inter, sans-serif;
+  color: inherit;
+  line-height: 1.2;
 }
 
 p {
-  font-size: 14px;
-  color: #4f4f4f;
+  color: inherit;
+  line-height: 1.4;
 }

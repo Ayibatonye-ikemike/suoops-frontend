@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Inter } from "next/font/google";
+import { Inter, Poppins } from "next/font/google";
 import { ReactQueryProvider } from "@/lib/react-query-provider";
 import { AuthProvider } from "@/features/auth/auth-provider";
 import { Toaster } from "react-hot-toast";
 
-const inter = Inter({ subsets: ["latin"], display: "swap" });
+const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-body" });
+const poppins = Poppins({ subsets: ["latin"], weight: ["600", "700"], display: "swap", variable: "--font-heading" });
 
 export const metadata: Metadata = {
   title: "SuoOps - Invoice & Expense Management",
@@ -18,8 +19,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} text-brand-text`}>
+    <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
+      <body className="font-body text-brand-text">
         <ReactQueryProvider>
           <AuthProvider>
             {children}
