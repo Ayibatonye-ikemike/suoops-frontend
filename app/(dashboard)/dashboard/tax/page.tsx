@@ -120,14 +120,14 @@ export default function TaxPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-brand-background">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="h-12 w-12 animate-spin rounded-full border-4 border-brand-border border-t-brand-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-brand-background">
+    <div className="min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10 text-brand-text">
         <div className="mb-6 sm:mb-10">
           <h1 className="text-xl font-bold sm:text-2xl">Tax Compliance</h1>

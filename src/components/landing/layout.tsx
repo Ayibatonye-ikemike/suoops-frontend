@@ -2,48 +2,48 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="border-t border-brand-teal/20 bg-brand-mint px-4 py-12 sm:px-6 lg:px-8">
+    <footer className="border-t border-white/10 bg-brand-teal/20 px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-8 md:grid-cols-4">
           <div>
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-evergreen text-2xl font-bold text-white shadow-lg">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm text-2xl font-bold text-white shadow-lg border border-white/20">
                 <svg viewBox="0 0 24 24" fill="none" className="h-8 w-8">
                   <path d="M9 12h6M9 16h6M9 8h6M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                   <path d="M16 4v4M8 4v4" stroke="#14B56A" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
               </div>
-              <span className="text-xl font-bold text-brand-evergreen">SuoOps</span>
+              <span className="text-xl font-bold text-white">SuoOps</span>
             </div>
-            <p className="mt-4 text-sm text-brand-charcoal/70">
+            <p className="mt-4 text-sm text-white/70">
               The easiest way for Nigerian businesses to create invoices and get paid.
             </p>
           </div>
           <div>
-            <h3 className="font-semibold text-brand-evergreen">Product</h3>
-            <ul className="mt-4 space-y-2 text-sm text-brand-charcoal/70">
-              <li><a href="#features" className="hover:text-brand-jade transition-colors">Features</a></li>
-              <li><a href="#pricing" className="hover:text-brand-jade transition-colors">Pricing</a></li>
-              <li><Link href="/dashboard" className="hover:text-brand-jade transition-colors">Dashboard</Link></li>
+            <h3 className="font-semibold text-white">Product</h3>
+            <ul className="mt-4 space-y-2 text-sm text-white/70">
+              <li><a href="#features" className="hover:text-brand-citrus transition-colors">Features</a></li>
+              <li><a href="#pricing" className="hover:text-brand-citrus transition-colors">Pricing</a></li>
+              <li><Link href="/dashboard" className="hover:text-brand-citrus transition-colors">Dashboard</Link></li>
             </ul>
           </div>
           <div>
-            <h3 className="font-semibold text-brand-evergreen">Company</h3>
-            <ul className="mt-4 space-y-2 text-sm text-brand-charcoal/70">
-              <li><a href="mailto:info@suoops.com" className="hover:text-brand-jade transition-colors">Contact</a></li>
-              <li><a href="https://api.suoops.com/healthz" target="_blank" rel="noopener noreferrer" className="hover:text-brand-jade transition-colors">Status</a></li>
-              <li><Link href="/login" className="hover:text-brand-jade transition-colors">Login</Link></li>
+            <h3 className="font-semibold text-white">Company</h3>
+            <ul className="mt-4 space-y-2 text-sm text-white/70">
+              <li><a href="mailto:info@suoops.com" className="hover:text-brand-citrus transition-colors">Contact</a></li>
+              <li><a href="https://api.suoops.com/healthz" target="_blank" rel="noopener noreferrer" className="hover:text-brand-citrus transition-colors">Status</a></li>
+              <li><Link href="/login" className="hover:text-brand-citrus transition-colors">Login</Link></li>
             </ul>
           </div>
           <div>
-            <h3 className="font-semibold text-brand-evergreen">Legal</h3>
-            <ul className="mt-4 space-y-2 text-sm text-brand-charcoal/70">
-              <li><Link href="/privacy" className="hover:text-brand-jade transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-brand-jade transition-colors">Terms of Service</Link></li>
+            <h3 className="font-semibold text-white">Legal</h3>
+            <ul className="mt-4 space-y-2 text-sm text-white/70">
+              <li><Link href="/privacy" className="hover:text-brand-citrus transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-brand-citrus transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
         </div>
-        <div className="mt-12 border-t border-brand-teal/20 pt-8 text-center text-sm text-brand-charcoal/60">
+        <div className="mt-12 border-t border-white/10 pt-8 text-center text-sm text-white/60">
           © 2025 SuoOps. All rights reserved. Made with ❤️ in Nigeria 🇳🇬
         </div>
       </div>
@@ -108,8 +108,8 @@ export function WaitlistCounter() {
           </div>
           <div className="h-16 w-px bg-brand-teal/30"></div>
           <div className="text-left">
-            <p className="text-sm font-semibold text-brand-evergreen">Join the waitlist today</p>
-            <p className="text-xs text-brand-charcoal/60">Limited early access spots</p>
+            <p className="text-sm font-semibold text-white">Join the waitlist today</p>
+            <p className="text-xs text-white/70">Limited early access spots</p>
           </div>
           <a
             href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"

@@ -2,14 +2,14 @@ export function Features() {
   return (
     <>
       {/* How It Works */}
-      <section id="features" className="px-4 py-20 sm:px-6 lg:px-8">
+      <section id="features" className="bg-white/5 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <h2 className="text-base font-semibold text-brand-jade">HOW IT WORKS</h2>
-            <p className="mt-2 text-4xl font-bold text-brand-evergreen sm:text-5xl">
+            <h2 className="text-base font-semibold text-brand-citrus">HOW IT WORKS</h2>
+            <p className="mt-2 text-4xl font-bold text-white sm:text-5xl">
               Simple as sending a message
             </p>
-            <p className="mt-4 text-lg text-brand-charcoal/70">
+            <p className="mt-4 text-lg text-white/80">
               No apps, no training, no hassle. Just WhatsApp—use voice notes or text messages.
             </p>
           </div>
@@ -41,14 +41,14 @@ export function Features() {
       </section>
 
       {/* Feature Showcase */}
-      <section className="px-4 py-20 sm:px-6 lg:px-8 bg-gradient-to-b from-white to-slate-50">
+      <section className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <h2 className="text-base font-semibold text-brand-jade">FEATURES</h2>
-            <p className="mt-2 text-4xl font-bold text-brand-evergreen sm:text-5xl">
+            <h2 className="text-base font-semibold text-brand-citrus">FEATURES</h2>
+            <p className="mt-2 text-4xl font-bold text-white sm:text-5xl">
               Create Invoices Your Way
             </p>
-            <p className="mt-4 text-lg text-brand-charcoal/70 max-w-2xl mx-auto">
+            <p className="mt-4 text-lg text-white/80 max-w-2xl mx-auto">
               Free WhatsApp text + voice. Upgrade for photo OCR. Every invoice includes QR verification.
             </p>
           </div>

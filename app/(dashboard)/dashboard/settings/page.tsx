@@ -23,7 +23,7 @@ export default function SettingsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-brand-background">
+    <div className="min-h-screen">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 py-6 sm:py-10 text-brand-text">
         <div className="mb-6 sm:mb-10">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">Settings</h1>

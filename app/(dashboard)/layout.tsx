@@ -6,7 +6,7 @@ import { DashboardNav } from "@/components/dashboard/dashboard-nav";
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <RequireAuth>
-      <div className="min-h-screen bg-brand-background">
+      <div className="min-h-screen bg-brand-evergreen">
         <DashboardNav />
         {children}
       </div>

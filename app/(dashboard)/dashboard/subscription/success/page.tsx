@@ -49,7 +49,7 @@ export default function SubscriptionSuccessPage() {
   }, [searchParams, queryClient]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-brand-background px-4 py-10">
+    <div className="flex min-h-screen items-center justify-center px-4 py-10">
       <div className="w-full max-w-md rounded-2xl border border-brand-border bg-white p-8 text-brand-text shadow-xl shadow-brand-border/20">
         {status === "verifying" && (
           <div className="text-center">

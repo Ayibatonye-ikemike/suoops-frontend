@@ -24,7 +24,7 @@ export default function HomePage() {
   const [showVideoModal, setShowVideoModal] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+    <div className="min-h-screen bg-brand-evergreen">
       <PreLaunchBanner />
       <Navigation />
       <Hero onWatchDemo={() => setShowVideoModal(true)} />

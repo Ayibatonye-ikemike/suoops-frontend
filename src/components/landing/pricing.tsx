@@ -4,14 +4,14 @@ export function Pricing() {
   return (
     <>
       {/* Premium Features Section */}
-      <section className="px-4 py-20 sm:px-6 lg:px-8 bg-white">
+      <section className="px-4 py-20 sm:px-6 lg:px-8 bg-white/5">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <h2 className="text-base font-semibold text-brand-jade">UPGRADE BENEFITS</h2>
-            <p className="mt-2 text-4xl font-bold text-brand-evergreen sm:text-5xl">
+            <h2 className="text-base font-semibold text-brand-citrus">UPGRADE BENEFITS</h2>
+            <p className="mt-2 text-4xl font-bold text-white sm:text-5xl">
               Unlock Premium Features
             </p>
-            <p className="mt-4 text-lg text-brand-charcoal/70 max-w-2xl mx-auto">
+            <p className="mt-4 text-lg text-white/80 max-w-2xl mx-auto">
               Start with free manual invoicing. Upgrade for tax automation (Starter), custom branding (Pro), or voice+OCR (Business).
             </p>
           </div>
@@ -60,10 +60,10 @@ export function Pricing() {
       </section>
 
       {/* Pricing Table */}
-      <section id="pricing" className="bg-brand-mint px-4 py-20 sm:px-6 lg:px-8">
+      <section id="pricing" className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl text-center">
-          <h2 className="text-base font-semibold text-brand-jade">PRICING</h2>
-          <p className="mt-2 text-4xl font-bold text-brand-evergreen">
+          <h2 className="text-base font-semibold text-brand-citrus">PRICING</h2>
+          <p className="mt-2 text-4xl font-bold text-white">
             Start free, upgrade as you grow
           </p>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto">
