@@ -131,6 +131,18 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
           </div>
         )}
 
+        {/* Payment History Link */}
+        <div className="mt-6 rounded-lg border border-brand-border bg-brand-background p-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start text-brand-primary hover:text-brand-primary"
+            onClick={() => window.location.href = "/dashboard/subscription/history"}
+          >
+            View Payment History →
+          </Button>
+        </div>
+
         <PlanSelectionModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}

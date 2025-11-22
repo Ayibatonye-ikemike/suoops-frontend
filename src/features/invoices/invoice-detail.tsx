@@ -154,19 +154,19 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
   };
 
   return (
-    <div className="space-y-6 rounded-lg border border-brand-border bg-white p-6 shadow-card">
+    <div className="space-y-4 sm:space-y-6 rounded-lg border border-brand-border bg-white p-4 sm:p-6 shadow-card">
       {/* Header */}
-      <header className="flex flex-wrap items-start justify-between gap-4 border-b border-brand-border pb-4">
-        <div>
-          <h2 className="text-xl font-bold text-brand-text">
+      <header className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 border-b border-brand-border pb-4">
+        <div className="flex-1 min-w-0">
+          <h2 className="text-lg sm:text-xl font-bold text-brand-text truncate">
             {invoice.invoice_type === "expense" ? "Expense" : "Invoice"} {invoice.invoice_id}
           </h2>
-          <p className="mt-1 text-sm text-brand-textMuted">Created {formatIsoDate(invoice.created_at ?? null)}</p>
+          <p className="mt-1 text-xs sm:text-sm text-brand-textMuted">Created {formatIsoDate(invoice.created_at ?? null)}</p>
           {invoice.paid_at && (
             <p className="mt-1 text-xs font-medium text-emerald-700">Paid {formatPaidAt(invoice.paid_at)}</p>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <span
             className={`inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-wide ${statusToneClass(statusMeta.tone)}`}
             aria-live="polite"
@@ -179,7 +179,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
               href={invoice.pdf_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-brand-primary bg-white px-3 py-1.5 text-xs font-semibold text-brand-primary transition hover:bg-brand-primary hover:text-white"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-brand-primary bg-white px-3 py-1.5 text-xs font-semibold text-brand-primary transition hover:bg-brand-primary hover:text-white whitespace-nowrap"
             >
               📄 PDF
             </a>
@@ -188,7 +188,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
             type="button"
             onClick={handlePrint}
             aria-label="Print invoice"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border bg-white px-3 py-1.5 text-xs font-semibold text-brand-text transition hover:border-brand-primary hover:text-brand-primary"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border bg-white px-3 py-1.5 text-xs font-semibold text-brand-text transition hover:border-brand-primary hover:text-brand-primary whitespace-nowrap"
           >
             🖨 Print
           </button>
@@ -197,7 +197,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
               href={invoice.receipt_pdf_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-600 bg-white px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-600 hover:text-white"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-600 bg-white px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-600 hover:text-white whitespace-nowrap"
             >
               ✅ Receipt
             </a>
@@ -206,11 +206,11 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
       </header>
 
       {/* Body - Key Details */}
-      <section className="space-y-5">
+      <section className="space-y-3 sm:space-y-5">
         {/* Amount Card */}
-        <div className="rounded-lg border border-brand-border bg-brand-background p-4">
+        <div className="rounded-lg border border-brand-border bg-brand-background p-3 sm:p-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">Total Amount</p>
-          <p className="mt-2 text-3xl font-bold text-brand-primary">{formatCurrency(invoice.amount)}</p>
+          <p className="mt-2 text-2xl sm:text-3xl font-bold text-brand-primary break-words">{formatCurrency(invoice.amount)}</p>
           {invoice.discount_amount && (
             <p className="mt-1 text-sm text-brand-textMuted">Discount: {formatCurrency(invoice.discount_amount)}</p>
           )}
@@ -270,13 +270,13 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
 
         {/* Status & Due Date - Hide status selector for expenses (auto-paid) */}
         {invoice.invoice_type === "expense" ? (
-          <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
-            <p className="text-sm font-medium text-emerald-900">
+          <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 sm:p-4">
+            <p className="text-xs sm:text-sm font-medium text-emerald-900">
               ✅ This expense was automatically marked as paid when recorded for tax tracking purposes.
             </p>
           </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
             <div>
               <label htmlFor="status-select" className="block text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
                 Status
@@ -300,7 +300,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">Due Date</p>
-              <p className="mt-2 text-sm font-medium text-brand-text">{formatIsoDate(invoice.due_date ?? null)}</p>
+              <p className="mt-2 text-sm font-medium text-brand-text break-words">{formatIsoDate(invoice.due_date ?? null)}</p>
             </div>
           </div>
         )}
@@ -346,36 +346,40 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
       </section>
 
       {/* Line Items */}
-      <section className="border-t border-brand-border pt-5">
-        <h3 className="mb-4 text-base font-bold text-brand-text">Line Items</h3>
+      <section className="border-t border-brand-border pt-4 sm:pt-5">
+        <h3 className="mb-3 sm:mb-4 text-sm sm:text-base font-bold text-brand-text">Line Items</h3>
         {!invoice.lines || invoice.lines.length === 0 ? (
-          <p className="text-sm text-brand-textMuted">No line items on this invoice.</p>
+          <p className="text-xs sm:text-sm text-brand-textMuted">No line items on this invoice.</p>
         ) : (
-          <div className="overflow-hidden rounded-lg border border-brand-border">
-            <table className="min-w-full divide-y divide-brand-border text-sm">
-              <thead className="bg-brand-background">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
-                    Description
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
-                    Qty
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
-                    Unit Price
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-brand-border bg-white">
-                {invoice.lines.map((line) => (
-                  <tr key={line.id}>
-                    <td className="px-4 py-3 font-medium text-brand-text">{line.description}</td>
-                    <td className="px-4 py-3 text-brand-textMuted">{line.quantity}</td>
-                    <td className="px-4 py-3 text-brand-textMuted">{formatCurrency(line.unit_price)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="overflow-x-auto -mx-4 sm:mx-0">
+            <div className="inline-block min-w-full align-middle">
+              <div className="overflow-hidden rounded-lg border border-brand-border">
+                <table className="min-w-full divide-y divide-brand-border text-xs sm:text-sm">
+                  <thead className="bg-brand-background">
+                    <tr>
+                      <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
+                        Description
+                      </th>
+                      <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
+                        Qty
+                      </th>
+                      <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs font-semibold uppercase tracking-wide text-brand-textMuted whitespace-nowrap">
+                        Unit Price
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-brand-border bg-white">
+                    {invoice.lines.map((line) => (
+                      <tr key={line.id}>
+                        <td className="px-3 sm:px-4 py-2 sm:py-3 font-medium text-brand-text break-words max-w-[200px] sm:max-w-none">{line.description}</td>
+                        <td className="px-3 sm:px-4 py-2 sm:py-3 text-brand-textMuted whitespace-nowrap">{line.quantity}</td>
+                        <td className="px-3 sm:px-4 py-2 sm:py-3 text-brand-textMuted whitespace-nowrap">{formatCurrency(line.unit_price)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         )}
       </section>
