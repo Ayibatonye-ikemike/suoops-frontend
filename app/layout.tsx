@@ -18,8 +18,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="bg-brand-background">
-      <body className={`${inter.className} bg-brand-background text-brand-text`}>
+    <html lang="en">
+      <body className={`${inter.className} text-brand-text`}>
         <ReactQueryProvider>
           <AuthProvider>
             {children}
