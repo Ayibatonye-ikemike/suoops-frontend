@@ -21,8 +21,8 @@ export function DashboardNav() {
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-2xl shadow-lg">
               <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6">
-                <path d="M9 12h6M9 16h6M9 8h6M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="#0B3318" strokeWidth="2" strokeLinecap="round"/>
-                <path d="M16 4v4M8 4v4" stroke="#14B56A" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M9 12h6M9 16h6M9 8h6M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="#1e4d2b" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M16 4v4M8 4v4" stroke="#2e7d4e" strokeWidth="2" strokeLinecap="round"/>
               </svg>
             </div>
             <span className="text-xl font-semibold tracking-tight sm:text-2xl">SuoOps</span>
