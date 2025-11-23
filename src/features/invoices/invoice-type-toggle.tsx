@@ -11,7 +11,7 @@ export function InvoiceTypeToggle({ invoiceType, onTypeChange }: InvoiceTypeTogg
         onClick={() => onTypeChange("revenue")}
         className={`flex-1 rounded-md px-4 py-2.5 text-sm font-semibold uppercase tracking-wide transition ${
           invoiceType === "revenue"
-            ? "bg-brand-primary text-white shadow"
+            ? "bg-brand-jade text-white shadow"
             : "text-brand-textMuted hover:text-brand-text"
         }`}
       >
@@ -22,7 +22,7 @@ export function InvoiceTypeToggle({ invoiceType, onTypeChange }: InvoiceTypeTogg
         onClick={() => onTypeChange("expense")}
         className={`flex-1 rounded-md px-4 py-2.5 text-sm font-semibold uppercase tracking-wide transition ${
           invoiceType === "expense"
-            ? "bg-brand-primary text-white shadow"
+            ? "bg-brand-jade text-white shadow"
             : "text-brand-textMuted hover:text-brand-text"
         }`}
       >

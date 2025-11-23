@@ -202,7 +202,7 @@ export function InvoiceCreateForm() {
           onClick={() => setInvoiceType("revenue")}
           className={`flex-1 rounded-md px-4 py-2.5 text-sm font-semibold uppercase tracking-wide transition ${
             invoiceType === "revenue"
-              ? "bg-brand-primary text-white shadow"
+              ? "bg-brand-jade text-white shadow"
               : "text-brand-textMuted hover:text-brand-text"
           }`}
         >
@@ -213,7 +213,7 @@ export function InvoiceCreateForm() {
           onClick={() => setInvoiceType("expense")}
           className={`flex-1 rounded-md px-4 py-2.5 text-sm font-semibold uppercase tracking-wide transition ${
             invoiceType === "expense"
-              ? "bg-brand-primary text-white shadow"
+              ? "bg-brand-jade text-white shadow"
               : "text-brand-textMuted hover:text-brand-text"
           }`}
         >
@@ -223,12 +223,12 @@ export function InvoiceCreateForm() {
       
       {/* OCR Photo Upload Option - Only for Revenue */}
       {invoiceType === "revenue" && (
-        <div className="rounded-2xl border border-brand-primary/20 bg-brand-primary/5 p-4">
+        <div className="rounded-2xl border border-brand-jade/20 bg-brand-jade/5 p-4">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">📸</span>
-                <h3 className="text-base font-semibold text-brand-primary">Create from Photo</h3>
+                <h3 className="text-base font-semibold text-brand-jade">Create from Photo</h3>
               </div>
               <p className="mt-1 text-sm text-brand-textMuted">
                 Take a photo of a receipt and AI will extract the details automatically
@@ -236,7 +236,7 @@ export function InvoiceCreateForm() {
             </div>
             <a
               href="/dashboard/invoices/create-from-photo"
-              className="whitespace-nowrap rounded-lg bg-brand-primary px-5 py-3 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-brand-primaryHover"
+              className="whitespace-nowrap rounded-lg bg-brand-jade px-5 py-3 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-brand-jadeHover"
             >
               Upload Photo
             </a>
@@ -361,11 +361,11 @@ export function InvoiceCreateForm() {
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploadingReceipt}
-                  className="flex w-full flex-col items-center justify-center rounded-lg border-2 border-dashed border-brand-border bg-brand-background p-6 transition-colors hover:border-brand-primary hover:bg-brand-primary/5 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="flex w-full flex-col items-center justify-center rounded-lg border-2 border-dashed border-brand-border bg-brand-background p-6 transition-colors hover:border-brand-jade hover:bg-brand-jade/5 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {uploadingReceipt ? (
                     <>
-                      <svg className="mb-2 h-10 w-10 animate-spin text-brand-primary" fill="none" viewBox="0 0 24 24">
+                      <svg className="mb-2 h-10 w-10 animate-spin text-brand-jade" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
@@ -447,7 +447,7 @@ export function InvoiceCreateForm() {
                 type="button"
                 onClick={() => removeLine(line.id)}
                 disabled={lines.length === 1}
-                className="justify-self-start sm:justify-self-end md:justify-self-start text-sm font-semibold text-brand-text transition hover:text-brand-primary disabled:cursor-not-allowed disabled:opacity-40 sm:col-span-2 md:col-span-1"
+                className="justify-self-start sm:justify-self-end md:justify-self-start text-sm font-semibold text-brand-jade transition hover:text-brand-jade/80 disabled:cursor-not-allowed disabled:opacity-40 sm:col-span-2 md:col-span-1"
               >
                 Remove
               </button>

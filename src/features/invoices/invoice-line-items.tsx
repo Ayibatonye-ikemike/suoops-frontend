@@ -63,7 +63,7 @@ export function InvoiceLineItems({
               type="button"
               onClick={() => onRemoveLine(line.id)}
               disabled={lines.length === 1}
-              className="justify-self-start sm:justify-self-end md:justify-self-start text-sm font-semibold text-brand-text transition hover:text-brand-primary disabled:cursor-not-allowed disabled:opacity-40 sm:col-span-2 md:col-span-1"
+              className="justify-self-start sm:justify-self-end md:justify-self-start text-sm font-semibold text-brand-jade transition hover:text-brand-jade/80 disabled:cursor-not-allowed disabled:opacity-40 sm:col-span-2 md:col-span-1"
             >
               Remove
             </button>

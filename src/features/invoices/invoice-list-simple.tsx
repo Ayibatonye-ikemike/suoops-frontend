@@ -104,8 +104,8 @@ export function InvoiceList() {
               onClick={() => setStatusFilter(filter.key)}
               className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition ${
                 statusFilter === filter.key
-                  ? "border-brand-primary bg-brand-primary text-white"
-                  : "border-brand-border bg-white text-brand-textMuted hover:border-brand-primary/40"
+                  ? "border-brand-jade bg-brand-jade text-white"
+                  : "border-brand-border bg-white text-brand-textMuted hover:border-brand-jade/40"
               }`}
             >
               {filter.label} ({statusCounts[filter.key] as number})
@@ -125,7 +125,7 @@ export function InvoiceList() {
               return (
                 <div
                   key={invoice.invoice_id}
-                  className="rounded-lg border border-brand-border bg-brand-background p-4 transition hover:border-brand-primary/40 hover:shadow-card-hover"
+                  className="rounded-lg border border-brand-border bg-brand-background p-4 transition hover:border-brand-jade/40 hover:shadow-card-hover"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
@@ -145,7 +145,7 @@ export function InvoiceList() {
                       <Link
                         href={invoice.pdf_url}
                         target="_blank"
-                        className="inline-flex items-center gap-2 text-xs font-semibold text-brand-primary hover:underline"
+                        className="inline-flex items-center gap-2 text-xs font-semibold text-brand-jade hover:underline"
                       >
                         📄 View PDF
                       </Link>
@@ -162,7 +162,7 @@ export function InvoiceList() {
                   setStatusFilter("all");
                   setSearchQuery("");
                 }}
-                className="mt-4 inline-flex rounded-lg border border-brand-primary bg-white px-4 py-2 text-xs font-semibold uppercase tracking-wide text-brand-primary transition hover:bg-brand-primary hover:text-white"
+                className="mt-4 inline-flex rounded-lg border border-brand-jade bg-white px-4 py-2 text-xs font-semibold uppercase tracking-wide text-brand-jade transition hover:bg-brand-jade hover:text-white"
               >
                 Clear Filters
               </button>

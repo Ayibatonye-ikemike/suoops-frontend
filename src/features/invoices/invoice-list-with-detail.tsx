@@ -121,8 +121,8 @@ export function InvoiceListWithDetail() {
               onClick={() => setStatusFilter(filter.key)}
               className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition ${
                 statusFilter === filter.key
-                  ? "border-brand-primary bg-brand-primary text-white"
-                  : "border-brand-border bg-white text-brand-textMuted hover:border-brand-primary/40"
+                  ? "border-brand-jade bg-brand-jade text-white"
+                  : "border-brand-border bg-white text-brand-textMuted hover:border-brand-jade/40"
               }`}
             >
               {filter.label} ({statusCounts[filter.key] as number})
@@ -155,8 +155,8 @@ export function InvoiceListWithDetail() {
                   }}
                   className={`cursor-pointer rounded-lg border bg-white p-3 transition ${
                     isSelected
-                      ? "border-brand-primary ring-2 ring-brand-primary/20"
-                      : "border-brand-border hover:border-brand-primary/40 hover:shadow-sm"
+                      ? "border-brand-jade ring-2 ring-brand-jade/20"
+                      : "border-brand-border hover:border-brand-jade/40 hover:shadow-sm"
                   }`}
                 >
                   <div className="flex items-center justify-between gap-3">
@@ -181,7 +181,7 @@ export function InvoiceListWithDetail() {
                   setStatusFilter("all");
                   setSearchQuery("");
                 }}
-                className="mt-4 inline-flex rounded-lg border border-brand-primary bg-white px-4 py-2 text-xs font-semibold uppercase tracking-wide text-brand-primary transition hover:bg-brand-primary hover:text-white"
+                className="mt-4 inline-flex rounded-lg border border-brand-jade bg-white px-4 py-2 text-xs font-semibold uppercase tracking-wide text-brand-jade transition hover:bg-brand-jade hover:text-white"
               >
                 Clear Filters
               </button>

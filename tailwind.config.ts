@@ -12,6 +12,7 @@ const config: Config = {
           
           // Accents & Surfaces
           jade: "#14B56A", // Primary CTA buttons
+          jadeHover: "#109456", // Darker shade for hover states on CTAs
           teal: "#0F766E", // Secondary UI elements
           citrus: "#BFF74A", // Promo highlights (<10%)
           mint: "#E8F5EC", // Light surfaces/cards

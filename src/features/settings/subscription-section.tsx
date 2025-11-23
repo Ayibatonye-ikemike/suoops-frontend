@@ -41,7 +41,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
         <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
           <h2 className="text-[22px] font-semibold text-brand-text">Subscription Plan</h2>
           <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-textMuted">
-            <span className="block h-1 w-6 rounded-full bg-brand-primary/60" />
+            <span className="block h-1 w-6 rounded-full bg-brand-jade/60" />
             Stay compliant &amp; connected
           </span>
         </div>
@@ -61,7 +61,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                   {currentPlan === "ENTERPRISE" && "👑"}
                 </div>
                 <div>
-                  <div className="inline-flex items-center gap-2 rounded-full bg-brand-primary px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-brand-jade px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
                     Current Plan
                     {planDetails.name !== "Free" && <span className="opacity-70">•</span>}
                     <span>{planDetails.name}</span>
@@ -85,7 +85,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
               {currentPlan !== "ENTERPRISE" && (
                 <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-white">
                   <div
-                    className="h-full rounded-full bg-brand-primary transition-all"
+                    className="h-full rounded-full bg-brand-jade transition-all"
                     style={{
                       width: `${usagePercent}%`,
                     }}
@@ -102,7 +102,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                     key={feature}
                     className="flex items-center gap-2 rounded-xl border border-brand-border bg-brand-background px-3 py-2 text-sm text-brand-text"
                   >
-                    <span className="text-brand-primary">✓</span>
+                    <span className="text-brand-jade">✓</span>
                     {feature}
                   </li>
                 ))}
@@ -136,7 +136,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
           <Button
             variant="ghost"
             size="sm"
-            className="w-full justify-start text-brand-primary hover:text-brand-primary"
+            className="w-full justify-start text-brand-jade hover:text-brand-jade"
             onClick={() => window.location.href = "/dashboard/subscription/history"}
           >
             View Payment History →
