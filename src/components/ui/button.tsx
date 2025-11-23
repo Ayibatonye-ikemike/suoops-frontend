@@ -11,9 +11,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     
     const variants = {
       primary: "bg-brand-jade text-white hover:bg-brand-jadeHover shadow-md",
-      secondary: "border border-brand-jade bg-white text-brand-jade hover:bg-brand-jade/10",
-      outline: "border border-brand-jade text-brand-jade hover:bg-brand-jade/10",
-      ghost: "text-brand-jade hover:bg-brand-jade/10",
+      secondary: "border border-brand-jade bg-brand-jade text-white hover:bg-brand-jadeHover shadow-sm",
+      outline: "border border-brand-jade bg-brand-jade/10 text-brand-evergreen hover:bg-brand-jade/20",
+      ghost: "border border-brand-jade/60 bg-brand-jade/15 text-brand-evergreen hover:bg-brand-jade hover:text-white",
       danger: "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-600",
     };
     

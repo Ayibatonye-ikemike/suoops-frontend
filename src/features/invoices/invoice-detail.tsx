@@ -179,7 +179,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
               href={invoice.pdf_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-brand-jade bg-white px-3 py-1.5 text-xs font-semibold text-brand-jade transition hover:bg-brand-jade hover:text-white whitespace-nowrap"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-brand-jade bg-brand-jade px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-brand-jadeHover whitespace-nowrap"
             >
               📄 PDF
             </a>
@@ -188,7 +188,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
             type="button"
             onClick={handlePrint}
             aria-label="Print invoice"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border bg-white px-3 py-1.5 text-xs font-semibold text-brand-text transition hover:border-brand-jade hover:text-brand-jade whitespace-nowrap"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-brand-jade bg-brand-jade px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-brand-jadeHover whitespace-nowrap"
           >
             🖨 Print
           </button>
@@ -238,7 +238,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
                   href={invoice.receipt_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-lg border border-brand-jade bg-white px-4 py-2.5 text-sm font-semibold text-brand-jade transition hover:bg-brand-jade hover:text-white"
+                  className="inline-flex items-center gap-2 rounded-lg border border-brand-jade bg-brand-jade px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-jadeHover"
                 >
                   <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -333,7 +333,7 @@ export function InvoiceDetailPanel({ invoiceId }: { invoiceId: string | null }) 
                 type="button"
                 aria-label="Copy customer payment link to clipboard"
                 onClick={handleCopyLink}
-                className="w-full rounded-lg border border-brand-jade bg-white px-3 py-2 text-xs font-semibold uppercase tracking-wide text-brand-jade transition hover:bg-brand-jade hover:text-white sm:w-auto"
+                className="w-full rounded-lg border border-brand-jade bg-brand-jade px-3 py-2 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-brand-jadeHover sm:w-auto"
               >
                 {linkCopied ? "Copied!" : "Copy Link"}
               </button>

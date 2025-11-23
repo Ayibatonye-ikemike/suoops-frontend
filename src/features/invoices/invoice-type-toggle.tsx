@@ -9,10 +9,10 @@ export function InvoiceTypeToggle({ invoiceType, onTypeChange }: InvoiceTypeTogg
       <button
         type="button"
         onClick={() => onTypeChange("revenue")}
-        className={`flex-1 rounded-md px-4 py-2.5 text-sm font-semibold uppercase tracking-wide transition ${
+        className={`flex-1 rounded-md border px-4 py-2.5 text-sm font-semibold uppercase tracking-wide transition ${
           invoiceType === "revenue"
-            ? "bg-brand-jade text-white shadow"
-            : "text-brand-textMuted hover:text-brand-text"
+            ? "border-brand-jade bg-brand-jade text-white shadow"
+            : "border-brand-jade/50 bg-brand-jade/10 text-brand-evergreen"
         }`}
       >
         💰 Revenue
@@ -20,10 +20,10 @@ export function InvoiceTypeToggle({ invoiceType, onTypeChange }: InvoiceTypeTogg
       <button
         type="button"
         onClick={() => onTypeChange("expense")}
-        className={`flex-1 rounded-md px-4 py-2.5 text-sm font-semibold uppercase tracking-wide transition ${
+        className={`flex-1 rounded-md border px-4 py-2.5 text-sm font-semibold uppercase tracking-wide transition ${
           invoiceType === "expense"
-            ? "bg-brand-jade text-white shadow"
-            : "text-brand-textMuted hover:text-brand-text"
+            ? "border-brand-jade bg-brand-jade text-white shadow"
+            : "border-brand-jade/50 bg-brand-jade/10 text-brand-evergreen"
         }`}
       >
         💸 Expense
