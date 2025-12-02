@@ -6,14 +6,17 @@ export function Pricing() {
       {/* Premium Features Section */}
       <section className="px-4 py-20 sm:px-6 lg:px-8 bg-white/5">
         <div className="mx-auto max-w-7xl">
-          <div className="text-center">
-            <h2 className="text-base font-semibold text-brand-citrus">UPGRADE BENEFITS</h2>
+          <div className="text-center text-green-200">
+            <h2 className="text-base font-semibold ">UPGRADE BENEFITS</h2>
             <p className="mt-2 text-4xl font-bold text-white sm:text-5xl">
               Unlock Premium Features
             </p>
-            <p className="mt-4 text-lg text-white/80 max-w-2xl mx-auto">
-              Start with free manual invoicing. Upgrade for tax automation (Starter), custom branding (Pro), or voice+OCR (Business).
-            </p>
+            <div className="text-white/80">
+              <p className="mt-4 text-lg max-w-2xl mx-auto">
+                Start with free manual invoicing. Upgrade for tax automation
+                (Starter), custom branding (Pro), or voice+OCR (Business).
+              </p>
+            </div>
           </div>
 
           <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -62,23 +65,28 @@ export function Pricing() {
       {/* Pricing Table */}
       <section id="pricing" className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl text-center">
-          <h2 className="text-base font-semibold text-brand-citrus">PRICING</h2>
-          <p className="mt-2 text-4xl font-bold text-white">
-            Start free, upgrade as you grow
-          </p>
+          <div className="text-green-200">
+            <h2 className="text-base font-semibold ">PRICING</h2>
+
+            <div className="mt-2 text-4xl font-bold text-green-200">
+              Start free, upgrade as you grow
+            </div>
+          </div>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto">
             {LANDING_PLANS.map((plan: Plan) => (
               <PricingCard key={plan.id} plan={plan} />
             ))}
           </div>
-          <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-8 inline-block rounded-lg bg-brand-jade px-8 py-4 font-semibold text-white hover:bg-brand-teal transition-colors"
-          >
-            Join Waitlist →
-          </a>
+          <div className="text-white/80">
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 inline-block rounded-lg bg-brand-jade px-8 py-4 font-semibold  hover:bg-brand-teal transition-colors"
+            >
+              Join Waitlist →
+            </a>
+          </div>
         </div>
       </section>
     </>
@@ -94,7 +102,14 @@ interface PremiumFeatureProps {
   badgeColor: "purple" | "orange" | "blue";
 }
 
-function PremiumFeature({ emoji, title, description, benefits, badge, badgeColor }: PremiumFeatureProps) {
+function PremiumFeature({
+  emoji,
+  title,
+  description,
+  benefits,
+  badge,
+  badgeColor,
+}: PremiumFeatureProps) {
   const badgeColors = {
     purple: "bg-purple-50 text-purple-700",
     orange: "bg-orange-50 text-orange-700",
@@ -109,7 +124,9 @@ function PremiumFeature({ emoji, title, description, benefits, badge, badgeColor
 
   return (
     <div className="rounded-2xl border-2 border-brand-teal/20 bg-white p-8 shadow-sm hover:shadow-lg transition-all">
-      <div className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${gradients[badgeColor]} text-3xl shadow-lg`}>
+      <div
+        className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${gradients[badgeColor]} text-3xl shadow-lg`}
+      >
         {emoji}
       </div>
       <h3 className="mt-6 text-xl font-bold text-brand-evergreen">{title}</h3>
@@ -122,7 +139,9 @@ function PremiumFeature({ emoji, title, description, benefits, badge, badgeColor
           </li>
         ))}
       </ul>
-      <div className={`mt-6 rounded-lg ${badgeColors[badgeColor]} px-3 py-2 text-center`}>
+      <div
+        className={`mt-6 rounded-lg ${badgeColors[badgeColor]} px-3 py-2 text-center`}
+      >
         <p className="text-sm font-semibold">{badge}</p>
       </div>
     </div>
@@ -133,24 +152,40 @@ function TrustIndicators() {
   return (
     <div className="mt-16 rounded-3xl border-2 border-brand-teal/30 bg-gradient-to-r from-blue-50 to-cyan-50 p-8 lg:p-12">
       <div className="text-center mb-8">
-        <h3 className="text-2xl font-bold text-brand-evergreen">Built with Enterprise-Grade Technology</h3>
-        <p className="mt-2 text-sm text-brand-charcoal/70">Security and reliability you can trust</p>
+        <h3 className="text-2xl font-bold text-brand-evergreen">
+          Built with Enterprise-Grade Technology
+        </h3>
+        <p className="mt-2 text-sm text-brand-charcoal/70">
+          Security and reliability you can trust
+        </p>
       </div>
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="text-center">
           <div className="text-4xl font-bold text-brand-jade">99.9%</div>
-          <div className="mt-2 text-sm font-medium text-brand-charcoal/70">Uptime SLA</div>
-          <div className="mt-1 text-xs text-brand-charcoal/60">Always available</div>
+          <div className="mt-2 text-sm font-medium text-brand-charcoal/70">
+            Uptime SLA
+          </div>
+          <div className="mt-1 text-xs text-brand-charcoal/60">
+            Always available
+          </div>
         </div>
         <div className="text-center">
           <div className="text-4xl font-bold text-brand-jade">256-bit</div>
-          <div className="mt-2 text-sm font-medium text-brand-charcoal/70">Encryption</div>
-          <div className="mt-1 text-xs text-brand-charcoal/60">Bank-grade security</div>
+          <div className="mt-2 text-sm font-medium text-brand-charcoal/70">
+            Encryption
+          </div>
+          <div className="mt-1 text-xs text-brand-charcoal/60">
+            Bank-grade security
+          </div>
         </div>
         <div className="text-center">
           <div className="text-4xl font-bold text-brand-jade">FIRS</div>
-          <div className="mt-2 text-sm font-medium text-brand-charcoal/70">Tax Ready</div>
-          <div className="mt-1 text-xs text-brand-charcoal/60">Compliance built-in</div>
+          <div className="mt-2 text-sm font-medium text-brand-charcoal/70">
+            Tax Ready
+          </div>
+          <div className="mt-1 text-xs text-brand-charcoal/60">
+            Compliance built-in
+          </div>
         </div>
       </div>
     </div>
@@ -161,18 +196,24 @@ function PricingCard({ plan }: { plan: Plan }) {
   return (
     <div
       className={`rounded-2xl border bg-white p-6 ${
-        plan.popular ? "border-brand-jade ring-2 ring-blue-500" : "border-brand-teal/20"
+        plan.popular
+          ? "border-brand-jade ring-2 ring-blue-500"
+          : "border-brand-teal/20"
       }`}
     >
       {plan.popular && (
-        <div className="mb-2 text-xs font-semibold text-brand-jade">MOST POPULAR</div>
+        <div className="mb-2 text-xs font-semibold text-brand-jade">
+          MOST POPULAR
+        </div>
       )}
       <h3 className="text-lg font-bold text-brand-evergreen">{plan.name}</h3>
       <div className="mt-2">
         <span className="text-3xl font-bold">{plan.priceDisplay}</span>
         <span className="text-brand-charcoal/70">/mo</span>
       </div>
-      <p className="mt-2 text-sm font-semibold text-brand-evergreen">{plan.invoiceLimitDisplay}</p>
+      <p className="mt-2 text-sm font-semibold text-brand-evergreen">
+        {plan.invoiceLimitDisplay}
+      </p>
       <ul className="mt-4 space-y-2 text-left text-xs text-brand-charcoal/70">
         {plan.features.map((feature, j) => (
           <li key={j} className="flex items-start gap-2">
