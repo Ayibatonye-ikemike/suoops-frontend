@@ -5,13 +5,17 @@ export function Features() {
       <section id="features" className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-brand-citrus">How it works</p>
-            <p className="mt-3 font-heading text-4xl font-bold text-white sm:text-5xl">
+            {/* text-brand-citrus */}
+            <div className="text-xs text-green-200 font-semibold uppercase tracking-[0.4em] ">
+              How it works
+            </div>
+            <div className="mt-3 text-green-200 font-heading text-4xl font-bold sm:text-5xl">
               Simple as sending a message
-            </p>
-            <p className="mt-4 text-lg text-white/80">
-              No apps, no training, no hassle. Just WhatsApp—use voice notes or text messages.
-            </p>
+            </div>
+            <div className="mt-4 text-lg text-white/80">
+              No apps, no training, no hassle. Just WhatsApp—use voice notes or
+              text messages.
+            </div>
           </div>
 
           <div className="mt-16 grid gap-8 md:grid-cols-3">
@@ -41,13 +45,18 @@ export function Features() {
       <section className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-brand-citrus">Features</p>
-            <p className="mt-3 font-heading text-4xl font-bold text-white sm:text-5xl">
+            <div className="text-xs text-green-200 font-semibold udivpercase tracking-[0.4em]">
+              Features
+            </div>
+            <div className="mt-3 text-green-200 font-heading text-4xl font-bold  sm:text-5xl">
               Create Invoices Your Way
-            </p>
-            <p className="mt-4 text-lg text-white/80 max-w-2xl mx-auto">
-              Free WhatsApp text + voice. Upgrade for photo OCR. Every invoice includes QR verification.
-            </p>
+            </div>
+            <div className="text-white/80 ">
+              <p className="mt-4 text-lg max-w-2xl mx-auto">
+                Free WhatsApp text + voice. Upgrade for photo OCR. Every invoice
+                includes QR verification.
+              </p>
+            </div>
           </div>
 
           <div className="mt-16 grid gap-8 lg:grid-cols-2">
@@ -58,7 +67,10 @@ export function Features() {
               speed="5 seconds"
               example='"Invoice Jane 50k for logo"'
               benefits={[
-                { text: "Perfect for: When you're at your desk or prefer typing", bold: true },
+                {
+                  text: "Perfect for: When you're at your desk or prefer typing",
+                  bold: true,
+                },
                 { text: "AI understands Nigerian English and currency" },
                 { text: "Works offline - sends when you're back online" },
               ]}
@@ -71,9 +83,14 @@ export function Features() {
               example='"Invoice Jane fifty thousand for logo"'
               exampleType="voice"
               benefits={[
-                { text: "Perfect for: When you're driving, busy, or prefer talking", bold: true },
+                {
+                  text: "Perfect for: When you're driving, busy, or prefer talking",
+                  bold: true,
+                },
                 { text: "Truly hands-free - no typing required" },
-                { text: "AI-powered transcription with Nigerian English support" },
+                {
+                  text: "AI-powered transcription with Nigerian English support",
+                },
               ]}
             />
             <FeatureCard
@@ -83,7 +100,10 @@ export function Features() {
               speed="8 seconds"
               exampleType="photo"
               benefits={[
-                { text: "Perfect for: Converting handwritten receipts to digital invoices", bold: true },
+                {
+                  text: "Perfect for: Converting handwritten receipts to digital invoices",
+                  bold: true,
+                },
                 { text: "No retyping - AI reads customer name, amount, items" },
                 { text: "Available on Starter plan and above" },
               ]}
@@ -95,8 +115,13 @@ export function Features() {
               speed="2 seconds"
               exampleType="qr"
               benefits={[
-                { text: "Perfect for: Building customer trust - prove invoices are legitimate", bold: true },
-                { text: "Stop impersonation - only your real invoices have valid QR codes" },
+                {
+                  text: "Perfect for: Building customer trust - prove invoices are legitimate",
+                  bold: true,
+                },
+                {
+                  text: "Stop impersonation - only your real invoices have valid QR codes",
+                },
                 { text: "Works with any phone camera - no special app needed" },
               ]}
             />
@@ -120,13 +145,16 @@ interface StepCardProps {
 function StepCard({ number, emoji, title, description }: StepCardProps) {
   return (
     <div className="relative rounded-2xl border border-white/10 bg-white/95 p-8 text-brand-charcoal shadow-lg">
-      <div className="absolute -top-4 left-8 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-evergreen text-xl font-heading font-bold text-white shadow-xl">
+      <div className="absolute top-4 left-8 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-evergreen text-xl font-heading font-bold text-brand-evergreen shadow-md">
+        {/* box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px; */}
         {number}
       </div>
-      <div className="mt-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-mint text-3xl">
+      <div className="mt-12 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-mint text-3xl">
         {emoji}
       </div>
-      <h3 className="mt-6 font-heading text-xl font-bold text-brand-evergreen">{title}</h3>
+      <h3 className="mt-4 font-heading text-xl font-bold text-brand-evergreen">
+        {title}
+      </h3>
       <p className="mt-3 text-sm text-brand-charcoal/80">{description}</p>
     </div>
   );
@@ -147,7 +175,15 @@ interface FeatureCardProps {
   benefits: Benefit[];
 }
 
-function FeatureCard({ emoji, title, description, speed, example, exampleType = "text", benefits }: FeatureCardProps) {
+function FeatureCard({
+  emoji,
+  title,
+  description,
+  speed,
+  example,
+  exampleType = "text",
+  benefits,
+}: FeatureCardProps) {
   const accentClass = "bg-brand-mint";
 
   return (
@@ -162,18 +198,37 @@ function FeatureCard({ emoji, title, description, speed, example, exampleType = 
             ⚡ {speed}
           </span>
         </div>
-        <h3 className="mt-6 font-heading text-2xl font-bold text-brand-evergreen">{title}</h3>
+        <h3 className="mt-6 font-heading text-2xl font-bold text-brand-evergreen">
+          {title}
+        </h3>
         <p className="mt-2 text-brand-charcoal/80">{description}</p>
 
-        <ExamplePreview type={exampleType} example={example} accentClass={accentClass} />
+        <ExamplePreview
+          type={exampleType}
+          example={example}
+          accentClass={accentClass}
+        />
 
         <ul className="mt-6 space-y-3">
           {benefits.map((benefit, i) => (
-            <li key={i} className="flex items-start gap-3 text-sm text-brand-charcoal/70">
-              <svg className="h-5 w-5 text-brand-jade mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            <li
+              key={i}
+              className="flex items-start gap-3 text-sm text-brand-charcoal/70"
+            >
+              <svg
+                className="h-5 w-5 text-brand-jade mt-0.5 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
               </svg>
-              <span>{benefit.bold ? <strong>{benefit.text}</strong> : benefit.text}</span>
+              <span>
+                {benefit.bold ? <strong>{benefit.text}</strong> : benefit.text}
+              </span>
             </li>
           ))}
         </ul>
@@ -182,15 +237,33 @@ function FeatureCard({ emoji, title, description, speed, example, exampleType = 
   );
 }
 
-function ExamplePreview({ type, example, accentClass }: { type: string; example?: string; accentClass: string }) {
+function ExamplePreview({
+  type,
+  example,
+  accentClass,
+}: {
+  type: string;
+  example?: string;
+  accentClass: string;
+}) {
   if (type === "text" && example) {
     return (
-      <div className={`mt-6 rounded-xl ${accentClass} p-4 border border-brand-teal/20`}>
+      <div
+        className={`mt-6 rounded-xl ${accentClass} p-4 border border-brand-teal/20`}
+      >
         <p className="text-sm font-mono text-slate-700">{example}</p>
         <div className="mt-3 flex items-center gap-2 text-xs text-brand-charcoal/60">
           <span className="flex items-center gap-1">
-            <svg className="h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            <svg
+              className="h-4 w-4 text-green-500"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clipRule="evenodd"
+              />
             </svg>
             Invoice created
           </span>
@@ -203,11 +276,17 @@ function ExamplePreview({ type, example, accentClass }: { type: string; example?
 
   if (type === "voice" && example) {
     return (
-      <div className={`mt-6 rounded-xl ${accentClass} p-4 border border-brand-teal/20`}>
+      <div
+        className={`mt-6 rounded-xl ${accentClass} p-4 border border-brand-teal/20`}
+      >
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-500 text-white">
             <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                clipRule="evenodd"
+              />
             </svg>
           </div>
           <div className="flex-1">
@@ -217,8 +296,16 @@ function ExamplePreview({ type, example, accentClass }: { type: string; example?
         </div>
         <div className="mt-3 flex items-center gap-2 text-xs text-brand-charcoal/60">
           <span className="flex items-center gap-1">
-            <svg className="h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            <svg
+              className="h-4 w-4 text-green-500"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clipRule="evenodd"
+              />
             </svg>
             Transcribed + Invoice created
           </span>
@@ -231,21 +318,35 @@ function ExamplePreview({ type, example, accentClass }: { type: string; example?
 
   if (type === "photo") {
     return (
-      <div className={`mt-6 rounded-xl ${accentClass} p-4 border border-brand-teal/20`}>
+      <div
+        className={`mt-6 rounded-xl ${accentClass} p-4 border border-brand-teal/20`}
+      >
         <div className="flex items-center gap-3">
           <div className="relative w-16 h-16 rounded-lg bg-slate-200 flex items-center justify-center text-2xl overflow-hidden">
             📄
             <div className="absolute inset-0 border-2 border-dashed border-slate-400 rounded-lg"></div>
           </div>
           <div className="flex-1">
-            <p className="text-sm font-medium text-slate-700">Receipt uploaded</p>
-            <p className="text-xs text-brand-charcoal/60">AI extracting data...</p>
+            <p className="text-sm font-medium text-slate-700">
+              Receipt uploaded
+            </p>
+            <p className="text-xs text-brand-charcoal/60">
+              AI extracting data...
+            </p>
           </div>
         </div>
         <div className="mt-3 flex items-center gap-2 text-xs text-brand-charcoal/60">
           <span className="flex items-center gap-1">
-            <svg className="h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            <svg
+              className="h-4 w-4 text-green-500"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clipRule="evenodd"
+              />
             </svg>
             Data extracted + Invoice created
           </span>
@@ -258,7 +359,9 @@ function ExamplePreview({ type, example, accentClass }: { type: string; example?
 
   if (type === "qr") {
     return (
-      <div className={`mt-6 rounded-xl ${accentClass} p-4 border border-brand-teal/20`}>
+      <div
+        className={`mt-6 rounded-xl ${accentClass} p-4 border border-brand-teal/20`}
+      >
         <div className="flex items-center gap-3">
           <div className="w-16 h-16 bg-slate-900 rounded-lg flex items-center justify-center">
             <div className="grid grid-cols-4 gap-0.5">
@@ -268,8 +371,12 @@ function ExamplePreview({ type, example, accentClass }: { type: string; example?
             </div>
           </div>
           <div className="flex-1">
-            <p className="text-sm font-medium text-slate-700">Customer scanning QR...</p>
-            <p className="text-xs text-brand-charcoal/60">Verifying invoice...</p>
+            <p className="text-sm font-medium text-slate-700">
+              Customer scanning QR...
+            </p>
+            <p className="text-xs text-brand-charcoal/60">
+              Verifying invoice...
+            </p>
           </div>
         </div>
         <div className="mt-3 flex items-center gap-2">
@@ -288,15 +395,17 @@ function ExamplePreview({ type, example, accentClass }: { type: string; example?
 function BeforeAfter() {
   return (
     <div className="mt-20 rounded-3xl bg-gradient-to-r from-slate-900 to-slate-800 p-8 lg:p-12 shadow-2xl">
-      <h3 className="text-center text-3xl font-bold text-white sm:text-4xl">
-        The Problem We Solve
-      </h3>
+      <div className="text-white">
+        <h3 className="text-center text-3xl font-bold  sm:text-4xl">
+          The Problem We Solve
+        </h3>
+      </div>
       <div className="mt-12 grid gap-8 lg:grid-cols-2">
         {/* Before */}
         <div className="rounded-2xl bg-red-900/30 border-2 border-red-500/50 p-6">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="text-red-200 flex items-center gap-3 mb-4">
             <span className="text-3xl">😓</span>
-            <h4 className="text-xl font-bold text-red-200">Without SuoOps</h4>
+            <h4 className="text-xl font-bold">Without SuoOps</h4>
           </div>
           <ul className="space-y-3 text-slate-300">
             {[
@@ -317,9 +426,9 @@ function BeforeAfter() {
 
         {/* After */}
         <div className="rounded-2xl bg-green-900/30 border-2 border-green-500/50 p-6">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-4 text-green-200">
             <span className="text-3xl">🚀</span>
-            <h4 className="text-xl font-bold text-green-200">With SuoOps</h4>
+            <h4 className="text-xl font-bold ">With SuoOps</h4>
           </div>
           <ul className="space-y-3 text-slate-300">
             {[
@@ -353,7 +462,10 @@ function QuickStats() {
   return (
     <div className="mt-16 grid gap-6 sm:grid-cols-4">
       {stats.map((stat, i) => (
-        <div key={i} className="rounded-2xl border border-white/10 bg-white/10 p-6 text-center text-white">
+        <div
+          key={i}
+          className="rounded-2xl border border-white/10 bg-white/10 p-6 text-center text-white"
+        >
           <div className="text-4xl font-heading font-bold">{stat.value}</div>
           <div className="mt-2 text-sm text-white/80">{stat.label}</div>
         </div>

@@ -9,14 +9,14 @@ const config: Config = {
           // Primary & Neutrals (exact brand guidelines)
           evergreen: "#0B3318", // Background, main brand colour
           charcoal: "#0F1E17", // Text on light backgrounds
-          
+
           // Accents & Surfaces
           jade: "#14B56A", // Primary CTA buttons
           jadeHover: "#109456", // Darker shade for hover states on CTAs
           teal: "#0F766E", // Secondary UI elements
           citrus: "#BFF74A", // Promo highlights (<10%)
           mint: "#E8F5EC", // Light surfaces/cards
-          
+
           // Legacy mappings for compatibility
           primary: "#0B3318",
           primaryHover: "#14B56A",
@@ -41,8 +41,9 @@ const config: Config = {
         body: ["var(--font-body)", "Inter", "system-ui", "sans-serif"],
       },
       boxShadow: {
-        'card': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-        'card-hover': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.05)',
+        card: "0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+        "card-hover":
+          "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.05)",
       },
     },
   },

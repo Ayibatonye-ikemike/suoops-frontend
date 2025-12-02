@@ -17,10 +17,13 @@ export function Hero({ onWatchDemo }: HeroProps) {
               </span>
               Coming Soon • Join Waitlist 🚀
             </div>
-            <p className="text-sm font-semibold uppercase tracking-[0.4em] text-brand-mint/80">Smart invoicing, simplified</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.4em] text-brand-mint/80">
+              Smart invoicing, simplified
+            </p>
             <h1 className="mt-4 font-heading text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
               Invoice via
-              <span className="bg-gradient-to-r from-brand-jade to-brand-citrus bg-clip-text text-transparent">
+              {/* <span className="bg-gradient-to-r from-brand-jade to-brand-citrus bg-clip-text text-transparent"> */}
+              <span className="inline-block bg-gradient-to-r to-[#14B56A] from-[#BFF74A] bg-clip-text text-transparent">
                 {" "}
                 WhatsApp or Email
               </span>
@@ -28,9 +31,10 @@ export function Hero({ onWatchDemo }: HeroProps) {
               Get Paid Faster
             </h1>
             <p className="mt-6 text-lg text-white/85 sm:text-xl">
-              Create professional invoices by sending a voice note or text message on WhatsApp.
-              AI-powered invoice creation, automatic tax compliance, and multi-channel delivery (WhatsApp + Email).
-              No apps to download, no complex software—just speak or type and get paid.
+              Create professional invoices by sending a voice note or text
+              message on WhatsApp. AI-powered invoice creation, automatic tax
+              compliance, and multi-channel delivery (WhatsApp + Email). No apps
+              to download, no complex software—just speak or type and get paid.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <a
@@ -50,14 +54,30 @@ export function Hero({ onWatchDemo }: HeroProps) {
             </div>
             <div className="mt-8 flex items-center gap-6 text-sm text-white/80">
               <div className="flex items-center gap-2">
-                <svg className="h-5 w-5 text-brand-jade" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                <svg
+                  className="h-5 w-5 text-brand-jade"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
                 </svg>
                 50% launch discount
               </div>
               <div className="flex items-center gap-2">
-                <svg className="h-5 w-5 text-brand-jade" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                <svg
+                  className="h-5 w-5 text-brand-jade"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
                 </svg>
                 Priority early access
               </div>
@@ -103,7 +123,9 @@ function PhoneMockup() {
               {/* Incoming Message */}
               <div className="flex justify-start">
                 <div className="max-w-[80%] rounded-lg bg-white px-4 py-2 shadow-sm">
-                  <p className="text-sm text-slate-800">👋 Hi! Send me a voice note to create an invoice.</p>
+                  <p className="text-sm text-slate-800">
+                    👋 Hi! Send me a voice note to create an invoice.
+                  </p>
                   <p className="mt-1 text-xs text-brand-charcoal/60">9:40 AM</p>
                 </div>
               </div>
@@ -112,26 +134,39 @@ function PhoneMockup() {
                 <div className="max-w-[80%] rounded-lg bg-emerald-100 px-4 py-3 shadow-sm">
                   <div className="flex items-center gap-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500 text-white">
-                      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                      <svg
+                        className="h-4 w-4"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     </div>
                     <div className="flex-1">
                       <div className="h-1 w-full rounded-full bg-emerald-300">
                         <div className="h-1 w-3/4 rounded-full bg-emerald-600"></div>
                       </div>
-                      <p className="mt-1 text-xs text-brand-charcoal/70">0:15</p>
+                      <p className="mt-1 text-xs text-brand-charcoal/70">
+                        0:15
+                      </p>
                     </div>
                   </div>
                   <p className="mt-2 text-xs text-brand-charcoal/70 italic">
-                    &quot;Invoice Jane fifty thousand naira for logo design&quot;
+                    &quot;Invoice Jane fifty thousand naira for logo
+                    design&quot;
                   </p>
                 </div>
               </div>
               {/* Bot Response */}
               <div className="flex justify-start">
                 <div className="max-w-[80%] rounded-lg bg-white px-4 py-3 shadow-sm">
-                  <p className="text-sm font-semibold text-slate-800">✅ Invoice Created!</p>
+                  <p className="text-sm font-semibold text-slate-800">
+                    ✅ Invoice Created!
+                  </p>
                   <div className="mt-2 space-y-1 text-sm text-brand-charcoal/70">
                     <p>📄 ID: INV-2024-001</p>
                     <p>👤 Customer: Jane</p>
