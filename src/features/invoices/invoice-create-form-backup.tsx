@@ -4,7 +4,11 @@ import { useState, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 
-import { useCreateInvoice, type InvoiceLineInput, type InvoiceCreatePayload } from "./use-create-invoice";
+import {
+  useCreateInvoice,
+  type InvoiceLineInput,
+  type InvoiceCreatePayload,
+} from "./use-create-invoice";
 import { useInvoiceQuota } from "./use-invoice-quota";
 import { parseFeatureGateError } from "@/lib/feature-gate";
 import { PlanSelectionModal } from "../settings/plan-selection-modal";
@@ -19,16 +23,23 @@ const makeId = () => {
   return Math.random().toString(36).slice(2, 9);
 };
 
-const emptyLine = (): LineDraft => ({ id: makeId(), description: "", quantity: 1, unit_price: 0 });
+const emptyLine = (): LineDraft => ({
+  id: makeId(),
+  description: "",
+  quantity: 1,
+  unit_price: 0,
+});
 
 export function InvoiceCreateForm() {
-  const [invoiceType, setInvoiceType] = useState<"revenue" | "expense">("revenue");
+  const [invoiceType, setInvoiceType] = useState<"revenue" | "expense">(
+    "revenue"
+  );
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [amount, setAmount] = useState("");
   const [lines, setLines] = useState<LineDraft[]>([emptyLine()]);
-  
+
   // Expense-specific fields
   const [vendorName, setVendorName] = useState("");
   const [category, setCategory] = useState("");
@@ -37,7 +48,7 @@ export function InvoiceCreateForm() {
   const [receiptFileName, setReceiptFileName] = useState<string | null>(null);
   const [uploadingReceipt, setUploadingReceipt] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   const [lastPdfUrl, setLastPdfUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
@@ -46,24 +57,43 @@ export function InvoiceCreateForm() {
   const [upgradeUrl, setUpgradeUrl] = useState<string | null>(null);
 
   const mutation = useCreateInvoice();
-  const { data: quota, isLoading: quotaLoading, isError: quotaErrorState } = useInvoiceQuota();
+  const {
+    data: quota,
+    isLoading: quotaLoading,
+    isError: quotaErrorState,
+  } = useInvoiceQuota();
 
   function updateLine(id: string, patch: Partial<LineDraft>) {
-    setLines((current) => current.map((line) => (line.id === id ? { ...line, ...patch } : line)));
+    setLines((current) =>
+      current.map((line) => (line.id === id ? { ...line, ...patch } : line))
+    );
   }
 
   function removeLine(id: string) {
-    setLines((current) => (current.length === 1 ? current : current.filter((line) => line.id !== id)));
+    setLines((current) =>
+      current.length === 1 ? current : current.filter((line) => line.id !== id)
+    );
   }
 
-  async function handleReceiptUpload(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleReceiptUpload(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
     const file = event.target.files?.[0];
     if (!file) return;
 
     // Validate file type
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/bmp", "application/pdf"];
+    const allowedTypes = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/webp",
+      "image/bmp",
+      "application/pdf",
+    ];
     if (!allowedTypes.includes(file.type)) {
-      setError("Invalid file type. Please upload JPEG, PNG, WebP, BMP, or PDF.");
+      setError(
+        "Invalid file type. Please upload JPEG, PNG, WebP, BMP, or PDF."
+      );
       return;
     }
 
@@ -81,9 +111,13 @@ export function InvoiceCreateForm() {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await apiClient.post("/invoices/upload-receipt", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await apiClient.post(
+        "/invoices/upload-receipt",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
       setReceiptUrl(response.data.receipt_url);
       setReceiptFileName(response.data.filename);
@@ -108,7 +142,7 @@ export function InvoiceCreateForm() {
     setError(null);
     setLastPdfUrl(null);
     const parsedAmount = Number(amount);
-    
+
     if (invoiceType === "revenue") {
       // Revenue validation
       if (!customerName || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
@@ -122,7 +156,7 @@ export function InvoiceCreateForm() {
         return;
       }
     }
-    
+
     const preparedLines = lines
       .filter((line) => line.description.trim())
       .map<InvoiceLineInput>((line) => ({
@@ -135,9 +169,12 @@ export function InvoiceCreateForm() {
       const payload: InvoiceCreatePayload = {
         invoice_type: invoiceType,
         amount: parsedAmount,
-        lines: preparedLines.length > 0 ? preparedLines : [{ description: "Item", quantity: 1, unit_price: parsedAmount }],
+        lines:
+          preparedLines.length > 0
+            ? preparedLines
+            : [{ description: "Item", quantity: 1, unit_price: parsedAmount }],
       };
-      
+
       if (invoiceType === "revenue") {
         payload.customer_name = customerName;
         payload.customer_phone = customerPhone || undefined;
@@ -148,10 +185,10 @@ export function InvoiceCreateForm() {
         payload.notes = notes || undefined;
         payload.receipt_url = receiptUrl || undefined;
       }
-      
+
       const invoice = await mutation.mutateAsync(payload);
       setLastPdfUrl(invoice.pdf_url ?? null);
-      
+
       // Reset form
       setCustomerName("");
       setCustomerPhone("");
@@ -169,9 +206,13 @@ export function InvoiceCreateForm() {
       if (gate?.type === "invoice_limit") {
         const composed = [
           gate.message,
-          gate.currentCount != null && gate.limit != null ? `You have used ${gate.currentCount} of ${gate.limit}.` : null,
-          "Upgrade now to unlock more invoices and premium automation."
-        ].filter(Boolean).join(" ");
+          gate.currentCount != null && gate.limit != null
+            ? `You have used ${gate.currentCount} of ${gate.limit}.`
+            : null,
+          "Upgrade now to unlock more invoices and premium automation.",
+        ]
+          .filter(Boolean)
+          .join(" ");
         setQuotaError(composed);
         setCurrentPlan(gate.currentPlan || currentPlan);
         setUpgradeUrl(gate.upgradeUrl || "/dashboard/upgrade");
@@ -180,21 +221,25 @@ export function InvoiceCreateForm() {
       }
 
       // Fallback generic error
-      setError(`Failed to create ${invoiceType} invoice. Check inputs and try again.`);
+      setError(
+        `Failed to create ${invoiceType} invoice. Check inputs and try again.`
+      );
     }
   }
 
   return (
     <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
       <div className="space-y-2">
-        <h2 className="text-[22px] font-semibold text-brand-text">Create Invoice</h2>
+        <h2 className="text-[22px] font-semibold text-brand-text">
+          Create Invoice
+        </h2>
         <p className="text-sm text-brand-textMuted">
-          {invoiceType === "revenue" 
-            ? "Set customer details and line items to generate a payment-ready invoice." 
+          {invoiceType === "revenue"
+            ? "Set customer details and line items to generate a payment-ready invoice."
             : "Record business expenses for accurate tax reporting."}
         </p>
       </div>
-      
+
       {/* Invoice Type Toggle */}
       <div className="flex gap-2 rounded-lg border border-brand-border bg-brand-background p-1">
         <button
@@ -220,7 +265,7 @@ export function InvoiceCreateForm() {
           💸 Expense
         </button>
       </div>
-      
+
       {/* OCR Photo Upload Option - Only for Revenue */}
       {invoiceType === "revenue" && (
         <div className="rounded-2xl border border-brand-jade/20 bg-brand-jade/5 p-4">
@@ -228,10 +273,13 @@ export function InvoiceCreateForm() {
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <span className="text-2xl">📸</span>
-                <h3 className="text-base font-semibold text-brand-jade">Create from Photo</h3>
+                <h3 className="text-base font-semibold text-brand-jade">
+                  Create from Photo
+                </h3>
               </div>
               <p className="mt-1 text-sm text-brand-textMuted">
-                Take a photo of a receipt and AI will extract the details automatically
+                Take a photo of a receipt and AI will extract the details
+                automatically
               </p>
             </div>
             <a
@@ -243,7 +291,7 @@ export function InvoiceCreateForm() {
           </div>
         </div>
       )}
-      
+
       {/* Conditional Form Fields */}
       {invoiceType === "revenue" ? (
         <div className="grid gap-4 sm:grid-cols-2">
@@ -346,7 +394,7 @@ export function InvoiceCreateForm() {
             <label className="block text-sm font-semibold text-brand-text mb-2">
               Receipt / Proof of Purchase
             </label>
-            
+
             {!receiptUrl ? (
               <>
                 <input
@@ -365,19 +413,50 @@ export function InvoiceCreateForm() {
                 >
                   {uploadingReceipt ? (
                     <>
-                      <svg className="mb-2 h-10 w-10 animate-spin text-brand-jade" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      <svg
+                        className="mb-2 h-10 w-10 animate-spin text-brand-jade"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
                       </svg>
-                      <span className="text-sm font-medium text-brand-textMuted">Uploading...</span>
+                      <span className="text-sm font-medium text-brand-textMuted">
+                        Uploading...
+                      </span>
                     </>
                   ) : (
                     <>
-                      <svg className="mb-2 h-10 w-10 text-brand-textMuted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                      <svg
+                        className="mb-2 h-10 w-10 text-brand-textMuted"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                        />
                       </svg>
-                      <span className="text-sm font-medium text-brand-text">Upload Receipt</span>
-                      <span className="mt-1 text-xs text-brand-textMuted">JPG, PNG, WebP, BMP, PDF • Max 10MB</span>
+                      <span className="text-sm font-medium text-brand-text">
+                        Upload Receipt
+                      </span>
+                      <span className="mt-1 text-xs text-brand-textMuted">
+                        JPG, PNG, WebP, BMP, PDF • Max 10MB
+                      </span>
                     </>
                   )}
                 </button>
@@ -385,12 +464,26 @@ export function InvoiceCreateForm() {
             ) : (
               <div className="flex items-center justify-between rounded-lg border border-brand-border bg-emerald-50 p-4">
                 <div className="flex items-center gap-3">
-                  <svg className="h-8 w-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    className="h-8 w-8 text-emerald-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                   <div>
-                    <p className="text-sm font-medium text-brand-text">{receiptFileName}</p>
-                    <p className="text-xs text-brand-textMuted">Receipt uploaded successfully</p>
+                    <p className="text-sm font-medium text-brand-text">
+                      {receiptFileName}
+                    </p>
+                    <p className="text-xs text-brand-textMuted">
+                      Receipt uploaded successfully
+                    </p>
                   </div>
                 </div>
                 <button
@@ -403,24 +496,36 @@ export function InvoiceCreateForm() {
               </div>
             )}
             <p className="mt-2 text-xs text-brand-textMuted">
-              📎 Attach proof of purchase to verify this expense for tax compliance
+              📎 Attach proof of purchase to verify this expense for tax
+              compliance
             </p>
           </div>
         </div>
       )}
       <section className="rounded-lg border border-brand-border bg-white p-6 shadow-card">
         <header className="mb-3 flex flex-wrap items-center justify-between gap-3">
-          <h3 className="text-base font-semibold text-brand-text">Line items</h3>
-          <Button type="button" size="sm" onClick={() => setLines((current) => [...current, emptyLine()])}>
+          <h3 className="text-base font-semibold text-brand-text">
+            Line items
+          </h3>
+          <Button
+            type="button"
+            size="sm"
+            onClick={() => setLines((current) => [...current, emptyLine()])}
+          >
             Add line
           </Button>
         </header>
         <div className="space-y-3">
           {lines.map((line) => (
-            <div key={line.id} className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-[1fr_auto] md:grid-cols-[2fr_repeat(2,_minmax(100px,_1fr))_auto]">
+            <div
+              key={line.id}
+              className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-[1fr_auto] md:grid-cols-[2fr_repeat(2,_minmax(100px,_1fr))_auto]"
+            >
               <input
                 value={line.description}
-                onChange={(event) => updateLine(line.id, { description: event.target.value })}
+                onChange={(event) =>
+                  updateLine(line.id, { description: event.target.value })
+                }
                 placeholder="Description"
                 className="rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 sm:col-span-2 md:col-span-1"
               />
@@ -429,7 +534,11 @@ export function InvoiceCreateForm() {
                   type="number"
                   min="1"
                   value={line.quantity}
-                  onChange={(event) => updateLine(line.id, { quantity: Number(event.target.value) })}
+                  onChange={(event) =>
+                    updateLine(line.id, {
+                      quantity: Number(event.target.value),
+                    })
+                  }
                   placeholder="Qty"
                   className="rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
                 />
@@ -438,7 +547,11 @@ export function InvoiceCreateForm() {
                   min="0"
                   step="0.01"
                   value={line.unit_price}
-                  onChange={(event) => updateLine(line.id, { unit_price: Number(event.target.value) })}
+                  onChange={(event) =>
+                    updateLine(line.id, {
+                      unit_price: Number(event.target.value),
+                    })
+                  }
                   placeholder="Price"
                   className="rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
                 />
@@ -457,18 +570,23 @@ export function InvoiceCreateForm() {
       </section>
       <Button
         type="submit"
-        disabled={mutation.isPending || quotaLoading || (invoiceType === "revenue" && quota && !quota.can_create)}
+        disabled={
+          mutation.isPending ||
+          quotaLoading ||
+          (invoiceType === "revenue" && quota && !quota.can_create)
+        }
         className="w-full sm:w-fit"
       >
-        {mutation.isPending 
-          ? `Creating ${invoiceType}...` 
-          : invoiceType === "revenue" && quota && !quota.can_create 
-          ? "Limit Reached" 
+        {mutation.isPending
+          ? `Creating ${invoiceType}...`
+          : invoiceType === "revenue" && quota && !quota.can_create
+          ? "Limit Reached"
           : `Create ${invoiceType === "revenue" ? "Invoice" : "Expense"}`}
       </Button>
       {invoiceType === "revenue" && quota && quota.limit !== null && (
         <p className="text-xs text-brand-textMuted">
-          {quota.current_count}/{quota.limit} invoices used this month • Plan: {quota.current_plan}
+          {quota.current_count}/{quota.limit} invoices used this month • Plan:{" "}
+          {quota.current_plan}
         </p>
       )}
       {invoiceType === "expense" && (
@@ -479,13 +597,26 @@ export function InvoiceCreateForm() {
       {quotaErrorState && (
         <p className="text-xs text-rose-600">Failed to load quota info</p>
       )}
-      {error ? <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-600">{error}</p> : null}
+      {error ? (
+        <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-600">
+          {error}
+        </p>
+      ) : null}
       {quotaError ? (
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-          <p className="text-sm font-semibold text-amber-900">⚠️ Invoice Limit Reached</p>
-          <p className="mt-1 text-sm text-amber-800 whitespace-pre-line">{quotaError}</p>
+          <p className="text-sm font-semibold text-amber-900">
+            ⚠️ Invoice Limit Reached
+          </p>
+          <p className="mt-1 text-sm text-amber-800 whitespace-pre-line">
+            {quotaError}
+          </p>
           <div className="mt-3 flex flex-col sm:flex-row flex-wrap gap-3">
-            <Button type="button" onClick={() => setShowUpgradeModal(true)} variant="secondary" className="w-full sm:w-auto">
+            <Button
+              type="button"
+              onClick={() => setShowUpgradeModal(true)}
+              variant="secondary"
+              className="w-full sm:w-auto"
+            >
               View Plans
             </Button>
             {upgradeUrl && (
@@ -502,12 +633,17 @@ export function InvoiceCreateForm() {
       {lastPdfUrl ? (
         <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
           Invoice ready. {""}
-          <a href={lastPdfUrl} target="_blank" rel="noreferrer" className="underline">
+          <a
+            href={lastPdfUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="underline"
+          >
             View PDF
           </a>
         </p>
       ) : null}
-      
+
       {/* Upgrade Modal */}
       <PlanSelectionModal
         isOpen={showUpgradeModal}

@@ -4,10 +4,47 @@
   color-scheme: light;
 }
 
+@theme {
+  /* COLORS */
+  --color-brand-secondary: #0f766e;
+  --color-brand-evergreen: #0b3318;
+  --color-brand-charcoal: #0f1e17;
+  --color-brand-jade: #14b56a;
+  --color-brand-jadeHover: #109456;
+  --color-brand-teal: #0f766e;
+  --color-brand-citrus: #bff74a;
+  --color-brand-mint: #e8f5ec;
+  --color-brand-primary: #0b3318;
+  --color-brand-primaryHover: #14b56a;
+  --color-brand-background: #e8f5ec;
+  --color-brand-backgroundalt: #ffffff;
+  --color-brand-card: #ffffff;
+  --color-brand-border: #0f766e20;
+  --color-brand-text: #0f1e17;
+  --color-brand-textMuted: #0f1e1780;
+  --color-brand-statusPaidBg: #14b56a20;
+  --color-brand-statuspaidtext: #0b3318;
+  --color-brand-statusPendingBg: #bff74a40;
+  --color-brand-statuspendingtext: #0f1e17;
+  --color-brand-accent: #14b56a;
+  --color-brand-accentmuted: #0f766e;
+  --color-brand-surface: #e8f5ec;
+
+  /* Font familieS */
+  --font-heading: "Poppins", "Inter", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  /* Shadows */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-card-hover: 0 4px 6px rgba(0, 0, 0, 0.05),
+    0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
 body {
-  font-family: var(--font-body), Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #0F1E17;
-  background-color: #0B3318;
+  font-family: var(--font-body), Inter, system-ui, -apple-system,
+    BlinkMacSystemFont, sans-serif;
+  color: #0f1e17;
+  background-color: #0b3318;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -24,11 +61,11 @@ h4,
 h5,
 h6 {
   font-family: var(--font-heading), Poppins, Inter, sans-serif;
-  color: inherit;
   line-height: 1.2;
+  /* color: inherit; */
 }
 
 p {
-  color: inherit;
+  /* color: inherit; */
   line-height: 1.4;
 }

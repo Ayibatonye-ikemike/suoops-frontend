@@ -18,7 +18,11 @@ export default function AnalyticsPage() {
   const [period, setPeriod] = useState<Period>("30d");
   const [currency, setCurrency] = useState<Currency>("NGN");
 
-  const { data: analytics, isLoading, error } = useQuery({
+  const {
+    data: analytics,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["analytics", period, currency],
     queryFn: () => getAnalyticsDashboard(period, currency),
     staleTime: 60000, // 1 minute
@@ -110,7 +114,10 @@ export default function AnalyticsPage() {
 
             {/* Charts Row */}
             <div className="grid gap-4 sm:gap-6 grid-cols-1 xl:grid-cols-2">
-              <MonthlyTrendsChart trends={analytics.monthly_trends} currency={currency} />
+              <MonthlyTrendsChart
+                trends={analytics.monthly_trends}
+                currency={currency}
+              />
               <ConversionFunnelCard period={period} />
             </div>
 

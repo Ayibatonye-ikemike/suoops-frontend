@@ -29,13 +29,18 @@ export function BankDetailsFormFields({
           htmlFor="businessName"
           className="block text-xs font-semibold uppercase tracking-wide text-brand-textMuted"
         >
-          Business Name <span className="text-brand-textMuted/70 normal-case">(optional)</span>
+          Business Name{" "}
+          <span className="text-brand-textMuted/70 normal-case">
+            (optional)
+          </span>
         </label>
         <input
           id="businessName"
           type="text"
           value={formState.businessName}
-          onChange={(event) => onFieldChange("businessName", event.target.value)}
+          onChange={(event) =>
+            onFieldChange("businessName", event.target.value)
+          }
           placeholder="Lagos Ventures Ltd"
           autoComplete="organization"
           className="mt-2 block w-full rounded-lg border border-brand-border bg-white px-3 py-3 text-sm text-brand-text focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
@@ -101,12 +106,13 @@ export function BankDetailsFormFields({
           </Button>
         </div>
         <p className="mt-2 text-xs text-brand-textMuted">
-          Nigerian NUBAN numbers are exactly 10 digits. Customers see it with spaces for
-          readability.
+          Nigerian NUBAN numbers are exactly 10 digits. Customers see it with
+          spaces for readability.
         </p>
         {formState.accountNumber && formState.accountNumber.length !== 10 && (
           <p className="mt-1 text-xs text-red-600">
-            Account number must be exactly 10 digits (currently {formState.accountNumber.length})
+            Account number must be exactly 10 digits (currently{" "}
+            {formState.accountNumber.length})
           </p>
         )}
       </div>
@@ -123,7 +129,9 @@ export function BankDetailsFormFields({
             id="accountName"
             type="text"
             value={formState.accountName}
-            onChange={(event) => onFieldChange("accountName", event.target.value)}
+            onChange={(event) =>
+              onFieldChange("accountName", event.target.value)
+            }
             placeholder="Lagos Ventures Ltd"
             autoComplete="name"
             required

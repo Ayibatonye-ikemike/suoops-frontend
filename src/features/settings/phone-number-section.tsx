@@ -1,9 +1,9 @@
 /**
  * Phone Number Verification Section
- * 
+ *
  * Allows users to add and verify their WhatsApp phone number.
  * Uses OTP verification via WhatsApp Business API.
- * 
+ *
  * Design Principles:
  * - SRP: Single responsibility for phone verification UI
  * - DRY: Reuses OTPInput component from auth
@@ -40,15 +40,20 @@ interface PhoneNumberSectionProps {
 
 /**
  * Phone Number Section Component
- * 
+ *
  * Displays current phone status and handles add/verify/remove flow:
  * 1. No phone → Show input field + "Send OTP" button
  * 2. OTP sent → Show 6-digit input + verify button
  * 3. Verified → Show phone number + "Remove" button
  */
-export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumberSectionProps) {
+export function PhoneNumberSection({
+  currentPhone,
+  onPhoneVerified,
+}: PhoneNumberSectionProps) {
   // Component state
-  const [step, setStep] = useState<VerificationStep>(currentPhone ? "verified" : "input");
+  const [step, setStep] = useState<VerificationStep>(
+    currentPhone ? "verified" : "input"
+  );
   const [phone, setPhone] = useState(currentPhone || "");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -58,67 +63,75 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
   /**
    * Handle phone number input and request OTP
    */
-  const handleRequestOTP = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setError(null);
-    setSuccess(null);
+  const handleRequestOTP = useCallback(
+    async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      setError(null);
+      setSuccess(null);
 
-    const formData = new FormData(event.currentTarget);
-    const phoneInput = formData.get("phone") as string;
+      const formData = new FormData(event.currentTarget);
+      const phoneInput = formData.get("phone") as string;
 
-    if (!phoneInput?.trim()) {
-      setError("Enter your WhatsApp number");
-      return;
-    }
+      if (!phoneInput?.trim()) {
+        setError("Enter your WhatsApp number");
+        return;
+      }
 
-    setLoading(true);
-    const normalizedPhone = normalizePhone(phoneInput);
+      setLoading(true);
+      const normalizedPhone = normalizePhone(phoneInput);
 
-    try {
-      await requestPhoneOTP({ phone: normalizedPhone });
-      setPhone(normalizedPhone);
-      setStep("otp");
-      setOtp("");
-      setSuccess("OTP sent to WhatsApp!");
-    } catch (err) {
-      const message = (err as { response?: { data?: { detail?: string } } })
-        ?.response?.data?.detail || "Failed to send OTP. Try again.";
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      try {
+        await requestPhoneOTP({ phone: normalizedPhone });
+        setPhone(normalizedPhone);
+        setStep("otp");
+        setOtp("");
+        setSuccess("OTP sent to WhatsApp!");
+      } catch (err) {
+        const message =
+          (err as { response?: { data?: { detail?: string } } })?.response?.data
+            ?.detail || "Failed to send OTP. Try again.";
+        setError(message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
 
   /**
    * Handle OTP verification
    */
-  const handleVerifyOTP = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setError(null);
-    setSuccess(null);
+  const handleVerifyOTP = useCallback(
+    async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      setError(null);
+      setSuccess(null);
 
-    if (otp.length !== 6) {
-      setError("Enter the 6-digit code");
-      return;
-    }
+      if (otp.length !== 6) {
+        setError("Enter the 6-digit code");
+        return;
+      }
 
-    setLoading(true);
+      setLoading(true);
 
-    try {
-      const response = await verifyPhoneOTP({ phone, otp });
-      setStep("verified");
-      setSuccess(response.detail || "Phone verified successfully!");
-      setOtp("");
-      onPhoneVerified?.(phone);
-    } catch (err) {
-      const message = (err as { response?: { data?: { detail?: string } } })
-        ?.response?.data?.detail || "Invalid code. Try again.";
-      setError(message);
-      setOtp("");
-    } finally {
-      setLoading(false);
-    }
-  }, [otp, phone, onPhoneVerified]);
+      try {
+        const response = await verifyPhoneOTP({ phone, otp });
+        setStep("verified");
+        setSuccess(response.detail || "Phone verified successfully!");
+        setOtp("");
+        onPhoneVerified?.(phone);
+      } catch (err) {
+        const message =
+          (err as { response?: { data?: { detail?: string } } })?.response?.data
+            ?.detail || "Invalid code. Try again.";
+        setError(message);
+        setOtp("");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [otp, phone, onPhoneVerified]
+  );
 
   /**
    * Handle phone number removal
@@ -136,8 +149,9 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
       setStep("input");
       setSuccess("Phone number removed");
     } catch (err) {
-      const message = (err as { response?: { data?: { detail?: string } } })
-        ?.response?.data?.detail || "Failed to remove phone number";
+      const message =
+        (err as { response?: { data?: { detail?: string } } })?.response?.data
+          ?.detail || "Failed to remove phone number";
       setError(message);
     } finally {
       setLoading(false);
@@ -170,9 +184,15 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
         )}
         <div className="flex flex-col gap-4 rounded-xl border border-brand-border bg-brand-background p-4 text-brand-text md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">WhatsApp Number</p>
-            <p className="mt-2 text-lg font-semibold text-brand-text">{phone}</p>
-            <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-brand-primary">✓ Verified</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
+              WhatsApp Number
+            </p>
+            <p className="mt-2 text-lg font-semibold text-brand-text">
+              {phone}
+            </p>
+            <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-brand-primary">
+              ✓ Verified
+            </p>
           </div>
           <div className="flex gap-2">
             <Button
@@ -201,7 +221,8 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
           </div>
         </div>
         <p className="text-xs text-brand-textMuted">
-          You can now use this number to log in and receive invoice notifications via WhatsApp.
+          You can now use this number to log in and receive invoice
+          notifications via WhatsApp.
         </p>
       </div>
     );
@@ -268,7 +289,10 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
         </div>
       )}
       <div className="space-y-2">
-        <label htmlFor="phone" className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
+        <label
+          htmlFor="phone"
+          className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted"
+        >
           WhatsApp Number
         </label>
         <input
@@ -282,7 +306,8 @@ export function PhoneNumberSection({ currentPhone, onPhoneVerified }: PhoneNumbe
           className="w-full rounded-lg border border-brand-border bg-white px-3 py-3 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 disabled:cursor-not-allowed disabled:bg-brand-background"
         />
         <p className="text-xs text-brand-textMuted">
-          We use your WhatsApp number to send invoice updates and authentication codes.
+          We use your WhatsApp number to send invoice updates and authentication
+          codes.
         </p>
       </div>
       <Button type="submit" disabled={loading} className="w-full">

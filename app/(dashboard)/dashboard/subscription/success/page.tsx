@@ -10,13 +10,19 @@ export default function SubscriptionSuccessPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [status, setStatus] = useState<"verifying" | "success" | "error">("verifying");
+  const [status, setStatus] = useState<"verifying" | "success" | "error">(
+    "verifying"
+  );
   const [message, setMessage] = useState("");
-  const [planInfo, setPlanInfo] = useState<{ old_plan?: string; new_plan?: string; amount_paid?: number } | null>(null);
+  const [planInfo, setPlanInfo] = useState<{
+    old_plan?: string;
+    new_plan?: string;
+    amount_paid?: number;
+  } | null>(null);
 
   useEffect(() => {
     const reference = searchParams.get("reference");
-    
+
     if (!reference) {
       setStatus("error");
       setMessage("Invalid payment reference. Please contact support.");
@@ -34,7 +40,7 @@ export default function SubscriptionSuccessPage() {
             new_plan: data.new_plan,
             amount_paid: data.amount_paid,
           });
-          
+
           // Invalidate user data cache so settings page shows updated plan
           queryClient.invalidateQueries({ queryKey: ["currentUser"] });
         } else {
@@ -44,7 +50,10 @@ export default function SubscriptionSuccessPage() {
       })
       .catch((error) => {
         setStatus("error");
-        setMessage(error.response?.data?.detail || "Failed to verify payment. Please contact support.");
+        setMessage(
+          error.response?.data?.detail ||
+            "Failed to verify payment. Please contact support."
+        );
       });
   }, [searchParams, queryClient]);
 
@@ -55,7 +64,9 @@ export default function SubscriptionSuccessPage() {
           <div className="text-center">
             <div className="mx-auto mb-4 h-16 w-16 animate-spin rounded-full border-4 border-brand-border border-t-brand-primary"></div>
             <h2 className="text-2xl font-semibold">Verifying Payment…</h2>
-            <p className="mt-2 text-sm text-brand-textMuted">Please wait while we confirm your payment.</p>
+            <p className="mt-2 text-sm text-brand-textMuted">
+              Please wait while we confirm your payment.
+            </p>
           </div>
         )}
 
@@ -64,20 +75,33 @@ export default function SubscriptionSuccessPage() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-brand-primary/10">
               <span className="text-4xl text-brand-primary">✓</span>
             </div>
-            <h2 className="text-2xl font-semibold text-brand-primary">Payment Successful!</h2>
+            <h2 className="text-2xl font-semibold text-brand-primary">
+              Payment Successful!
+            </h2>
             <p className="mt-2 text-sm text-brand-text">{message}</p>
 
             {planInfo && (
               <div className="mt-6 rounded-xl border border-brand-border bg-brand-background p-4 text-left">
                 <p className="text-sm text-brand-textMuted">
-                  <span className="font-semibold text-brand-text">Previous Plan:</span> {planInfo.old_plan || "N/A"}
+                  <span className="font-semibold text-brand-text">
+                    Previous Plan:
+                  </span>{" "}
+                  {planInfo.old_plan || "N/A"}
                 </p>
                 <p className="mt-2 text-sm text-brand-textMuted">
-                  <span className="font-semibold text-brand-text">New Plan:</span> <span className="text-brand-primary">{planInfo.new_plan}</span>
+                  <span className="font-semibold text-brand-text">
+                    New Plan:
+                  </span>{" "}
+                  <span className="text-brand-primary">
+                    {planInfo.new_plan}
+                  </span>
                 </p>
                 {planInfo.amount_paid && (
                   <p className="mt-2 text-sm text-brand-textMuted">
-                    <span className="font-semibold text-brand-text">Amount Paid:</span> ₦{planInfo.amount_paid.toLocaleString()}
+                    <span className="font-semibold text-brand-text">
+                      Amount Paid:
+                    </span>{" "}
+                    ₦{planInfo.amount_paid.toLocaleString()}
                   </p>
                 )}
               </div>
@@ -101,7 +125,9 @@ export default function SubscriptionSuccessPage() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
               <span className="text-4xl text-red-600">✗</span>
             </div>
-            <h2 className="text-2xl font-semibold text-red-700">Payment Failed</h2>
+            <h2 className="text-2xl font-semibold text-red-700">
+              Payment Failed
+            </h2>
             <p className="mt-2 text-sm text-brand-text">{message}</p>
 
             <div className="mt-6 flex gap-3">

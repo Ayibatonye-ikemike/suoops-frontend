@@ -1,7 +1,14 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-  content: ["./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  // content: ["./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+
   theme: {
     extend: {
       colors: {
@@ -15,7 +22,7 @@ const config: Config = {
           jadeHover: "#109456", // Darker shade for hover states on CTAs
           teal: "#0F766E", // Secondary UI elements
           citrus: "#BFF74A", // Promo highlights (<10%)
-          mint: "#E8F5EC", // Light surfaces/cards
+          textMuted: "#E8F5EC", // Light surfaces/cards
 
           // Legacy mappings for compatibility
           primary: "#0B3318",
@@ -26,7 +33,7 @@ const config: Config = {
           card: "#FFFFFF",
           border: "#0F766E20",
           text: "#0F1E17",
-          textMuted: "#0F1E1780",
+          mint: "#0F1E1780",
           statusPaidBg: "#14B56A20",
           statusPaidText: "#0B3318",
           statusPendingBg: "#BFF74A40",

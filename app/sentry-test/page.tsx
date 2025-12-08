@@ -20,15 +20,17 @@ export default function SentryTestPage() {
       (span) => {
         span?.setAttribute("test", "value");
         console.log("Test span created");
-      },
+      }
     );
   };
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-brand-background p-6">
       <div className="rounded-lg border border-brand-border bg-white p-8 shadow-card">
-        <h1 className="mb-6 text-2xl font-bold text-brand-text">Sentry Test Page</h1>
-        
+        <h1 className="mb-6 text-2xl font-bold text-brand-text">
+          Sentry Test Page
+        </h1>
+
         <div className="space-y-4">
           <button
             onClick={testError}
@@ -53,7 +55,8 @@ export default function SentryTestPage() {
         </div>
 
         <p className="mt-6 text-sm text-brand-textMuted">
-          Click any button above to test Sentry integration. Check your Sentry dashboard for events.
+          Click any button above to test Sentry integration. Check your Sentry
+          dashboard for events.
         </p>
       </div>
     </div>

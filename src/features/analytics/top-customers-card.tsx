@@ -26,8 +26,12 @@ export function TopCustomersCard({ period, currency }: TopCustomersCardProps) {
     <div className="rounded-lg border border-brand-border bg-white p-4 sm:p-6 shadow-card">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-base sm:text-lg font-semibold text-brand-text">Top Customers</h3>
-          <p className="text-xs text-brand-textMuted mt-1">Highest revenue contributors</p>
+          <h3 className="text-base sm:text-lg font-semibold text-brand-text">
+            Top Customers
+          </h3>
+          <p className="text-xs text-brand-textMuted mt-1">
+            Highest revenue contributors
+          </p>
         </div>
         <span className="text-2xl" role="img" aria-label="Trophy">
           🏆
@@ -75,7 +79,8 @@ export function TopCustomersCard({ period, currency }: TopCustomersCardProps) {
                   {customer.name}
                 </p>
                 <p className="text-xs text-brand-textMuted">
-                  {customer.invoice_count} invoice{customer.invoice_count !== 1 ? "s" : ""}
+                  {customer.invoice_count} invoice
+                  {customer.invoice_count !== 1 ? "s" : ""}
                 </p>
               </div>
 
@@ -90,7 +95,9 @@ export function TopCustomersCard({ period, currency }: TopCustomersCardProps) {
         </div>
       ) : (
         <div className="text-center py-8">
-          <p className="text-sm text-brand-textMuted">No customer data available</p>
+          <p className="text-sm text-brand-textMuted">
+            No customer data available
+          </p>
         </div>
       )}
     </div>

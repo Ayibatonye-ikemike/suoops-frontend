@@ -54,7 +54,7 @@ export default function PaymentHistoryPage() {
         offset: pageNum * pageSize,
         status_filter: filter || undefined,
       });
-      
+
       setPayments(data.payments);
       setSummary(data.summary);
       setHasMore(data.total > (pageNum + 1) * pageSize);
@@ -80,8 +80,15 @@ export default function PaymentHistoryPage() {
 
   const handleExportCSV = () => {
     // Convert payments to CSV
-    const headers = ["Date", "Reference", "Amount", "Status", "Plan", "Payment Method"];
-    const rows = payments.map(p => [
+    const headers = [
+      "Date",
+      "Reference",
+      "Amount",
+      "Status",
+      "Plan",
+      "Payment Method",
+    ];
+    const rows = payments.map((p) => [
       new Date(p.created_at).toLocaleDateString(),
       p.reference,
       `₦${p.amount.toLocaleString()}`,
@@ -92,14 +99,16 @@ export default function PaymentHistoryPage() {
 
     const csvContent = [
       headers.join(","),
-      ...rows.map(r => r.join(",")),
+      ...rows.map((r) => r.join(",")),
     ].join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `suoops-payment-history-${new Date().toISOString().split("T")[0]}.csv`;
+    a.download = `suoops-payment-history-${
+      new Date().toISOString().split("T")[0]
+    }.csv`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -133,18 +142,30 @@ export default function PaymentHistoryPage() {
             Back to Settings
           </Button>
           <div>
-            <h1 className="text-xl font-bold text-brand-text sm:text-2xl">Payment History</h1>
+            <h1 className="text-xl font-bold text-brand-text sm:text-2xl">
+              Payment History
+            </h1>
             <p className="mt-1 text-xs text-brand-textMuted sm:text-sm">
               View all your subscription payments and transactions
             </p>
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" onClick={handleRefresh} className="flex-1 sm:flex-none">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            className="flex-1 sm:flex-none"
+          >
             <RefreshCw className="mr-2 h-4 w-4" />
             Refresh
           </Button>
-          <Button variant="outline" size="sm" onClick={handleExportCSV} className="flex-1 sm:flex-none">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportCSV}
+            className="flex-1 sm:flex-none"
+          >
             <Download className="mr-2 h-4 w-4" />
             Export CSV
           </Button>
@@ -161,15 +182,21 @@ export default function PaymentHistoryPage() {
         </div>
         <div className="rounded-lg border border-brand-border bg-white p-3 shadow-sm sm:p-4">
           <p className="text-xs text-brand-textMuted sm:text-sm">Successful</p>
-          <p className="text-lg font-bold text-green-600 sm:text-2xl">{summary.successful_count}</p>
+          <p className="text-lg font-bold text-green-600 sm:text-2xl">
+            {summary.successful_count}
+          </p>
         </div>
         <div className="rounded-lg border border-brand-border bg-white p-3 shadow-sm sm:p-4">
           <p className="text-xs text-brand-textMuted sm:text-sm">Pending</p>
-          <p className="text-lg font-bold text-yellow-600 sm:text-2xl">{summary.pending_count}</p>
+          <p className="text-lg font-bold text-yellow-600 sm:text-2xl">
+            {summary.pending_count}
+          </p>
         </div>
         <div className="rounded-lg border border-brand-border bg-white p-3 shadow-sm sm:p-4">
           <p className="text-xs text-brand-textMuted sm:text-sm">Failed</p>
-          <p className="text-lg font-bold text-red-600 sm:text-2xl">{summary.failed_count}</p>
+          <p className="text-lg font-bold text-red-600 sm:text-2xl">
+            {summary.failed_count}
+          </p>
         </div>
       </div>
 
@@ -225,84 +252,104 @@ export default function PaymentHistoryPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="whitespace-nowrap">Date</TableHead>
-                    <TableHead className="whitespace-nowrap">Reference</TableHead>
+                    <TableHead className="whitespace-nowrap">
+                      Reference
+                    </TableHead>
                     <TableHead className="whitespace-nowrap">Amount</TableHead>
-                    <TableHead className="whitespace-nowrap">Plan Upgrade</TableHead>
-                    <TableHead className="whitespace-nowrap">Payment Method</TableHead>
+                    <TableHead className="whitespace-nowrap">
+                      Plan Upgrade
+                    </TableHead>
+                    <TableHead className="whitespace-nowrap">
+                      Payment Method
+                    </TableHead>
                     <TableHead className="whitespace-nowrap">Status</TableHead>
-                    <TableHead className="whitespace-nowrap">Billing Period</TableHead>
+                    <TableHead className="whitespace-nowrap">
+                      Billing Period
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                {payments.map((payment) => (
-                  <TableRow key={payment.id}>
-                    <TableCell>
-                      <div className="text-xs sm:text-sm">
-                        {new Date(payment.created_at).toLocaleDateString()}
-                        <div className="text-xs text-brand-textMuted">
-                          {new Date(payment.created_at).toLocaleTimeString()}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <code className="rounded bg-brand-background px-2 py-1 text-xs">
-                        {payment.reference}
-                      </code>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-sm font-semibold sm:text-base">
-                        ₦{payment.amount.toLocaleString()}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-xs sm:text-sm">
-                        <span className="capitalize text-brand-textMuted">
-                          {payment.plan_before}
-                        </span>
-                        <span className="mx-1">→</span>
-                        <span className="font-semibold capitalize text-brand-primary">
-                          {payment.plan_after}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {payment.payment_method ? (
+                  {payments.map((payment) => (
+                    <TableRow key={payment.id}>
+                      <TableCell>
                         <div className="text-xs sm:text-sm">
-                          <span className="capitalize">{payment.payment_method}</span>
-                          {payment.card_last4 && (
-                            <div className="text-xs text-brand-textMuted">
-                              {payment.card_brand} •••• {payment.card_last4}
-                            </div>
-                          )}
-                          {payment.bank_name && (
-                            <div className="text-xs text-brand-textMuted">
-                              {payment.bank_name}
-                            </div>
-                          )}
+                          {new Date(payment.created_at).toLocaleDateString()}
+                          <div className="text-xs text-brand-textMuted">
+                            {new Date(payment.created_at).toLocaleTimeString()}
+                          </div>
                         </div>
-                      ) : (
-                        <span className="text-xs text-brand-textMuted sm:text-sm">—</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={STATUS_COLORS[payment.status]}>
-                        {STATUS_LABELS[payment.status]}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {payment.billing_start_date && payment.billing_end_date ? (
-                        <div className="text-xs text-brand-textMuted">
-                          {new Date(payment.billing_start_date).toLocaleDateString()} —{" "}
-                          {new Date(payment.billing_end_date).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <code className="rounded bg-brand-background px-2 py-1 text-xs">
+                          {payment.reference}
+                        </code>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm font-semibold sm:text-base">
+                          ₦{payment.amount.toLocaleString()}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-xs sm:text-sm">
+                          <span className="capitalize text-brand-textMuted">
+                            {payment.plan_before}
+                          </span>
+                          <span className="mx-1">→</span>
+                          <span className="font-semibold capitalize text-brand-primary">
+                            {payment.plan_after}
+                          </span>
                         </div>
-                      ) : (
-                        <span className="text-xs text-brand-textMuted sm:text-sm">—</span>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                      </TableCell>
+                      <TableCell>
+                        {payment.payment_method ? (
+                          <div className="text-xs sm:text-sm">
+                            <span className="capitalize">
+                              {payment.payment_method}
+                            </span>
+                            {payment.card_last4 && (
+                              <div className="text-xs text-brand-textMuted">
+                                {payment.card_brand} •••• {payment.card_last4}
+                              </div>
+                            )}
+                            {payment.bank_name && (
+                              <div className="text-xs text-brand-textMuted">
+                                {payment.bank_name}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-xs text-brand-textMuted sm:text-sm">
+                            —
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={STATUS_COLORS[payment.status]}>
+                          {STATUS_LABELS[payment.status]}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {payment.billing_start_date &&
+                        payment.billing_end_date ? (
+                          <div className="text-xs text-brand-textMuted">
+                            {new Date(
+                              payment.billing_start_date
+                            ).toLocaleDateString()}{" "}
+                            —{" "}
+                            {new Date(
+                              payment.billing_end_date
+                            ).toLocaleDateString()}
+                          </div>
+                        ) : (
+                          <span className="text-xs text-brand-textMuted sm:text-sm">
+                            —
+                          </span>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
 
             {/* Pagination */}

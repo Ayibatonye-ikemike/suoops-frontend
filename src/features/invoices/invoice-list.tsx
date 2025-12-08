@@ -10,22 +10,25 @@ import { invoiceStatusHelpText, invoiceStatusLabels } from "./status-map";
 import { type Invoice, useInvoices } from "./use-invoices";
 
 export function InvoiceList() {
-  const { data, isLoading, error, isFetching, dataUpdatedAt, refetch } = useInvoices();
-  const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(null);
+  const { data, isLoading, error, isFetching, dataUpdatedAt, refetch } =
+    useInvoices();
+  const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(
+    null
+  );
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
 
   const invoices = useMemo(() => data ?? [], [data]);
-  
+
   // Filter invoices by status and search query
   const filteredInvoices = useMemo(() => {
     let filtered = invoices;
-    
+
     // Apply status filter
     if (statusFilter !== "all") {
       filtered = filtered.filter((inv) => inv.status === statusFilter);
     }
-    
+
     // Apply search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
@@ -35,19 +38,21 @@ export function InvoiceList() {
           inv.amount.toString().includes(query)
       );
     }
-    
+
     return filtered;
   }, [invoices, statusFilter, searchQuery]);
-  
+
   const hasInvoices = invoices.length > 0;
   const hasFilteredInvoices = filteredInvoices.length > 0;
-  
+
   // Status counts for filter badges
   const statusCounts = useMemo(() => {
     return {
       all: invoices.length,
       pending: invoices.filter((inv) => inv.status === "pending").length,
-      awaiting_confirmation: invoices.filter((inv) => inv.status === "awaiting_confirmation").length,
+      awaiting_confirmation: invoices.filter(
+        (inv) => inv.status === "awaiting_confirmation"
+      ).length,
       paid: invoices.filter((inv) => inv.status === "paid").length,
     };
   }, [invoices]);
@@ -58,7 +63,12 @@ export function InvoiceList() {
       setSelectedInvoiceId(null);
       return;
     }
-    if (selectedInvoiceId && filteredInvoices.some((invoice) => invoice.invoice_id === selectedInvoiceId)) {
+    if (
+      selectedInvoiceId &&
+      filteredInvoices.some(
+        (invoice) => invoice.invoice_id === selectedInvoiceId
+      )
+    ) {
       return;
     }
     if (filteredInvoices.length > 0) {
@@ -70,7 +80,11 @@ export function InvoiceList() {
 
   // Determine if auto-refresh should be active (pending or awaiting_confirmation invoices exist)
   const shouldAutoRefresh = useMemo(
-    () => invoices.some((inv) => inv.status === "pending" || inv.status === "awaiting_confirmation"),
+    () =>
+      invoices.some(
+        (inv) =>
+          inv.status === "pending" || inv.status === "awaiting_confirmation"
+      ),
     [invoices]
   );
 
@@ -117,22 +131,22 @@ export function InvoiceList() {
       <div className="rounded-xl border border-brand-border bg-white p-5 shadow-sm">
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-lg font-bold text-brand-text">Invoice Status</h2>
+            <h2 className="text-lg font-bold text-brand-text">
+              Invoice Status
+            </h2>
             <p className="mt-1 text-xs text-brand-textMuted">
               Keep invoice statuses in sync after you confirm customer payments.
             </p>
           </div>
-          <Button
-            size="sm"
-            onClick={() => refetch()}
-            disabled={isFetching}
-          >
+          <Button size="sm" onClick={() => refetch()} disabled={isFetching}>
             {isFetching ? "Refreshing…" : "Refresh"}
           </Button>
         </div>
         <div className="space-y-1">
           {lastUpdated && (
-            <p className="text-xs italic text-brand-textMuted">Last updated: {lastUpdated}</p>
+            <p className="text-xs italic text-brand-textMuted">
+              Last updated: {lastUpdated}
+            </p>
           )}
           {shouldAutoRefresh && (
             <p className="text-[11px] text-brand-textMuted" aria-live="polite">
@@ -153,12 +167,14 @@ export function InvoiceList() {
         />
 
         <div className="flex flex-wrap gap-2">
-          {([
-            { key: "all", label: "All" },
-            { key: "pending", label: "Pending" },
-            { key: "awaiting_confirmation", label: "Awaiting" },
-            { key: "paid", label: "Paid" },
-          ] as const).map((filter) => (
+          {(
+            [
+              { key: "all", label: "All" },
+              { key: "pending", label: "Pending" },
+              { key: "awaiting_confirmation", label: "Awaiting" },
+              { key: "paid", label: "Paid" },
+            ] as const
+          ).map((filter) => (
             <button
               key={filter.key}
               onClick={() => setStatusFilter(filter.key)}
@@ -185,7 +201,8 @@ export function InvoiceList() {
             const helpText = invoiceStatusHelpText[invoice.status];
             const isSelected = selectedInvoiceId === invoice.invoice_id;
 
-            const selectInvoice = () => setSelectedInvoiceId(invoice.invoice_id);
+            const selectInvoice = () =>
+              setSelectedInvoiceId(invoice.invoice_id);
 
             return (
               <div key={invoice.invoice_id}>
@@ -201,23 +218,33 @@ export function InvoiceList() {
                     }
                   }}
                   className={`rounded-xl border bg-white p-5 text-left shadow-sm transition ${
-                    isSelected 
-                      ? "border-brand-jade ring-2 ring-brand-jade/20" 
+                    isSelected
+                      ? "border-brand-jade ring-2 ring-brand-jade/20"
                       : "border-brand-border hover:border-brand-jade/40 hover:shadow-md"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
                       <div className="flex items-center gap-3">
-                        <strong className="text-base font-bold text-brand-text">{invoice.invoice_id}</strong>
+                        <strong className="text-base font-bold text-brand-text">
+                          {invoice.invoice_id}
+                        </strong>
                         <span
-                          className={`rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide ${badgeToneClass(status.tone)}`}
+                          className={`rounded-full px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wide ${badgeToneClass(
+                            status.tone
+                          )}`}
                         >
                           {status.label}
                         </span>
                       </div>
-                      <p className="mt-2 text-2xl font-bold text-brand-primary">₦{invoice.amount.toLocaleString()}</p>
-                      {helpText && <p className="mt-1 text-sm text-brand-textMuted">{helpText}</p>}
+                      <p className="mt-2 text-2xl font-bold text-brand-primary">
+                        ₦{invoice.amount.toLocaleString()}
+                      </p>
+                      {helpText && (
+                        <p className="mt-1 text-sm text-brand-textMuted">
+                          {helpText}
+                        </p>
+                      )}
                     </div>
                   </div>
                   {invoice.pdf_url && (
@@ -239,7 +266,9 @@ export function InvoiceList() {
         </div>
       ) : hasInvoices ? (
         <div className="rounded-xl border border-dashed border-brand-border bg-brand-background p-6 text-center">
-          <p className="text-sm text-brand-textMuted">No invoices match your filters.</p>
+          <p className="text-sm text-brand-textMuted">
+            No invoices match your filters.
+          </p>
           <button
             onClick={() => {
               setStatusFilter("all");
