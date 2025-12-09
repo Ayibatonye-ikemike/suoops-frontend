@@ -12,8 +12,13 @@ function CallbackContent() {
   const setTokens = useAuthStore((state) => state.setTokens);
   const [error, setError] = useState<string | null>(null);
   const [processing, setProcessing] = useState(true);
+  const exchangeAttemptedRef = React.useRef(false);
 
   useEffect(() => {
+    // Prevent double-execution in React Strict Mode
+    if (exchangeAttemptedRef.current) return;
+    exchangeAttemptedRef.current = true;
+
     const run = async () => {
       try {
         const code = searchParams?.get("code");
@@ -117,37 +122,12 @@ function CallbackContent() {
             </button>
             <button
               onClick={() => {
-                setError(null); setProcessing(true);
-                // Re-run attempt with existing params
-                const code = searchParams?.get("code");
-                const state = searchParams?.get("state");
-                exchangeOAuthCode(code, state, { provider: "google", retries: 2, timeoutMs: 12000 })
-                  .then(data => {
-                    const accessExpiresAt = typeof data.access_expires_at === "string" ? data.access_expires_at : new Date(Date.now() + 24*60*60*1000).toISOString();
-                    setTokens({ accessToken: data.access_token, accessExpiresAt });
-                    setProcessing(false);
-                    telemetry.oauthCallbackSuccess();
-                    router.replace("/dashboard");
-                  })
-                  .catch(err => {
-                    let message = "Sign in failed. Please try again.";
-                    if (err instanceof OAuthExchangeError) {
-                      if (err.kind === "network") {
-                        message = "Still having connection issues. Please check your internet.";
-                      } else if (err.kind === "server") {
-                        message = "Our service is still unavailable. Please try again later.";
-                      } else if (err.kind === "invalid_state") {
-                        message = "This sign in link has expired. Please start over.";
-                      }
-                    }
-                    telemetry.oauthCallbackError(err instanceof OAuthExchangeError ? err.kind : "unknown", message);
-                    setError(message);
-                    setProcessing(false);
-                  });
+                // OAuth codes are single-use, so we need to start fresh
+                router.push("/login");
               }}
               className="rounded-lg bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-300"
             >
-              Retry
+              Try again
             </button>
           </div>
         </div>
