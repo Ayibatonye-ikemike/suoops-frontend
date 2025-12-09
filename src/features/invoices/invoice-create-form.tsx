@@ -299,12 +299,13 @@ export function InvoiceCreateForm() {
         />
       )}
 
-      {/* Line Items */}
+      {/* Line Items with Inventory Product Picker */}
       <InvoiceLineItems
         lines={lines}
         onUpdateLine={updateLine}
         onRemoveLine={removeLine}
         onAddLine={addLine}
+        showProductPicker={true}
       />
 
       {/* Submit Button */}
