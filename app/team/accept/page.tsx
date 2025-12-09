@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Loader2, CheckCircle, XCircle, Users } from "lucide-react";
 
+const PENDING_INVITATION_KEY = "pending_invitation_token";
+
 type PageStatus = "loading" | "valid" | "invalid" | "accepting" | "success" | "error";
 
 interface InvitationDetails {
@@ -60,8 +62,40 @@ function AcceptInvitationContent() {
     validate();
   }, [token]);
 
+  // Auto-accept invitation when user becomes authenticated
+  useEffect(() => {
+    async function autoAccept() {
+      if (authStatus === "authenticated" && token && accessToken && pageStatus === "valid") {
+        // Check if we came back from login (pending invitation in storage)
+        const pendingToken = sessionStorage.getItem(PENDING_INVITATION_KEY);
+        if (pendingToken === token) {
+          sessionStorage.removeItem(PENDING_INVITATION_KEY);
+          // Auto-accept the invitation
+          setPageStatus("accepting");
+          try {
+            await acceptInvitation(token);
+            setPageStatus("success");
+            setTimeout(() => {
+              router.push("/dashboard");
+            }, 2000);
+          } catch (error) {
+            console.error("Error accepting invitation:", error);
+            setErrorMessage("Failed to accept invitation. Please try again.");
+            setPageStatus("error");
+          }
+        }
+      }
+    }
+    
+    autoAccept();
+  }, [authStatus, token, accessToken, pageStatus, router]);
+
   // Handle sign in redirect
   const handleSignIn = () => {
+    // Store token in sessionStorage before redirecting to login
+    if (token) {
+      sessionStorage.setItem(PENDING_INVITATION_KEY, token);
+    }
     const returnUrl = `/team/accept?token=${token}`;
     router.push(`/login?next=${encodeURIComponent(returnUrl)}`);
   };
