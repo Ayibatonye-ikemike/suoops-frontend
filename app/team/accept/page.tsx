@@ -60,14 +60,11 @@ function AcceptInvitationContent() {
     validate();
   }, [token]);
 
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (pageStatus === "valid" && authStatus === "unauthenticated") {
-      // Store the current URL to redirect back after login
-      const returnUrl = `/team/accept?token=${token}`;
-      router.push(`/login?returnUrl=${encodeURIComponent(returnUrl)}`);
-    }
-  }, [pageStatus, authStatus, token, router]);
+  // Handle sign in redirect
+  const handleSignIn = () => {
+    const returnUrl = `/team/accept?token=${token}`;
+    router.push(`/login?next=${encodeURIComponent(returnUrl)}`);
+  };
 
   const handleAccept = async () => {
     if (!token || !accessToken) return;
@@ -175,6 +172,8 @@ function AcceptInvitationContent() {
   }
 
   // Valid invitation - show accept/decline options
+  const isAuthenticated = authStatus === "authenticated";
+  
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
@@ -196,28 +195,41 @@ function AcceptInvitationContent() {
           )}
           
           <div className="flex flex-col gap-3">
-            <Button 
-              onClick={handleAccept} 
-              disabled={pageStatus === "accepting"}
-              className="w-full"
-            >
-              {pageStatus === "accepting" ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Joining...
-                </>
-              ) : (
-                "Accept Invitation"
-              )}
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={handleDecline}
-              disabled={pageStatus === "accepting"}
-              className="w-full"
-            >
-              Decline
-            </Button>
+            {isAuthenticated ? (
+              <>
+                <Button 
+                  onClick={handleAccept} 
+                  disabled={pageStatus === "accepting"}
+                  className="w-full"
+                >
+                  {pageStatus === "accepting" ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Joining...
+                    </>
+                  ) : (
+                    "Accept Invitation"
+                  )}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={handleDecline}
+                  disabled={pageStatus === "accepting"}
+                  className="w-full"
+                >
+                  Decline
+                </Button>
+              </>
+            ) : (
+              <>
+                <p className="mb-2 text-center text-sm text-muted-foreground">
+                  Please sign in to accept this invitation
+                </p>
+                <Button onClick={handleSignIn} className="w-full">
+                  Sign in to Accept
+                </Button>
+              </>
+            )}
           </div>
         </CardContent>
       </Card>
