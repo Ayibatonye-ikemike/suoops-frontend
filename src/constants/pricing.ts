@@ -5,7 +5,7 @@
  * IMPORTANT: Keep in sync with backend app/models/models.py SubscriptionPlan
  */
 
-export type PlanTier = "FREE" | "STARTER" | "PRO" | "BUSINESS" | "ENTERPRISE";
+export type PlanTier = "FREE" | "STARTER" | "PRO" | "BUSINESS";
 
 export interface PlanFeature {
   text: string;
@@ -69,10 +69,12 @@ export const PLANS: Record<PlanTier, Plan> = {
     invoiceLimit: 200,
     invoiceLimitDisplay: "200 invoices/month",
     icon: "⭐",
-    description: "Professional branding and priority support",
+    description: "Professional branding and team management",
     features: [
       "Everything in Starter",
       "Custom logo branding",
+      "Inventory management",
+      "Team management (3 members)",
       "Priority support",
     ],
   },
@@ -92,26 +94,10 @@ export const PLANS: Record<PlanTier, Plan> = {
       "API access",
     ],
   },
-  ENTERPRISE: {
-    id: "ENTERPRISE",
-    name: "Enterprise",
-    price: 50000,
-    priceDisplay: "₦50,000",
-    invoiceLimit: Infinity,
-    invoiceLimitDisplay: "Unlimited invoices",
-    icon: "🏢",
-    description: "Unlimited everything for large teams",
-    features: [
-      "Everything in Business",
-      "Unlimited Voice & OCR",
-      "Custom features",
-      "Dedicated support",
-    ],
-  },
 };
 
 /**
- * Plans available for upgrade selection (excludes FREE and ENTERPRISE)
+ * Plans available for upgrade selection (excludes FREE)
  */
 export const PAID_PLANS: Plan[] = [
   PLANS.STARTER,
@@ -127,11 +113,10 @@ export const ALL_PLANS: Plan[] = [
   PLANS.STARTER,
   PLANS.PRO,
   PLANS.BUSINESS,
-  PLANS.ENTERPRISE,
 ];
 
 /**
- * Landing page pricing display (excludes ENTERPRISE)
+ * Landing page pricing display
  */
 export const LANDING_PLANS: Plan[] = [
   PLANS.FREE,
@@ -144,11 +129,13 @@ export const LANDING_PLANS: Plan[] = [
  * Feature availability by plan tier
  */
 export const FEATURE_GATES = {
-  TAX_REPORTS: ["STARTER", "PRO", "BUSINESS", "ENTERPRISE"] as PlanTier[],
-  CUSTOM_BRANDING: ["PRO", "BUSINESS", "ENTERPRISE"] as PlanTier[],
-  VOICE_INVOICES: ["BUSINESS", "ENTERPRISE"] as PlanTier[],
-  PHOTO_OCR: ["BUSINESS", "ENTERPRISE"] as PlanTier[],
-  API_ACCESS: ["BUSINESS", "ENTERPRISE"] as PlanTier[],
+  TAX_REPORTS: ["STARTER", "PRO", "BUSINESS"] as PlanTier[],
+  CUSTOM_BRANDING: ["PRO", "BUSINESS"] as PlanTier[],
+  INVENTORY: ["PRO", "BUSINESS"] as PlanTier[],
+  TEAM_MANAGEMENT: ["PRO", "BUSINESS"] as PlanTier[],
+  VOICE_INVOICES: ["BUSINESS"] as PlanTier[],
+  PHOTO_OCR: ["BUSINESS"] as PlanTier[],
+  API_ACCESS: ["BUSINESS"] as PlanTier[],
 } as const;
 
 /**

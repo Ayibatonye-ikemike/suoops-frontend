@@ -14,12 +14,12 @@ export function Pricing() {
             <div className="text-white/80">
               <p className="mt-4 text-lg max-w-2xl mx-auto">
                 Start with free manual invoicing. Upgrade for tax automation
-                (Starter), custom branding (Pro), or voice+OCR (Business).
+                (Starter), inventory, branding & team collaboration (Pro), or voice+OCR (Business).
               </p>
             </div>
           </div>
 
-          <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             <PremiumFeature
               emoji="🎤"
               title="Voice Invoices"
@@ -45,6 +45,18 @@ export function Pricing() {
               badgeColor="orange"
             />
             <PremiumFeature
+              emoji="📦"
+              title="Inventory Management"
+              description="Track your products and stock levels. Auto-update inventory when invoices are created."
+              benefits={[
+                "Product catalog",
+                "Stock level tracking",
+                "Auto-deduct on invoice",
+              ]}
+              badge="Pro plan & above"
+              badgeColor="teal"
+            />
+            <PremiumFeature
               emoji="🎨"
               title="Custom Logo Branding"
               description="Upload your business logo to appear on all invoices. Build brand recognition with every invoice."
@@ -55,6 +67,18 @@ export function Pricing() {
               ]}
               badge="Pro plan & above"
               badgeColor="blue"
+            />
+            <PremiumFeature
+              emoji="👥"
+              title="Team Management"
+              description="Invite team members to collaborate on invoicing. Control who can access what with role-based permissions."
+              benefits={[
+                "Invite up to 3 members",
+                "Role-based access control",
+                "Admin retains full control",
+              ]}
+              badge="Pro plan & above"
+              badgeColor="green"
             />
           </div>
 
@@ -99,7 +123,7 @@ interface PremiumFeatureProps {
   description: string;
   benefits: string[];
   badge: string;
-  badgeColor: "purple" | "orange" | "blue";
+  badgeColor: "purple" | "orange" | "blue" | "green" | "teal";
 }
 
 function PremiumFeature({
@@ -114,12 +138,16 @@ function PremiumFeature({
     purple: "bg-purple-50 text-purple-700",
     orange: "bg-orange-50 text-orange-700",
     blue: "bg-brand-textMuted text-brand-teal",
+    green: "bg-green-50 text-green-700",
+    teal: "bg-teal-50 text-teal-700",
   };
 
   const gradients = {
     purple: "from-purple-500 to-purple-600",
     orange: "from-orange-500 to-orange-600",
     blue: "from-blue-500 to-blue-600",
+    green: "from-green-500 to-green-600",
+    teal: "from-teal-500 to-teal-600",
   };
 
   return (

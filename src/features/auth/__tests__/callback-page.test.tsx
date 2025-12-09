@@ -14,11 +14,26 @@ vi.mock("next/navigation", () => {
 // Mock telemetry
 vi.mock("@/lib/telemetry", () => ({ telemetry: { oauthCallbackError: vi.fn(), oauthCallbackSuccess: vi.fn(), oauthStart: vi.fn(), oauthExchangeSuccess: vi.fn(), oauthExchangeFailure: vi.fn() } }));
 
-// Mock oauth client
-vi.mock("@/features/auth/oauth-client", () => ({
-  exchangeOAuthCode: vi.fn(async (code: string) => ({ access_token: `tok-${code}`, access_expires_at: new Date(Date.now() + 60000).toISOString() })),
-  OAuthExchangeError: class extends Error { constructor(public kind: string, msg: string){ super(msg); } },
-}));
+// Mock oauth client - class must be defined inside vi.mock factory since it's hoisted
+vi.mock("@/features/auth/oauth-client", () => {
+  class OAuthExchangeError extends Error {
+    kind: string;
+    constructor(kind: string, msg: string) {
+      super(msg);
+      this.kind = kind;
+      this.name = "OAuthExchangeError";
+    }
+  }
+  return {
+    exchangeOAuthCode: vi.fn(async (code: string | null, state: string | null) => {
+      if (!code || !state) {
+        throw new OAuthExchangeError("missing_params", "Missing code/state parameters.");
+      }
+      return { access_token: `tok-${code}`, access_expires_at: new Date(Date.now() + 60000).toISOString() };
+    }),
+    OAuthExchangeError,
+  };
+});
 
 // Mock auth store
 vi.mock("@/features/auth/auth-store", () => {
@@ -54,7 +69,7 @@ describe("OAuthCallbackPage", () => {
     global.__TEST_PARAMS__ = "code=only"; // missing state
     render(<OAuthCallbackPage />);
     await waitFor(() => {
-      expect(screen.getByRole("alert")).toHaveTextContent(/Missing OAuth parameters|Security validation/i);
+      expect(screen.getByRole("alert")).toHaveTextContent(/Missing sign in information|try signing in again/i);
     });
   });
 

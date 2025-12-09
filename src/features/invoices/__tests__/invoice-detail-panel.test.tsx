@@ -38,11 +38,9 @@ describe("InvoiceDetailPanel", () => {
     vi.clearAllMocks();
   });
 
-  it("prompts the user to select an invoice when none is active", () => {
-    render(<InvoiceDetailPanel invoiceId={null} />);
-    expect(
-      screen.getByText(/Select an invoice to see full details/i)
-    ).toBeInTheDocument();
+  it("returns null when no invoice is selected", () => {
+    const { container } = render(<InvoiceDetailPanel invoiceId={null} />);
+    expect(container.firstChild).toBeNull();
   });
 
   it("renders invoice metadata and updates status", async () => {

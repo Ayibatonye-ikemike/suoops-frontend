@@ -66,7 +66,6 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                   {currentPlan === "STARTER" && "🚀"}
                   {currentPlan === "PRO" && "⭐"}
                   {currentPlan === "BUSINESS" && "💼"}
-                  {currentPlan === "ENTERPRISE" && "👑"}
                 </div>
                 <div>
                   <div className="inline-flex items-center gap-2 rounded-full bg-brand-jade px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
@@ -100,16 +99,14 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                   {invoicesUsed} of {invoiceLimit}
                 </span>
               </div>
-              {currentPlan !== "ENTERPRISE" && (
-                <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-white">
-                  <div
-                    className="h-full rounded-full bg-brand-jade transition-all"
-                    style={{
-                      width: `${usagePercent}%`,
-                    }}
-                  />
-                </div>
-              )}
+              <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-white">
+                <div
+                  className="h-full rounded-full bg-brand-jade transition-all"
+                  style={{
+                    width: `${usagePercent}%`,
+                  }}
+                />
+              </div>
             </div>
 
             <div>
@@ -132,8 +129,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
         </div>
 
         {currentPlan !== "PRO" &&
-          currentPlan !== "BUSINESS" &&
-          currentPlan !== "ENTERPRISE" && (
+          currentPlan !== "BUSINESS" && (
             <div className="mt-8 rounded-2xl border border-brand-border bg-brand-background p-5">
               <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>

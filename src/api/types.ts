@@ -130,7 +130,7 @@ export interface components {
       phone_verified?: boolean;
       email?: string | null;
       name: string;
-      plan: string;  // FREE, STARTER, PRO, BUSINESS, ENTERPRISE
+      plan: string;  // FREE, STARTER, PRO, BUSINESS
       invoices_this_month: number;
       logo_url?: string | null;
     };
@@ -156,6 +156,65 @@ export interface components {
       account_number: string | null;
       account_name: string | null;
       is_configured: boolean;
+    };
+    // Team management types
+    TeamRole: "admin" | "member";
+    InvitationStatus: "pending" | "accepted" | "expired" | "revoked";
+    TeamOut: {
+      id: number;
+      name: string;
+      admin_user_id: number;
+      max_members: number;
+      member_count: number;
+      created_at: string;
+    };
+    TeamMemberOut: {
+      id: number;
+      user_id: number;
+      user_name: string;
+      user_email: string | null;
+      role: components["schemas"]["TeamRole"];
+      joined_at: string;
+    };
+    InvitationOut: {
+      id: number;
+      email: string;
+      status: components["schemas"]["InvitationStatus"];
+      created_at: string;
+      expires_at: string;
+      is_expired: boolean;
+      is_valid: boolean;
+    };
+    TeamWithMembersOut: {
+      team: components["schemas"]["TeamOut"];
+      admin: components["schemas"]["TeamMemberOut"];
+      members: components["schemas"]["TeamMemberOut"][];
+      pending_invitations: components["schemas"]["InvitationOut"][];
+      can_invite: boolean;
+    };
+    UserTeamRole: {
+      has_team: boolean;
+      is_admin: boolean;
+      team_id: number | null;
+      role: components["schemas"]["TeamRole"] | null;
+      can_access_settings: boolean;
+      can_edit_inventory: boolean;
+    };
+    InvitationValidation: {
+      valid: boolean;
+      team_name: string | null;
+      inviter_name: string | null;
+      email: string | null;
+      error: string | null;
+    };
+    InvitationCreate: {
+      email: string;
+    };
+    InvitationAccept: {
+      token: string;
+    };
+    TeamCreate: {
+      name: string;
     };
   };
   responses: never;
