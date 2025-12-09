@@ -114,7 +114,7 @@ export function Footer() {
 
 export function PreLaunchBanner() {
   return (
-    <div className="bg-brand-citrus px-4 py-3 text-center text-green-200">
+    <div className="bg-brand-citrus px-4 py-3 text-center text-white">
       <p className="text-sm font-semibold">
         <strong>Pre-Launch:</strong> Join our waitlist to get early access +
         exclusive 50% launch discount! 🚀
