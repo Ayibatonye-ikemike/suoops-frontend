@@ -12,7 +12,11 @@ interface PlanModalProps {
   currentPlan: string;
 }
 
-export function PlanSelectionModal({ isOpen, onClose, currentPlan }: PlanModalProps) {
+export function PlanSelectionModal({
+  isOpen,
+  onClose,
+  currentPlan,
+}: PlanModalProps) {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 
   const initializeMutation = useMutation({
@@ -25,8 +29,8 @@ export function PlanSelectionModal({ isOpen, onClose, currentPlan }: PlanModalPr
       const message = isAxiosError(error)
         ? error.response?.data?.detail || error.message
         : error instanceof Error
-          ? error.message
-          : null;
+        ? error.message
+        : null;
       alert(message || "Failed to initialize payment. Please try again.");
     },
   });
@@ -50,8 +54,18 @@ export function PlanSelectionModal({ isOpen, onClose, currentPlan }: PlanModalPr
           className="absolute right-4 top-4 rounded-lg p-2 hover:bg-brand-background transition-colors"
           aria-label="Close"
         >
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <svg
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
 
@@ -59,7 +73,8 @@ export function PlanSelectionModal({ isOpen, onClose, currentPlan }: PlanModalPr
         <div className="mb-8">
           <h2 className="text-2xl font-bold sm:text-3xl">Choose Your Plan</h2>
           <p className="mt-2 text-brand-textMuted">
-            Upgrade to unlock tax automation (Starter), custom branding (Pro), or voice+OCR (Business)
+            Upgrade to unlock tax automation (Starter), custom branding (Pro),
+            or voice+OCR (Business)
           </p>
         </div>
 
@@ -79,8 +94,8 @@ export function PlanSelectionModal({ isOpen, onClose, currentPlan }: PlanModalPr
                   isCurrent
                     ? "border-brand-border bg-brand-background cursor-not-allowed opacity-60"
                     : isSelected
-                      ? "border-brand-jade bg-brand-jade/5 shadow-lg"
-                      : "border-brand-border bg-white hover:border-brand-jade/50 hover:shadow-md"
+                    ? "border-brand-jade bg-brand-jade/5 shadow-lg"
+                    : "border-brand-border bg-white hover:border-brand-jade/50 hover:shadow-md"
                 }`}
               >
                 {plan.popular && !isCurrent && (
@@ -116,8 +131,16 @@ export function PlanSelectionModal({ isOpen, onClose, currentPlan }: PlanModalPr
                 <ul className="space-y-2 text-sm text-brand-textMuted">
                   {plan.features.map((feature: string, i: number) => (
                     <li key={i} className="flex items-start gap-2">
-                      <svg className="h-5 w-5 flex-shrink-0 text-brand-success" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      <svg
+                        className="h-5 w-5 flex-shrink-0 text-brand-success"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                       <span>{feature}</span>
                     </li>
@@ -126,8 +149,16 @@ export function PlanSelectionModal({ isOpen, onClose, currentPlan }: PlanModalPr
 
                 {isSelected && !isCurrent && (
                   <div className="mt-4 flex items-center gap-2 text-sm font-semibold text-brand-jade">
-                    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    <svg
+                      className="h-5 w-5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                     Selected
                   </div>
@@ -150,7 +181,9 @@ export function PlanSelectionModal({ isOpen, onClose, currentPlan }: PlanModalPr
             disabled={!selectedPlan || initializeMutation.isPending}
             className="rounded-lg bg-brand-jade px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-jadeHover disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
           >
-            {initializeMutation.isPending ? "Processing..." : "Continue to Payment"}
+            {initializeMutation.isPending
+              ? "Processing..."
+              : "Continue to Payment"}
           </button>
         </div>
       </div>

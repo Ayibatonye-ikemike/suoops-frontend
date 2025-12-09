@@ -8,7 +8,9 @@ export function CustomerMetricsCard({ metrics }: CustomerMetricsCardProps) {
   return (
     <div className="rounded-lg border border-brand-border bg-white p-4 sm:p-6 shadow-card">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-base sm:text-lg font-semibold text-brand-text">Customer Metrics</h3>
+        <h3 className="text-base sm:text-lg font-semibold text-brand-text">
+          Customer Metrics
+        </h3>
         <span className="text-2xl" role="img" aria-label="Customers">
           👥
         </span>

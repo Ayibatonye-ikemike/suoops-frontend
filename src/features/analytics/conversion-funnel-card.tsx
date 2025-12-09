@@ -1,6 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { getConversionFunnel } from "@/api/analytics";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+} from "recharts";
 
 interface ConversionFunnelCardProps {
   period: "7d" | "30d" | "90d" | "1y" | "all";
@@ -28,7 +37,11 @@ export function ConversionFunnelCard({ period }: ConversionFunnelCardProps) {
     { stage: "Created", count: data.funnel.created, color: "#3b82f6" },
     { stage: "Sent", count: data.funnel.sent, color: "#8b5cf6" },
     { stage: "Viewed", count: data.funnel.viewed, color: "#10b981" },
-    { stage: "Awaiting", count: data.funnel.awaiting_confirmation, color: "#f59e0b" },
+    {
+      stage: "Awaiting",
+      count: data.funnel.awaiting_confirmation,
+      color: "#f59e0b",
+    },
     { stage: "Paid", count: data.funnel.paid, color: "#059669" },
   ];
 
@@ -36,8 +49,12 @@ export function ConversionFunnelCard({ period }: ConversionFunnelCardProps) {
     <div className="rounded-lg border border-brand-border bg-white p-4 sm:p-6 shadow-card">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-base sm:text-lg font-semibold text-brand-text">Conversion Funnel</h3>
-          <p className="text-xs text-brand-textMuted mt-1">Invoice journey from creation to payment</p>
+          <h3 className="text-base sm:text-lg font-semibold text-brand-text">
+            Conversion Funnel
+          </h3>
+          <p className="text-xs text-brand-textMuted mt-1">
+            Invoice journey from creation to payment
+          </p>
         </div>
         <span className="text-2xl" role="img" aria-label="Funnel">
           🔄
@@ -47,7 +64,10 @@ export function ConversionFunnelCard({ period }: ConversionFunnelCardProps) {
       {/* Chart */}
       <div className="h-[250px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
+          <BarChart
+            data={chartData}
+            margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
+          >
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
             <XAxis
               dataKey="stage"

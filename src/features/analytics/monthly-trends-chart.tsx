@@ -15,7 +15,10 @@ interface MonthlyTrendsChartProps {
   currency: "NGN" | "USD";
 }
 
-export function MonthlyTrendsChart({ trends, currency }: MonthlyTrendsChartProps) {
+export function MonthlyTrendsChart({
+  trends,
+  currency,
+}: MonthlyTrendsChartProps) {
   const symbol = currency === "NGN" ? "₦" : "$";
 
   const formatAmount = (value: number) => {
@@ -32,8 +35,12 @@ export function MonthlyTrendsChart({ trends, currency }: MonthlyTrendsChartProps
     <div className="rounded-lg border border-brand-border bg-white p-4 sm:p-6 shadow-card">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-base sm:text-lg font-semibold text-brand-text">Monthly Trends</h3>
-          <p className="text-xs text-brand-textMuted mt-1">Revenue, expenses, and profit over time</p>
+          <h3 className="text-base sm:text-lg font-semibold text-brand-text">
+            Monthly Trends
+          </h3>
+          <p className="text-xs text-brand-textMuted mt-1">
+            Revenue, expenses, and profit over time
+          </p>
         </div>
         <span className="text-2xl" role="img" aria-label="Chart">
           📈
@@ -42,7 +49,10 @@ export function MonthlyTrendsChart({ trends, currency }: MonthlyTrendsChartProps
 
       <div className="h-[300px] sm:h-[350px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={trends} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
+          <LineChart
+            data={trends}
+            margin={{ top: 5, right: 5, left: 0, bottom: 5 }}
+          >
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
             <XAxis
               dataKey="month"
@@ -63,10 +73,7 @@ export function MonthlyTrendsChart({ trends, currency }: MonthlyTrendsChartProps
               }}
               formatter={(value: number) => formatAmount(value)}
             />
-            <Legend
-              wrapperStyle={{ fontSize: "12px" }}
-              iconType="line"
-            />
+            <Legend wrapperStyle={{ fontSize: "12px" }} iconType="line" />
             <Line
               type="monotone"
               dataKey="revenue"
@@ -100,19 +107,25 @@ export function MonthlyTrendsChart({ trends, currency }: MonthlyTrendsChartProps
         <div className="text-center">
           <p className="text-xs text-brand-textMuted">Avg Revenue</p>
           <p className="text-sm font-bold text-emerald-600">
-            {formatAmount(trends.reduce((sum, t) => sum + t.revenue, 0) / trends.length)}
+            {formatAmount(
+              trends.reduce((sum, t) => sum + t.revenue, 0) / trends.length
+            )}
           </p>
         </div>
         <div className="text-center">
           <p className="text-xs text-brand-textMuted">Avg Expenses</p>
           <p className="text-sm font-bold text-amber-600">
-            {formatAmount(trends.reduce((sum, t) => sum + t.expenses, 0) / trends.length)}
+            {formatAmount(
+              trends.reduce((sum, t) => sum + t.expenses, 0) / trends.length
+            )}
           </p>
         </div>
         <div className="text-center">
           <p className="text-xs text-brand-textMuted">Avg Profit</p>
           <p className="text-sm font-bold text-blue-600">
-            {formatAmount(trends.reduce((sum, t) => sum + t.profit, 0) / trends.length)}
+            {formatAmount(
+              trends.reduce((sum, t) => sum + t.profit, 0) / trends.length
+            )}
           </p>
         </div>
       </div>

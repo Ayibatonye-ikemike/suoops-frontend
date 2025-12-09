@@ -113,7 +113,7 @@ function PremiumFeature({
   const badgeColors = {
     purple: "bg-purple-50 text-purple-700",
     orange: "bg-orange-50 text-orange-700",
-    blue: "bg-brand-mint text-brand-teal",
+    blue: "bg-brand-textMuted text-brand-teal",
   };
 
   const gradients = {

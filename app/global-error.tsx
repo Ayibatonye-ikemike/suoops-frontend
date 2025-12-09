@@ -19,22 +19,26 @@ export default function GlobalError({
     <html lang="en">
       <body className="flex min-h-screen items-center justify-center bg-brand-evergreen px-6 py-12 text-white">
         <div className="max-w-md text-center">
-          <p className="text-xs uppercase tracking-[0.35em] text-brand-mint/80">
+          <p className="text-xs uppercase tracking-[0.35em] text-brand-textMuted/80">
             Unexpected error
           </p>
-          <h1 className="mt-4 font-heading text-3xl font-semibold">We hit a snag</h1>
+          <h1 className="mt-4 font-heading text-3xl font-semibold">
+            We hit a snag
+          </h1>
           <p className="mt-3 text-sm text-white/80">
-            Our team has been notified and is looking into it. You can try again,
-            or head back to the previous screen.
+            Our team has been notified and is looking into it. You can try
+            again, or head back to the previous screen.
           </p>
           {error.digest && (
-            <p className="mt-4 text-xs text-white/60">Reference: {error.digest}</p>
+            <p className="mt-4 text-xs text-white/60">
+              Reference: {error.digest}
+            </p>
           )}
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <button
               type="button"
               onClick={() => reset()}
-              className="rounded-full bg-white px-6 py-2 text-sm font-semibold text-brand-evergreen transition hover:bg-brand-mint/90"
+              className="rounded-full bg-white px-6 py-2 text-sm font-semibold text-brand-evergreen transition hover:bg-brand-textMuted/90"
             >
               Try again
             </button>

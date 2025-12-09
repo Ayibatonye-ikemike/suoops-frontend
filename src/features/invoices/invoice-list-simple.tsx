@@ -12,16 +12,16 @@ export function InvoiceList() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const invoices = useMemo(() => data ?? [], [data]);
-  
+
   // Filter invoices by status and search query
   const filteredInvoices = useMemo(() => {
     let filtered = invoices;
-    
+
     // Apply status filter
     if (statusFilter !== "all") {
       filtered = filtered.filter((inv) => inv.status === statusFilter);
     }
-    
+
     // Apply search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
@@ -31,19 +31,21 @@ export function InvoiceList() {
           inv.amount.toString().includes(query)
       );
     }
-    
+
     return filtered;
   }, [invoices, statusFilter, searchQuery]);
-  
+
   const hasInvoices = invoices.length > 0;
   const hasFilteredInvoices = filteredInvoices.length > 0;
-  
+
   // Status counts for filter badges
   const statusCounts = useMemo(() => {
     return {
       all: invoices.length,
       pending: invoices.filter((inv) => inv.status === "pending").length,
-      awaiting_confirmation: invoices.filter((inv) => inv.status === "awaiting_confirmation").length,
+      awaiting_confirmation: invoices.filter(
+        (inv) => inv.status === "awaiting_confirmation"
+      ).length,
       paid: invoices.filter((inv) => inv.status === "paid").length,
     };
   }, [invoices]);
@@ -59,7 +61,9 @@ export function InvoiceList() {
   if (error) {
     return (
       <div className="rounded-lg border border-rose-200 bg-rose-50 p-6 shadow-card">
-        <p className="text-sm text-rose-800">Failed to load invoices. Please refresh.</p>
+        <p className="text-sm text-rose-800">
+          Failed to load invoices. Please refresh.
+        </p>
       </div>
     );
   }
@@ -80,8 +84,10 @@ export function InvoiceList() {
   return (
     <div className="space-y-4">
       <div className="rounded-lg border border-brand-border bg-white p-5 shadow-card">
-        <h2 className="mb-4 text-lg font-bold text-brand-text">Recent Invoices</h2>
-        
+        <h2 className="mb-4 text-lg font-bold text-brand-text">
+          Recent Invoices
+        </h2>
+
         {/* Search */}
         <input
           type="text"
@@ -93,12 +99,14 @@ export function InvoiceList() {
 
         {/* Filter Buttons */}
         <div className="mb-4 flex flex-wrap gap-2">
-          {([
-            { key: "all", label: "All" },
-            { key: "pending", label: "Pending" },
-            { key: "awaiting_confirmation", label: "Awaiting" },
-            { key: "paid", label: "Paid" },
-          ] as const).map((filter) => (
+          {(
+            [
+              { key: "all", label: "All" },
+              { key: "pending", label: "Pending" },
+              { key: "awaiting_confirmation", label: "Awaiting" },
+              { key: "paid", label: "Paid" },
+            ] as const
+          ).map((filter) => (
             <button
               key={filter.key}
               onClick={() => setStatusFilter(filter.key)}
@@ -130,14 +138,20 @@ export function InvoiceList() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <strong className="text-sm font-bold text-brand-text">{invoice.invoice_id}</strong>
+                        <strong className="text-sm font-bold text-brand-text">
+                          {invoice.invoice_id}
+                        </strong>
                         <span
-                          className={`rounded-full px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ${badgeToneClass(status.tone)}`}
+                          className={`rounded-full px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ${badgeToneClass(
+                            status.tone
+                          )}`}
                         >
                           {status.label}
                         </span>
                       </div>
-                      <p className="mt-1 text-lg font-bold text-brand-primary">₦{invoice.amount.toLocaleString()}</p>
+                      <p className="mt-1 text-lg font-bold text-brand-primary">
+                        ₦{invoice.amount.toLocaleString()}
+                      </p>
                     </div>
                   </div>
                   {invoice.pdf_url && (
@@ -156,7 +170,9 @@ export function InvoiceList() {
             })
           ) : hasInvoices ? (
             <div className="rounded-lg border border-dashed border-brand-border bg-brand-background p-6 text-center">
-              <p className="text-sm text-brand-textMuted">No invoices match your filters.</p>
+              <p className="text-sm text-brand-textMuted">
+                No invoices match your filters.
+              </p>
               <button
                 onClick={() => {
                   setStatusFilter("all");

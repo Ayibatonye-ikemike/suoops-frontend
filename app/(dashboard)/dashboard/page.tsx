@@ -10,8 +10,12 @@ export default function DashboardPage() {
     <main className="min-h-screen">
       <div className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-xl font-bold sm:text-2xl">Dashboard</h1>
-          <p className="mt-1 text-xs text-brand-textMuted sm:text-sm">Create invoices and review activity</p>
+          <h1 className="text-xl  text-white font-bold sm:text-2xl">
+            Dashboard
+          </h1>
+          <p className="mt-1 text-xs text-brand-mint sm:text-sm">
+            Create invoices and review activity
+          </p>
         </div>
 
         <div className="space-y-4 sm:space-y-6">
@@ -26,14 +30,22 @@ export default function DashboardPage() {
 
             {/* Invoice Status - Middle (3 columns) */}
             <div className="lg:col-span-3">
-              <Suspense fallback={<div className="h-48 animate-pulse rounded-lg bg-brand-background sm:h-64" />}>
+              <Suspense
+                fallback={
+                  <div className="h-48 animate-pulse rounded-lg bg-brand-background sm:h-64" />
+                }
+              >
                 <InvoiceStatusCard />
               </Suspense>
             </div>
 
             {/* Invoice List - Right side (3 columns) */}
             <div className="lg:col-span-3">
-              <Suspense fallback={<div className="h-48 animate-pulse rounded-lg bg-brand-background sm:h-64" />}>
+              <Suspense
+                fallback={
+                  <div className="h-48 animate-pulse rounded-lg bg-brand-background sm:h-64" />
+                }
+              >
                 <InvoiceListWithDetail />
               </Suspense>
             </div>

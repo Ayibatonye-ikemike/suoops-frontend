@@ -143,7 +143,7 @@ export function Navigation() {
               <span className="block text-base uppercase tracking-[0.3em] text-white/80">
                 SuoOps
               </span>
-              <p className="text-xs text-brand-mint">
+              <p className="text-xs text-brand-textMuted">
                 Smart invoicing, simplified.
               </p>
             </div>
@@ -172,7 +172,7 @@ export function Navigation() {
 
 export function WaitlistCounter() {
   return (
-    <section className="border-y border-brand-teal/10 bg-brand-mint px-4 py-12 sm:px-6 lg:px-8">
+    <section className="border-y border-brand-teal/10 bg-brand-textMuted px-4 py-12 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl text-center">
         <div className="inline-flex items-center gap-4 rounded-2xl border-2 border-brand-jade/30 bg-white px-8 py-6 shadow-lg">
           <div className="text-left">
@@ -226,7 +226,7 @@ export function CTASection() {
             </a>
           </div>
         </div>
-        {/* <div className="mt-6 text-sm text-brand-mint"> */}
+        {/* <div className="mt-6 text-sm text-brand-textMuted"> */}
         <div className="mt-6 text-sm text-[#E8F5EC]">
           ✓ 50% launch discount · ✓ Priority early access · ✓ Exclusive updates
         </div>

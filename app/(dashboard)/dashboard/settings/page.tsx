@@ -26,8 +26,12 @@ export default function SettingsPage() {
     <div className="min-h-screen">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 py-6 sm:py-10 text-brand-text">
         <div className="mb-6 sm:mb-10">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">Settings</h1>
-          <p className="mt-1 text-sm text-brand-textMuted">Manage your account</p>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl text-white font-bold">
+            Settings
+          </h1>
+          <p className="mt-1 text-sm text-brand-textMuted">
+            Manage your account
+          </p>
         </div>
 
         <div className="mb-6 sm:mb-8">
@@ -36,16 +40,24 @@ export default function SettingsPage() {
 
         <Card className="mb-6 sm:mb-8">
           <CardHeader className="border-b border-brand-border/60 px-4 sm:px-6">
-            <h2 className="text-lg sm:text-[22px] font-semibold text-brand-text">WhatsApp</h2>
+            <h2 className="text-lg sm:text-[22px] font-semibold text-brand-text">
+              WhatsApp
+            </h2>
           </CardHeader>
           <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
-            <PhoneNumberSection currentPhone={user?.phone_verified && user?.phone ? user.phone : null} />
+            <PhoneNumberSection
+              currentPhone={
+                user?.phone_verified && user?.phone ? user.phone : null
+              }
+            />
           </CardContent>
         </Card>
 
         <Card className="mb-6 sm:mb-8">
           <CardHeader className="border-b border-brand-border/60 px-4 sm:px-6">
-            <h2 className="text-lg sm:text-[22px] font-semibold text-brand-text">Logo</h2>
+            <h2 className="text-lg sm:text-[22px] font-semibold text-brand-text">
+              Logo
+            </h2>
           </CardHeader>
           <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
             <LogoUpload />
@@ -54,7 +66,9 @@ export default function SettingsPage() {
 
         <Card>
           <CardHeader className="border-b border-brand-border/60 px-4 sm:px-6">
-            <h2 className="text-lg sm:text-[22px] font-semibold text-brand-text">Bank Account</h2>
+            <h2 className="text-lg sm:text-[22px] font-semibold text-brand-text">
+              Bank Account
+            </h2>
           </CardHeader>
           <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
             <BankDetailsForm />

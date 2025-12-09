@@ -149,7 +149,7 @@ function StepCard({ number, emoji, title, description }: StepCardProps) {
         {/* box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px; */}
         {number}
       </div>
-      <div className="mt-12 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-mint text-3xl">
+      <div className="mt-12 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-textMuted text-3xl">
         {emoji}
       </div>
       <h3 className="mt-4 font-heading text-xl font-bold text-brand-evergreen">
@@ -184,7 +184,7 @@ function FeatureCard({
   exampleType = "text",
   benefits,
 }: FeatureCardProps) {
-  const accentClass = "bg-brand-mint";
+  const accentClass = "bg-brand-textMuted";
 
   return (
     <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/95 p-8 text-brand-charcoal shadow-xl">
@@ -194,7 +194,7 @@ function FeatureCard({
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-evergreen text-3xl text-white shadow-lg">
             {emoji}
           </div>
-          <span className="rounded-full bg-brand-mint px-3 py-1 text-xs font-semibold text-brand-evergreen">
+          <span className="rounded-full bg-brand-textMuted px-3 py-1 text-xs font-semibold text-brand-evergreen">
             ⚡ {speed}
           </span>
         </div>

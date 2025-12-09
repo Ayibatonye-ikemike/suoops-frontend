@@ -9,13 +9,20 @@ import {
   updateBankDetails,
 } from "@/api/bank-details";
 import { DEFAULT_FORM } from "./bank-details-form.constants";
-import { getErrorMessage, toFormState, toPayload } from "./bank-details-form.utils";
+import {
+  getErrorMessage,
+  toFormState,
+  toPayload,
+} from "./bank-details-form.utils";
 import {
   canClearForm,
   hasFormChanges,
   isFormComplete,
 } from "./bank-details-form.validation";
-import type { BankDetailsUpdate, BankFormState } from "./bank-details-form.types";
+import type {
+  BankDetailsUpdate,
+  BankFormState,
+} from "./bank-details-form.types";
 import { StatusBanner } from "./bank-details-status-banner";
 import { MessageDisplay } from "./bank-details-message-display";
 import { BankDetailsFormFields } from "./bank-details-form-fields";
@@ -25,14 +32,22 @@ import { BankDetailsActions } from "./bank-details-actions";
 export function BankDetailsForm() {
   const queryClient = useQueryClient();
   const [formState, setFormState] = useState<BankFormState>(DEFAULT_FORM);
-  const [initialValues, setInitialValues] = useState<BankFormState>(DEFAULT_FORM);
+  const [initialValues, setInitialValues] =
+    useState<BankFormState>(DEFAULT_FORM);
   const [successMessage, setSuccessMessage] = useState("");
-  const [copiedField, setCopiedField] = useState<keyof BankFormState | null>(null);
+  const [copiedField, setCopiedField] = useState<keyof BankFormState | null>(
+    null
+  );
 
   const copiedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const { data: bankDetails, isLoading, isError, error } = useQuery({
+  const {
+    data: bankDetails,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["bankDetails"],
     queryFn: getBankDetails,
   });
@@ -78,7 +93,9 @@ export function BankDetailsForm() {
           ? prev.businessName
           : nextState.businessName,
       bankName:
-        prev.bankName && bankDetails === undefined ? prev.bankName : nextState.bankName,
+        prev.bankName && bankDetails === undefined
+          ? prev.bankName
+          : nextState.bankName,
       accountNumber:
         prev.accountNumber && bankDetails === undefined
           ? prev.accountNumber
@@ -95,7 +112,7 @@ export function BankDetailsForm() {
       if (copiedTimeoutRef.current) clearTimeout(copiedTimeoutRef.current);
       if (successTimeoutRef.current) clearTimeout(successTimeoutRef.current);
     },
-    [],
+    []
   );
 
   const handleFieldChange = useCallback(
@@ -104,7 +121,7 @@ export function BankDetailsForm() {
       if (updateMutation.isError) updateMutation.reset();
       if (deleteMutation.isError) deleteMutation.reset();
     },
-    [deleteMutation, updateMutation],
+    [deleteMutation, updateMutation]
   );
 
   const handleAccountNumberChange = useCallback(
@@ -112,13 +129,15 @@ export function BankDetailsForm() {
       const numeric = value.replace(/\D/g, "").slice(0, 10);
       handleFieldChange("accountNumber", numeric);
     },
-    [handleFieldChange],
+    [handleFieldChange]
   );
 
   const handleCopy = useCallback(
     async (field: "accountNumber" | "accountName") => {
       const value =
-        field === "accountNumber" ? formState.accountNumber : formState.accountName;
+        field === "accountNumber"
+          ? formState.accountNumber
+          : formState.accountName;
       if (!value || typeof navigator === "undefined" || !navigator.clipboard) {
         return;
       }
@@ -133,7 +152,7 @@ export function BankDetailsForm() {
         console.error("Failed to copy bank detail", copyError);
       }
     },
-    [formState.accountName, formState.accountNumber],
+    [formState.accountName, formState.accountNumber]
   );
 
   const handleSubmit = useCallback(
@@ -143,7 +162,7 @@ export function BankDetailsForm() {
       if (!hasChanges) return;
       updateMutation.mutate(toPayload(formState));
     },
-    [formState, initialValues, updateMutation],
+    [formState, initialValues, updateMutation]
   );
 
   const handleClear = useCallback(() => {
@@ -154,7 +173,7 @@ export function BankDetailsForm() {
     const confirmed =
       typeof window === "undefined" ||
       window.confirm(
-        "Remove saved bank details? Invoices will no longer show payment instructions.",
+        "Remove saved bank details? Invoices will no longer show payment instructions."
       );
     if (!confirmed) return;
     deleteMutation.mutate();
@@ -163,7 +182,9 @@ export function BankDetailsForm() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-sm text-brand-textMuted">Loading bank details...</div>
+        <div className="text-sm text-brand-textMuted">
+          Loading bank details...
+        </div>
       </div>
     );
   }

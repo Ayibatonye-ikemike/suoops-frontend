@@ -28,7 +28,9 @@ export function RevenueCards({ metrics, currency }: RevenueCardsProps) {
     {
       title: "Paid Revenue",
       value: formatAmount(metrics.paid_revenue),
-      subtitle: `${metrics.growth_rate >= 0 ? "+" : ""}${metrics.growth_rate.toFixed(1)}% vs prev period`,
+      subtitle: `${
+        metrics.growth_rate >= 0 ? "+" : ""
+      }${metrics.growth_rate.toFixed(1)}% vs prev period`,
       color: "bg-emerald-50 border-emerald-200",
       textColor: "text-emerald-900",
       iconColor: "text-emerald-600",
@@ -64,17 +66,25 @@ export function RevenueCards({ metrics, currency }: RevenueCardsProps) {
         >
           <div className="flex items-start justify-between">
             <div className="flex-1 min-w-0">
-              <p className={`text-xs sm:text-sm font-semibold uppercase tracking-wide ${card.textColor} opacity-80`}>
+              <p
+                className={`text-xs sm:text-sm font-semibold uppercase tracking-wide ${card.textColor} opacity-80`}
+              >
                 {card.title}
               </p>
-              <p className={`mt-2 text-xl sm:text-2xl lg:text-3xl font-bold ${card.textColor} truncate`}>
+              <p
+                className={`mt-2 text-xl sm:text-2xl lg:text-3xl font-bold ${card.textColor} truncate`}
+              >
                 {card.value}
               </p>
               <p className="mt-1 text-xs text-brand-textMuted">
                 {card.subtitle}
               </p>
             </div>
-            <span className="text-2xl sm:text-3xl" role="img" aria-label={card.title}>
+            <span
+              className="text-2xl sm:text-3xl"
+              role="img"
+              aria-label={card.title}
+            >
               {card.icon}
             </span>
           </div>
@@ -82,8 +92,13 @@ export function RevenueCards({ metrics, currency }: RevenueCardsProps) {
           {card.growth !== undefined && (
             <div className="mt-3 pt-3 border-t border-emerald-200">
               <div className="flex items-center gap-1 text-xs font-medium">
-                <span className={card.growth >= 0 ? "text-emerald-600" : "text-rose-600"}>
-                  {card.growth >= 0 ? "↑" : "↓"} {Math.abs(card.growth).toFixed(1)}%
+                <span
+                  className={
+                    card.growth >= 0 ? "text-emerald-600" : "text-rose-600"
+                  }
+                >
+                  {card.growth >= 0 ? "↑" : "↓"}{" "}
+                  {Math.abs(card.growth).toFixed(1)}%
                 </span>
                 <span className="text-brand-textMuted">growth</span>
               </div>

@@ -16,16 +16,26 @@ export function AgingReportCard({ aging, currency }: AgingReportCardProps) {
   };
 
   const buckets = [
-    { label: "Current (0-30 days)", value: aging.current, color: "text-emerald-600" },
+    {
+      label: "Current (0-30 days)",
+      value: aging.current,
+      color: "text-emerald-600",
+    },
     { label: "31-60 days", value: aging.days_31_60, color: "text-amber-600" },
     { label: "61-90 days", value: aging.days_61_90, color: "text-orange-600" },
-    { label: "Over 90 days", value: aging.over_90_days, color: "text-rose-600" },
+    {
+      label: "Over 90 days",
+      value: aging.over_90_days,
+      color: "text-rose-600",
+    },
   ];
 
   return (
     <div className="rounded-lg border border-brand-border bg-white p-4 sm:p-6 shadow-card">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-base sm:text-lg font-semibold text-brand-text">Aging Report</h3>
+        <h3 className="text-base sm:text-lg font-semibold text-brand-text">
+          Aging Report
+        </h3>
         <span className="text-2xl" role="img" aria-label="Aging">
           📅
         </span>
@@ -47,7 +57,9 @@ export function AgingReportCard({ aging, currency }: AgingReportCardProps) {
         {buckets.map((bucket) => (
           <div key={bucket.label}>
             <div className="flex items-center justify-between mb-1">
-              <span className="text-xs text-brand-textMuted">{bucket.label}</span>
+              <span className="text-xs text-brand-textMuted">
+                {bucket.label}
+              </span>
               <span className={`text-sm font-bold ${bucket.color}`}>
                 {formatAmount(bucket.value)}
               </span>
@@ -56,7 +68,11 @@ export function AgingReportCard({ aging, currency }: AgingReportCardProps) {
               <div
                 className={`h-full ${bucket.color.replace("text-", "bg-")}`}
                 style={{
-                  width: `${aging.total_outstanding > 0 ? (bucket.value / aging.total_outstanding) * 100 : 0}%`,
+                  width: `${
+                    aging.total_outstanding > 0
+                      ? (bucket.value / aging.total_outstanding) * 100
+                      : 0
+                  }%`,
                 }}
               />
             </div>

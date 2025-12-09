@@ -17,7 +17,7 @@ export function Hero({ onWatchDemo }: HeroProps) {
               </span>
               Coming Soon • Join Waitlist 🚀
             </div>
-            <p className="text-sm font-semibold uppercase tracking-[0.4em] text-brand-mint/80">
+            <p className="text-sm font-semibold uppercase tracking-[0.4em] text-brand-textMuted/80">
               Smart invoicing, simplified
             </p>
             <h1 className="mt-4 font-heading text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
@@ -182,7 +182,7 @@ function PhoneMockup() {
           </div>
         </div>
         {/* Decorative Elements */}
-        <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-brand-mint opacity-50 blur-2xl"></div>
+        <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-brand-textMuted opacity-50 blur-2xl"></div>
         <div className="absolute -bottom-4 -left-4 h-32 w-32 rounded-full bg-purple-100 opacity-50 blur-2xl"></div>
       </div>
     </div>

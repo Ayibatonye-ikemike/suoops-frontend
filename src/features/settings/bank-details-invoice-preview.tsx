@@ -12,12 +12,17 @@ export function InvoicePreview({ formState }: InvoicePreviewProps) {
         Invoice Preview
       </h3>
       <p className="mt-2 text-xs text-brand-textMuted">
-        Customers receive these instructions on the PDF and WhatsApp message once you save.
+        Customers receive these instructions on the PDF and WhatsApp message
+        once you save.
       </p>
       <dl className="mt-4 space-y-2 text-sm text-brand-text">
         <div className="flex items-center justify-between">
           <dt className="font-medium text-brand-textMuted">Bank Name</dt>
-          <dd>{formState.bankName || <span className="text-brand-textMuted/50">Not set</span>}</dd>
+          <dd>
+            {formState.bankName || (
+              <span className="text-brand-textMuted/50">Not set</span>
+            )}
+          </dd>
         </div>
         <div className="flex items-center justify-between">
           <dt className="font-medium text-brand-textMuted">Account Number</dt>
@@ -32,13 +37,17 @@ export function InvoicePreview({ formState }: InvoicePreviewProps) {
         <div className="flex items-center justify-between">
           <dt className="font-medium text-brand-textMuted">Account Name</dt>
           <dd>
-            {formState.accountName || <span className="text-brand-textMuted/50">Not set</span>}
+            {formState.accountName || (
+              <span className="text-brand-textMuted/50">Not set</span>
+            )}
           </dd>
         </div>
         <div className="flex items-center justify-between">
           <dt className="font-medium text-brand-textMuted">Business Name</dt>
           <dd>
-            {formState.businessName || <span className="text-brand-textMuted/50">Not set</span>}
+            {formState.businessName || (
+              <span className="text-brand-textMuted/50">Not set</span>
+            )}
           </dd>
         </div>
       </dl>
