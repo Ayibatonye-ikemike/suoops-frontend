@@ -133,6 +133,8 @@ export interface components {
       plan: string;  // FREE, STARTER, PRO, BUSINESS
       invoices_this_month: number;
       logo_url?: string | null;
+      subscription_expires_at?: string | null;
+      subscription_started_at?: string | null;
     };
     ValidationError: {
       loc: (string | number)[];

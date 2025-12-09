@@ -9,6 +9,8 @@ interface SubscriptionSectionProps {
   user?: {
     plan?: string;
     invoices_this_month?: number;
+    subscription_expires_at?: string | null;
+    subscription_started_at?: string | null;
   };
 }
 
@@ -38,6 +40,26 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
     invoiceLimitValue === Infinity || invoiceLimitValue === 0
       ? 0
       : Math.min((invoicesUsed / invoiceLimitValue) * 100, 100);
+
+  // Format subscription dates
+  const subscriptionExpiresAt = user?.subscription_expires_at
+    ? new Date(user.subscription_expires_at)
+    : null;
+  const subscriptionStartedAt = user?.subscription_started_at
+    ? new Date(user.subscription_started_at)
+    : null;
+  const isPaidPlan = currentPlan !== "FREE";
+  const isExpiringSoon =
+    subscriptionExpiresAt &&
+    subscriptionExpiresAt.getTime() - Date.now() < 7 * 24 * 60 * 60 * 1000;
+
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString("en-NG", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
 
   return (
     <div className="rounded-lg border border-brand-border bg-white text-brand-text shadow-card">
@@ -89,10 +111,12 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-sm font-semibold text-brand-text">
-                    Invoice usage this month
+                    Invoice usage this billing cycle
                   </p>
                   <p className="text-xs text-brand-textMuted">
-                    Usage resets on the 1st of every month.
+                    {isPaidPlan && subscriptionStartedAt
+                      ? `Billing cycle started ${formatDate(subscriptionStartedAt)}`
+                      : "Usage resets monthly"}
                   </p>
                 </div>
                 <span className="text-base font-semibold text-brand-text">
@@ -108,6 +132,43 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                 />
               </div>
             </div>
+
+            {/* Subscription Expiry Notice for Paid Plans */}
+            {isPaidPlan && subscriptionExpiresAt && (
+              <div
+                className={`rounded-2xl border p-4 ${
+                  isExpiringSoon
+                    ? "border-amber-300 bg-amber-50"
+                    : "border-brand-border bg-brand-background"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="text-xl">{isExpiringSoon ? "⚠️" : "📅"}</div>
+                  <div>
+                    <p
+                      className={`text-sm font-semibold ${
+                        isExpiringSoon ? "text-amber-700" : "text-brand-text"
+                      }`}
+                    >
+                      {isExpiringSoon
+                        ? "Subscription expiring soon"
+                        : "Subscription renews"}
+                    </p>
+                    <p
+                      className={`text-xs ${
+                        isExpiringSoon
+                          ? "text-amber-600"
+                          : "text-brand-textMuted"
+                      }`}
+                    >
+                      {isExpiringSoon
+                        ? `Expires on ${formatDate(subscriptionExpiresAt)} – renew to keep your ${planDetails.name} features`
+                        : `Next billing date: ${formatDate(subscriptionExpiresAt)}`}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div>
               <p className="text-sm font-semibold text-brand-text">
