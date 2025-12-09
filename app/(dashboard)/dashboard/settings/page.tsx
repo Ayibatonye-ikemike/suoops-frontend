@@ -5,9 +5,11 @@ import { apiClient } from "@/api/client";
 import type { components } from "@/api/types";
 import { BankDetailsForm } from "@/features/settings/bank-details-form";
 import { SubscriptionSection } from "@/features/settings/subscription-section";
+import { TeamManagementSection } from "@/features/settings/team-management-section";
 import { LogoUpload } from "@/features/settings/logo-upload";
 import { PhoneNumberSection } from "@/features/settings/phone-number-section";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { type PlanTier } from "@/constants/pricing";
 
 type CurrentUser = components["schemas"]["UserOut"];
 
@@ -36,6 +38,10 @@ export default function SettingsPage() {
 
         <div className="mb-6 sm:mb-8">
           <SubscriptionSection user={user} />
+        </div>
+
+        <div className="mb-6 sm:mb-8">
+          <TeamManagementSection userPlan={(user?.plan?.toUpperCase() || "FREE") as PlanTier} />
         </div>
 
         <Card className="mb-6 sm:mb-8">
