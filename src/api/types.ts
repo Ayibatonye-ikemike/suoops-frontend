@@ -89,7 +89,7 @@ export interface components {
       receipt_url?: string | null;  // Uploaded receipt/proof of purchase
     };
     InvoiceStatusUpdate: {
-      status: "pending" | "awaiting_confirmation" | "paid" | "failed";
+      status: "pending" | "awaiting_confirmation" | "paid" | "cancelled";
     };
     MessageOut: {
       detail: string;
@@ -97,7 +97,7 @@ export interface components {
     InvoicePublicOut: {
       invoice_id: string;
       amount: string;
-      status: "pending" | "awaiting_confirmation" | "paid" | "failed" | string;
+      status: "pending" | "awaiting_confirmation" | "paid" | "cancelled" | string;
       due_date?: string | null;
       customer_name?: string | null;
       business_name?: string | null;
