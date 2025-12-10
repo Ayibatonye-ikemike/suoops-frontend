@@ -24,7 +24,6 @@ export default function InventoryPage() {
   const [showProductForm, setShowProductForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [adjustingProduct, setAdjustingProduct] = useState<Product | null>(null);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   // Fetch current user to check plan
   const { data: user, isLoading } = useQuery<CurrentUser>({
@@ -96,8 +95,7 @@ export default function InventoryPage() {
   };
 
   const handleSelectProduct = (product: Product) => {
-    setSelectedProduct(product);
-    // Could open a detail view or stock adjustment modal
+    // Open stock adjustment modal
     setAdjustingProduct(product);
   };
 

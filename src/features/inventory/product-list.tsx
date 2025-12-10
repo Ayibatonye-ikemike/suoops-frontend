@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Search, Filter, Package, Edit, Trash2, AlertTriangle } from "lucide-react";
+import { Plus, Search, Package, Edit, Trash2, AlertTriangle } from "lucide-react";
 import { useProducts, useCategories, useDeleteProduct } from "./use-inventory";
 import type { Product } from "./types";
 
@@ -145,6 +145,7 @@ export function ProductList({ onSelectProduct, onCreateProduct, onEditProduct }:
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           {product.image_url ? (
+                            // eslint-disable-next-line @next/next/no-img-element
                             <img
                               src={product.image_url}
                               alt={product.name}

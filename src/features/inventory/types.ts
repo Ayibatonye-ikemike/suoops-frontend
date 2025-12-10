@@ -18,6 +18,7 @@ export interface ProductCategoryCreate {
   name: string;
   description?: string | null;
   color?: string | null;
+  is_active?: boolean;
 }
 
 export interface ProductCategoryUpdate {
