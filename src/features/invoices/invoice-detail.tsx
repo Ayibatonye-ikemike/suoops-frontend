@@ -15,7 +15,7 @@ const STATUS_ORDER = [
   "pending",
   "awaiting_confirmation",
   "paid",
-  "failed",
+  "cancelled",
 ] as const;
 
 // Helper to get allowed status transitions based on current status
@@ -29,16 +29,16 @@ function getAllowedStatusOptions(currentStatus: string) {
 
   // Enforce workflow: can only mark "paid" if current status is "awaiting_confirmation"
   if (currentStatus === "pending") {
-    // From pending: can only go to failed (customer confirms → awaiting_confirmation automatically)
-    return allOptions.filter((opt) => opt.value === "pending" || opt.value === "failed");
+    // From pending: can only go to cancelled (customer confirms → awaiting_confirmation automatically)
+    return allOptions.filter((opt) => opt.value === "pending" || opt.value === "cancelled");
   }
 
   if (currentStatus === "awaiting_confirmation") {
-    // From awaiting_confirmation: can go to paid or failed
+    // From awaiting_confirmation: can go to paid or cancelled
     return allOptions.filter((opt) => opt.value !== "pending");
   }
 
-  if (currentStatus === "paid" || currentStatus === "failed") {
+  if (currentStatus === "paid" || currentStatus === "cancelled") {
     // Terminal states: no transitions allowed (keep current status only)
     return allOptions.filter((opt) => opt.value === currentStatus);
   }

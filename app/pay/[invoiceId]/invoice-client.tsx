@@ -39,7 +39,7 @@ const statusBadgeStyles: Record<string, string> = {
   pending: "bg-amber-50 text-amber-700 border border-amber-200",
   awaiting_confirmation: "bg-amber-100 text-amber-800 border border-amber-200",
   paid: "bg-emerald-50 text-emerald-700 border border-emerald-200",
-  failed: "bg-rose-50 text-rose-700 border border-rose-200",
+  cancelled: "bg-rose-50 text-rose-700 border border-rose-200",
 };
 
 export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) {
@@ -53,7 +53,7 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
 
   const isPaid = invoice.status === "paid";
   const isAwaiting = invoice.status === "awaiting_confirmation";
-  const isClosed = invoice.status === "failed";
+  const isClosed = invoice.status === "cancelled";
 
   const paymentMessage = useMemo(() => {
     if (isPaid) {
@@ -99,7 +99,7 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
     }
   }, [apiBaseUrl, invoiceId, isAwaiting, isClosed, isPaid, isSubmitting]);
 
-  // Poll invoice status until paid or failed (stops on those terminal states)
+  // Poll invoice status until paid or cancelled (stops on those terminal states)
   useEffect(() => {
     if (isPaid || isClosed) {
       return;
@@ -111,7 +111,7 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
         if (!res.ok) return; // silent network tolerance
         const data = (await res.json()) as InvoicePublic;
         setInvoice(data);
-        if (data.status === "paid" || data.status === "failed") {
+        if (data.status === "paid" || data.status === "cancelled") {
           clearInterval(interval);
           setIsPolling(false);
         }
