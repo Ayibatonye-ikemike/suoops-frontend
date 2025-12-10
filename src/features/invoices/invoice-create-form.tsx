@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   useCreateInvoice,
@@ -87,6 +87,15 @@ export function InvoiceCreateForm() {
   function addLine() {
     setLines((current) => [...current, emptyLine()]);
   }
+
+  // Auto-calculate total amount from line items
+  useEffect(() => {
+    const total = lines.reduce((sum, line) => {
+      const lineTotal = (Number(line.quantity) || 0) * (Number(line.unit_price) || 0);
+      return sum + lineTotal;
+    }, 0);
+    setAmount(total.toString());
+  }, [lines]);
 
   async function handleReceiptUpload(
     event: React.ChangeEvent<HTMLInputElement>
@@ -185,6 +194,7 @@ export function InvoiceCreateForm() {
         description: line.description.trim(),
         quantity: Number(line.quantity) || 1,
         unit_price: Number(line.unit_price) || 0,
+        product_id: line.product_id || null,  // Include product_id for inventory tracking
       }));
 
     try {
