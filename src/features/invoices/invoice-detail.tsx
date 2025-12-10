@@ -18,12 +18,34 @@ const STATUS_ORDER = [
   "failed",
 ] as const;
 
-const statusOptions = STATUS_ORDER.filter(
-  (key) => key in invoiceStatusLabels
-).map((key) => ({
-  value: key,
-  label: invoiceStatusLabels[key].label,
-}));
+// Helper to get allowed status transitions based on current status
+function getAllowedStatusOptions(currentStatus: string) {
+  const allOptions = STATUS_ORDER.filter(
+    (key) => key in invoiceStatusLabels
+  ).map((key) => ({
+    value: key,
+    label: invoiceStatusLabels[key].label,
+  }));
+
+  // Enforce workflow: can only mark "paid" if current status is "awaiting_confirmation"
+  if (currentStatus === "pending") {
+    // From pending: can go to awaiting_confirmation or failed (but not directly to paid)
+    return allOptions.filter((opt) => opt.value !== "paid");
+  }
+
+  if (currentStatus === "awaiting_confirmation") {
+    // From awaiting_confirmation: can go to paid or failed
+    return allOptions.filter((opt) => opt.value !== "pending");
+  }
+
+  if (currentStatus === "paid" || currentStatus === "failed") {
+    // Terminal states: no transitions allowed (keep current status only)
+    return allOptions.filter((opt) => opt.value === currentStatus);
+  }
+
+  // Default: return all options
+  return allOptions;
+}
 
 type InvoiceStatus = components["schemas"]["InvoiceStatusUpdate"]["status"];
 
@@ -89,6 +111,14 @@ export function InvoiceDetailPanel({
         tone: "neutral" as const,
       }
     );
+  }, [invoice]);
+
+  // Compute allowed status options based on current status
+  const statusOptions = useMemo(() => {
+    if (!invoice) {
+      return [];
+    }
+    return getAllowedStatusOptions(invoice.status);
   }, [invoice]);
 
   const shareLink = invoice?.invoice_id
