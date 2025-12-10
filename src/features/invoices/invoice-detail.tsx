@@ -1,53 +1,13 @@
 "use client";
 
-import { ChangeEvent, useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
-
-import type { components } from "@/api/types";
 
 import { invoiceStatusHelpText, invoiceStatusLabels } from "./status-map";
 import { formatPaidAt } from "../../utils/formatDate";
 import { useInvoiceDetail, InvoiceDetail } from "./use-invoice-detail";
 import { buildInvoiceShareLink } from "@/lib/share-link";
 import { useUpdateInvoiceStatus } from "./use-update-invoice-status";
-
-const STATUS_ORDER = [
-  "pending",
-  "awaiting_confirmation",
-  "paid",
-  "cancelled",
-] as const;
-
-// Helper to get allowed status transitions based on current status
-function getAllowedStatusOptions(currentStatus: string) {
-  const allOptions = STATUS_ORDER.filter(
-    (key) => key in invoiceStatusLabels
-  ).map((key) => ({
-    value: key,
-    label: invoiceStatusLabels[key].label,
-  }));
-
-  // Enforce workflow: can only mark "paid" if current status is "awaiting_confirmation"
-  if (currentStatus === "pending") {
-    // From pending: can only go to cancelled (customer confirms → awaiting_confirmation automatically)
-    return allOptions.filter((opt) => opt.value === "pending" || opt.value === "cancelled");
-  }
-
-  if (currentStatus === "awaiting_confirmation") {
-    // From awaiting_confirmation: can go to paid or cancelled
-    return allOptions.filter((opt) => opt.value !== "pending");
-  }
-
-  if (currentStatus === "paid" || currentStatus === "cancelled") {
-    // Terminal states: no transitions allowed (keep current status only)
-    return allOptions.filter((opt) => opt.value === currentStatus);
-  }
-
-  // Default: return all options
-  return allOptions;
-}
-
-type InvoiceStatus = components["schemas"]["InvoiceStatusUpdate"]["status"];
 
 const currencyFormatter = new Intl.NumberFormat("en-NG", {
   style: "currency",
@@ -111,14 +71,6 @@ export function InvoiceDetailPanel({
         tone: "neutral" as const,
       }
     );
-  }, [invoice]);
-
-  // Compute allowed status options based on current status
-  const statusOptions = useMemo(() => {
-    if (!invoice) {
-      return [];
-    }
-    return getAllowedStatusOptions(invoice.status);
   }, [invoice]);
 
   const shareLink = invoice?.invoice_id
@@ -196,13 +148,6 @@ export function InvoiceDetailPanel({
   }
 
   const helpText = invoiceStatusHelpText[invoice.status];
-  const handleStatusChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const next = event.target.value as InvoiceStatus;
-    if (next === invoice.status) {
-      return;
-    }
-    mutation.mutate(next);
-  };
 
   return (
     <div className="space-y-4 sm:space-y-6 rounded-lg border border-brand-border bg-white p-4 sm:p-6 shadow-card">
@@ -374,41 +319,61 @@ export function InvoiceDetailPanel({
             </p>
           </div>
         ) : (
-          <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
-            <div>
-              <label
-                htmlFor="status-select"
-                className="block text-xs font-semibold uppercase tracking-wide text-brand-textMuted"
-              >
-                Status
-              </label>
-              <select
-                id="status-select"
-                value={invoice.status}
-                onChange={handleStatusChange}
-                disabled={mutation.isPending}
-                className="mt-2 w-full rounded-lg border border-brand-border bg-white px-3 py-2.5 text-sm font-medium text-brand-text shadow-sm transition focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
-              >
-                {statusOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              {mutation.isPending && (
-                <p className="mt-1 text-xs text-brand-textMuted">
-                  Updating status…
+          <div className="space-y-4">
+            {/* Status Display (read-only badge) + Due Date */}
+            <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
+                  Status
                 </p>
-              )}
+                <div className="mt-2">
+                  <span
+                    className={`inline-flex items-center rounded-full px-3 py-1.5 text-sm font-semibold ${statusToneClass(statusMeta.tone)}`}
+                  >
+                    {statusMeta.label}
+                  </span>
+                </div>
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
+                  Due Date
+                </p>
+                <p className="mt-2 text-sm font-medium text-brand-text break-words">
+                  {formatIsoDate(invoice.due_date ?? null)}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
-                Due Date
-              </p>
-              <p className="mt-2 text-sm font-medium text-brand-text break-words">
-                {formatIsoDate(invoice.due_date ?? null)}
-              </p>
-            </div>
+
+            {/* Action Buttons - Only show for non-terminal states */}
+            {invoice.status !== "paid" && invoice.status !== "cancelled" && (
+              <div className="flex flex-wrap gap-3">
+                {/* Mark as Paid - Only available when awaiting_confirmation */}
+                {invoice.status === "awaiting_confirmation" && (
+                  <button
+                    type="button"
+                    onClick={() => mutation.mutate("paid")}
+                    disabled={mutation.isPending}
+                    className="flex-1 sm:flex-none rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {mutation.isPending ? "Updating…" : "✓ Mark as Paid"}
+                  </button>
+                )}
+                
+                {/* Cancel Invoice - Always available for pending/awaiting states */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (confirm("Cancel this invoice? This action cannot be undone.")) {
+                      mutation.mutate("cancelled");
+                    }
+                  }}
+                  disabled={mutation.isPending}
+                  className="flex-1 sm:flex-none rounded-lg border border-rose-300 bg-white px-4 py-2.5 text-sm font-semibold text-rose-600 shadow-sm transition hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Cancel Invoice
+                </button>
+              </div>
+            )}
           </div>
         )}
 
