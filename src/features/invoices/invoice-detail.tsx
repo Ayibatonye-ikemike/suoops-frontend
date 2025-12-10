@@ -332,6 +332,16 @@ export function InvoiceDetailPanel({
                   >
                     {statusMeta.label}
                   </span>
+                  {/* Show who updated the status */}
+                  {invoice.status_updated_by_name && (invoice.status === "paid" || invoice.status === "cancelled") && (
+                    <p className="mt-2 text-xs text-brand-textMuted">
+                      {invoice.status === "paid" ? "Marked as paid" : "Cancelled"} by{" "}
+                      <span className="font-medium text-brand-text">{invoice.status_updated_by_name}</span>
+                      {invoice.status_updated_at && (
+                        <> on {formatIsoDate(invoice.status_updated_at)}</>
+                      )}
+                    </p>
+                  )}
                 </div>
               </div>
               <div>

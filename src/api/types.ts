@@ -87,6 +87,13 @@ export interface components {
       verified?: boolean | null;
       notes?: string | null;
       receipt_url?: string | null;  // Uploaded receipt/proof of purchase
+      // Status updater tracking
+      status_updated_by_user_id?: number | null;
+      status_updated_by_name?: string | null;
+      status_updated_at?: string | null;
+      // Invoice creator tracking
+      created_by_user_id?: number | null;
+      created_by_user_name?: string | null;
     };
     InvoiceStatusUpdate: {
       status: "pending" | "awaiting_confirmation" | "paid" | "cancelled";
