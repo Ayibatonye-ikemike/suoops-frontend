@@ -6,8 +6,8 @@ export const invoiceStatusLabels: Record<string, { label: string; tone: "neutral
 };
 
 export const invoiceStatusHelpText: Record<string, string> = {
-  pending: "Customer must confirm they've sent payment before you can mark as paid. Share the payment link below.",
-  awaiting_confirmation: "Customer confirmed payment. Check your bank, then mark as paid to send receipt and deduct inventory.",
+  pending: "Share the payment link below. Customer will confirm payment through the link, then you can mark as paid.",
+  awaiting_confirmation: "Customer confirmed payment via the link. Check your bank, then mark as paid to send receipt and deduct inventory.",
   paid: "Payment verified and receipt sent. Inventory has been deducted.",
   failed: "Use this if the invoice will not be collected.",
 };

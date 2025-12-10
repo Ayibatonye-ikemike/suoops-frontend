@@ -29,8 +29,8 @@ function getAllowedStatusOptions(currentStatus: string) {
 
   // Enforce workflow: can only mark "paid" if current status is "awaiting_confirmation"
   if (currentStatus === "pending") {
-    // From pending: can go to awaiting_confirmation or failed (but not directly to paid)
-    return allOptions.filter((opt) => opt.value !== "paid");
+    // From pending: can only go to failed (customer confirms → awaiting_confirmation automatically)
+    return allOptions.filter((opt) => opt.value === "pending" || opt.value === "failed");
   }
 
   if (currentStatus === "awaiting_confirmation") {
