@@ -9,6 +9,7 @@ import {
   ProductList,
   ProductForm,
   StockAdjustmentModal,
+  CategoryManager,
 } from "@/features/inventory";
 import type { Product } from "@/features/inventory";
 import { apiClient } from "@/api/client";
@@ -121,7 +122,7 @@ export default function InventoryPage() {
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Product List - Takes 2 columns */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 space-y-6">
           <ProductList
             onCreateProduct={handleCreateProduct}
             onEditProduct={handleEditProduct}
@@ -129,8 +130,9 @@ export default function InventoryPage() {
           />
         </div>
 
-        {/* Sidebar - Low Stock Alerts */}
+        {/* Sidebar - Categories & Low Stock Alerts */}
         <div className="space-y-6">
+          <CategoryManager />
           <LowStockAlertsList />
         </div>
       </div>

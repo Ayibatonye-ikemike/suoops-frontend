@@ -34,3 +34,5 @@ export { InventorySummaryCards, LowStockAlertsList } from "./inventory-summary";
 export { ProductList } from "./product-list";
 export { ProductForm } from "./product-form";
 export { StockAdjustmentModal } from "./stock-adjustment-modal";
+export { CategoryForm } from "./category-form";
+export { CategoryManager } from "./category-manager";
