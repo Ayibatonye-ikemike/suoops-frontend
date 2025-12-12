@@ -114,9 +114,9 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                     Invoice usage this billing cycle
                   </p>
                   <p className="text-xs text-brand-textMuted">
-                    {isPaidPlan && subscriptionStartedAt
-                      ? `Billing cycle started ${formatDate(subscriptionStartedAt)}`
-                      : "Usage resets monthly"}
+                    {isPaidPlan && subscriptionExpiresAt
+                      ? `Renews on ${formatDate(subscriptionExpiresAt)}`
+                      : "Usage resets on the 1st of each month"}
                   </p>
                 </div>
                 <span className="text-base font-semibold text-brand-text">
@@ -131,6 +131,27 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                   }}
                 />
               </div>
+              {/* Show days remaining for paid plans */}
+              {isPaidPlan && subscriptionExpiresAt && (
+                <p className="mt-2 text-xs text-brand-textMuted">
+                  {(() => {
+                    const daysRemaining = Math.ceil(
+                      (subscriptionExpiresAt.getTime() - Date.now()) /
+                        (1000 * 60 * 60 * 24)
+                    );
+                    if (daysRemaining <= 0) {
+                      return "⚠️ Subscription expired – please renew to continue";
+                    }
+                    if (daysRemaining === 1) {
+                      return "⚠️ Expires tomorrow";
+                    }
+                    if (daysRemaining <= 7) {
+                      return `⚠️ Expires in ${daysRemaining} days`;
+                    }
+                    return `${daysRemaining} days remaining in billing cycle`;
+                  })()}
+                </p>
+              )}
             </div>
 
             {/* Subscription Expiry Notice for Paid Plans */}
