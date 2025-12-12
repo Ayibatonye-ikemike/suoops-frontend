@@ -114,9 +114,16 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                     Invoice usage this billing cycle
                   </p>
                   <p className="text-xs text-brand-textMuted">
-                    {isPaidPlan && subscriptionExpiresAt
-                      ? `Renews on ${formatDate(subscriptionExpiresAt)}`
-                      : "Usage resets on the 1st of each month"}
+                    {(() => {
+                      if (subscriptionExpiresAt) {
+                        // Paid plan with expiry date set
+                        return `Subscription expires ${formatDate(subscriptionExpiresAt)}`;
+                      }
+                      // Free plan or paid plan without expiry - show next month reset
+                      const now = new Date();
+                      const nextReset = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+                      return `Usage resets ${formatDate(nextReset)}`;
+                    })()}
                   </p>
                 </div>
                 <span className="text-base font-semibold text-brand-text">
@@ -131,10 +138,11 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                   }}
                 />
               </div>
-              {/* Show days remaining for paid plans */}
-              {isPaidPlan && subscriptionExpiresAt && (
-                <p className="mt-2 text-xs text-brand-textMuted">
-                  {(() => {
+              {/* Show days remaining */}
+              <p className="mt-2 text-xs text-brand-textMuted">
+                {(() => {
+                  if (subscriptionExpiresAt) {
+                    // Paid plan with subscription expiry
                     const daysRemaining = Math.ceil(
                       (subscriptionExpiresAt.getTime() - Date.now()) /
                         (1000 * 60 * 60 * 24)
@@ -148,10 +156,17 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                     if (daysRemaining <= 7) {
                       return `⚠️ Expires in ${daysRemaining} days`;
                     }
-                    return `${daysRemaining} days remaining in billing cycle`;
-                  })()}
-                </p>
-              )}
+                    return `${daysRemaining} days remaining`;
+                  }
+                  // Free plan - show days until next month
+                  const now = new Date();
+                  const nextReset = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+                  const daysUntilReset = Math.ceil(
+                    (nextReset.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+                  );
+                  return `${daysUntilReset} days until usage resets`;
+                })()}
+              </p>
             </div>
 
             {/* Subscription Expiry Notice for Paid Plans */}
