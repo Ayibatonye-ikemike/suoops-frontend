@@ -115,14 +115,18 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                   </p>
                   <p className="text-xs text-brand-textMuted">
                     {(() => {
-                      if (subscriptionExpiresAt) {
-                        // Paid plan with expiry date set
+                      if (isPaidPlan && subscriptionExpiresAt) {
+                        // Paid plan with expiry date from database (set when they paid)
                         return `Subscription expires ${formatDate(subscriptionExpiresAt)}`;
                       }
-                      // Free plan or paid plan without expiry - show next month reset
+                      if (isPaidPlan && !subscriptionExpiresAt) {
+                        // Paid plan but no expiry set (legacy user) - show generic message
+                        return "Contact support to verify subscription status";
+                      }
+                      // Free plan - usage resets on 1st of each month
                       const now = new Date();
                       const nextReset = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-                      return `Usage resets ${formatDate(nextReset)}`;
+                      return `Free plan • Usage resets ${formatDate(nextReset)}`;
                     })()}
                   </p>
                 </div>
@@ -141,8 +145,8 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
               {/* Show days remaining */}
               <p className="mt-2 text-xs text-brand-textMuted">
                 {(() => {
-                  if (subscriptionExpiresAt) {
-                    // Paid plan with subscription expiry
+                  if (isPaidPlan && subscriptionExpiresAt) {
+                    // Paid plan with subscription expiry from database
                     const daysRemaining = Math.ceil(
                       (subscriptionExpiresAt.getTime() - Date.now()) /
                         (1000 * 60 * 60 * 24)
@@ -156,9 +160,12 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                     if (daysRemaining <= 7) {
                       return `⚠️ Expires in ${daysRemaining} days`;
                     }
-                    return `${daysRemaining} days remaining`;
+                    return `${daysRemaining} days remaining in subscription`;
                   }
-                  // Free plan - show days until next month
+                  if (isPaidPlan && !subscriptionExpiresAt) {
+                    return "⚠️ Subscription status unknown";
+                  }
+                  // Free plan - show days until 1st of next month
                   const now = new Date();
                   const nextReset = new Date(now.getFullYear(), now.getMonth() + 1, 1);
                   const daysUntilReset = Math.ceil(
