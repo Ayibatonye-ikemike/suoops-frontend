@@ -94,7 +94,8 @@ function AcceptInvitationContent() {
       const result = await acceptInvitationDirect(token, name.trim());
       
       // Store the tokens to log the user in
-      setTokens(result.access_token, result.refresh_token);
+      const accessExpiresAt = result.access_expires_at || new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+      setTokens({ accessToken: result.access_token, accessExpiresAt });
       
       setPageStatus("success");
       
