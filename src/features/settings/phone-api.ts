@@ -2,7 +2,7 @@
  * Phone Verification API Client
  * 
  * Handles phone number addition and verification for user accounts.
- * Uses WhatsApp OTP for verification when Meta approves the app.
+ * Uses WhatsApp OTP for verification.
  */
 
 import { apiClient } from "@/api/client";
@@ -31,13 +31,13 @@ export interface PhoneVerificationResponse {
 }
 
 /**
- * Request OTP to be sent to phone number
+ * Request OTP to be sent to phone number via WhatsApp
  * 
  * @param request - Phone number to verify
  * @returns Promise with success message
  */
 export async function requestPhoneOTP(request: AddPhoneRequest): Promise<{ detail: string }> {
-  const response = await apiClient.post<{ detail: string }>("/user/phone/request", request);
+  const response = await apiClient.post<{ detail: string }>("/users/me/phone/request", request);
   return response.data;
 }
 
@@ -48,7 +48,7 @@ export async function requestPhoneOTP(request: AddPhoneRequest): Promise<{ detai
  * @returns Promise with verification result
  */
 export async function verifyPhoneOTP(request: VerifyPhoneRequest): Promise<PhoneVerificationResponse> {
-  const response = await apiClient.post<PhoneVerificationResponse>("/user/phone/verify", request);
+  const response = await apiClient.post<PhoneVerificationResponse>("/users/me/phone/verify", request);
   return response.data;
 }
 
@@ -58,6 +58,6 @@ export async function verifyPhoneOTP(request: VerifyPhoneRequest): Promise<Phone
  * @returns Promise with success message
  */
 export async function removePhone(): Promise<{ detail: string }> {
-  const response = await apiClient.delete<{ detail: string }>("/user/phone");
+  const response = await apiClient.delete<{ detail: string }>("/users/me/phone");
   return response.data;
 }
