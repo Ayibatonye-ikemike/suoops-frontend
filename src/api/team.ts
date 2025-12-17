@@ -84,6 +84,7 @@ export interface AcceptDirectResponse {
   member: TeamMemberOut;
   access_token: string;
   refresh_token: string;
+  access_expires_at: string;
   token_type: string;
   is_new_user: boolean;
 }

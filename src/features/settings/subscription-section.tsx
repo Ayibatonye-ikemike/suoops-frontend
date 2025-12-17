@@ -45,9 +45,6 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
   const subscriptionExpiresAt = user?.subscription_expires_at
     ? new Date(user.subscription_expires_at)
     : null;
-  const _subscriptionStartedAt = user?.subscription_started_at
-    ? new Date(user.subscription_started_at)
-    : null;
   const isPaidPlan = currentPlan !== "FREE";
   const isExpiringSoon =
     subscriptionExpiresAt &&
