@@ -80,10 +80,10 @@ export default function TermsPage() {
               <li><strong>Enterprise Plan:</strong> ₦50,000/month - Unlimited invoices + Unlimited Voice & OCR + Custom features + Dedicated support</li>
             </ul>
             <p className="mt-4">
-              <strong>Business Plan Voice & OCR Quota:</strong> The Business plan includes up to 15 voice invoices and 15 photo OCR invoices per month (5% of your 300 invoice limit). The remaining 285 invoices must be created manually via WhatsApp text or dashboard. This quota resets on the 1st of each month. Enterprise plan has unlimited premium features.
+              <strong>Business Plan Voice & OCR Quota:</strong> The Business plan includes up to 15 voice invoices and 15 photo OCR invoices per 30-day billing cycle (5% of your 300 invoice limit). The remaining 285 invoices must be created manually via WhatsApp text or dashboard. This quota resets every 30 days from your subscription start date. Enterprise plan has unlimited premium features.
             </p>
             <p className="mt-4">
-              Invoice limits reset on the 1st of every month. Unused invoices do not roll over. If you exceed your limit, you must upgrade or wait until the next billing cycle.
+              Invoice limits reset every 30 days from your subscription start date (or account creation for free users). Unused invoices do not roll over. If you exceed your limit, you must upgrade or wait until your next billing cycle.
             </p>
           </section>          <section>
             <h2 className="text-2xl font-bold text-slate-900">5. Payment Terms</h2>
