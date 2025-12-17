@@ -70,10 +70,33 @@ export async function validateInvitation(token: string): Promise<InvitationValid
 }
 
 /**
- * Accept an invitation and join the team
+ * Accept an invitation and join the team (requires authentication)
  */
 export async function acceptInvitation(token: string): Promise<TeamMemberOut> {
   const response = await apiClient.post<TeamMemberOut>("/team/invitations/accept", { token });
+  return response.data;
+}
+
+/**
+ * Response from accepting invitation directly (without auth)
+ */
+export interface AcceptDirectResponse {
+  member: TeamMemberOut;
+  access_token: string;
+  refresh_token: string;
+  token_type: string;
+  is_new_user: boolean;
+}
+
+/**
+ * Accept an invitation without authentication - creates account automatically
+ * This is the preferred method for users who don't have a SuoOps account
+ */
+export async function acceptInvitationDirect(token: string, name: string): Promise<AcceptDirectResponse> {
+  const response = await apiClient.post<AcceptDirectResponse>("/team/invitations/accept-direct", { 
+    token, 
+    name,
+  });
   return response.data;
 }
 

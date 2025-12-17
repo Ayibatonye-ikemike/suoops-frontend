@@ -3,12 +3,12 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/features/auth/auth-store";
-import { validateInvitation, acceptInvitation } from "@/api/team";
+import { validateInvitation, acceptInvitation, acceptInvitationDirect } from "@/api/team";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Loader2, CheckCircle, XCircle, Users } from "lucide-react";
-
-const PENDING_INVITATION_KEY = "pending_invitation_token";
 
 type PageStatus = "loading" | "valid" | "invalid" | "accepting" | "success" | "error";
 
@@ -23,11 +23,12 @@ function AcceptInvitationContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   
-  const { status: authStatus, accessToken } = useAuthStore();
+  const { status: authStatus, accessToken, setTokens } = useAuthStore();
   
   const [pageStatus, setPageStatus] = useState<PageStatus>("loading");
   const [invitation, setInvitation] = useState<InvitationDetails | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [name, setName] = useState<string>("");
 
   // Validate invitation on mount
   useEffect(() => {
@@ -62,45 +63,8 @@ function AcceptInvitationContent() {
     validate();
   }, [token]);
 
-  // Auto-accept invitation when user becomes authenticated
-  useEffect(() => {
-    async function autoAccept() {
-      if (authStatus === "authenticated" && token && accessToken && pageStatus === "valid") {
-        // Check if we came back from login (pending invitation in storage)
-        const pendingToken = sessionStorage.getItem(PENDING_INVITATION_KEY);
-        if (pendingToken === token) {
-          sessionStorage.removeItem(PENDING_INVITATION_KEY);
-          // Auto-accept the invitation
-          setPageStatus("accepting");
-          try {
-            await acceptInvitation(token);
-            setPageStatus("success");
-            setTimeout(() => {
-              router.push("/dashboard");
-            }, 2000);
-          } catch (error) {
-            console.error("Error accepting invitation:", error);
-            setErrorMessage("Failed to accept invitation. Please try again.");
-            setPageStatus("error");
-          }
-        }
-      }
-    }
-    
-    autoAccept();
-  }, [authStatus, token, accessToken, pageStatus, router]);
-
-  // Handle sign in redirect
-  const handleSignIn = () => {
-    // Store token in sessionStorage before redirecting to login
-    if (token) {
-      sessionStorage.setItem(PENDING_INVITATION_KEY, token);
-    }
-    const returnUrl = `/team/accept?token=${token}`;
-    router.push(`/login?next=${encodeURIComponent(returnUrl)}`);
-  };
-
-  const handleAccept = async () => {
+  // Handle accept for authenticated users
+  const handleAcceptAuthenticated = async () => {
     if (!token || !accessToken) return;
 
     setPageStatus("accepting");
@@ -109,25 +73,50 @@ function AcceptInvitationContent() {
       await acceptInvitation(token);
       setPageStatus("success");
       
-      // Redirect to dashboard after short delay
       setTimeout(() => {
         router.push("/dashboard");
       }, 2000);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error accepting invitation:", error);
-      setErrorMessage("Failed to accept invitation. Please try again.");
+      const err = error as { response?: { data?: { detail?: string } } };
+      setErrorMessage(err.response?.data?.detail || "Failed to accept invitation. Please try again.");
+      setPageStatus("error");
+    }
+  };
+
+  // Handle accept for unauthenticated users (creates account automatically)
+  const handleAcceptDirect = async () => {
+    if (!token || !name.trim()) return;
+
+    setPageStatus("accepting");
+    
+    try {
+      const result = await acceptInvitationDirect(token, name.trim());
+      
+      // Store the tokens to log the user in
+      setTokens(result.access_token, result.refresh_token);
+      
+      setPageStatus("success");
+      
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 2000);
+    } catch (error: unknown) {
+      console.error("Error accepting invitation:", error);
+      const err = error as { response?: { data?: { detail?: string } } };
+      setErrorMessage(err.response?.data?.detail || "Failed to accept invitation. Please try again.");
       setPageStatus("error");
     }
   };
 
   const handleDecline = () => {
-    router.push("/dashboard");
+    router.push("/");
   };
 
   // Loading state
   if (pageStatus === "loading" || authStatus === "loading" || authStatus === "idle") {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
         <Card className="w-full max-w-md">
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -141,7 +130,7 @@ function AcceptInvitationContent() {
   // Invalid/expired invitation
   if (pageStatus === "invalid") {
     return (
-      <div className="flex min-h-screen items-center justify-center p-4">
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
@@ -151,8 +140,8 @@ function AcceptInvitationContent() {
             <p className="text-sm text-muted-foreground">{errorMessage}</p>
           </CardHeader>
           <CardContent className="flex justify-center">
-            <Button onClick={() => router.push("/dashboard")}>
-              Go to Dashboard
+            <Button onClick={() => router.push("/")}>
+              Go to Homepage
             </Button>
           </CardContent>
         </Card>
@@ -163,7 +152,7 @@ function AcceptInvitationContent() {
   // Success state
   if (pageStatus === "success") {
     return (
-      <div className="flex min-h-screen items-center justify-center p-4">
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
@@ -185,7 +174,7 @@ function AcceptInvitationContent() {
   // Error accepting invitation
   if (pageStatus === "error") {
     return (
-      <div className="flex min-h-screen items-center justify-center p-4">
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
@@ -195,21 +184,21 @@ function AcceptInvitationContent() {
             <p className="text-sm text-muted-foreground">{errorMessage}</p>
           </CardHeader>
           <CardContent className="flex justify-center gap-4">
-            <Button variant="outline" onClick={() => router.push("/dashboard")}>
-              Go to Dashboard
+            <Button variant="outline" onClick={() => router.push("/")}>
+              Go to Homepage
             </Button>
-            <Button onClick={handleAccept}>Try Again</Button>
+            <Button onClick={() => setPageStatus("valid")}>Try Again</Button>
           </CardContent>
         </Card>
       </div>
     );
   }
 
-  // Valid invitation - show accept/decline options
+  // Valid invitation - show accept options
   const isAuthenticated = authStatus === "authenticated";
   
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
@@ -224,15 +213,16 @@ function AcceptInvitationContent() {
         <CardContent>
           {invitation?.email && (
             <p className="mb-6 text-center text-sm text-muted-foreground">
-              This invitation was sent to {invitation.email}
+              This invitation was sent to <strong>{invitation.email}</strong>
             </p>
           )}
           
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4">
             {isAuthenticated ? (
+              // Authenticated user - simple accept/decline
               <>
                 <Button 
-                  onClick={handleAccept} 
+                  onClick={handleAcceptAuthenticated} 
                   disabled={pageStatus === "accepting"}
                   className="w-full"
                 >
@@ -255,12 +245,59 @@ function AcceptInvitationContent() {
                 </Button>
               </>
             ) : (
+              // Unauthenticated user - collect name and create account
               <>
-                <p className="mb-2 text-center text-sm text-muted-foreground">
-                  Please sign in to accept this invitation
-                </p>
-                <Button onClick={handleSignIn} className="w-full">
-                  Sign in to Accept
+                <div className="space-y-2">
+                  <Label htmlFor="name">Your Name</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Enter your full name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    disabled={pageStatus === "accepting"}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    We&apos;ll create an account for you using the invitation email
+                  </p>
+                </div>
+                
+                <Button 
+                  onClick={handleAcceptDirect} 
+                  disabled={pageStatus === "accepting" || !name.trim()}
+                  className="w-full"
+                >
+                  {pageStatus === "accepting" ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creating account & joining...
+                    </>
+                  ) : (
+                    "Accept & Join Team"
+                  )}
+                </Button>
+                
+                <div className="relative my-2">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-white px-2 text-muted-foreground">
+                      Already have an account?
+                    </span>
+                  </div>
+                </div>
+                
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    const returnUrl = `/team/accept?token=${token}`;
+                    router.push(`/login?next=${encodeURIComponent(returnUrl)}`);
+                  }}
+                  disabled={pageStatus === "accepting"}
+                  className="w-full"
+                >
+                  Sign in instead
                 </Button>
               </>
             )}
@@ -273,7 +310,7 @@ function AcceptInvitationContent() {
 
 function LoadingFallback() {
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50">
       <Card className="w-full max-w-md">
         <CardContent className="flex flex-col items-center justify-center py-12">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
