@@ -279,6 +279,25 @@ export function InvoiceCreateForm() {
       {/* OCR Photo Upload (Revenue Only) */}
       {invoiceType === "revenue" && <OcrPhotoPrompt />}
 
+      {/* WhatsApp Tip */}
+      {invoiceType === "revenue" && (
+        <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3">
+          <div className="flex items-center gap-2 text-sm text-emerald-700">
+            <span>💡</span>
+            <span>
+              <strong>Tip:</strong> Create invoices faster via WhatsApp!{" "}
+              <a
+                href="/dashboard/settings"
+                className="underline hover:text-emerald-900"
+              >
+                Connect your WhatsApp in Settings
+              </a>
+              {" "}and just text: <em>"Invoice John 50k for design"</em>
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Conditional Form Fields */}
       {invoiceType === "revenue" ? (
         <RevenueFields

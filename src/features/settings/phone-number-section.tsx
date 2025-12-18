@@ -303,42 +303,55 @@ export function PhoneNumberSection({
 
   // Render phone input step
   return (
-    <form onSubmit={handleRequestOTP} className="space-y-4">
-      {success && (
-        <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-          {success}
-        </div>
-      )}
-      {error && (
-        <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600">
-          {error}
-        </div>
-      )}
-      <div className="space-y-2">
-        <label
-          htmlFor="phone"
-          className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted"
-        >
-          WhatsApp Number
-        </label>
-        <input
-          id="phone"
-          name="phone"
-          type="tel"
-          defaultValue={phone}
-          placeholder="0801 234 5678"
-          required
-          disabled={loading}
-          className="w-full rounded-lg border border-brand-border bg-white px-3 py-3 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 disabled:cursor-not-allowed disabled:bg-brand-background"
-        />
-        <p className="text-xs text-brand-textMuted">
-          We use your WhatsApp number to send invoice updates and authentication
-          codes.
-        </p>
+    <div className="space-y-4">
+      {/* How it works info box */}
+      <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+        <h3 className="font-semibold text-blue-900 mb-2">📱 How to create invoices via WhatsApp</h3>
+        <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
+          <li>Add your WhatsApp number below and verify with OTP</li>
+          <li>Save our bot number: <strong>+234 810 686 5807</strong></li>
+          <li>Send a message like: <em>"Invoice John 50k for logo design"</em></li>
+          <li>Invoice is created and sent to your customer instantly!</li>
+        </ol>
       </div>
-      <Button type="submit" disabled={loading} className="w-full">
-        {loading ? "Sending" : "Send Verification Code"}
-      </Button>
-    </form>
+
+      <form onSubmit={handleRequestOTP} className="space-y-4">
+        {success && (
+          <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+            {success}
+          </div>
+        )}
+        {error && (
+          <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600">
+            {error}
+          </div>
+        )}
+        <div className="space-y-2">
+          <label
+            htmlFor="phone"
+            className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted"
+          >
+            WhatsApp Number
+          </label>
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            defaultValue={phone}
+            placeholder="0801 234 5678"
+            required
+            disabled={loading}
+            className="w-full rounded-lg border border-brand-border bg-white px-3 py-3 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 disabled:cursor-not-allowed disabled:bg-brand-background"
+          />
+          <p className="text-xs text-brand-textMuted">
+            We use your WhatsApp number to send invoice updates and authentication
+            codes.
+          </p>
+        </div>
+        <Button type="submit" disabled={loading} className="w-full">
+          {loading ? "Sending" : "Send Verification Code"}
+        </Button>
+      </form>
+    </div>
   );
 }
