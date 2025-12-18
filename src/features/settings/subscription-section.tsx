@@ -45,6 +45,9 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
   const subscriptionExpiresAt = user?.subscription_expires_at
     ? new Date(user.subscription_expires_at)
     : null;
+  const subscriptionStartedAt = user?.subscription_started_at
+    ? new Date(user.subscription_started_at)
+    : null;
   const isPaidPlan = currentPlan !== "FREE";
   const isExpiringSoon =
     subscriptionExpiresAt &&
@@ -120,10 +123,12 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                         // Paid plan but no expiry set (legacy user) - show generic message
                         return "Contact support to verify subscription status";
                       }
-                      // Free plan - usage resets on 1st of each month
-                      const now = new Date();
-                      const nextReset = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-                      return `Free plan • Usage resets ${formatDate(nextReset)}`;
+                      // Free plan - usage resets 30 days from billing cycle start
+                      if (subscriptionStartedAt) {
+                        const nextReset = new Date(subscriptionStartedAt.getTime() + 30 * 24 * 60 * 60 * 1000);
+                        return `Free plan • Usage resets ${formatDate(nextReset)}`;
+                      }
+                      return "Free plan • 30-day billing cycle";
                     })()}
                   </p>
                 </div>
@@ -162,13 +167,18 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                   if (isPaidPlan && !subscriptionExpiresAt) {
                     return "⚠️ Subscription status unknown";
                   }
-                  // Free plan - show days until 1st of next month
-                  const now = new Date();
-                  const nextReset = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-                  const daysUntilReset = Math.ceil(
-                    (nextReset.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
-                  );
-                  return `${daysUntilReset} days until usage resets`;
+                  // Free plan - show days until 30-day cycle resets
+                  if (subscriptionStartedAt) {
+                    const nextReset = new Date(subscriptionStartedAt.getTime() + 30 * 24 * 60 * 60 * 1000);
+                    const daysUntilReset = Math.ceil(
+                      (nextReset.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+                    );
+                    if (daysUntilReset <= 0) {
+                      return "Usage cycle complete – will reset on next action";
+                    }
+                    return `${daysUntilReset} days until usage resets`;
+                  }
+                  return "30-day billing cycle";
                 })()}
               </p>
             </div>
