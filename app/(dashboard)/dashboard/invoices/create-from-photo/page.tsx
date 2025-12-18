@@ -131,58 +131,53 @@ export default function OcrInvoicePage() {
   // Show upgrade prompt for users without OCR access
   if (!hasOcrAccess) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-gray-950 py-8">
-        <div className="mx-auto max-w-4xl px-4">
+      <div className="py-6">
+        <div className="mx-auto max-w-2xl px-4">
           {/* Header */}
-          <div className="mb-8">
-            <div className="mb-4 flex items-center space-x-2 text-sm text-slate-600 dark:text-gray-400">
+          <div className="mb-6">
+            <div className="mb-3 flex items-center space-x-2 text-sm text-slate-600 dark:text-gray-400">
               <Link href="/dashboard/invoices" className="hover:text-blue-600">
                 Invoices
               </Link>
               <span>›</span>
               <span className="text-slate-900 dark:text-white">Create from Photo</span>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-900/30">
-                <Camera className="h-6 w-6 text-amber-600 dark:text-amber-400" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                  📸 Create Invoice from Photo
-                </h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  AI-powered receipt scanning
-                </p>
-              </div>
+            <div className="flex items-center gap-2">
+              <Camera className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+                Create Invoice from Photo
+              </h1>
             </div>
           </div>
 
-          {/* Upgrade Card */}
-          <div className="flex flex-col items-center justify-center min-h-[400px] rounded-xl border border-amber-200 dark:border-amber-800 bg-white dark:bg-gray-900 p-8 text-center">
-            <div className="p-4 rounded-full bg-amber-100 dark:bg-amber-900/30 mb-4">
-              <Lock className="h-8 w-8 text-amber-600 dark:text-amber-400" />
+          {/* Upgrade Card - Compact */}
+          <div className="rounded-lg border border-amber-200 dark:border-amber-800 bg-white dark:bg-gray-900 p-6">
+            <div className="flex items-start gap-4">
+              <div className="p-2 rounded-full bg-amber-100 dark:bg-amber-900/30 shrink-0">
+                <Lock className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                  Business plan required
+                </h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                  Upgrade to use AI-powered photo OCR. Take a photo of any receipt and we&apos;ll extract the details automatically. Includes 15 OCR invoices/month.
+                </p>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Link href="/dashboard/settings">
+                    <Button size="sm" className="bg-amber-600 hover:bg-amber-700 text-white">
+                      Upgrade - {PLANS.BUSINESS.priceDisplay}/mo
+                    </Button>
+                  </Link>
+                  <Link 
+                    href="/dashboard/invoices/create"
+                    className="text-sm text-brand-jade hover:underline"
+                  >
+                    Create manually instead
+                  </Link>
+                </div>
+              </div>
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              Photo OCR requires Business plan
-            </h2>
-            <p className="text-gray-500 dark:text-gray-400 max-w-md mb-2">
-              Upgrade to Business to unlock AI-powered photo OCR. Simply take a photo of any receipt 
-              and our AI will automatically extract customer name, amounts, and line items.
-            </p>
-            <p className="text-sm text-gray-400 dark:text-gray-500 mb-6">
-              Business plan includes 15 OCR invoices per month.
-            </p>
-            <Link href="/dashboard/settings">
-              <Button className="bg-amber-600 hover:bg-amber-700 text-white">
-                Upgrade to Business - {PLANS.BUSINESS.priceDisplay}/month
-              </Button>
-            </Link>
-            <Link 
-              href="/dashboard/invoices/create"
-              className="mt-4 text-sm text-brand-jade hover:underline"
-            >
-              ← Create invoice manually instead
-            </Link>
           </div>
         </div>
       </div>
