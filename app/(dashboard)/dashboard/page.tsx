@@ -5,6 +5,19 @@ import { InvoiceCreateForm } from "@/features/invoices/invoice-create-form";
 import { InvoiceListWithDetail } from "@/features/invoices/invoice-list-with-detail";
 import { InvoiceStatusCard } from "@/features/invoices/invoice-status-card";
 
+// Wrap InvoiceListWithDetail in its own Suspense for useSearchParams
+function InvoiceListWrapper() {
+  return (
+    <Suspense
+      fallback={
+        <div className="h-48 animate-pulse rounded-lg bg-brand-background sm:h-64" />
+      }
+    >
+      <InvoiceListWithDetail />
+    </Suspense>
+  );
+}
+
 export default function DashboardPage() {
   return (
     <main className="min-h-screen">
@@ -41,13 +54,7 @@ export default function DashboardPage() {
 
             {/* Invoice List - Right side (3 columns) */}
             <div className="lg:col-span-3">
-              <Suspense
-                fallback={
-                  <div className="h-48 animate-pulse rounded-lg bg-brand-background sm:h-64" />
-                }
-              >
-                <InvoiceListWithDetail />
-              </Suspense>
+              <InvoiceListWrapper />
             </div>
           </div>
         </div>
