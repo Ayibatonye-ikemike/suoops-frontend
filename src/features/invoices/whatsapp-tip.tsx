@@ -42,7 +42,7 @@ export function WhatsAppTip() {
             Create via WhatsApp
           </p>
           <p className="text-xs text-emerald-600 truncate">
-            Text: "Invoice John 50k for design"
+            Text: &quot;Invoice John 50k for design&quot;
           </p>
         </div>
         <ExternalLink className="h-4 w-4 text-emerald-500 group-hover:text-emerald-700 shrink-0" />

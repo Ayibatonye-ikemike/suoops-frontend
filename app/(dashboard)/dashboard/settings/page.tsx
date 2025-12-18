@@ -21,7 +21,7 @@ type CurrentUser = components["schemas"]["UserOut"];
 
 export default function SettingsPage() {
   const router = useRouter();
-  const logout = useAuthStore((state) => state.logout);
+  const clearTokens = useAuthStore((state) => state.clearTokens);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -45,7 +45,7 @@ export default function SettingsPage() {
     },
     onSuccess: () => {
       toast.success("Your account has been permanently deleted.");
-      logout();
+      clearTokens();
       router.replace("/");
     },
     onError: (error: Error & { response?: { data?: { detail?: string } } }) => {

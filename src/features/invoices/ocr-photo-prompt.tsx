@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Lock } from "lucide-react";
 import { apiClient } from "@/api/client";
 import type { components } from "@/api/types";
-import { hasPlanFeature, PLANS, type PlanTier } from "@/constants/pricing";
+import { hasPlanFeature, type PlanTier } from "@/constants/pricing";
 
 type CurrentUser = components["schemas"]["UserOut"];
 

@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 15, 23, 42;
+  --background-start-rgb: 248, 250, 252;
+  --background-end-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  min-height: 100vh;
+}
+
+/* Prose styles for article content */
+.prose h2 {
+  @apply text-xl font-semibold text-slate-900 mt-8 mb-4;
+}
+
+.prose h3 {
+  @apply text-lg font-medium text-slate-800 mt-6 mb-3;
+}
+
+.prose p {
+  @apply text-slate-600 mb-4 leading-relaxed;
+}
+
+.prose ul {
+  @apply list-disc list-inside space-y-2 text-slate-600 mb-4;
+}
+
+.prose ol {
+  @apply list-decimal list-inside space-y-2 text-slate-600 mb-4;
+}
+
+.prose li {
+  @apply leading-relaxed;
+}
+
+.prose a {
+  @apply text-emerald-600 hover:underline;
+}
+
+.prose pre {
+  @apply bg-slate-100 rounded-lg p-4 overflow-x-auto text-sm mb-4;
+}
+
+.prose code {
+  @apply bg-slate-100 rounded px-1 py-0.5 text-sm;
+}
+
+.prose strong {
+  @apply font-semibold text-slate-900;
+}
