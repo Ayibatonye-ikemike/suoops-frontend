@@ -14,7 +14,7 @@ import {
 import type { Product } from "@/features/inventory";
 import { apiClient } from "@/api/client";
 import type { components } from "@/api/types";
-import { hasPlanFeature, type PlanTier } from "@/constants/pricing";
+import { hasPlanFeature, type PlanTier, PLANS } from "@/constants/pricing";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -76,7 +76,7 @@ export default function InventoryPage() {
           </p>
           <Link href="/dashboard/settings">
             <Button className="bg-brand-jade hover:bg-brand-jade/90 text-white">
-              Upgrade to Pro - ₦8,000/month
+              Upgrade to Pro - {PLANS.PRO.priceDisplay}/month
             </Button>
           </Link>
         </div>

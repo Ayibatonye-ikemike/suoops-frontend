@@ -74,9 +74,9 @@ export default function TermsPage() {
             <p className="mt-4">We offer the following subscription tiers:</p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
               <li><strong>Free Plan:</strong> ₦0/month - 5 invoices/month (manual WhatsApp & Email only)</li>
-              <li><strong>Starter Plan:</strong> ₦4,500/month - 100 invoices/month + Tax reports & automation</li>
-              <li><strong>Pro Plan:</strong> ₦8,000/month - 200 invoices/month + Custom logo branding + Priority support</li>
-              <li><strong>Business Plan:</strong> ₦16,000/month - 300 invoices/month + Photo OCR (15/mo) + API access</li>
+              <li><strong>Starter Plan:</strong> ₦2,500/month - 100 invoices/month + Tax reports & automation</li>
+              <li><strong>Pro Plan:</strong> ₦5,000/month - 200 invoices/month + Custom logo branding + Priority support</li>
+              <li><strong>Business Plan:</strong> ₦10,000/month - 300 invoices/month + Photo OCR (15/mo) + API access</li>
               <li><strong>Enterprise Plan:</strong> ₦50,000/month - Unlimited invoices + Unlimited OCR + Custom features + Dedicated support</li>
             </ul>
             <p className="mt-4">
