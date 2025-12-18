@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 import { InvoiceDetailPanel } from "./invoice-detail";
 import { invoiceStatusLabels } from "./status-map";
@@ -8,6 +9,9 @@ import { type Invoice, useInvoices } from "./use-invoices";
 
 export function InvoiceListWithDetail() {
   const { data, isLoading, error } = useInvoices();
+  const searchParams = useSearchParams();
+  const invoiceIdFromUrl = searchParams.get("invoice");
+  
   const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(
     null
   );
@@ -53,11 +57,21 @@ export function InvoiceListWithDetail() {
     };
   }, [invoices]);
 
+  // Auto-select invoice from URL query param or default to first
   useEffect(() => {
     if (!hasInvoices) {
       setSelectedInvoiceId(null);
       return;
     }
+    
+    // If invoice ID is in URL, select it (even if not in current filter)
+    if (invoiceIdFromUrl && invoices.some(inv => inv.invoice_id === invoiceIdFromUrl)) {
+      setSelectedInvoiceId(invoiceIdFromUrl);
+      // Clear status filter to show the invoice
+      setStatusFilter("all");
+      return;
+    }
+    
     if (
       selectedInvoiceId &&
       filteredInvoices.some(
@@ -71,7 +85,7 @@ export function InvoiceListWithDetail() {
     } else {
       setSelectedInvoiceId(null);
     }
-  }, [hasInvoices, filteredInvoices, selectedInvoiceId]);
+  }, [hasInvoices, filteredInvoices, selectedInvoiceId, invoiceIdFromUrl, invoices]);
 
   if (isLoading) {
     return (
