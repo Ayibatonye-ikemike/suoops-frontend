@@ -14,12 +14,12 @@ export function Hero({ onWatchDemo }: HeroProps) {
           {/* Left: Text Content */}
           <div className="flex flex-col justify-center">
             <h1 className="font-heading text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-              Invoice via WhatsApp.
+              Invoice via WhatsApp
               <br />
-              <span className="text-brand-citrus">Get paid faster.</span>
+              <span className="text-brand-citrus">or Email. Get paid faster.</span>
             </h1>
             <p className="mt-6 text-lg text-white/80 max-w-lg">
-              SuoOps turns your WhatsApp into your invoicing assistant. Send a voice note or text, get a professional invoice, and track payments—all inside the chat you already use.
+              Create invoices via WhatsApp (voice or text) or from our web dashboard. Customers receive invoices via WhatsApp and Email—wherever they prefer.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <a

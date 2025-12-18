@@ -9,10 +9,10 @@ export function Features() {
               How it works
             </p>
             <h2 className="mt-3 text-3xl font-bold text-brand-evergreen sm:text-4xl">
-              Simple integration with WhatsApp
+              Create invoices your way
             </h2>
             <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-              Connect SuoOps to your WhatsApp and start creating invoices immediately.
+              Use WhatsApp or our web dashboard. Customers get invoices via WhatsApp + Email.
             </p>
           </div>
 
@@ -35,7 +35,7 @@ export function Features() {
             <StepCard
               number={4}
               title="Get Paid"
-              description="Customer receives invoice via WhatsApp, pays, and you get notified."
+              description="Customer receives invoice via WhatsApp + Email, pays, and you get notified."
             />
           </div>
         </div>
@@ -53,12 +53,12 @@ export function Features() {
                 Invoice creation made simple
               </h2>
               <p className="mt-4 text-lg text-slate-600">
-                Create professional invoices instantly from your WhatsApp. SuoOps understands Nigerian English and generates accurate invoices with payment details.
+                Create invoices from WhatsApp or our web dashboard. Customers receive them via WhatsApp and Email automatically.
               </p>
               <ul className="mt-8 space-y-4">
-                <FeatureItem text="Voice notes or text messages" />
-                <FeatureItem text="AI-powered Nigerian English support" />
-                <FeatureItem text="Automatic tax calculations" />
+                <FeatureItem text="WhatsApp: Voice notes or text messages" />
+                <FeatureItem text="Web dashboard: Create invoices online" />
+                <FeatureItem text="Delivery: WhatsApp + Email to customers" />
                 <FeatureItem text="QR code verification on every invoice" />
               </ul>
               <a
