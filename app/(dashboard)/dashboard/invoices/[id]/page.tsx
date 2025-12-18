@@ -1,12 +1,11 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { InvoiceDetailPanel } from "@/features/invoices/invoice-detail";
 
 export default function InvoiceDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const invoiceId = params.id as string;
 
   return (

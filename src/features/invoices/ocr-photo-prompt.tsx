@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function OcrPhotoPrompt() {
   return (
     <div className="rounded-2xl border border-brand-jade/20 bg-brand-jade/5 p-4">
@@ -14,12 +16,12 @@ export function OcrPhotoPrompt() {
             automatically
           </p>
         </div>
-        <a
+        <Link
           href="/dashboard/invoices/create-from-photo"
           className="whitespace-nowrap rounded-lg bg-brand-jade px-5 py-3 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-brand-jadeHover"
         >
           Upload Photo
-        </a>
+        </Link>
       </div>
     </div>
   );

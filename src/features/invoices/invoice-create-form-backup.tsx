@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 
@@ -282,12 +283,12 @@ export function InvoiceCreateForm() {
                 automatically
               </p>
             </div>
-            <a
+            <Link
               href="/dashboard/invoices/create-from-photo"
               className="whitespace-nowrap rounded-lg bg-brand-jade px-5 py-3 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-brand-jadeHover"
             >
               Upload Photo
-            </a>
+            </Link>
           </div>
         </div>
       )}
