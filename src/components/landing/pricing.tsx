@@ -2,250 +2,87 @@ import { LANDING_PLANS, type Plan } from "../../constants/pricing";
 
 export function Pricing() {
   return (
-    <>
-      {/* Premium Features Section */}
-      <section className="px-4 py-20 sm:px-6 lg:px-8 bg-white/5">
-        <div className="mx-auto max-w-7xl">
-          <div className="text-center text-green-200">
-            <h2 className="text-base font-semibold ">UPGRADE BENEFITS</h2>
-            <p className="mt-2 text-4xl font-bold text-white sm:text-5xl">
-              Unlock Premium Features
-            </p>
-            <div className="text-white/80">
-              <p className="mt-4 text-lg max-w-2xl mx-auto">
-                Start with free manual invoicing. Upgrade for tax automation
-                (Starter), inventory, branding & team collaboration (Pro), or voice+OCR (Business).
-              </p>
+    <section id="pricing" className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="text-center">
+          <p className="text-sm font-semibold uppercase tracking-widest text-brand-jade">
+            Pricing
+          </p>
+          <h2 className="mt-3 text-3xl font-bold text-brand-evergreen sm:text-4xl">
+            Start free, upgrade as you grow
+          </h2>
+          <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+            Simple, transparent pricing. No hidden fees. Cancel anytime.
+          </p>
+        </div>
+
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
+          {LANDING_PLANS.map((plan: Plan) => (
+            <PricingCard key={plan.id} plan={plan} />
+          ))}
+        </div>
+
+        <div className="mt-12 text-center">
+          <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center rounded-lg bg-brand-jade px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:bg-brand-teal hover:scale-105"
+          >
+            Join Waitlist
+          </a>
+        </div>
+
+        {/* Trust Indicators */}
+        <div className="mt-16 rounded-2xl bg-white p-8 border border-slate-200 shadow-sm">
+          <div className="grid gap-8 sm:grid-cols-3 text-center">
+            <div>
+              <div className="text-3xl font-bold text-brand-jade">99.9%</div>
+              <div className="mt-1 text-sm text-slate-600">Uptime SLA</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-brand-jade">256-bit</div>
+              <div className="mt-1 text-sm text-slate-600">Encryption</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-brand-jade">FIRS</div>
+              <div className="mt-1 text-sm text-slate-600">Tax Ready</div>
             </div>
           </div>
-
-          <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            <PremiumFeature
-              emoji="🎤"
-              title="Voice Invoices"
-              description="Speak naturally on WhatsApp. AI transcribes and creates invoices - truly hands-free."
-              benefits={[
-                "Nigerian English support",
-                "Works while driving/busy",
-                "10 second invoices",
-              ]}
-              badge="Business plan (15/mo)"
-              badgeColor="purple"
-            />
-            <PremiumFeature
-              emoji="📸"
-              title="Photo OCR"
-              description="Snap a photo of any receipt and AI extracts customer name, amount, and items automatically."
-              benefits={[
-                "Upload receipt photos",
-                "AI data extraction",
-                "No manual typing",
-              ]}
-              badge="Business plan (15/mo)"
-              badgeColor="orange"
-            />
-            <PremiumFeature
-              emoji="📦"
-              title="Inventory Management"
-              description="Track your products and stock levels. Auto-update inventory when invoices are created."
-              benefits={[
-                "Product catalog",
-                "Stock level tracking",
-                "Auto-deduct on invoice",
-              ]}
-              badge="Pro plan & above"
-              badgeColor="teal"
-            />
-            <PremiumFeature
-              emoji="🎨"
-              title="Custom Logo Branding"
-              description="Upload your business logo to appear on all invoices. Build brand recognition with every invoice."
-              benefits={[
-                "Custom logo on PDFs",
-                "Branded invoices",
-                "Professional appearance",
-              ]}
-              badge="Pro plan & above"
-              badgeColor="blue"
-            />
-            <PremiumFeature
-              emoji="👥"
-              title="Team Management"
-              description="Invite team members to collaborate on invoicing. Control who can access what with role-based permissions."
-              benefits={[
-                "Invite up to 3 members",
-                "Role-based access control",
-                "Admin retains full control",
-              ]}
-              badge="Pro plan & above"
-              badgeColor="green"
-            />
-          </div>
-
-          <TrustIndicators />
-        </div>
-      </section>
-
-      {/* Pricing Table */}
-      <section id="pricing" className="px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl text-center">
-          <div className="text-green-200">
-            <h2 className="text-base font-semibold ">PRICING</h2>
-
-            <div className="mt-2 text-4xl font-bold text-green-200">
-              Start free, upgrade as you grow
-            </div>
-          </div>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto">
-            {LANDING_PLANS.map((plan: Plan) => (
-              <PricingCard key={plan.id} plan={plan} />
-            ))}
-          </div>
-          <div className="text-white/80">
-            <a
-              href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 inline-block rounded-lg bg-brand-jade px-8 py-4 font-semibold  hover:bg-brand-teal transition-colors"
-            >
-              Join Waitlist →
-            </a>
-          </div>
-        </div>
-      </section>
-    </>
-  );
-}
-
-interface PremiumFeatureProps {
-  emoji: string;
-  title: string;
-  description: string;
-  benefits: string[];
-  badge: string;
-  badgeColor: "purple" | "orange" | "blue" | "green" | "teal";
-}
-
-function PremiumFeature({
-  emoji,
-  title,
-  description,
-  benefits,
-  badge,
-  badgeColor,
-}: PremiumFeatureProps) {
-  const badgeColors = {
-    purple: "bg-purple-50 text-purple-700",
-    orange: "bg-orange-50 text-orange-700",
-    blue: "bg-brand-textMuted text-brand-teal",
-    green: "bg-green-50 text-green-700",
-    teal: "bg-teal-50 text-teal-700",
-  };
-
-  const gradients = {
-    purple: "from-purple-500 to-purple-600",
-    orange: "from-orange-500 to-orange-600",
-    blue: "from-blue-500 to-blue-600",
-    green: "from-green-500 to-green-600",
-    teal: "from-teal-500 to-teal-600",
-  };
-
-  return (
-    <div className="rounded-2xl border-2 border-brand-teal/20 bg-white p-8 shadow-sm hover:shadow-lg transition-all">
-      <div
-        className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${gradients[badgeColor]} text-3xl shadow-lg`}
-      >
-        {emoji}
-      </div>
-      <h3 className="mt-6 text-xl font-bold text-brand-evergreen">{title}</h3>
-      <p className="mt-2 text-brand-charcoal/70">{description}</p>
-      <ul className="mt-4 space-y-2 text-sm text-brand-charcoal/70">
-        {benefits.map((benefit, i) => (
-          <li key={i} className="flex items-start gap-2">
-            <span className="text-green-600">✓</span>
-            <span>{benefit}</span>
-          </li>
-        ))}
-      </ul>
-      <div
-        className={`mt-6 rounded-lg ${badgeColors[badgeColor]} px-3 py-2 text-center`}
-      >
-        <p className="text-sm font-semibold">{badge}</p>
-      </div>
-    </div>
-  );
-}
-
-function TrustIndicators() {
-  return (
-    <div className="mt-16 rounded-3xl border-2 border-brand-teal/30 bg-gradient-to-r from-blue-50 to-cyan-50 p-8 lg:p-12">
-      <div className="text-center mb-8">
-        <h3 className="text-2xl font-bold text-brand-evergreen">
-          Built with Enterprise-Grade Technology
-        </h3>
-        <p className="mt-2 text-sm text-brand-charcoal/70">
-          Security and reliability you can trust
-        </p>
-      </div>
-      <div className="grid gap-8 lg:grid-cols-3">
-        <div className="text-center">
-          <div className="text-4xl font-bold text-brand-jade">99.9%</div>
-          <div className="mt-2 text-sm font-medium text-brand-charcoal/70">
-            Uptime SLA
-          </div>
-          <div className="mt-1 text-xs text-brand-charcoal/60">
-            Always available
-          </div>
-        </div>
-        <div className="text-center">
-          <div className="text-4xl font-bold text-brand-jade">256-bit</div>
-          <div className="mt-2 text-sm font-medium text-brand-charcoal/70">
-            Encryption
-          </div>
-          <div className="mt-1 text-xs text-brand-charcoal/60">
-            Bank-grade security
-          </div>
-        </div>
-        <div className="text-center">
-          <div className="text-4xl font-bold text-brand-jade">FIRS</div>
-          <div className="mt-2 text-sm font-medium text-brand-charcoal/70">
-            Tax Ready
-          </div>
-          <div className="mt-1 text-xs text-brand-charcoal/60">
-            Compliance built-in
-          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 
 function PricingCard({ plan }: { plan: Plan }) {
   return (
     <div
-      className={`rounded-2xl border bg-white p-6 ${
+      className={`rounded-2xl bg-white p-6 border transition-all hover:shadow-lg ${
         plan.popular
-          ? "border-brand-jade ring-2 ring-blue-500"
-          : "border-brand-teal/20"
+          ? "border-brand-jade ring-2 ring-brand-jade shadow-lg"
+          : "border-slate-200"
       }`}
     >
       {plan.popular && (
-        <div className="mb-2 text-xs font-semibold text-brand-jade">
+        <div className="mb-3 inline-block rounded-full bg-brand-jade/10 px-3 py-1 text-xs font-semibold text-brand-jade">
           MOST POPULAR
         </div>
       )}
       <h3 className="text-lg font-bold text-brand-evergreen">{plan.name}</h3>
-      <div className="mt-2">
-        <span className="text-3xl font-bold">{plan.priceDisplay}</span>
-        <span className="text-brand-charcoal/70">/mo</span>
+      <div className="mt-3">
+        <span className="text-3xl font-bold text-brand-evergreen">{plan.priceDisplay}</span>
+        <span className="text-slate-500">/mo</span>
       </div>
-      <p className="mt-2 text-sm font-semibold text-brand-evergreen">
+      <p className="mt-2 text-sm font-medium text-brand-jade">
         {plan.invoiceLimitDisplay}
       </p>
-      <ul className="mt-4 space-y-2 text-left text-xs text-brand-charcoal/70">
-        {plan.features.map((feature, j) => (
-          <li key={j} className="flex items-start gap-2">
-            <span className="text-green-600">✓</span>
+      <ul className="mt-6 space-y-3 text-sm text-slate-600">
+        {plan.features.map((feature, i) => (
+          <li key={i} className="flex items-start gap-2">
+            <svg className="h-5 w-5 text-brand-jade flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
             <span>{feature}</span>
           </li>
         ))}

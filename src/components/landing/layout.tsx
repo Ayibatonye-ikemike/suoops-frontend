@@ -1,165 +1,40 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export function Footer() {
-  return (
-    <footer className="border-t border-white/10 bg-brand-teal/20 px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl">
-        <div className="grid gap-8 md:grid-cols-4">
-          <div>
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm shadow-lg border border-white/20">
-                <Image
-                  src="/icon.png"
-                  alt="SuoOps logo"
-                  width={48}
-                  height={48}
-                  className="h-10 w-10 object-contain"
-                  priority
-                />
-              </div>
-              <span className="text-xl font-heading font-bold text-white">
-                SuoOps
-              </span>
-            </div>
-            <div className="mt-4 text-sm text-white/70">
-              The easiest way for Nigerian businesses to create invoices and get
-              paid.
-            </div>
-          </div>
-          <div>
-            <div className="font-semibold text-white">Product</div>
-            <ul className="mt-4 space-y-2 text-sm text-white/70">
-              <li>
-                <a
-                  href="#features"
-                  className="hover:text-brand-citrus transition-colors"
-                >
-                  Features
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#pricing"
-                  className="hover:text-brand-citrus transition-colors"
-                >
-                  Pricing
-                </a>
-              </li>
-              <li>
-                <Link
-                  href="/dashboard"
-                  className="hover:text-brand-citrus transition-colors"
-                >
-                  Dashboard
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <div className="font-semibold text-white">Company</div>
-            <ul className="mt-4 space-y-2 text-sm text-white/70">
-              <li className="hover:text-brand-citrus transition-colors">
-                <a href="mailto:info@suoops.com">Contact</a>
-              </li>
-              <li>
-                <a
-                  href="https://api.suoops.com/healthz"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-brand-citrus transition-colors"
-                >
-                  Status
-                </a>
-              </li>
-              <li>
-                <Link
-                  href="/login"
-                  className="hover:text-brand-citrus transition-colors"
-                >
-                  Login
-                </Link>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <div className="font-semibold text-white">Legal</div>
-            <ul className="mt-4 space-y-2 text-sm text-white/70">
-              <li>
-                <Link
-                  href="/privacy"
-                  className="hover:text-brand-citrus transition-colors"
-                >
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/terms"
-                  className="hover:text-brand-citrus transition-colors"
-                >
-                  Terms of Service
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="mt-12 border-t border-white/10 pt-8 text-center text-sm text-white/60">
-          © 2025 SuoOps. All rights reserved. Made with ❤️ in Nigeria 🇳🇬
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-export function PreLaunchBanner() {
-  return (
-    <div className="bg-brand-citrus px-4 py-3 text-center text-white">
-      <p className="text-sm font-semibold">
-        <strong>Pre-Launch:</strong> Join our waitlist to get early access +
-        exclusive 50% launch discount! 🚀
-      </p>
-    </div>
-  );
-}
-
 export function Navigation() {
   return (
-    <nav className="sticky top-0 z-50 border-b border-white/10 bg-brand-evergreen/95 backdrop-blur-md text-white">
+    <nav className="sticky top-0 z-50 border-b border-white/10 bg-brand-evergreen/95 backdrop-blur-md">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 shadow-lg ring-1 ring-white/20">
               <Image
                 src="/icon.png"
-                alt="SuoOps icon"
+                alt="SuoOps"
                 width={40}
                 height={40}
                 className="h-8 w-8 object-contain"
                 priority
               />
             </div>
-            <div>
-              <span className="block text-base uppercase tracking-[0.3em] text-white/80">
-                SuoOps
-              </span>
-              <p className="text-xs text-brand-textMuted">
-                Smart invoicing, simplified.
-              </p>
-            </div>
+            <span className="text-lg font-bold text-white">SuoOps</span>
           </div>
           <div className="flex items-center gap-4">
             <a
-              href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm font-semibold text-white/80 hover:text-green-200 transition-colors"
+              href="#features"
+              className="hidden sm:block text-sm font-medium text-white/80 hover:text-white transition-colors"
             >
-              Join Waitlist
+              Features
+            </a>
+            <a
+              href="#pricing"
+              className="hidden sm:block text-sm font-medium text-white/80 hover:text-white transition-colors"
+            >
+              Pricing
             </a>
             <Link
               href="/login"
-              className="rounded-lg bg-brand-jade px-4 py-2 text-sm font-semibold text-white hover:text-green-200 shadow-lg transition-colors hover:bg-brand-teal"
+              className="rounded-lg bg-brand-jade px-4 py-2 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-brand-teal"
             >
               Login
             </Link>
@@ -170,26 +45,147 @@ export function Navigation() {
   );
 }
 
+export function PreLaunchBanner() {
+  return (
+    <div className="bg-brand-citrus px-4 py-2.5 text-center">
+      <p className="text-sm font-medium text-brand-evergreen">
+        🚀 <strong>Coming Soon</strong> — Join our waitlist for early access + 50% launch discount!
+      </p>
+    </div>
+  );
+}
+
+export function CTASection() {
+  return (
+    <section className="relative bg-brand-evergreen px-4 py-20 sm:px-6 lg:px-8 text-white">
+      <div className="mx-auto max-w-3xl text-center">
+        <h2 className="text-3xl font-bold sm:text-4xl">
+          Ready to simplify your invoicing?
+        </h2>
+        <p className="mt-4 text-lg text-white/80">
+          Join the waitlist and be the first to experience invoice creation via WhatsApp.
+        </p>
+        <a
+          href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-8 inline-flex items-center justify-center rounded-lg bg-brand-jade px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:scale-105 hover:bg-brand-teal"
+        >
+          Get started
+        </a>
+        <p className="mt-6 text-sm text-white/60">
+          ✓ Free to start · ✓ No credit card required · ✓ 50% launch discount
+        </p>
+      </div>
+    </section>
+  );
+}
+
+export function Footer() {
+  return (
+    <footer className="border-t border-slate-200 bg-white px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-8 md:grid-cols-4">
+          <div>
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-evergreen">
+                <Image
+                  src="/icon.png"
+                  alt="SuoOps"
+                  width={32}
+                  height={32}
+                  className="h-6 w-6 object-contain"
+                  priority
+                />
+              </div>
+              <span className="text-lg font-bold text-brand-evergreen">SuoOps</span>
+            </div>
+            <p className="mt-4 text-sm text-slate-600">
+              The easiest way for Nigerian businesses to create invoices and get paid.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-semibold text-brand-evergreen">Product</h4>
+            <ul className="mt-4 space-y-2 text-sm text-slate-600">
+              <li>
+                <a href="#features" className="hover:text-brand-jade transition-colors">
+                  Features
+                </a>
+              </li>
+              <li>
+                <a href="#pricing" className="hover:text-brand-jade transition-colors">
+                  Pricing
+                </a>
+              </li>
+              <li>
+                <Link href="/dashboard" className="hover:text-brand-jade transition-colors">
+                  Dashboard
+                </Link>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-semibold text-brand-evergreen">Company</h4>
+            <ul className="mt-4 space-y-2 text-sm text-slate-600">
+              <li>
+                <a href="mailto:info@suoops.com" className="hover:text-brand-jade transition-colors">
+                  Contact
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://api.suoops.com/healthz"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-brand-jade transition-colors"
+                >
+                  Status
+                </a>
+              </li>
+              <li>
+                <Link href="/login" className="hover:text-brand-jade transition-colors">
+                  Login
+                </Link>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-semibold text-brand-evergreen">Legal</h4>
+            <ul className="mt-4 space-y-2 text-sm text-slate-600">
+              <li>
+                <Link href="/privacy" className="hover:text-brand-jade transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="hover:text-brand-jade transition-colors">
+                  Terms of Service
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="mt-12 border-t border-slate-200 pt-8 text-center text-sm text-slate-500">
+          © 2025 SuoOps. All rights reserved. Made with ❤️ in Nigeria 🇳🇬
+        </div>
+      </div>
+    </footer>
+  );
+}
+
 export function WaitlistCounter() {
   return (
-    <section className="border-y border-brand-teal/10 bg-brand-textMuted px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl text-center">
-        <div className="inline-flex items-center gap-4 rounded-2xl border-2 border-brand-jade/30 bg-white px-8 py-6 shadow-lg">
-          <div className="text-left">
-            <p className="text-4xl font-bold text-brand-jade">50+</p>
-            <p className="text-sm font-medium text-brand-charcoal/70">
-              Businesses Waiting
-            </p>
+    <section className="bg-white px-4 py-8 sm:px-6 lg:px-8 border-b border-slate-100">
+      <div className="mx-auto max-w-7xl">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-center sm:text-left">
+          <div className="flex items-center gap-4">
+            <div className="text-3xl font-bold text-brand-jade">50+</div>
+            <div className="text-sm text-slate-600">
+              <p className="font-medium">Businesses waiting</p>
+              <p className="text-slate-400">Limited early access spots</p>
+            </div>
           </div>
-          <div className="h-16 w-px bg-brand-teal/30"></div>
-          <div className="text-left">
-            <p className="text-sm font-semibold text-brand-evergreen">
-              Join the waitlist today
-            </p>
-            <p className="text-xs text-brand-charcoal/60">
-              Limited early access spots
-            </p>
-          </div>
+          <div className="hidden sm:block h-10 w-px bg-slate-200"></div>
           <a
             href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
             target="_blank"
@@ -198,37 +194,6 @@ export function WaitlistCounter() {
           >
             Join Now →
           </a>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-export function CTASection() {
-  return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-brand-evergreen to-brand-teal px-4 py-20 sm:px-6 lg:px-8">
-      <div className="relative mx-auto max-w-4xl text-center">
-        <div className="text-4xl font-bold text-green-200 sm:text-5xl">
-          Be the first to experience it
-        </div>
-        <div className="mt-4 text-xl text-[#E8F5EC]">
-          Join our waitlist and get exclusive early access when we launch!
-        </div>
-        <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
-          <div className="text-green-200 border-green-200 hover:text-[#14B56A] transition-all hover:scale-105">
-            <a
-              href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
-              target="_blank"
-              rel="noopener noreferrer"
-              className=" border inline-flex items-center justify-center gap-2 rounded-lg bg-brand-jade px-8 py-4 text-center text-base font-semibold  shadow-lg hover:bg-white "
-            >
-              🚀 Join Waitlist Now
-            </a>
-          </div>
-        </div>
-        {/* <div className="mt-6 text-sm text-brand-textMuted"> */}
-        <div className="mt-6 text-sm text-[#E8F5EC]">
-          ✓ 50% launch discount · ✓ Priority early access · ✓ Exclusive updates
         </div>
       </div>
     </section>

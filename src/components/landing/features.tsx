@@ -2,133 +2,173 @@ export function Features() {
   return (
     <>
       {/* How It Works */}
-      <section id="features" className="px-4 py-20 sm:px-6 lg:px-8">
+      <section id="features" className="bg-white px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
-            {/* text-brand-citrus */}
-            <div className="text-xs text-green-200 font-semibold uppercase tracking-[0.4em] ">
+            <p className="text-sm font-semibold uppercase tracking-widest text-brand-jade">
               How it works
-            </div>
-            <div className="mt-3 text-green-200 font-heading text-4xl font-bold sm:text-5xl">
-              Simple as sending a message
-            </div>
-            <div className="mt-4 text-lg text-white/80">
-              No apps, no training, no hassle. Just WhatsApp—use voice notes or
-              text messages.
-            </div>
+            </p>
+            <h2 className="mt-3 text-3xl font-bold text-brand-evergreen sm:text-4xl">
+              Simple integration with WhatsApp
+            </h2>
+            <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+              Connect SuoOps to your WhatsApp and start creating invoices immediately.
+            </p>
           </div>
 
-          <div className="mt-16 grid gap-8 md:grid-cols-3">
+          <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <StepCard
               number={1}
-              emoji="🎤"
-              title="Send Voice or Text"
-              description='Open WhatsApp and send a voice note or text: "Invoice John 25,000 naira for consultation"'
+              title="Sign Up"
+              description="Create your free SuoOps account and set up your business profile."
             />
             <StepCard
               number={2}
-              emoji="⚡"
-              title="AI Creates Invoice"
-              description="Our AI instantly understands your voice and generates a professional invoice with payment details"
+              title="Connect WhatsApp"
+              description="Link your WhatsApp to start sending invoices from chat."
             />
             <StepCard
               number={3}
-              emoji="💸"
+              title="Send a Message"
+              description='Just type or speak: "Invoice Jane 50k for logo design".'
+            />
+            <StepCard
+              number={4}
               title="Get Paid"
-              description="Customer receives invoice via WhatsApp, pays via bank transfer, and you get notified instantly"
+              description="Customer receives invoice via WhatsApp, pays, and you get notified."
             />
           </div>
         </div>
       </section>
 
-      {/* Feature Showcase */}
-      <section className="px-4 py-20 sm:px-6 lg:px-8">
+      {/* Invoice Feature Section */}
+      <section className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="text-center">
-            <div className="text-xs text-green-200 font-semibold udivpercase tracking-[0.4em]">
-              Features
-            </div>
-            <div className="mt-3 text-green-200 font-heading text-4xl font-bold  sm:text-5xl">
-              Create Invoices Your Way
-            </div>
-            <div className="text-white/80 ">
-              <p className="mt-4 text-lg max-w-2xl mx-auto">
-                Free WhatsApp text + voice. Upgrade for photo OCR. Every invoice
-                includes QR verification.
+          <div className="grid gap-12 lg:grid-cols-2 items-center">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-widest text-brand-jade">
+                Invoice
               </p>
+              <h2 className="mt-3 text-3xl font-bold text-brand-evergreen sm:text-4xl">
+                Invoice creation made simple
+              </h2>
+              <p className="mt-4 text-lg text-slate-600">
+                Create professional invoices instantly from your WhatsApp. SuoOps understands Nigerian English and generates accurate invoices with payment details.
+              </p>
+              <ul className="mt-8 space-y-4">
+                <FeatureItem text="Voice notes or text messages" />
+                <FeatureItem text="AI-powered Nigerian English support" />
+                <FeatureItem text="Automatic tax calculations" />
+                <FeatureItem text="QR code verification on every invoice" />
+              </ul>
+              <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-8 inline-flex items-center justify-center rounded-lg bg-brand-jade px-6 py-3 text-base font-semibold text-white shadow-lg transition-all hover:bg-brand-teal"
+              >
+                Get started
+              </a>
+            </div>
+            <div className="relative">
+              <div className="rounded-2xl bg-white p-6 shadow-xl border border-slate-200">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-brand-jade/10 flex items-center justify-center">
+                      <span className="text-xl">📄</span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-800">Invoice Created</p>
+                      <p className="text-sm text-slate-500">Just now</p>
+                    </div>
+                  </div>
+                  <span className="text-2xl">✅</span>
+                </div>
+                <div className="mt-4 space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Invoice ID</span>
+                    <span className="font-mono text-slate-800">INV-2024-001</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Customer</span>
+                    <span className="text-slate-800">Jane Doe</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Amount</span>
+                    <span className="font-semibold text-brand-evergreen">₦50,000</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Status</span>
+                    <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-700">Pending</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          <div className="mt-16 grid gap-8 lg:grid-cols-2">
-            <FeatureCard
-              emoji="💬"
-              title="WhatsApp Text"
-              description="Type and send. No forms, no calculations, just simple text."
-              speed="5 seconds"
-              example='"Invoice Jane 50k for logo"'
-              benefits={[
-                {
-                  text: "Perfect for: When you're at your desk or prefer typing",
-                  bold: true,
-                },
-                { text: "AI understands Nigerian English and currency" },
-                { text: "Works offline - sends when you're back online" },
-              ]}
-            />
-            <FeatureCard
-              emoji="🎤"
-              title="Voice Notes"
-              description="Speak naturally. AI transcribes and creates invoice instantly."
-              speed="10 seconds"
-              example='"Invoice Jane fifty thousand for logo"'
-              exampleType="voice"
-              benefits={[
-                {
-                  text: "Perfect for: When you're driving, busy, or prefer talking",
-                  bold: true,
-                },
-                { text: "Truly hands-free - no typing required" },
-                {
-                  text: "AI-powered transcription with Nigerian English support",
-                },
-              ]}
-            />
-            <FeatureCard
-              emoji="📸"
-              title="Photo OCR"
-              description="Snap a receipt photo. AI reads it and creates your invoice."
-              speed="8 seconds"
-              exampleType="photo"
-              benefits={[
-                {
-                  text: "Perfect for: Converting handwritten receipts to digital invoices",
-                  bold: true,
-                },
-                { text: "No retyping - AI reads customer name, amount, items" },
-                { text: "Available on Starter plan and above" },
-              ]}
-            />
-            <FeatureCard
-              emoji="🔐"
-              title="QR Verification"
-              description="Every invoice includes a QR code. Customers scan it to verify authenticity instantly."
-              speed="2 seconds"
-              exampleType="qr"
-              benefits={[
-                {
-                  text: "Perfect for: Building customer trust - prove invoices are legitimate",
-                  bold: true,
-                },
-                {
-                  text: "Stop impersonation - only your real invoices have valid QR codes",
-                },
-                { text: "Works with any phone camera - no special app needed" },
-              ]}
-            />
+      {/* Track Feature Section */}
+      <section className="bg-white px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-12 lg:grid-cols-2 items-center">
+            <div className="order-2 lg:order-1">
+              <div className="rounded-2xl bg-slate-50 p-6 border border-slate-200">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="h-10 w-10 rounded-full bg-brand-jade/10 flex items-center justify-center">
+                    <span className="text-xl">📊</span>
+                  </div>
+                  <p className="font-semibold text-slate-800">Payment Tracking</p>
+                </div>
+                <div className="space-y-4">
+                  <div className="rounded-xl bg-white p-4 border border-slate-100">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="font-medium text-slate-800">Jane Doe</p>
+                        <p className="text-sm text-slate-500">INV-2024-001</p>
+                      </div>
+                      <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">Paid</span>
+                    </div>
+                    <p className="mt-2 text-lg font-semibold text-brand-evergreen">₦50,000</p>
+                  </div>
+                  <div className="rounded-xl bg-white p-4 border border-slate-100">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="font-medium text-slate-800">John Smith</p>
+                        <p className="text-sm text-slate-500">INV-2024-002</p>
+                      </div>
+                      <span className="rounded-full bg-yellow-100 px-3 py-1 text-sm font-medium text-yellow-700">Pending</span>
+                    </div>
+                    <p className="mt-2 text-lg font-semibold text-brand-evergreen">₦75,000</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="order-1 lg:order-2">
+              <p className="text-sm font-semibold uppercase tracking-widest text-brand-jade">
+                Track
+              </p>
+              <h2 className="mt-3 text-3xl font-bold text-brand-evergreen sm:text-4xl">
+                Seamless payment tracking
+              </h2>
+              <p className="mt-4 text-lg text-slate-600">
+                Monitor payment streams with precision. Get real-time notifications when customers pay, and track your cash flow effortlessly.
+              </p>
+              <ul className="mt-8 space-y-4">
+                <FeatureItem text="Real-time payment notifications" />
+                <FeatureItem text="Daily and weekly reports" />
+                <FeatureItem text="Customer payment confirmation via WhatsApp" />
+              </ul>
+              <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-8 inline-flex items-center justify-center rounded-lg bg-brand-jade px-6 py-3 text-base font-semibold text-white shadow-lg transition-all hover:bg-brand-teal"
+              >
+                Get started
+              </a>
+            </div>
           </div>
-
-          <BeforeAfter />
-          <QuickStats />
         </div>
       </section>
     </>
@@ -137,339 +177,31 @@ export function Features() {
 
 interface StepCardProps {
   number: number;
-  emoji: string;
   title: string;
   description: string;
 }
 
-function StepCard({ number, emoji, title, description }: StepCardProps) {
+function StepCard({ number, title, description }: StepCardProps) {
   return (
-    <div className="relative rounded-2xl border border-white/10 bg-white/95 p-8 text-brand-charcoal shadow-lg">
-      <div className="absolute top-4 left-8 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-evergreen text-xl font-heading font-bold text-brand-evergreen shadow-md">
-        {/* box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px; */}
+    <div className="relative text-center">
+      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-brand-jade text-lg font-bold text-white shadow-lg">
         {number}
       </div>
-      <div className="mt-12 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-textMuted text-3xl">
-        {emoji}
-      </div>
-      <h3 className="mt-4 font-heading text-xl font-bold text-brand-evergreen">
-        {title}
-      </h3>
-      <p className="mt-3 text-sm text-brand-charcoal/80">{description}</p>
+      <h3 className="mt-4 text-lg font-bold text-brand-evergreen">{title}</h3>
+      <p className="mt-2 text-sm text-slate-600">{description}</p>
     </div>
   );
 }
 
-interface Benefit {
-  text: string;
-  bold?: boolean;
-}
-
-interface FeatureCardProps {
-  emoji: string;
-  title: string;
-  description: string;
-  speed: string;
-  example?: string;
-  exampleType?: "text" | "voice" | "photo" | "qr";
-  benefits: Benefit[];
-}
-
-function FeatureCard({
-  emoji,
-  title,
-  description,
-  speed,
-  example,
-  exampleType = "text",
-  benefits,
-}: FeatureCardProps) {
-  const accentClass = "bg-brand-textMuted";
-
+function FeatureItem({ text }: { text: string }) {
   return (
-    <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/95 p-8 text-brand-charcoal shadow-xl">
-      <div className="absolute inset-x-12 top-0 h-24 rounded-full bg-white/30 blur-3xl transition-opacity duration-300 group-hover:opacity-100" />
-      <div className="relative">
-        <div className="flex items-start justify-between">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-evergreen text-3xl text-white shadow-lg">
-            {emoji}
-          </div>
-          <span className="rounded-full bg-brand-textMuted px-3 py-1 text-xs font-semibold text-brand-evergreen">
-            ⚡ {speed}
-          </span>
-        </div>
-        <h3 className="mt-6 font-heading text-2xl font-bold text-brand-evergreen">
-          {title}
-        </h3>
-        <p className="mt-2 text-brand-charcoal/80">{description}</p>
-
-        <ExamplePreview
-          type={exampleType}
-          example={example}
-          accentClass={accentClass}
-        />
-
-        <ul className="mt-6 space-y-3">
-          {benefits.map((benefit, i) => (
-            <li
-              key={i}
-              className="flex items-start gap-3 text-sm text-brand-charcoal/70"
-            >
-              <svg
-                className="h-5 w-5 text-brand-jade mt-0.5 flex-shrink-0"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span>
-                {benefit.bold ? <strong>{benefit.text}</strong> : benefit.text}
-              </span>
-            </li>
-          ))}
-        </ul>
+    <li className="flex items-center gap-3">
+      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-jade/10">
+        <svg className="h-4 w-4 text-brand-jade" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+        </svg>
       </div>
-    </div>
-  );
-}
-
-function ExamplePreview({
-  type,
-  example,
-  accentClass,
-}: {
-  type: string;
-  example?: string;
-  accentClass: string;
-}) {
-  if (type === "text" && example) {
-    return (
-      <div
-        className={`mt-6 rounded-xl ${accentClass} p-4 border border-brand-teal/20`}
-      >
-        <p className="text-sm font-mono text-slate-700">{example}</p>
-        <div className="mt-3 flex items-center gap-2 text-xs text-brand-charcoal/60">
-          <span className="flex items-center gap-1">
-            <svg
-              className="h-4 w-4 text-green-500"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Invoice created
-          </span>
-          <span>→</span>
-          <span>5 sec</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (type === "voice" && example) {
-    return (
-      <div
-        className={`mt-6 rounded-xl ${accentClass} p-4 border border-brand-teal/20`}
-      >
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-500 text-white">
-            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-          <div className="flex-1">
-            <p className="text-sm font-medium text-slate-700">0:15 audio</p>
-            <p className="text-xs text-brand-charcoal/60 italic">{example}</p>
-          </div>
-        </div>
-        <div className="mt-3 flex items-center gap-2 text-xs text-brand-charcoal/60">
-          <span className="flex items-center gap-1">
-            <svg
-              className="h-4 w-4 text-green-500"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Transcribed + Invoice created
-          </span>
-          <span>→</span>
-          <span>10 sec</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (type === "photo") {
-    return (
-      <div
-        className={`mt-6 rounded-xl ${accentClass} p-4 border border-brand-teal/20`}
-      >
-        <div className="flex items-center gap-3">
-          <div className="relative w-16 h-16 rounded-lg bg-slate-200 flex items-center justify-center text-2xl overflow-hidden">
-            📄
-            <div className="absolute inset-0 border-2 border-dashed border-slate-400 rounded-lg"></div>
-          </div>
-          <div className="flex-1">
-            <p className="text-sm font-medium text-slate-700">
-              Receipt uploaded
-            </p>
-            <p className="text-xs text-brand-charcoal/60">
-              AI extracting data...
-            </p>
-          </div>
-        </div>
-        <div className="mt-3 flex items-center gap-2 text-xs text-brand-charcoal/60">
-          <span className="flex items-center gap-1">
-            <svg
-              className="h-4 w-4 text-green-500"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Data extracted + Invoice created
-          </span>
-          <span>→</span>
-          <span>8 sec</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (type === "qr") {
-    return (
-      <div
-        className={`mt-6 rounded-xl ${accentClass} p-4 border border-brand-teal/20`}
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-16 h-16 bg-slate-900 rounded-lg flex items-center justify-center">
-            <div className="grid grid-cols-4 gap-0.5">
-              {[...Array(16)].map((_, i) => (
-                <div key={i} className="w-1.5 h-1.5 bg-white rounded-sm"></div>
-              ))}
-            </div>
-          </div>
-          <div className="flex-1">
-            <p className="text-sm font-medium text-slate-700">
-              Customer scanning QR...
-            </p>
-            <p className="text-xs text-brand-charcoal/60">
-              Verifying invoice...
-            </p>
-          </div>
-        </div>
-        <div className="mt-3 flex items-center gap-2">
-          <div className="flex-1 rounded-lg bg-green-100 px-3 py-2 text-center">
-            <p className="text-lg font-bold text-green-700">✅ VERIFIED</p>
-            <p className="text-xs text-green-600">Invoice is authentic</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return null;
-}
-
-function BeforeAfter() {
-  return (
-    <div className="mt-20 rounded-3xl bg-gradient-to-r from-slate-900 to-slate-800 p-8 lg:p-12 shadow-2xl">
-      <div className="text-white">
-        <h3 className="text-center text-3xl font-bold  sm:text-4xl">
-          The Problem We Solve
-        </h3>
-      </div>
-      <div className="mt-12 grid gap-8 lg:grid-cols-2">
-        {/* Before */}
-        <div className="rounded-2xl bg-red-900/30 border-2 border-red-500/50 p-6">
-          <div className="text-red-200 flex items-center gap-3 mb-4">
-            <span className="text-3xl">😓</span>
-            <h4 className="text-xl font-bold">Without SuoOps</h4>
-          </div>
-          <ul className="space-y-3 text-slate-300">
-            {[
-              "Spend 10+ minutes creating each invoice manually",
-              "Customers can't verify if invoices are legitimate",
-              "Manually calculate VAT and development levy for tax compliance",
-              "Risk missing tax filing deadlines - no reminders or tracking",
-              "Manually retype receipt details (slow & error-prone)",
-              "Need computer access to create invoices",
-            ].map((item, i) => (
-              <li key={i} className="flex items-start gap-3">
-                <span className="text-red-400 mt-1">✗</span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* After */}
-        <div className="rounded-2xl bg-green-900/30 border-2 border-green-500/50 p-6">
-          <div className="flex items-center gap-3 mb-4 text-green-200">
-            <span className="text-3xl">🚀</span>
-            <h4 className="text-xl font-bold ">With SuoOps</h4>
-          </div>
-          <ul className="space-y-3 text-slate-300">
-            {[
-              "Create invoices in 5-10 seconds via WhatsApp or Email",
-              "Every invoice has a QR code for authenticity verification",
-              "Automated monthly tax reports with VAT & development levy calculations",
-              "Stay FIRS-compliant effortlessly - never miss a deadline",
-              "Snap receipt photos - AI extracts all details automatically",
-              "Work from anywhere - just use your phone",
-            ].map((item, i) => (
-              <li key={i} className="flex items-start gap-3">
-                <span className="text-green-400 mt-1">✓</span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function QuickStats() {
-  const stats = [
-    { value: "5s", label: "Text Invoice" },
-    { value: "10s", label: "Voice Invoice" },
-    { value: "8s", label: "Photo OCR" },
-    { value: "2s", label: "QR Verify" },
-  ];
-
-  return (
-    <div className="mt-16 grid gap-6 sm:grid-cols-4">
-      {stats.map((stat, i) => (
-        <div
-          key={i}
-          className="rounded-2xl border border-white/10 bg-white/10 p-6 text-center text-white"
-        >
-          <div className="text-4xl font-heading font-bold">{stat.value}</div>
-          <div className="mt-2 text-sm text-white/80">{stat.label}</div>
-        </div>
-      ))}
-    </div>
+      <span className="text-slate-700">{text}</span>
+    </li>
   );
 }
