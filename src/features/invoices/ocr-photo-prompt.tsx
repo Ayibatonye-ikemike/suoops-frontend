@@ -51,33 +51,22 @@ export function OcrPhotoPrompt() {
     );
   }
 
-  // User doesn't have OCR access - show upgrade prompt
+  // User doesn't have OCR access - show locked prompt (clicking goes to gated page)
   return (
-    <div className="rounded-2xl border border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20 p-4">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">📸</span>
-            <h3 className="text-base font-semibold text-amber-700 dark:text-amber-400">
-              Create from Photo
-            </h3>
-            <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 dark:bg-amber-800 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300">
-              <Lock className="h-3 w-3" />
-              Business
-            </span>
-          </div>
-          <p className="mt-1 text-sm text-amber-600 dark:text-amber-400">
-            Upgrade to Business plan to use AI-powered photo OCR for automatic invoice creation
-          </p>
+    <Link href="/dashboard/invoices/create-from-photo">
+      <div className="rounded-2xl border border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-900/20 p-4 cursor-pointer hover:bg-amber-100 dark:hover:bg-amber-900/30 transition">
+        <div className="flex items-center gap-2">
+          <span className="text-xl">📸</span>
+          <h3 className="text-sm font-semibold text-amber-700 dark:text-amber-400">
+            Create from Photo
+          </h3>
+          <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 dark:bg-amber-800 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300">
+            <Lock className="h-3 w-3" />
+            Business
+          </span>
         </div>
-        <Link
-          href="/dashboard/settings"
-          className="whitespace-nowrap rounded-lg bg-amber-600 px-5 py-3 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-amber-700"
-        >
-          Upgrade - {PLANS.BUSINESS.priceDisplay}/mo
-        </Link>
       </div>
-    </div>
+    </Link>
   );
 }
 
