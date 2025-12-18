@@ -104,8 +104,15 @@ export function RegisterForm() {
       if (businessName) {
         payload.business_name = businessName;
       }
-      // Include valid referral code
-      if (referralCode && referralValid) {
+      // Include referral code if it looks valid (length >= 6)
+      // Backend will do final validation - this ensures code is sent even if
+      // frontend validation had network issues
+      if (referralCode && referralCode.length >= 6) {
+        // Only block if we explicitly know the code is invalid
+        if (referralValid === false) {
+          setError("Please enter a valid referral code or leave the field empty.");
+          return;
+        }
         payload.referral_code = referralCode.toUpperCase();
       }
       if (!payload.name || !payload.email) {
