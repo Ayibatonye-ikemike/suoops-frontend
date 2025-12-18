@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   ChevronRight,
+  Settings,
 } from "lucide-react";
 
 // Simple auth context for admin
@@ -59,11 +60,10 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
-      const response = await fetch(`${apiUrl}/api/v1/auth/login`, {
+      const response = await fetch(`${apiUrl}/api/v1/admin/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
-        credentials: "include",
       });
 
       if (!response.ok) {
@@ -72,20 +72,8 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
 
       const data = await response.json();
       
-      // Get user info to check if admin
-      const userResponse = await fetch(`${apiUrl}/api/v1/users/me`, {
-        headers: { Authorization: `Bearer ${data.access_token}` },
-      });
-
-      if (!userResponse.ok) {
-        return false;
-      }
-
-      const userData = await userResponse.json();
-      
-      if (userData.role !== "admin") {
-        return false;
-      }
+      // Admin auth endpoint returns user info directly
+      const userData = data.user;
 
       setToken(data.access_token);
       setUser({
@@ -129,6 +117,7 @@ const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/tickets", label: "Tickets", icon: Ticket },
   { href: "/admin/users", label: "Users", icon: Users },
+  { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
 function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
