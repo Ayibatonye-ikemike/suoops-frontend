@@ -16,7 +16,6 @@ import { apiClient } from "@/api/client";
 import { Gift, CheckCircle2 } from "lucide-react";
 
 type Step = "details" | "otp";
-// Removed unused normalizePhone helper (duplicate exists in settings phone-number-section).
 
 export function RegisterForm() {
   const router = useRouter();
@@ -34,6 +33,8 @@ export function RegisterForm() {
   const [referralValid, setReferralValid] = useState<boolean | null>(null);
   const [referrerName, setReferrerName] = useState<string | null>(null);
   const [validatingReferral, setValidatingReferral] = useState(false);
+
+  const canResend = useMemo(() => resendTimer === 0, [resendTimer]);
 
   // Check for referral code in URL on mount
   useEffect(() => {
@@ -66,18 +67,6 @@ export function RegisterForm() {
       setValidatingReferral(false);
     }
   };
-
-export function RegisterForm() {
-  const router = useRouter();
-  const setTokens = useAuthStore((state) => state.setTokens);
-  const [step, setStep] = useState<Step>("details");
-  const [formValues, setFormValues] = useState<SignupStartPayload | null>(null);
-  const [otp, setOtp] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [resendTimer, setResendTimer] = useState(0);
-
-  const canResend = useMemo(() => resendTimer === 0, [resendTimer]);
 
   const startResendCountdown = useCallback(() => {
     setResendTimer(60);
