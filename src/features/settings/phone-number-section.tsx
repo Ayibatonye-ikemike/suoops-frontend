@@ -310,7 +310,7 @@ export function PhoneNumberSection({
         <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
           <li>Add your WhatsApp number below and verify with OTP</li>
           <li>Save our bot number: <strong>+234 810 686 5807</strong></li>
-          <li>Send a message like: <em>"Invoice John 50k for logo design"</em></li>
+          <li>Send a message like: <em>&ldquo;Invoice John 50k for logo design&rdquo;</em></li>
           <li>Invoice is created and sent to your customer instantly!</li>
         </ol>
       </div>
