@@ -7,6 +7,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { Lock, Camera } from "lucide-react";
 import { OcrPhotoUpload } from "@/features/invoices/ocr-photo-upload";
 import { OcrReviewModal } from "@/features/invoices/ocr-review-modal";
 import { useParseReceipt } from "@/features/invoices/use-ocr";
@@ -18,6 +20,12 @@ import { logFeatureEvent } from "@/lib/telemetry";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { OCRParseResult } from "@/features/invoices/use-ocr";
+import { apiClient } from "@/api/client";
+import type { components } from "@/api/types";
+import { hasPlanFeature, PLANS, type PlanTier } from "@/constants/pricing";
+import { Button } from "@/components/ui/button";
+
+type CurrentUser = components["schemas"]["UserOut"];
 
 export default function OcrInvoicePage() {
   const router = useRouter();
@@ -28,6 +36,19 @@ export default function OcrInvoicePage() {
 
   const parseReceipt = useParseReceipt();
   const createInvoice = useCreateInvoice();
+
+  // Fetch current user to check plan
+  const { data: user, isLoading: userLoading } = useQuery<CurrentUser>({
+    queryKey: ["currentUser"],
+    queryFn: async () => {
+      const response = await apiClient.get<CurrentUser>("/users/me");
+      return response.data;
+    },
+    staleTime: 60000,
+  });
+
+  const userPlan = (user?.plan?.toUpperCase() || "FREE") as PlanTier;
+  const hasOcrAccess = hasPlanFeature(userPlan, "PHOTO_OCR");
 
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
@@ -97,6 +118,76 @@ export default function OcrInvoicePage() {
   const handleCloseReview = () => {
     setShowReview(false);
   };
+
+  // Show loading state
+  if (userLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-jade" />
+      </div>
+    );
+  }
+
+  // Show upgrade prompt for users without OCR access
+  if (!hasOcrAccess) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-gray-950 py-8">
+        <div className="mx-auto max-w-4xl px-4">
+          {/* Header */}
+          <div className="mb-8">
+            <div className="mb-4 flex items-center space-x-2 text-sm text-slate-600 dark:text-gray-400">
+              <Link href="/dashboard/invoices" className="hover:text-blue-600">
+                Invoices
+              </Link>
+              <span>›</span>
+              <span className="text-slate-900 dark:text-white">Create from Photo</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-900/30">
+                <Camera className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  📸 Create Invoice from Photo
+                </h1>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  AI-powered receipt scanning
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Upgrade Card */}
+          <div className="flex flex-col items-center justify-center min-h-[400px] rounded-xl border border-amber-200 dark:border-amber-800 bg-white dark:bg-gray-900 p-8 text-center">
+            <div className="p-4 rounded-full bg-amber-100 dark:bg-amber-900/30 mb-4">
+              <Lock className="h-8 w-8 text-amber-600 dark:text-amber-400" />
+            </div>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              Photo OCR requires Business plan
+            </h2>
+            <p className="text-gray-500 dark:text-gray-400 max-w-md mb-2">
+              Upgrade to Business to unlock AI-powered photo OCR. Simply take a photo of any receipt 
+              and our AI will automatically extract customer name, amounts, and line items.
+            </p>
+            <p className="text-sm text-gray-400 dark:text-gray-500 mb-6">
+              Business plan includes 15 OCR invoices per month.
+            </p>
+            <Link href="/dashboard/settings">
+              <Button className="bg-amber-600 hover:bg-amber-700 text-white">
+                Upgrade to Business - {PLANS.BUSINESS.priceDisplay}/month
+              </Button>
+            </Link>
+            <Link 
+              href="/dashboard/invoices/create"
+              className="mt-4 text-sm text-brand-jade hover:underline"
+            >
+              ← Create invoice manually instead
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 py-8">
