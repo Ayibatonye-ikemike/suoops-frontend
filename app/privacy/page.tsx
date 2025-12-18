@@ -46,7 +46,6 @@ export default function PrivacyPage() {
               <li><strong>Invoice Data:</strong> Customer names, phone numbers, email addresses, amounts, and invoice details you create</li>
               <li><strong>Payment Information:</strong> Bank account details for receiving payments (we do NOT store card details)</li>
               <li><strong>WhatsApp Messages:</strong> Messages sent to our WhatsApp bot for invoice creation</li>
-              <li><strong>Voice Recordings:</strong> Voice notes sent via WhatsApp (transcribed using AI and immediately deleted after processing)</li>
               <li><strong>Receipt Images:</strong> Photos of receipts sent for OCR processing (processed by AI to extract invoice details, then deleted)</li>
               <li><strong>Custom Branding:</strong> Business logos uploaded for invoice customization (stored securely on AWS S3)</li>
               <li><strong>Tax Data:</strong> VAT rates, development levy calculations, and tax compliance reports generated from your invoices</li>
@@ -61,7 +60,7 @@ export default function PrivacyPage() {
               <li>Provide and maintain our invoice management service</li>
               <li>Process and send invoices to your customers via WhatsApp and Email</li>
               <li>Generate PDF invoices and receipts with your custom branding</li>
-              <li>Process voice notes and receipt photos using AI to extract invoice details</li>
+              <li>Process receipt photos using AI to extract invoice details</li>
               <li>Calculate and generate automated tax compliance reports (VAT, development levy)</li>
               <li>Send you notifications about invoice status, payments, and tax deadlines</li>
               <li>Process subscription payments and manage your account</li>
@@ -81,7 +80,6 @@ export default function PrivacyPage() {
               <li>Secure cloud storage on AWS (S3 for files and logos, RDS for database)</li>
               <li>Regular security audits and updates</li>
               <li>Access controls and authentication for all systems</li>
-              <li>Voice recordings are transcribed using AI and immediately deleted (not stored)</li>
               <li>Receipt photos are processed for OCR and deleted (not permanently stored)</li>
               <li>Custom logos stored securely with access controls</li>
               <li>Tax reports encrypted and accessible only to you</li>
@@ -97,7 +95,6 @@ export default function PrivacyPage() {
               <li><strong>Brevo (formerly Sendinblue):</strong> For sending email notifications and invoice delivery</li>
               <li><strong>Paystack:</strong> For processing subscription payments</li>
               <li><strong>AWS:</strong> For cloud infrastructure and storage (S3 for files, RDS for database)</li>
-              <li><strong>OpenAI Whisper:</strong> For AI-powered voice note transcription</li>
               <li><strong>OCR AI Services:</strong> For extracting invoice details from receipt photos</li>
             </ul>
             <p className="mt-4">

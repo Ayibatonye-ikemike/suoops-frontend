@@ -47,7 +47,7 @@ export default function TermsPage() {
               SuoOps is a WhatsApp and Email-based invoice management platform that allows businesses to:
             </p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
-              <li>Create invoices via voice notes, text messages, or receipt photos on WhatsApp</li>
+              <li>Create invoices via text messages or receipt photos on WhatsApp</li>
               <li>Send invoices to customers via WhatsApp and Email</li>
               <li>Generate professional PDF invoices with custom branding (logos)</li>
               <li>Track invoice status and payments with QR code verification</li>
@@ -76,11 +76,11 @@ export default function TermsPage() {
               <li><strong>Free Plan:</strong> ₦0/month - 5 invoices/month (manual WhatsApp & Email only)</li>
               <li><strong>Starter Plan:</strong> ₦4,500/month - 100 invoices/month + Tax reports & automation</li>
               <li><strong>Pro Plan:</strong> ₦8,000/month - 200 invoices/month + Custom logo branding + Priority support</li>
-              <li><strong>Business Plan:</strong> ₦16,000/month - 300 invoices/month + Voice invoices (15/mo) + Photo OCR (15/mo) + API access</li>
-              <li><strong>Enterprise Plan:</strong> ₦50,000/month - Unlimited invoices + Unlimited Voice & OCR + Custom features + Dedicated support</li>
+              <li><strong>Business Plan:</strong> ₦16,000/month - 300 invoices/month + Photo OCR (15/mo) + API access</li>
+              <li><strong>Enterprise Plan:</strong> ₦50,000/month - Unlimited invoices + Unlimited OCR + Custom features + Dedicated support</li>
             </ul>
             <p className="mt-4">
-              <strong>Business Plan Voice & OCR Quota:</strong> The Business plan includes up to 15 voice invoices and 15 photo OCR invoices per 30-day billing cycle (5% of your 300 invoice limit). The remaining 285 invoices must be created manually via WhatsApp text or dashboard. This quota resets every 30 days from your subscription start date. Enterprise plan has unlimited premium features.
+              <strong>Business Plan OCR Quota:</strong> The Business plan includes up to 15 photo OCR invoices per 30-day billing cycle (5% of your 300 invoice limit). The remaining 285 invoices must be created manually via WhatsApp text or dashboard. This quota resets every 30 days from your subscription start date. Enterprise plan has unlimited premium features.
             </p>
             <p className="mt-4">
               Invoice limits reset every 30 days from your subscription start date (or account creation for free users). Unused invoices do not roll over. If you exceed your limit, you must upgrade or wait until your next billing cycle.
@@ -131,7 +131,6 @@ export default function TermsPage() {
             <ul className="mt-4 list-disc space-y-2 pl-6">
               <li>You must comply with WhatsApp&apos;s Terms of Service and Business Policy</li>
               <li>We are not responsible for WhatsApp service interruptions or delivery failures</li>
-              <li>Voice notes sent to our bot are transcribed using AI and immediately deleted</li>
               <li>Receipt photos sent for OCR processing are analyzed and deleted (not stored)</li>
               <li>Messages must be sent to our official WhatsApp number only</li>
               <li>We may suspend service if WhatsApp flags your account for spam or violations</li>
@@ -147,14 +146,13 @@ export default function TermsPage() {
               The following premium features are available exclusively on Business and Enterprise plans:
             </p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
-              <li><strong>Voice Invoices:</strong> Create invoices by sending voice notes via WhatsApp (AI transcription)</li>
               <li><strong>Photo OCR:</strong> Snap receipt photos and AI automatically extracts invoice details</li>
             </ul>
             <p className="mt-4">
               <strong>Custom Branding</strong> (logo upload) is available on Pro, Business, and Enterprise plans.
             </p>
             <p className="mt-4">
-              <strong>Important:</strong> Voice recordings and receipt photos are processed using AI and immediately deleted after extraction. We do not store these files permanently.
+              <strong>Important:</strong> Receipt photos are processed using AI and immediately deleted after extraction. We do not store these files permanently.
             </p>
           </section>
 

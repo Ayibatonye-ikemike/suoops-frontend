@@ -86,10 +86,9 @@ export const PLANS: Record<PlanTier, Plan> = {
     invoiceLimit: 300,
     invoiceLimitDisplay: "300 invoices/month",
     icon: "💼",
-    description: "Advanced features with voice and OCR",
+    description: "Advanced features with OCR",
     features: [
       "Everything in Pro",
-      "Voice invoices (15/mo)",
       "Photo OCR (15/mo)",
       "API access",
     ],
@@ -133,7 +132,6 @@ export const FEATURE_GATES = {
   CUSTOM_BRANDING: ["PRO", "BUSINESS"] as PlanTier[],
   INVENTORY: ["PRO", "BUSINESS"] as PlanTier[],
   TEAM_MANAGEMENT: ["PRO", "BUSINESS"] as PlanTier[],
-  VOICE_INVOICES: ["BUSINESS"] as PlanTier[],
   PHOTO_OCR: ["BUSINESS"] as PlanTier[],
   API_ACCESS: ["BUSINESS"] as PlanTier[],
 } as const;
@@ -142,7 +140,7 @@ export const FEATURE_GATES = {
  * Business plan quota limitations (5% of invoice limit)
  */
 export const BUSINESS_QUOTA = {
-  VOICE_OCR_LIMIT: 15, // 5% of 300 invoices
+  OCR_LIMIT: 15, // 5% of 300 invoices
   TOTAL_INVOICES: 300,
 } as const;
 

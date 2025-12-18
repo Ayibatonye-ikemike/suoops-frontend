@@ -42,7 +42,7 @@ export function RegulatoryNotice({ variant = "general", className = "" }: Regula
       {expanded && (
         <div className="space-y-2 text-xs text-blue-800 leading-relaxed">
           <p>
-            <strong>SuoOps</strong> is a WhatsApp-first automation platform for micro and informal businesses in Nigeria. Users create and send invoices using simple voice notes or text messages—no app installs or training required.
+            <strong>SuoOps</strong> is a WhatsApp-first automation platform for micro and informal businesses in Nigeria. Users create and send invoices using simple text messages—no app installs or training required.
           </p>
           <p>
             We leverage AI/NLP to formalise transactions, accelerate payments, and reduce friction. The newly added tax & compliance features are <strong>provisional</strong>: final integration with the fiscalization authority (FIRS / prospective NBR gateway) awaits issuance of production credentials.

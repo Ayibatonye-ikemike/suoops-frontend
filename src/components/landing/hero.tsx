@@ -19,7 +19,7 @@ export function Hero({ onWatchDemo }: HeroProps) {
               <span className="text-brand-citrus">or Email. Get paid faster.</span>
             </h1>
             <p className="mt-6 text-lg text-white/80 max-w-lg">
-              Create invoices via WhatsApp (voice or text) or from our web dashboard. Customers receive invoices via WhatsApp and Email—wherever they prefer.
+              Create invoices via WhatsApp text or from our web dashboard. Customers receive invoices via WhatsApp and Email—wherever they prefer.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <a
@@ -65,25 +65,13 @@ export function Hero({ onWatchDemo }: HeroProps) {
                   </div>
                   {/* Chat Messages */}
                   <div className="bg-[#efeae2] px-4 py-6 space-y-3 min-h-[340px]">
-                    {/* User Voice Note */}
+                    {/* User Text Message */}
                     <div className="flex justify-end">
                       <div className="max-w-[85%] rounded-lg bg-emerald-100 px-4 py-3 shadow-sm">
-                        <div className="flex items-center gap-2">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500 text-white">
-                            <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                            </svg>
-                          </div>
-                          <div className="flex-1">
-                            <div className="h-1 w-24 rounded-full bg-emerald-300">
-                              <div className="h-1 w-3/4 rounded-full bg-emerald-600"></div>
-                            </div>
-                            <p className="mt-1 text-xs text-slate-500">0:08</p>
-                          </div>
-                        </div>
-                        <p className="mt-2 text-xs text-slate-500 italic">
-                          &quot;Invoice Jane 50k for logo design&quot;
+                        <p className="text-sm text-slate-800">
+                          Invoice Jane 50k for logo design
                         </p>
+                        <p className="mt-1 text-xs text-slate-500 text-right">9:41 AM ✓✓</p>
                       </div>
                     </div>
                     {/* Bot Response */}
@@ -119,16 +107,16 @@ export function Hero({ onWatchDemo }: HeroProps) {
 
 function FeaturePills() {
   const features = [
-    { emoji: "🎤", text: "Voice invoices" },
     { emoji: "💬", text: "Text invoices" },
     { emoji: "📸", text: "Photo OCR" },
     { emoji: "🔐", text: "QR verification" },
     { emoji: "📱", text: "Mobile-first" },
     { emoji: "⚡", text: "Fast setup" },
-    { emoji: "🎤", text: "Voice invoices" },
+    { emoji: "📧", text: "Email delivery" },
     { emoji: "💬", text: "Text invoices" },
     { emoji: "📸", text: "Photo OCR" },
     { emoji: "🔐", text: "QR verification" },
+    { emoji: "📧", text: "Email delivery" },
   ];
 
   return (

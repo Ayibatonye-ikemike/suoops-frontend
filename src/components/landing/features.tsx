@@ -30,7 +30,7 @@ export function Features() {
             <StepCard
               number={3}
               title="Send a Message"
-              description='Just type or speak: "Invoice Jane 50k for logo design".'
+              description='Just type: "Invoice Jane 50k for logo design".'
             />
             <StepCard
               number={4}
@@ -56,7 +56,7 @@ export function Features() {
                 Create invoices from WhatsApp or our web dashboard. Customers receive them via WhatsApp and Email automatically.
               </p>
               <ul className="mt-8 space-y-4">
-                <FeatureItem text="WhatsApp: Voice notes or text messages" />
+                <FeatureItem text="WhatsApp: Text messages" />
                 <FeatureItem text="Web dashboard: Create invoices online" />
                 <FeatureItem text="Delivery: WhatsApp + Email to customers" />
                 <FeatureItem text="QR code verification on every invoice" />
