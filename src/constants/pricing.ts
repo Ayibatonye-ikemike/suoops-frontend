@@ -48,8 +48,8 @@ export const PLANS: Record<PlanTier, Plan> = {
   STARTER: {
     id: "STARTER",
     name: "Starter",
-    price: 4500,
-    priceDisplay: "₦4,500",
+    price: 2500,
+    priceDisplay: "₦2,500",
     invoiceLimit: 100,
     invoiceLimitDisplay: "100 invoices/month",
     popular: true,
@@ -64,8 +64,8 @@ export const PLANS: Record<PlanTier, Plan> = {
   PRO: {
     id: "PRO",
     name: "Pro",
-    price: 8000,
-    priceDisplay: "₦8,000",
+    price: 5000,
+    priceDisplay: "₦5,000",
     invoiceLimit: 200,
     invoiceLimitDisplay: "200 invoices/month",
     icon: "⭐",
@@ -81,8 +81,8 @@ export const PLANS: Record<PlanTier, Plan> = {
   BUSINESS: {
     id: "BUSINESS",
     name: "Business",
-    price: 16000,
-    priceDisplay: "₦16,000",
+    price: 10000,
+    priceDisplay: "₦10,000",
     invoiceLimit: 300,
     invoiceLimitDisplay: "300 invoices/month",
     icon: "💼",
