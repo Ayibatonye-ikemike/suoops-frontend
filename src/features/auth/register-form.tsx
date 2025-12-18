@@ -12,7 +12,8 @@ import {
 } from "./auth-api";
 import { useAuthStore } from "./auth-store";
 import { OTPInput } from "./otp-input";
-import { apiClient } from "@/api/client";
+import axios from "axios";
+import { getConfig } from "@/lib/config";
 import { Gift, CheckCircle2 } from "lucide-react";
 
 type Step = "details" | "otp";
@@ -54,14 +55,24 @@ export function RegisterForm() {
     
     setValidatingReferral(true);
     try {
-      const response = await apiClient.post<{ valid: boolean; referrer_name?: string; error?: string }>(
-        "/referrals/validate",
-        { code: code.toUpperCase() }
+      const { apiBaseUrl } = getConfig();
+      const response = await axios.post<{ valid: boolean; referrer_name?: string; error?: string }>(
+        `${apiBaseUrl}/referrals/validate`,
+        { code: code.toUpperCase() },
+        { headers: { "Content-Type": "application/json" }, withCredentials: true }
       );
       setReferralValid(response.data.valid);
       setReferrerName(response.data.referrer_name || null);
-    } catch {
-      setReferralValid(false);
+    } catch (err: unknown) {
+      // Only mark as invalid if it's a 4xx response (client error / not found)
+      // For network errors or 5xx, keep as null (unknown) so user can still try
+      const status = (err as { response?: { status?: number } })?.response?.status;
+      if (status && status >= 400 && status < 500) {
+        setReferralValid(false);
+      } else {
+        // Network error or server error - don't show as invalid, just reset
+        setReferralValid(null);
+      }
       setReferrerName(null);
     } finally {
       setValidatingReferral(false);
