@@ -131,53 +131,39 @@ export default function OcrInvoicePage() {
   // Show upgrade prompt for users without OCR access
   if (!hasOcrAccess) {
     return (
-      <div className="py-6">
-        <div className="mx-auto max-w-2xl px-4">
-          {/* Header */}
-          <div className="mb-6">
-            <div className="mb-3 flex items-center space-x-2 text-sm text-slate-600 dark:text-gray-400">
-              <Link href="/dashboard/invoices" className="hover:text-blue-600">
-                Invoices
-              </Link>
-              <span>›</span>
-              <span className="text-slate-900 dark:text-white">Create from Photo</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Camera className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                Create Invoice from Photo
-              </h1>
-            </div>
-          </div>
+      <div className="px-4 py-4">
+        {/* Breadcrumb */}
+        <div className="mb-3 flex items-center space-x-2 text-xs text-slate-500">
+          <Link href="/dashboard/invoices" className="hover:text-blue-600">
+            Invoices
+          </Link>
+          <span>›</span>
+          <span>Photo OCR</span>
+        </div>
 
-          {/* Upgrade Card - Compact */}
-          <div className="rounded-lg border border-amber-200 dark:border-amber-800 bg-white dark:bg-gray-900 p-6">
-            <div className="flex items-start gap-4">
-              <div className="p-2 rounded-full bg-amber-100 dark:bg-amber-900/30 shrink-0">
-                <Lock className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-                  Business plan required
-                </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                  Upgrade to use AI-powered photo OCR. Take a photo of any receipt and we&apos;ll extract the details automatically. Includes 15 OCR invoices/month.
-                </p>
-                <div className="flex flex-wrap items-center gap-3">
-                  <Link href="/dashboard/settings">
-                    <Button size="sm" className="bg-amber-600 hover:bg-amber-700 text-white">
-                      Upgrade - {PLANS.BUSINESS.priceDisplay}/mo
-                    </Button>
-                  </Link>
-                  <Link 
-                    href="/dashboard/invoices/create"
-                    className="text-sm text-brand-jade hover:underline"
-                  >
-                    Create manually instead
-                  </Link>
-                </div>
-              </div>
-            </div>
+        {/* Compact Upgrade Card */}
+        <div className="rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20 p-4">
+          <div className="flex items-center gap-3 mb-2">
+            <Lock className="h-4 w-4 text-amber-600 shrink-0" />
+            <span className="font-semibold text-gray-900 dark:text-white text-sm">
+              Business plan required
+            </span>
+          </div>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
+            Upgrade to scan receipts with AI. 15 OCR invoices/month included.
+          </p>
+          <div className="flex items-center gap-3">
+            <Link href="/dashboard/settings">
+              <Button size="sm" className="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-1.5 h-auto">
+                Upgrade - {PLANS.BUSINESS.priceDisplay}/mo
+              </Button>
+            </Link>
+            <Link 
+              href="/dashboard/invoices/create"
+              className="text-xs text-brand-jade hover:underline"
+            >
+              Manual instead
+            </Link>
           </div>
         </div>
       </div>
