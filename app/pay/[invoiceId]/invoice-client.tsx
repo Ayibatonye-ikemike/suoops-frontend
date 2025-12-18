@@ -281,7 +281,7 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
           className="mt-4 w-full rounded-lg bg-brand-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
           aria-disabled={isSubmitting || isAwaiting || isPaid || isClosed}
         >
-          {isPaid ? "✓ Payment confirmed" : isAwaiting ? "✓ Business notified" : isSubmitting ? "Notifying..." : "I&apos;ve sent the transfer"}
+          {isPaid ? "✓ Payment confirmed" : isAwaiting ? "✓ Business notified" : isSubmitting ? "Notifying..." : "I've sent the transfer"}
         </button>
         {isPolling && !isPaid && !isClosed && (
           <p className="mt-2 text-xs text-slate-500" aria-live="polite">Checking status…</p>
