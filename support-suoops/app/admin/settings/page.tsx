@@ -54,7 +54,7 @@ export default function SettingsPage() {
 
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
-        const res = await fetch(`${apiUrl}/api/v1/admin/auth/admins`, {
+        const res = await fetch(`${apiUrl}/admin/auth/admins`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -80,7 +80,7 @@ export default function SettingsPage() {
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
-      const res = await fetch(`${apiUrl}/api/v1/admin/auth/invite`, {
+      const res = await fetch(`${apiUrl}/admin/auth/invite`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -105,7 +105,7 @@ export default function SettingsPage() {
       setShowInviteForm(false);
 
       // Refresh admins list
-      const adminsRes = await fetch(`${apiUrl}/api/v1/admin/auth/admins`, {
+      const adminsRes = await fetch(`${apiUrl}/admin/auth/admins`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (adminsRes.ok) {

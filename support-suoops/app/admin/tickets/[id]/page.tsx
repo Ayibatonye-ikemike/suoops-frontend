@@ -76,7 +76,7 @@ export default function TicketDetailPage() {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
         const res = await fetch(
-          `${apiUrl}/api/v1/support/admin/tickets/${ticketId}`,
+          `${apiUrl}/support/admin/tickets/${ticketId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -110,7 +110,7 @@ export default function TicketDetailPage() {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
       const res = await fetch(
-        `${apiUrl}/api/v1/support/admin/tickets/${ticketId}`,
+        `${apiUrl}/support/admin/tickets/${ticketId}`,
         {
           method: "PATCH",
           headers: {

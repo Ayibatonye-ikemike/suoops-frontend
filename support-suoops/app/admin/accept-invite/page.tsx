@@ -38,7 +38,7 @@ function AcceptInviteForm() {
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
-      const response = await fetch(`${apiUrl}/api/v1/admin/auth/accept-invite`, {
+      const response = await fetch(`${apiUrl}/admin/auth/accept-invite`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, password }),

@@ -122,7 +122,7 @@ export default function TicketsPage() {
         if (categoryFilter) params.set("category", categoryFilter);
 
         const res = await fetch(
-          `${apiUrl}/api/v1/support/admin/tickets?${params}`,
+          `${apiUrl}/support/admin/tickets?${params}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 

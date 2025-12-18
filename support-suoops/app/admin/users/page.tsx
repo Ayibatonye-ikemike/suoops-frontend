@@ -73,7 +73,7 @@ export default function UsersPage() {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
         const res = await fetch(
-          `${apiUrl}/api/v1/admin/users?search=${encodeURIComponent(searchQuery)}&limit=20`,
+          `${apiUrl}/admin/users?search=${encodeURIComponent(searchQuery)}&limit=20`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -96,7 +96,7 @@ export default function UsersPage() {
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
-      const res = await fetch(`${apiUrl}/api/v1/admin/users/${userId}`, {
+      const res = await fetch(`${apiUrl}/admin/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

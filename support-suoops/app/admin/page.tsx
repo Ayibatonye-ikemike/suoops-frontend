@@ -156,7 +156,7 @@ export default function AdminDashboard() {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
         
         // Fetch dashboard stats
-        const statsRes = await fetch(`${apiUrl}/api/v1/support/admin/dashboard`, {
+        const statsRes = await fetch(`${apiUrl}/support/admin/dashboard`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         
@@ -166,7 +166,7 @@ export default function AdminDashboard() {
 
         // Fetch recent tickets
         const ticketsRes = await fetch(
-          `${apiUrl}/api/v1/support/admin/tickets?limit=5`,
+          `${apiUrl}/support/admin/tickets?limit=5`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         

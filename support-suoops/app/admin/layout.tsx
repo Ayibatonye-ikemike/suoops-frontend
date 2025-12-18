@@ -60,7 +60,7 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
-      const response = await fetch(`${apiUrl}/api/v1/admin/auth/login`, {
+      const response = await fetch(`${apiUrl}/admin/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

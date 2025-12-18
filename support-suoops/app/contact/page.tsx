@@ -36,7 +36,7 @@ export default function ContactPage() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com"}/api/v1/support/contact`,
+        `${process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com"}/support/contact`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
