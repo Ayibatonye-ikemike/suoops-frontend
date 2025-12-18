@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useMemo, useState, useEffect } from "react";
 
 import {
   requestSignupOTP,
@@ -12,9 +12,60 @@ import {
 } from "./auth-api";
 import { useAuthStore } from "./auth-store";
 import { OTPInput } from "./otp-input";
+import { apiClient } from "@/api/client";
+import { Gift, CheckCircle2 } from "lucide-react";
 
 type Step = "details" | "otp";
 // Removed unused normalizePhone helper (duplicate exists in settings phone-number-section).
+
+export function RegisterForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const setTokens = useAuthStore((state) => state.setTokens);
+  const [step, setStep] = useState<Step>("details");
+  const [formValues, setFormValues] = useState<SignupStartPayload | null>(null);
+  const [otp, setOtp] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [resendTimer, setResendTimer] = useState(0);
+  
+  // Referral code state
+  const [referralCode, setReferralCode] = useState("");
+  const [referralValid, setReferralValid] = useState<boolean | null>(null);
+  const [referrerName, setReferrerName] = useState<string | null>(null);
+  const [validatingReferral, setValidatingReferral] = useState(false);
+
+  // Check for referral code in URL on mount
+  useEffect(() => {
+    const refCode = searchParams.get("ref");
+    if (refCode) {
+      setReferralCode(refCode.toUpperCase());
+      validateReferralCode(refCode);
+    }
+  }, [searchParams]);
+
+  const validateReferralCode = async (code: string) => {
+    if (!code || code.length < 6) {
+      setReferralValid(null);
+      setReferrerName(null);
+      return;
+    }
+    
+    setValidatingReferral(true);
+    try {
+      const response = await apiClient.post<{ valid: boolean; referrer_name?: string; error?: string }>(
+        "/referrals/validate",
+        { code: code.toUpperCase() }
+      );
+      setReferralValid(response.data.valid);
+      setReferrerName(response.data.referrer_name || null);
+    } catch {
+      setReferralValid(false);
+      setReferrerName(null);
+    } finally {
+      setValidatingReferral(false);
+    }
+  };
 
 export function RegisterForm() {
   const router = useRouter();
@@ -53,6 +104,10 @@ export function RegisterForm() {
       if (businessName) {
         payload.business_name = businessName;
       }
+      // Include valid referral code
+      if (referralCode && referralValid) {
+        payload.referral_code = referralCode.toUpperCase();
+      }
       if (!payload.name || !payload.email) {
         setError("Please provide your name and email address.");
         return;
@@ -76,7 +131,7 @@ export function RegisterForm() {
         setLoading(false);
       }
     },
-    [startResendCountdown]
+    [startResendCountdown, referralCode, referralValid]
   );
 
   const handleVerifyOTP = useCallback(
@@ -219,6 +274,50 @@ export function RegisterForm() {
           className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
         />
       </label>
+      
+      {/* Referral Code Input */}
+      <div className="flex flex-col gap-2 text-left text-sm font-semibold text-slate-700">
+        <label htmlFor="referral-code" className="flex items-center gap-2">
+          <Gift className="w-4 h-4 text-emerald-600" />
+          Referral code <span className="text-xs font-normal text-slate-400">Optional</span>
+        </label>
+        <input
+          id="referral-code"
+          name="referral-code"
+          placeholder="ABCD1234"
+          value={referralCode}
+          onChange={(e) => {
+            const code = e.target.value.toUpperCase();
+            setReferralCode(code);
+            if (code.length >= 6) {
+              validateReferralCode(code);
+            } else {
+              setReferralValid(null);
+              setReferrerName(null);
+            }
+          }}
+          className={`rounded-lg border bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition uppercase tracking-wider ${
+            referralValid === true
+              ? "border-emerald-500 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
+              : referralValid === false
+              ? "border-rose-300 focus:border-rose-400 focus:ring-2 focus:ring-rose-400/20"
+              : "border-slate-200 focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+          }`}
+        />
+        {validatingReferral && (
+          <p className="text-xs text-slate-500">Validating...</p>
+        )}
+        {referralValid === true && referrerName && (
+          <p className="text-xs text-emerald-600 flex items-center gap-1">
+            <CheckCircle2 className="w-3 h-3" />
+            Referred by {referrerName}
+          </p>
+        )}
+        {referralValid === false && referralCode.length >= 6 && (
+          <p className="text-xs text-rose-500">Invalid referral code</p>
+        )}
+      </div>
+      
       <button
         type="submit"
         disabled={loading}

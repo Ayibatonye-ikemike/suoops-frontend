@@ -20,6 +20,7 @@ export type SignupStartPayload = {
   email?: string | null;
   name: string;
   business_name?: string | null;
+  referral_code?: string | null;
 };
 
 export type SignupVerifyPayload = {
