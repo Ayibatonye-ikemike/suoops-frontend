@@ -101,3 +101,27 @@ export async function getPaymentDetail(
   const response = await apiClient.get(`/subscriptions/history/${paymentId}`);
   return response.data;
 }
+
+// ============================================
+// Invoice Pack Purchase API
+// ============================================
+
+export interface InvoicePackPurchaseResponse {
+  authorization_url: string;
+  reference: string;
+  amount: number;
+  invoices_to_add: number;
+}
+
+/**
+ * Initialize Paystack payment for invoice pack purchase.
+ * @param quantity Number of packs to purchase (default 1). Each pack = 100 invoices = ₦2,500
+ */
+export async function initializeInvoicePackPurchase(
+  quantity: number = 1
+): Promise<InvoicePackPurchaseResponse> {
+  const response = await apiClient.post("/invoices/purchase-pack", null, {
+    params: { quantity },
+  });
+  return response.data;
+}
