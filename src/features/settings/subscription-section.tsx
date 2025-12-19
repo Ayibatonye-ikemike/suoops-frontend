@@ -40,7 +40,8 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
   const subscriptionStartedAt = user?.subscription_started_at
     ? new Date(user.subscription_started_at)
     : null;
-  const isPaidPlan = currentPlan !== "FREE";
+  // Only PRO and BUSINESS have monthly subscriptions
+  const hasMonthlySubscription = currentPlan === "PRO" || currentPlan === "BUSINESS";
   const isExpiringSoon =
     subscriptionExpiresAt &&
     subscriptionExpiresAt.getTime() - Date.now() < 7 * 24 * 60 * 60 * 1000;
@@ -132,8 +133,8 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
               </div>
             </div>
 
-            {/* Subscription Expiry Notice for Paid Plans */}
-            {isPaidPlan && subscriptionExpiresAt && (
+            {/* Subscription Expiry Notice for PRO/BUSINESS Plans Only */}
+            {hasMonthlySubscription && subscriptionExpiresAt && (
               <div
                 className={`rounded-2xl border p-4 ${
                   isExpiringSoon
