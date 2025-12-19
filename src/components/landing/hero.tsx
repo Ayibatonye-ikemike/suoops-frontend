@@ -69,7 +69,7 @@ export function Hero({ onWatchDemo }: HeroProps) {
                     <div className="flex justify-end">
                       <div className="max-w-[85%] rounded-lg bg-emerald-100 px-4 py-3 shadow-sm">
                         <p className="text-sm text-slate-800">
-                          Invoice Jane 50k for logo design
+                          Invoice Joy 08078557662, 2000 boxers, 5000 hair
                         </p>
                         <p className="mt-1 text-xs text-slate-500 text-right">9:41 AM ✓✓</p>
                       </div>
@@ -80,8 +80,8 @@ export function Hero({ onWatchDemo }: HeroProps) {
                         <p className="text-sm font-semibold text-slate-800">✅ Invoice Created!</p>
                         <div className="mt-2 space-y-1 text-sm text-slate-600">
                           <p>📄 INV-2024-001</p>
-                          <p>👤 Jane</p>
-                          <p>💰 ₦50,000</p>
+                          <p>👤 Joy</p>
+                          <p>💰 ₦7,000</p>
                         </div>
                         <button className="mt-3 w-full rounded-lg bg-brand-jade py-2 text-sm font-semibold text-white">
                           View Invoice →

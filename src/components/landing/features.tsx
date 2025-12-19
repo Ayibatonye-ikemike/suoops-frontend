@@ -30,7 +30,7 @@ export function Features() {
             <StepCard
               number={3}
               title="Send a Message"
-              description='Just type: "Invoice Jane 50k for logo design".'
+              description='Type: "Invoice Joy 08012345678, 2000 boxers, 5000 hair".'
             />
             <StepCard
               number={4}
@@ -91,11 +91,11 @@ export function Features() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Customer</span>
-                    <span className="text-slate-800">Jane Doe</span>
+                    <span className="text-slate-800">Joy</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Amount</span>
-                    <span className="font-semibold text-brand-evergreen">₦50,000</span>
+                    <span className="font-semibold text-brand-evergreen">₦7,000</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Status</span>
