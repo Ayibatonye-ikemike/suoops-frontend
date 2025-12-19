@@ -73,17 +73,16 @@ export default function TermsPage() {
             <h2 className="text-2xl font-bold text-slate-900">4. Subscription Plans</h2>
             <p className="mt-4">We offer the following subscription tiers:</p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
-              <li><strong>Free Plan:</strong> ₦0/month - 5 invoices/month (manual WhatsApp & Email only)</li>
-              <li><strong>Starter Plan:</strong> ₦2,500/month - 100 invoices/month + Tax reports & automation</li>
-              <li><strong>Pro Plan:</strong> ₦5,000/month - 200 invoices/month + Custom logo branding + Priority support</li>
-              <li><strong>Business Plan:</strong> ₦10,000/month - 300 invoices/month + Photo OCR (15/mo) + API access</li>
-              <li><strong>Enterprise Plan:</strong> ₦50,000/month - Unlimited invoices + Unlimited OCR + Custom features + Dedicated support</li>
+              <li><strong>Free Plan:</strong> ₦0 - 5 free invoices to start</li>
+              <li><strong>Starter Plan:</strong> No monthly fee - Buy invoice packs (₦2,500 per 100) + Tax reports & automation</li>
+              <li><strong>Pro Plan:</strong> ₦5,000/month - 100 invoices included + Custom logo branding + Priority support</li>
+              <li><strong>Business Plan:</strong> ₦10,000/month - 100 invoices included + Photo OCR (15/mo) + API access</li>
             </ul>
             <p className="mt-4">
-              <strong>Business Plan OCR Quota:</strong> The Business plan includes up to 15 photo OCR invoices per 30-day billing cycle (5% of your 300 invoice limit). The remaining 285 invoices must be created manually via WhatsApp text or dashboard. This quota resets every 30 days from your subscription start date. Enterprise plan has unlimited premium features.
+              <strong>Invoice Packs:</strong> All plans can purchase additional invoice packs at ₦2,500 per 100 invoices. Starter plan users buy packs as needed with no monthly subscription fee.
             </p>
             <p className="mt-4">
-              Invoice limits reset every 30 days from your subscription start date (or account creation for free users). Unused invoices do not roll over. If you exceed your limit, you must upgrade or wait until your next billing cycle.
+              <strong>Business Plan OCR Quota:</strong> The Business plan includes up to 15 photo OCR invoices per 30-day billing cycle. This quota resets every 30 days from your subscription start date.
             </p>
           </section>          <section>
             <h2 className="text-2xl font-bold text-slate-900">5. Payment Terms</h2>
