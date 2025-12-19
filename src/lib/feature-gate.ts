@@ -4,7 +4,7 @@
 import type { AxiosError } from "axios";
 
 interface RawGateDetail {
-  error?: string;
+  error?: string | { message?: string; code?: string; details?: Record<string, unknown> };
   message?: string;
   detail?: string;
   current_plan?: string;
@@ -14,16 +14,18 @@ interface RawGateDetail {
   limit?: number | null;
   upgrade_url?: string;
   upgradeUrl?: string;
+  required_fields?: string[];
 }
 
 export interface FeatureGateParsed {
-  type: "invoice_limit" | "premium_required" | "other";
+  type: "invoice_limit" | "premium_required" | "missing_bank_details" | "other";
   message: string;
   currentPlan?: string;
   currentCount?: number;
   limit?: number | null;
   upgradeUrl?: string;
   rawCode?: string;
+  requiredFields?: string[];
 }
 
 function getAxiosParts(err: unknown): { status?: number; data?: unknown } {
@@ -34,9 +36,15 @@ function getAxiosParts(err: unknown): { status?: number; data?: unknown } {
   return {};
 }
 
+/**
+ * Parse API errors into structured format for UI handling.
+ * Handles 400-level invoice errors (INV004: missing bank details) and
+ * 403-level feature gate errors (invoice limits, premium features).
+ */
 export function parseFeatureGateError(err: unknown): FeatureGateParsed | null {
   const { status, data } = getAxiosParts(err);
-  if (!status || (status !== 403 && status !== 402)) return null;
+  // Handle 400 (invoice errors like missing bank details) and 403/402 (feature gates)
+  if (!status || (status !== 400 && status !== 403 && status !== 402)) return null;
   let detail: RawGateDetail | undefined;
   
   // Type guard for data with detail property
@@ -52,12 +60,37 @@ export function parseFeatureGateError(err: unknown): FeatureGateParsed | null {
   
   if (!detail) return null;
 
-  const code = detail.error;
-  const message = detail.message || detail.detail || "Subscription required.";
+  // Handle nested error structure from SuoOpsException: {error: {message, code, details}}
+  let code = "";
+  let message = "";
+  let requiredFields: string[] | undefined;
+  
+  if (typeof detail.error === "object" && detail.error !== null) {
+    // New structured error format: {error: {message, code, details}}
+    code = detail.error.code || "";
+    message = detail.error.message || "";
+    requiredFields = (detail.error.details?.required_fields as string[]) || undefined;
+  } else {
+    // Legacy format
+    code = (detail.error as string) || "";
+    message = detail.message || detail.detail || "Subscription required.";
+  }
+  
   const currentPlan = (detail.current_plan || detail.currentPlan)?.toString();
   const currentCount = detail.current_count ?? detail.currentCount;
   const limit = detail.limit;
   const upgradeUrl = detail.upgrade_url || detail.upgradeUrl || "/dashboard/upgrade";
+
+  // Handle missing bank details error (INV004)
+  if (code === "INV004") {
+    return {
+      type: "missing_bank_details",
+      message: message || "Please add your bank details in Settings before creating invoices.",
+      upgradeUrl: "/dashboard/settings",
+      rawCode: code,
+      requiredFields: requiredFields || ["bank_name", "account_number", "account_name"],
+    };
+  }
 
   if (code === "invoice_limit_reached") {
     return {

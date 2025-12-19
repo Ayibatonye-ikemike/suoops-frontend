@@ -106,7 +106,9 @@ export default function OcrInvoicePage() {
       router.push(`/dashboard/invoices/${invoice.invoice_id}`);
     } catch (err) {
       const gate = parseFeatureGateError(err);
-      if (gate?.type === "invoice_limit") {
+      if (gate?.type === "missing_bank_details") {
+        toast.error("Please add your bank details in Settings before creating invoices.");
+      } else if (gate?.type === "invoice_limit") {
         toast.error("Invoice limit reached – upgrade to continue.");
       } else if (gate?.type === "premium_required") {
         toast.error("Premium feature – upgrade required.");

@@ -231,8 +231,18 @@ export function InvoiceCreateForm() {
     } catch (submitError) {
       console.error(submitError);
 
-      // Handle feature gate errors (403)
+      // Handle feature gate errors (403) and invoice errors (400)
       const gate = parseFeatureGateError(submitError);
+      
+      // Handle missing bank details error
+      if (gate?.type === "missing_bank_details") {
+        setError(
+          "Please add your bank details in Settings before creating revenue invoices. " +
+          "Your customers need to know where to pay!"
+        );
+        return;
+      }
+      
       if (gate?.type === "invoice_limit") {
         const composed = [
           gate.message,
