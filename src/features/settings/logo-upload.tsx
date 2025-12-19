@@ -8,6 +8,7 @@ import { useState } from "react";
 import { apiClient } from "@/api/client";
 import type { components } from "@/api/types";
 import { Button } from "@/components/ui/button";
+import { PlanSelectionModal } from "./plan-selection-modal";
 
 type CurrentUser = components["schemas"]["UserOut"];
 
@@ -57,6 +58,7 @@ export function LogoUpload() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string>("");
   const [planError, setPlanError] = useState<PlanFeatureError | null>(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const queryClient = useQueryClient();
 
   const {
@@ -356,11 +358,7 @@ export function LogoUpload() {
           </div>
           <div>
             <Button
-              onClick={() => {
-                if (typeof window !== "undefined") {
-                  window.location.href = planError.upgrade_url;
-                }
-              }}
+              onClick={() => setShowUpgradeModal(true)}
               className="w-full sm:w-auto"
               size="sm"
             >
@@ -369,6 +367,13 @@ export function LogoUpload() {
           </div>
         </div>
       )}
+
+      {/* Plan Selection Modal */}
+      <PlanSelectionModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        currentPlan={planError?.current_plan?.toUpperCase() || user?.plan || "FREE"}
+      />
     </div>
   );
 }
