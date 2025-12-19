@@ -56,6 +56,8 @@ export function Pricing() {
 }
 
 function PricingCard({ plan }: { plan: Plan }) {
+  const isStarter = plan.id === "STARTER";
+  
   return (
     <div
       className={`rounded-2xl bg-white p-6 border transition-all hover:shadow-lg ${
@@ -72,11 +74,14 @@ function PricingCard({ plan }: { plan: Plan }) {
       <h3 className="text-lg font-bold text-brand-evergreen">{plan.name}</h3>
       <div className="mt-3">
         <span className="text-3xl font-bold text-brand-evergreen">{plan.priceDisplay}</span>
-        <span className="text-slate-500">/mo</span>
+        {plan.hasMonthlySubscription && <span className="text-slate-500">/mo</span>}
       </div>
       <p className="mt-2 text-sm font-medium text-brand-jade">
-        {plan.invoiceLimitDisplay}
+        {plan.invoicesDisplay}
       </p>
+      {isStarter && (
+        <p className="mt-1 text-xs text-slate-500">No monthly subscription</p>
+      )}
       <ul className="mt-6 space-y-3 text-sm text-slate-600">
         {plan.features.map((feature, i) => (
           <li key={i} className="flex items-start gap-2">

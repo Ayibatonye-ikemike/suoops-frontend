@@ -2,6 +2,13 @@
  * Centralized pricing and plan configuration
  * Single source of truth for all subscription tiers
  * 
+ * BILLING MODEL:
+ * - FREE: 5 free invoices to start, basic features
+ * - STARTER: No monthly fee, buy invoice packs (100 = ₦2,500) + tax features
+ * - PRO: ₦5,000/month = 100 invoices included + premium features
+ * - BUSINESS: ₦10,000/month = 100 invoices included + all features
+ * - All plans can buy additional packs (100 invoices = ₦2,500)
+ * 
  * IMPORTANT: Keep in sync with backend app/models/models.py SubscriptionPlan
  */
 
@@ -17,17 +24,22 @@ export interface Plan {
   name: string;
   price: number;
   priceDisplay: string;
-  invoiceLimit: number;
-  invoiceLimitDisplay: string;
+  invoicesIncluded: number;
+  invoicesDisplay: string;
   features: string[];
   popular?: boolean;
   icon?: string;
   description?: string;
+  hasMonthlySubscription?: boolean;
 }
+
+// Invoice pack pricing
+export const INVOICE_PACK_SIZE = 100;
+export const INVOICE_PACK_PRICE = 2500;
 
 /**
  * Complete plan definitions
- * Backend contract: PLAN_PRICES in app/api/routes_subscription.py
+ * Backend contract: SubscriptionPlan in app/models/models.py
  */
 export const PLANS: Record<PlanTier, Plan> = {
   FREE: {
@@ -35,12 +47,13 @@ export const PLANS: Record<PlanTier, Plan> = {
     name: "Free",
     price: 0,
     priceDisplay: "₦0",
-    invoiceLimit: 5,
-    invoiceLimitDisplay: "5 invoices/month",
-    description: "Manual invoices only",
+    invoicesIncluded: 5,
+    invoicesDisplay: "5 free invoices to start",
+    hasMonthlySubscription: false,
+    description: "Get started for free",
     features: [
-      "Manual invoices only",
-      "WhatsApp & Email",
+      "5 free invoices",
+      "WhatsApp & Email delivery",
       "PDF generation",
       "QR verification",
     ],
@@ -49,28 +62,32 @@ export const PLANS: Record<PlanTier, Plan> = {
     id: "STARTER",
     name: "Starter",
     price: 2500,
-    priceDisplay: "₦2,500",
-    invoiceLimit: 100,
-    invoiceLimitDisplay: "100 invoices/month",
+    priceDisplay: "₦2,500 per 100 invoices",
+    invoicesIncluded: 0,
+    invoicesDisplay: "Buy invoice packs",
+    hasMonthlySubscription: false,
     popular: true,
     icon: "🚀",
-    description: "Tax automation for growing businesses",
+    description: "Pay as you go + Tax features",
     features: [
-      "Everything in Free",
-      "Tax reports",
-      "Monthly tax automation",
+      "No monthly fee",
+      "100 invoices for ₦2,500",
+      "Tax reports & automation",
+      "WhatsApp & Email delivery",
     ],
   },
   PRO: {
     id: "PRO",
     name: "Pro",
     price: 5000,
-    priceDisplay: "₦5,000",
-    invoiceLimit: 200,
-    invoiceLimitDisplay: "200 invoices/month",
+    priceDisplay: "₦5,000/month",
+    invoicesIncluded: 100,
+    invoicesDisplay: "100 invoices included",
+    hasMonthlySubscription: true,
     icon: "⭐",
-    description: "Professional branding and team management",
+    description: "Premium features for professionals",
     features: [
+      "100 invoices/month included",
       "Everything in Starter",
       "Custom logo branding",
       "Inventory management",
@@ -82,13 +99,16 @@ export const PLANS: Record<PlanTier, Plan> = {
     id: "BUSINESS",
     name: "Business",
     price: 10000,
-    priceDisplay: "₦10,000",
-    invoiceLimit: 300,
-    invoiceLimitDisplay: "300 invoices/month",
+    priceDisplay: "₦10,000/month",
+    invoicesIncluded: 100,
+    invoicesDisplay: "100 invoices included",
+    hasMonthlySubscription: true,
     icon: "💼",
-    description: "Advanced features with OCR",
+    description: "All features for scaling businesses",
     features: [
+      "100 invoices/month included",
       "Everything in Pro",
+      "Voice invoices",
       "Photo OCR (15/mo)",
       "API access",
     ],
@@ -137,11 +157,11 @@ export const FEATURE_GATES = {
 } as const;
 
 /**
- * Business plan quota limitations (5% of invoice limit)
+ * Business plan quota limitations
  */
 export const BUSINESS_QUOTA = {
-  OCR_LIMIT: 15, // 5% of 300 invoices
-  TOTAL_INVOICES: 300,
+  OCR_LIMIT: 15, // Voice + Photo OCR per month
+  INVOICES_INCLUDED: 100,
 } as const;
 
 /**

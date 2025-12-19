@@ -121,11 +121,11 @@ export function PlanSelectionModal({
 
                 <div className="mb-4">
                   <div className="text-3xl font-bold">{plan.priceDisplay}</div>
-                  <div className="text-sm text-brand-textMuted">/month</div>
+                  {plan.hasMonthlySubscription && <div className="text-sm text-brand-textMuted">/month</div>}
                 </div>
 
                 <div className="mb-4 text-sm font-semibold text-brand-textMuted">
-                  {plan.invoiceLimitDisplay}
+                  {plan.invoicesDisplay}
                 </div>
 
                 <ul className="space-y-2 text-sm text-brand-textMuted">

@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PlanSelectionModal } from "./plan-selection-modal";
-import { type PlanTier, getPlan } from "../../constants/pricing";
+import { type PlanTier, getPlan, INVOICE_PACK_PRICE, INVOICE_PACK_SIZE } from "../../constants/pricing";
 
 interface SubscriptionSectionProps {
   user?: {
     plan?: string;
-    invoices_this_month?: number;
+    invoice_balance?: number;
+    invoices_this_month?: number; // deprecated, kept for backward compat
     subscription_expires_at?: string | null;
     subscription_started_at?: string | null;
   };
@@ -30,16 +31,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
 
   const currentPlan = (user?.plan?.toUpperCase() || "FREE") as PlanTier;
   const planDetails = getPlan(currentPlan);
-  const invoicesUsed = user?.invoices_this_month || 0;
-  const invoiceLimit =
-    planDetails.invoiceLimit === Infinity
-      ? "∞"
-      : planDetails.invoiceLimit.toString();
-  const invoiceLimitValue = planDetails.invoiceLimit;
-  const usagePercent =
-    invoiceLimitValue === Infinity || invoiceLimitValue === 0
-      ? 0
-      : Math.min((invoicesUsed / invoiceLimitValue) * 100, 100);
+  const invoiceBalance = user?.invoice_balance ?? 0;
 
   // Format subscription dates
   const subscriptionExpiresAt = user?.subscription_expires_at
@@ -98,10 +90,10 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                     <span>{planDetails.name}</span>
                   </div>
                   <p className="mt-2 text-2xl font-semibold leading-tight text-brand-text">
-                    {planDetails.price}
+                    {planDetails.priceDisplay}
                   </p>
                   <p className="text-sm text-brand-textMuted">
-                    {planDetails.invoiceLimitDisplay}
+                    {planDetails.invoicesDisplay}
                   </p>
                 </div>
               </div>
@@ -111,76 +103,33 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-sm font-semibold text-brand-text">
-                    Invoice usage this billing cycle
+                    Invoice Balance
                   </p>
                   <p className="text-xs text-brand-textMuted">
-                    {(() => {
-                      if (isPaidPlan && subscriptionExpiresAt) {
-                        // Paid plan with expiry date from database (set when they paid)
-                        return `Subscription expires ${formatDate(subscriptionExpiresAt)}`;
-                      }
-                      if (isPaidPlan && !subscriptionExpiresAt) {
-                        // Paid plan but no expiry set (legacy user) - show generic message
-                        return "Contact support to verify subscription status";
-                      }
-                      // Free plan - usage resets 30 days from billing cycle start
-                      if (subscriptionStartedAt) {
-                        const nextReset = new Date(subscriptionStartedAt.getTime() + 30 * 24 * 60 * 60 * 1000);
-                        return `Free plan • Usage resets ${formatDate(nextReset)}`;
-                      }
-                      return "Free plan • 30-day billing cycle";
-                    })()}
+                    {invoiceBalance <= 10
+                      ? "⚠️ Running low – purchase a pack to continue creating invoices"
+                      : "Available invoices for creating revenue invoices"}
                   </p>
                 </div>
-                <span className="text-base font-semibold text-brand-text">
-                  {invoicesUsed} of {invoiceLimit}
+                <span className={`text-2xl font-bold ${invoiceBalance <= 10 ? 'text-amber-600' : 'text-brand-jade'}`}>
+                  {invoiceBalance}
                 </span>
               </div>
-              <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-white">
-                <div
-                  className="h-full rounded-full bg-brand-jade transition-all"
-                  style={{
-                    width: `${usagePercent}%`,
-                  }}
-                />
+              
+              {/* Buy More Invoices Button */}
+              <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-xs text-brand-textMuted">
+                  Need more? Buy packs of {INVOICE_PACK_SIZE} invoices for ₦{INVOICE_PACK_PRICE.toLocaleString()}
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.location.href = "/dashboard/billing/purchase"}
+                  className="w-full sm:w-auto"
+                >
+                  Buy Invoice Pack
+                </Button>
               </div>
-              {/* Show days remaining */}
-              <p className="mt-2 text-xs text-brand-textMuted">
-                {(() => {
-                  if (isPaidPlan && subscriptionExpiresAt) {
-                    // Paid plan with subscription expiry from database
-                    const daysRemaining = Math.ceil(
-                      (subscriptionExpiresAt.getTime() - Date.now()) /
-                        (1000 * 60 * 60 * 24)
-                    );
-                    if (daysRemaining <= 0) {
-                      return "⚠️ Subscription expired – please renew to continue";
-                    }
-                    if (daysRemaining === 1) {
-                      return "⚠️ Expires tomorrow";
-                    }
-                    if (daysRemaining <= 7) {
-                      return `⚠️ Expires in ${daysRemaining} days`;
-                    }
-                    return `${daysRemaining} days remaining in subscription`;
-                  }
-                  if (isPaidPlan && !subscriptionExpiresAt) {
-                    return "⚠️ Subscription status unknown";
-                  }
-                  // Free plan - show days until 30-day cycle resets
-                  if (subscriptionStartedAt) {
-                    const nextReset = new Date(subscriptionStartedAt.getTime() + 30 * 24 * 60 * 60 * 1000);
-                    const daysUntilReset = Math.ceil(
-                      (nextReset.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
-                    );
-                    if (daysUntilReset <= 0) {
-                      return "Usage cycle complete – will reset on next action";
-                    }
-                    return `${daysUntilReset} days until usage resets`;
-                  }
-                  return "30-day billing cycle";
-                })()}
-              </p>
             </div>
 
             {/* Subscription Expiry Notice for Paid Plans */}
