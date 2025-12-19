@@ -116,10 +116,10 @@ export const PLANS: Record<PlanTier, Plan> = {
 };
 
 /**
- * Plans available for upgrade selection (excludes FREE)
+ * Plans available for paid upgrade selection (excludes FREE and STARTER)
+ * STARTER has no monthly subscription - users just buy invoice packs
  */
 export const PAID_PLANS: Plan[] = [
-  PLANS.STARTER,
   PLANS.PRO,
   PLANS.BUSINESS,
 ];
