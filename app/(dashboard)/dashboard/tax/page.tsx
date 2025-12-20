@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { StatCard } from "@/components/ui/stat-card";
+import toast from "react-hot-toast";
 
 interface TaxProfile {
   business_size: string;
@@ -72,6 +73,17 @@ export default function TaxPage() {
     vat_number: "",
   });
   const now = new Date();
+
+  // Expense form state
+  const [showExpenseForm, setShowExpenseForm] = useState(false);
+  const [expenseForm, setExpenseForm] = useState({
+    vendor_name: "",
+    amount: "",
+    expense_date: now.toISOString().split("T")[0],
+  });
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  const [isUploadingExpense, setIsUploadingExpense] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Period type state
   const [periodType, setPeriodType] = useState<TaxPeriodType>("month");
@@ -152,6 +164,61 @@ export default function TaxPage() {
     if (res.data.pdf_url) window.open(res.data.pdf_url, "_blank");
   };
 
+  // Handle expense submission with receipt upload
+  const handleExpenseSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!expenseForm.vendor_name || !expenseForm.amount) {
+      toast.error("Please fill in vendor name and amount");
+      return;
+    }
+
+    setIsUploadingExpense(true);
+    try {
+      let receipt_url: string | undefined;
+
+      // Upload receipt if provided
+      if (receiptFile) {
+        const formDataUpload = new FormData();
+        formDataUpload.append("file", receiptFile);
+        const uploadRes = await apiClient.post("/invoices/upload-receipt", formDataUpload, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        receipt_url = uploadRes.data.receipt_url;
+      }
+
+      // Create expense invoice
+      await apiClient.post("/invoices/", {
+        invoice_type: "expense",
+        amount: parseFloat(expenseForm.amount),
+        due_date: expenseForm.expense_date,
+        vendor_name: expenseForm.vendor_name,
+        merchant: expenseForm.vendor_name,
+        receipt_url,
+        lines: [{
+          description: `Purchase from ${expenseForm.vendor_name}`,
+          quantity: 1,
+          unit_price: parseFloat(expenseForm.amount),
+        }],
+        channel: "dashboard",
+        input_method: "manual",
+        verified: true,
+        status: "paid",
+      });
+
+      toast.success("Expense recorded successfully!");
+      setShowExpenseForm(false);
+      setExpenseForm({ vendor_name: "", amount: "", expense_date: now.toISOString().split("T")[0] });
+      setReceiptFile(null);
+      // Refresh tax report
+      queryClient.invalidateQueries({ queryKey: ["taxReport"] });
+    } catch (error) {
+      toast.error("Failed to record expense");
+      console.error(error);
+    } finally {
+      setIsUploadingExpense(false);
+    }
+  };
+
   const fmt = (n: number) =>
     new Intl.NumberFormat("en-NG", {
       style: "currency",
@@ -170,12 +237,115 @@ export default function TaxPage() {
   return (
     <div className="min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10 text-brand-text">
-        <div className="mb-6 sm:mb-10">
-          <h1 className="text-2xl font-bold text-brand-text">Tax Compliance</h1>
-          <p className="mt-1 text-sm text-brand-textMuted">
-            Monitor obligations and reports
-          </p>
+        <div className="mb-6 sm:mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-brand-text">Tax Compliance</h1>
+            <p className="mt-1 text-sm text-brand-textMuted">
+              Monitor obligations and reports
+            </p>
+          </div>
+          <Button
+            onClick={() => setShowExpenseForm(!showExpenseForm)}
+            className="w-full sm:w-auto"
+          >
+            {showExpenseForm ? "Cancel" : "+ Add Expense"}
+          </Button>
         </div>
+
+        {/* Add Expense Form */}
+        {showExpenseForm && (
+          <Card className="mb-6 sm:mb-8">
+            <CardHeader className="border-b border-brand-border/60 px-4 sm:px-6">
+              <h2 className="text-lg font-semibold text-brand-text">Record Expense</h2>
+            </CardHeader>
+            <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
+              <form onSubmit={handleExpenseSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-brand-textMuted">
+                      Vendor Name *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g., Office Supplies Ltd"
+                      value={expenseForm.vendor_name}
+                      onChange={(e) => setExpenseForm({ ...expenseForm, vendor_name: e.target.value })}
+                      className="w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-brand-textMuted">
+                      Amount (₦) *
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      placeholder="0.00"
+                      value={expenseForm.amount}
+                      onChange={(e) => setExpenseForm({ ...expenseForm, amount: e.target.value })}
+                      className="w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-brand-textMuted">
+                      Date
+                    </label>
+                    <input
+                      type="date"
+                      value={expenseForm.expense_date}
+                      onChange={(e) => setExpenseForm({ ...expenseForm, expense_date: e.target.value })}
+                      className="w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-brand-textMuted">
+                    Receipt (optional)
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*,application/pdf"
+                      onChange={(e) => setReceiptFile(e.target.files?.[0] || null)}
+                      className="hidden"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      📎 {receiptFile ? "Change" : "Upload Receipt"}
+                    </Button>
+                    {receiptFile && (
+                      <span className="text-sm text-brand-textMuted">
+                        {receiptFile.name}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="flex justify-end gap-2 pt-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setShowExpenseForm(false);
+                      setReceiptFile(null);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={isUploadingExpense}>
+                    {isUploadingExpense ? "Saving..." : "Save Expense"}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Compliance Summary - BUSINESS Plan Only */}
         {compliance && report?.user_plan === "business" && (
