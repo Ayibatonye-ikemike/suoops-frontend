@@ -190,6 +190,14 @@ export function InvoiceLineItems({
           </div>
         ))}
       </div>
+      
+      {/* Grand Total */}
+      <div className="mt-4 flex items-center justify-end gap-4 border-t border-brand-border pt-4">
+        <span className="text-sm font-medium text-brand-textMuted">Invoice Total:</span>
+        <div className="rounded-lg bg-brand-jade/10 px-4 py-2 text-lg font-bold text-brand-jade">
+          ₦{lines.reduce((sum, line) => sum + ((line.quantity || 0) * (line.unit_price || 0)), 0).toLocaleString()}
+        </div>
+      </div>
     </section>
   );
 }
