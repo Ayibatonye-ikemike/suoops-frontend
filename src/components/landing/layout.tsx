@@ -45,15 +45,7 @@ export function Navigation() {
   );
 }
 
-export function PreLaunchBanner() {
-  return (
-    <div className="bg-brand-citrus px-4 py-2.5 text-center">
-      <p className="text-sm font-medium text-brand-evergreen">
-        🚀 <strong>Coming Soon</strong> — Join our waitlist for early access + 50% launch discount!
-      </p>
-    </div>
-  );
-}
+// PreLaunchBanner removed - product is now live
 
 export function CTASection() {
   return (
@@ -63,18 +55,16 @@ export function CTASection() {
           Ready to simplify your invoicing?
         </h2>
         <p className="mt-4 text-lg text-white/80">
-          Join the waitlist and be the first to experience invoice creation via WhatsApp.
+          Start creating professional invoices in seconds via WhatsApp or dashboard.
         </p>
-        <a
-          href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          href="/register"
           className="mt-8 inline-flex items-center justify-center rounded-lg bg-brand-jade px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:scale-105 hover:bg-brand-teal"
         >
-          Get started
-        </a>
+          Get Started Free
+        </Link>
         <p className="mt-6 text-sm text-white/60">
-          ✓ Free to start · ✓ No credit card required · ✓ 50% launch discount
+          ✓ Free to start · ✓ No credit card required
         </p>
       </div>
     </section>
@@ -173,32 +163,7 @@ export function Footer() {
   );
 }
 
-export function WaitlistCounter() {
-  return (
-    <section className="bg-white px-4 py-8 sm:px-6 lg:px-8 border-b border-slate-100">
-      <div className="mx-auto max-w-7xl">
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-center sm:text-left">
-          <div className="flex items-center gap-4">
-            <div className="text-3xl font-bold text-brand-jade">50+</div>
-            <div className="text-sm text-slate-600">
-              <p className="font-medium">Businesses waiting</p>
-              <p className="text-slate-400">Limited early access spots</p>
-            </div>
-          </div>
-          <div className="hidden sm:block h-10 w-px bg-slate-200"></div>
-          <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-lg bg-brand-jade px-6 py-3 text-sm font-semibold text-white hover:bg-brand-teal transition-colors shadow-sm"
-          >
-            Join Now →
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}
+// WaitlistCounter removed - product is now live
 
 export function VideoModal({
   isOpen,

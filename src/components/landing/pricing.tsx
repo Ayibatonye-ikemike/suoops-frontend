@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { LANDING_PLANS, type Plan } from "../../constants/pricing";
 
 export function Pricing() {
@@ -23,14 +24,12 @@ export function Pricing() {
         </div>
 
         <div className="mt-12 text-center">
-          <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/register"
             className="inline-flex items-center justify-center rounded-lg bg-brand-jade px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:bg-brand-teal hover:scale-105"
           >
-            Join Waitlist
-          </a>
+            Get Started Free
+          </Link>
         </div>
 
         {/* Trust Indicators */}
@@ -56,7 +55,7 @@ export function Pricing() {
 }
 
 function PricingCard({ plan }: { plan: Plan }) {
-  const isStarter = plan.id === "STARTER";
+  const isFree = plan.id === "FREE";
   
   return (
     <div
@@ -79,8 +78,8 @@ function PricingCard({ plan }: { plan: Plan }) {
       <p className="mt-2 text-sm font-medium text-brand-jade">
         {plan.invoicesDisplay}
       </p>
-      {isStarter && (
-        <p className="mt-1 text-xs text-slate-500">No monthly subscription</p>
+      {isFree && (
+        <p className="mt-1 text-xs text-slate-500">No monthly commitment</p>
       )}
       <ul className="mt-6 space-y-3 text-sm text-slate-600">
         {plan.features.map((feature, i) => (

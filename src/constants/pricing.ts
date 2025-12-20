@@ -52,7 +52,9 @@ export const PLANS: Record<PlanTier, Plan> = {
     hasMonthlySubscription: false,
     description: "Get started for free",
     features: [
-      "5 free invoices",
+      "5 free invoices to start",
+      "Buy more: 100 for ₦2,500",
+      "Tax reports & automation",
       "WhatsApp & Email delivery",
       "PDF generation",
       "QR verification",
@@ -66,7 +68,7 @@ export const PLANS: Record<PlanTier, Plan> = {
     invoicesIncluded: 0,
     invoicesDisplay: "Buy invoice packs",
     hasMonthlySubscription: false,
-    popular: true,
+    popular: false, // No longer shown on landing page
     icon: "🚀",
     description: "Pay as you go + Tax features",
     features: [
@@ -84,6 +86,7 @@ export const PLANS: Record<PlanTier, Plan> = {
     invoicesIncluded: 100,
     invoicesDisplay: "100 invoices included",
     hasMonthlySubscription: true,
+    popular: true,
     icon: "⭐",
     description: "Premium features for professionals",
     features: [
@@ -136,10 +139,11 @@ export const ALL_PLANS: Plan[] = [
 
 /**
  * Landing page pricing display
+ * Excludes STARTER - it's not a plan, just a legacy pay-per-invoice tier
+ * Users start FREE and can buy packs or upgrade to PRO/BUSINESS for monthly subscription
  */
 export const LANDING_PLANS: Plan[] = [
   PLANS.FREE,
-  PLANS.STARTER,
   PLANS.PRO,
   PLANS.BUSINESS,
 ];

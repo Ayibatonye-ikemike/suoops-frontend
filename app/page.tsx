@@ -5,9 +5,7 @@ import { Hero } from "@/components/landing/hero";
 import { Features } from "@/components/landing/features";
 import { Pricing } from "@/components/landing/pricing";
 import {
-  PreLaunchBanner,
   Navigation,
-  WaitlistCounter,
   CTASection,
   Footer,
   VideoModal,
@@ -25,10 +23,8 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-brand-evergreen">
-      <PreLaunchBanner />
       <Navigation />
       <Hero onWatchDemo={() => setShowVideoModal(true)} />
-      <WaitlistCounter />
       <Features />
       <Pricing />
       <CTASection />

@@ -137,31 +137,46 @@ export function InvoiceLineItems({
               </div>
             )}
             {/* Line Details Row */}
-            <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-[1fr_auto] md:grid-cols-[2fr_repeat(2,_minmax(100px,_1fr))_auto]">
-              <input
-                value={line.description}
-                onChange={(e) => onUpdateLine(line.id, { description: e.target.value })}
-                placeholder="Description"
-                className="rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 sm:col-span-2 md:col-span-1"
-              />
-              <div className="grid grid-cols-2 gap-2 sm:col-span-2 md:col-span-2 md:grid-cols-2">
+            <div className="grid gap-2 sm:gap-3 grid-cols-1 sm:grid-cols-[1fr_auto] md:grid-cols-[2fr_repeat(3,_minmax(80px,_1fr))_auto]">
+              <div className="sm:col-span-2 md:col-span-1">
+                <label className="mb-1 block text-xs font-medium text-brand-textMuted">Description</label>
                 <input
-                  type="number"
-                  min="1"
-                  value={line.quantity}
-                  onChange={(e) => onUpdateLine(line.id, { quantity: Number(e.target.value) })}
-                  placeholder="Qty"
-                  className="rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+                  value={line.description}
+                  onChange={(e) => onUpdateLine(line.id, { description: e.target.value })}
+                  placeholder="What are you charging for?"
+                  className="w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
                 />
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={line.unit_price}
-                  onChange={(e) => onUpdateLine(line.id, { unit_price: Number(e.target.value) })}
-                  placeholder="Price"
-                  className="rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
-                />
+              </div>
+              <div className="grid grid-cols-3 gap-2 sm:col-span-2 md:col-span-3 md:grid-cols-3">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-brand-textMuted">Qty</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={line.quantity}
+                    onChange={(e) => onUpdateLine(line.id, { quantity: Number(e.target.value) })}
+                    placeholder="1"
+                    className="w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-brand-textMuted">Unit Price (₦)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={line.unit_price}
+                    onChange={(e) => onUpdateLine(line.id, { unit_price: Number(e.target.value) })}
+                    placeholder="0.00"
+                    className="w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+                  />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-brand-textMuted">Total <span className="text-brand-jade">(auto)</span></label>
+                  <div className="rounded-lg border border-brand-border bg-gray-50 px-3 py-2 text-sm font-medium text-brand-text">
+                    ₦{((line.quantity || 0) * (line.unit_price || 0)).toLocaleString()}
+                  </div>
+                </div>
               </div>
               <button
                 type="button"
