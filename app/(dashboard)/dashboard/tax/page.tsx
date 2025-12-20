@@ -63,6 +63,16 @@ interface MonthlyReport {
   annual_revenue_estimate: number;
 }
 
+interface ExpenseRecord {
+  id: number;
+  invoice_id: string;
+  amount: number;
+  due_date: string;
+  vendor_name: string | null;
+  receipt_url: string | null;
+  created_at: string;
+}
+
 export default function TaxPage() {
   const queryClient = useQueryClient();
   const [editMode, setEditMode] = useState(false);
@@ -137,6 +147,20 @@ export default function TaxPage() {
     refetchOnWindowFocus: false,
   });
 
+  // Fetch expense records for the current period
+  const { data: expenses } = useQuery<ExpenseRecord[]>({
+    queryKey: ["taxExpenses", reportYear, reportMonth],
+    queryFn: async () => {
+      const start = `${reportYear}-${String(reportMonth).padStart(2, "0")}-01`;
+      const lastDay = new Date(reportYear, reportMonth, 0).getDate();
+      const end = `${reportYear}-${String(reportMonth).padStart(2, "0")}-${lastDay}`;
+      const response = await apiClient.get<ExpenseRecord[]>("/invoices/", {
+        params: { invoice_type: "expense", start_date: start, end_date: end },
+      });
+      return response.data;
+    },
+  });
+
   const updateProfile = useMutation({
     mutationFn: async (data: Partial<TaxProfile>) =>
       (await apiClient.put("/tax/profile", data)).data,
@@ -209,8 +233,9 @@ export default function TaxPage() {
       setShowExpenseForm(false);
       setExpenseForm({ vendor_name: "", amount: "", expense_date: now.toISOString().split("T")[0] });
       setReceiptFile(null);
-      // Refresh tax report
+      // Refresh tax report and expenses list
       queryClient.invalidateQueries({ queryKey: ["taxReport"] });
+      queryClient.invalidateQueries({ queryKey: ["taxExpenses"] });
     } catch (error) {
       toast.error("Failed to record expense");
       console.error(error);
@@ -755,6 +780,60 @@ export default function TaxPage() {
             </CardContent>
           </Card>
         )}
+
+        {/* Recorded Expenses */}
+        <Card className="mt-6 sm:mt-8">
+          <CardHeader className="border-b border-brand-border/60 px-4 sm:px-6">
+            <h2 className="text-lg font-semibold text-brand-text">
+              Recorded Expenses ({new Date(reportYear, reportMonth - 1).toLocaleString("default", { month: "long", year: "numeric" })})
+            </h2>
+          </CardHeader>
+          <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
+            {expenses && expenses.length > 0 ? (
+              <div className="space-y-3">
+                {expenses.map((exp) => (
+                  <div
+                    key={exp.id}
+                    className="flex items-center justify-between rounded-lg border border-brand-border bg-brand-background p-3"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-brand-text">
+                          {fmt(typeof exp.amount === "string" ? parseFloat(exp.amount) : exp.amount)}
+                        </span>
+                        {exp.receipt_url && (
+                          <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">
+                            📎 Receipt
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-brand-textMuted">
+                        {exp.vendor_name || "Unknown Vendor"}
+                      </p>
+                      <p className="text-xs text-brand-textMuted">
+                        {new Date(exp.due_date || exp.created_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                    {exp.receipt_url && (
+                      <a
+                        href={exp.receipt_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-brand-primary hover:underline"
+                      >
+                        View
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-sm text-brand-textMuted py-6">
+                No expenses recorded for this period
+              </p>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

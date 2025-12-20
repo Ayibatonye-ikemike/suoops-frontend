@@ -8,7 +8,10 @@ import type { components } from "@/api/types";
 export type Invoice = components["schemas"]["InvoiceOut"];
 
 async function fetchInvoices(): Promise<Invoice[]> {
-  const { data } = await apiClient.get<Invoice[]>("/invoices/");
+  // Only fetch revenue invoices for the main dashboard - expenses are tracked separately on Tax page
+  const { data } = await apiClient.get<Invoice[]>("/invoices/", {
+    params: { invoice_type: "revenue" },
+  });
   return data;
 }
 
