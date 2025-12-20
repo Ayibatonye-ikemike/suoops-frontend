@@ -198,13 +198,13 @@ export function InvoiceCreateForm() {
         onCustomerEmailChange={setCustomerEmail}
       />
 
-      {/* Line Items with Inventory Product Picker */}
+      {/* Line Items with Inventory Product Picker (Pro/Business only) */}
       <InvoiceLineItems
         lines={lines}
         onUpdateLine={updateLine}
         onRemoveLine={removeLine}
         onAddLine={addLine}
-        showProductPicker={true}
+        showProductPicker={["pro", "business"].includes(quota?.current_plan?.toLowerCase() || "")}
       />
 
       {/* Submit Button */}
