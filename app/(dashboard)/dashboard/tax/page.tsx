@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/api/client";
@@ -171,20 +170,11 @@ export default function TaxPage() {
   return (
     <div className="min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10 text-brand-text">
-        <div className="mb-6 sm:mb-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-brand-text">Tax Compliance</h1>
-            <p className="mt-1 text-sm text-brand-textMuted">
-              Monitor obligations and reports
-            </p>
-          </div>
-          <Link
-            href="/dashboard/expenses"
-            className="inline-flex items-center gap-2 rounded-lg bg-brand-jade px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-teal"
-          >
-            <span>📝</span>
-            <span>Record Expenses</span>
-          </Link>
+        <div className="mb-6 sm:mb-10">
+          <h1 className="text-2xl font-bold text-brand-text">Tax Compliance</h1>
+          <p className="mt-1 text-sm text-brand-textMuted">
+            Monitor obligations and reports
+          </p>
         </div>
 
         {/* Compliance Summary - BUSINESS Plan Only */}
