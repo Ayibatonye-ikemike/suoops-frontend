@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function Features() {
   return (
     <>
@@ -61,14 +63,12 @@ export function Features() {
                 <FeatureItem text="Delivery: WhatsApp + Email to customers" />
                 <FeatureItem text="QR code verification on every invoice" />
               </ul>
-              <a
-                href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/register"
                 className="mt-8 inline-flex items-center justify-center rounded-lg bg-brand-jade px-6 py-3 text-base font-semibold text-white shadow-lg transition-all hover:bg-brand-teal"
               >
                 Get started
-              </a>
+              </Link>
             </div>
             <div className="relative">
               <div className="rounded-2xl bg-white p-6 shadow-xl border border-slate-200">
@@ -159,14 +159,12 @@ export function Features() {
                 <FeatureItem text="Daily and weekly reports" />
                 <FeatureItem text="Customer payment confirmation via WhatsApp" />
               </ul>
-              <a
-                href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/register"
                 className="mt-8 inline-flex items-center justify-center rounded-lg bg-brand-jade px-6 py-3 text-base font-semibold text-white shadow-lg transition-all hover:bg-brand-teal"
               >
                 Get started
-              </a>
+              </Link>
             </div>
           </div>
         </div>

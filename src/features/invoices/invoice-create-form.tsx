@@ -10,14 +10,11 @@ import {
 import { useInvoiceQuota } from "./use-invoice-quota";
 import { parseFeatureGateError } from "@/lib/feature-gate";
 import { PlanSelectionModal } from "../settings/plan-selection-modal";
-import { apiClient } from "@/api/client";
 
 // Components
-import { InvoiceTypeToggle } from "./invoice-type-toggle";
 import { OcrPhotoPrompt } from "./ocr-photo-prompt";
 import { WhatsAppTip } from "./whatsapp-tip";
 import { RevenueFields } from "./revenue-fields";
-import { ExpenseFields } from "./expense-fields";
 import { InvoiceLineItems, type LineDraft } from "./invoice-line-items";
 import { InvoiceFormMessages } from "./invoice-form-messages";
 
@@ -36,23 +33,10 @@ const emptyLine = (): LineDraft => ({
 });
 
 export function InvoiceCreateForm() {
-  // Invoice Type
-  const [invoiceType, setInvoiceType] = useState<"revenue" | "expense">(
-    "revenue"
-  );
-
-  // Revenue Fields
+  // Customer Fields
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
-
-  // Expense Fields
-  const [vendorName, setVendorName] = useState("");
-  const [category, setCategory] = useState("");
-  const [notes, setNotes] = useState("");
-  const [receiptUrl, setReceiptUrl] = useState<string | null>(null);
-  const [receiptFileName, setReceiptFileName] = useState<string | null>(null);
-  const [uploadingReceipt, setUploadingReceipt] = useState(false);
 
   // Shared Fields
   const [amount, setAmount] = useState("");
@@ -98,76 +82,12 @@ export function InvoiceCreateForm() {
     setAmount(total.toString());
   }, [lines]);
 
-  async function handleReceiptUpload(
-    event: React.ChangeEvent<HTMLInputElement>
-  ) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    // Validate file type
-    const allowedTypes = [
-      "image/jpeg",
-      "image/jpg",
-      "image/png",
-      "image/webp",
-      "image/bmp",
-      "application/pdf",
-    ];
-    if (!allowedTypes.includes(file.type)) {
-      setError(
-        "Invalid file type. Please upload JPEG, PNG, WebP, BMP, or PDF."
-      );
-      return;
-    }
-
-    // Validate file size (max 10MB)
-    const maxSize = 10 * 1024 * 1024;
-    if (file.size > maxSize) {
-      setError("File too large. Maximum size is 10MB.");
-      return;
-    }
-
-    setUploadingReceipt(true);
-    setError(null);
-
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const response = await apiClient.post(
-        "/invoices/upload-receipt",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-
-      setReceiptUrl(response.data.receipt_url);
-      setReceiptFileName(response.data.filename);
-    } catch (err) {
-      console.error("Receipt upload failed:", err);
-      setError("Failed to upload receipt. Please try again.");
-    } finally {
-      setUploadingReceipt(false);
-    }
-  }
-
-  function handleRemoveReceipt() {
-    setReceiptUrl(null);
-    setReceiptFileName(null);
-  }
-
   function resetForm() {
     setCustomerName("");
     setCustomerPhone("");
     setCustomerEmail("");
-    setVendorName("");
-    setCategory("");
-    setNotes("");
     setAmount("");
     setLines([emptyLine()]);
-    setReceiptUrl(null);
-    setReceiptFileName(null);
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -177,16 +97,9 @@ export function InvoiceCreateForm() {
     const parsedAmount = Number(amount);
 
     // Validation
-    if (invoiceType === "revenue") {
-      if (!customerName || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
-        setError("Customer name and a positive amount are required.");
-        return;
-      }
-    } else {
-      if (!vendorName || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
-        setError("Vendor name and a positive amount are required.");
-        return;
-      }
+    if (!customerName || Number.isNaN(parsedAmount) || parsedAmount <= 0) {
+      setError("Customer name and a positive amount are required.");
+      return;
     }
 
     const preparedLines = lines
@@ -200,8 +113,11 @@ export function InvoiceCreateForm() {
 
     try {
       const payload: InvoiceCreatePayload = {
-        invoice_type: invoiceType,
+        invoice_type: "revenue",
         amount: parsedAmount,
+        customer_name: customerName,
+        customer_phone: customerPhone || undefined,
+        customer_email: customerEmail || undefined,
         lines:
           preparedLines.length > 0
             ? preparedLines
@@ -213,17 +129,6 @@ export function InvoiceCreateForm() {
                 },
               ],
       };
-
-      if (invoiceType === "revenue") {
-        payload.customer_name = customerName;
-        payload.customer_phone = customerPhone || undefined;
-        payload.customer_email = customerEmail || undefined;
-      } else {
-        payload.vendor_name = vendorName;
-        payload.category = category || undefined;
-        payload.notes = notes || undefined;
-        payload.receipt_url = receiptUrl || undefined;
-      }
 
       const invoice = await mutation.mutateAsync(payload);
       setLastPdfUrl(invoice.pdf_url ?? null);
@@ -261,9 +166,7 @@ export function InvoiceCreateForm() {
       }
 
       // Fallback generic error
-      setError(
-        `Failed to create ${invoiceType} invoice. Check inputs and try again.`
-      );
+      setError("Failed to create invoice. Check inputs and try again.");
     }
   }
 
@@ -275,51 +178,25 @@ export function InvoiceCreateForm() {
           Create Invoice
         </h2>
         <p className="text-sm text-brand-textMuted">
-          {invoiceType === "revenue"
-            ? "Set customer details and line items to generate a payment-ready invoice."
-            : "Record business expenses for accurate tax reporting."}
+          Set customer details and line items to generate a payment-ready invoice.
         </p>
       </div>
 
-      {/* Invoice Type Toggle */}
-      <InvoiceTypeToggle
-        invoiceType={invoiceType}
-        onTypeChange={setInvoiceType}
-      />
-
-      {/* OCR Photo Upload (Revenue Only) */}
-      {invoiceType === "revenue" && <OcrPhotoPrompt />}
+      {/* OCR Photo Upload */}
+      <OcrPhotoPrompt />
 
       {/* WhatsApp Tip */}
-      {invoiceType === "revenue" && <WhatsAppTip />}
+      <WhatsAppTip />
 
-      {/* Conditional Form Fields */}
-      {invoiceType === "revenue" ? (
-        <RevenueFields
-          customerName={customerName}
-          customerPhone={customerPhone}
-          customerEmail={customerEmail}
-          onCustomerNameChange={setCustomerName}
-          onCustomerPhoneChange={setCustomerPhone}
-          onCustomerEmailChange={setCustomerEmail}
-        />
-      ) : (
-        <ExpenseFields
-          vendorName={vendorName}
-          category={category}
-          notes={notes}
-          amount={amount}
-          receiptUrl={receiptUrl}
-          receiptFileName={receiptFileName}
-          uploadingReceipt={uploadingReceipt}
-          onVendorNameChange={setVendorName}
-          onCategoryChange={setCategory}
-          onNotesChange={setNotes}
-          onAmountChange={setAmount}
-          onReceiptUpload={handleReceiptUpload}
-          onRemoveReceipt={handleRemoveReceipt}
-        />
-      )}
+      {/* Customer Fields */}
+      <RevenueFields
+        customerName={customerName}
+        customerPhone={customerPhone}
+        customerEmail={customerEmail}
+        onCustomerNameChange={setCustomerName}
+        onCustomerPhoneChange={setCustomerPhone}
+        onCustomerEmailChange={setCustomerEmail}
+      />
 
       {/* Line Items with Inventory Product Picker */}
       <InvoiceLineItems
@@ -336,20 +213,20 @@ export function InvoiceCreateForm() {
         disabled={
           mutation.isPending ||
           quotaLoading ||
-          (invoiceType === "revenue" && quota && !quota.can_create)
+          (quota && !quota.can_create)
         }
         className="w-full sm:w-fit"
       >
         {mutation.isPending
-          ? `Creating ${invoiceType}...`
-          : invoiceType === "revenue" && quota && !quota.can_create
+          ? "Creating..."
+          : quota && !quota.can_create
           ? "Limit Reached"
-          : `Create ${invoiceType === "revenue" ? "Invoice" : "Expense"}`}
+          : "Create Invoice"}
       </Button>
 
       {/* Messages (Quota, Errors, Success) */}
       <InvoiceFormMessages
-        invoiceType={invoiceType}
+        invoiceType="revenue"
         quota={quota}
         quotaError={quotaErrorState}
         error={error}

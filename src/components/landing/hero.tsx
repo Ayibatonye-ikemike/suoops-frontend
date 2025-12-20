@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
 interface HeroProps {
   onWatchDemo: () => void;
@@ -22,14 +23,12 @@ export function Hero({ onWatchDemo }: HeroProps) {
               Create invoices via WhatsApp text or from our web dashboard. Customers receive invoices via WhatsApp and Email—wherever they prefer.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-              <a
-                href="https://docs.google.com/forms/d/e/1FAIpQLSc8s7K5WNC_6xDzg2IlUMJtxzvF4T18YwYlW_ruHMyC6IT5yg/viewform"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/register"
                 className="inline-flex items-center justify-center rounded-lg bg-brand-jade px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:scale-105 hover:bg-brand-teal"
               >
                 Get started
-              </a>
+              </Link>
               <button
                 onClick={onWatchDemo}
                 className="inline-flex items-center justify-center rounded-lg border border-white/30 bg-white/5 backdrop-blur-sm px-8 py-4 text-base font-semibold text-white transition-all hover:bg-white/15"
