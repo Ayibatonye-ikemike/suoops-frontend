@@ -299,11 +299,9 @@ export function InvoiceCreateForm() {
           customerName={customerName}
           customerPhone={customerPhone}
           customerEmail={customerEmail}
-          amount={amount}
           onCustomerNameChange={setCustomerName}
           onCustomerPhoneChange={setCustomerPhone}
           onCustomerEmailChange={setCustomerEmail}
-          onAmountChange={setAmount}
         />
       ) : (
         <ExpenseFields
