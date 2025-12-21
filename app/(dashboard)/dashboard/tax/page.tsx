@@ -199,8 +199,16 @@ export default function TaxPage() {
 
   const handleDownload = async () => {
     if (!report || !report.id) return;
-    const res = await apiClient.get(`/tax/reports/${report.id}/download`);
-    if (res.data.pdf_url) window.open(res.data.pdf_url, "_blank");
+    try {
+      const res = await apiClient.get(`/tax/reports/${report.id}/download`);
+      if (res.data.pdf_url) {
+        window.open(res.data.pdf_url, "_blank");
+      } else {
+        toast.error("PDF not available. Please try again.");
+      }
+    } catch (error) {
+      toast.error("Failed to download report. Please try again.");
+    }
   };
 
   // Handle expense submission with receipt upload
@@ -529,7 +537,7 @@ export default function TaxPage() {
                 <Button
                   size="sm"
                   onClick={handleDownload}
-                  disabled={reportLoading || !report?.pdf_url}
+                  disabled={reportLoading || !report?.id}
                 >
                   Download
                 </Button>
