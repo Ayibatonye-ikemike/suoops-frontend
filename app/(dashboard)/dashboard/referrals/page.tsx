@@ -5,7 +5,7 @@ import { apiClient } from "@/api/client";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
-import { Copy, Share2, Gift, Users, Trophy, Clock, CheckCircle2 } from "lucide-react";
+import { Copy, Gift, Users, Trophy, Clock, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 
 interface ReferralStats {
@@ -48,7 +48,6 @@ interface RecentReferral {
 export default function ReferralsPage() {
   const queryClient = useQueryClient();
   const [copiedCode, setCopiedCode] = useState(false);
-  const [copiedLink, setCopiedLink] = useState(false);
 
   const { data: stats, isLoading: statsLoading } = useQuery<ReferralStats>({
     queryKey: ["referralStats"],
@@ -83,39 +82,14 @@ export default function ReferralsPage() {
     },
   });
 
-  const copyToClipboard = async (text: string, type: "code" | "link") => {
+  const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      if (type === "code") {
-        setCopiedCode(true);
-        setTimeout(() => setCopiedCode(false), 2000);
-      } else {
-        setCopiedLink(true);
-        setTimeout(() => setCopiedLink(false), 2000);
-      }
+      setCopiedCode(true);
+      setTimeout(() => setCopiedCode(false), 2000);
       toast.success("Copied to clipboard!");
     } catch {
       toast.error("Failed to copy");
-    }
-  };
-
-  const shareReferral = async () => {
-    if (!stats) return;
-
-    const shareData = {
-      title: "Join SuoOps",
-      text: `Join SuoOps and simplify your invoicing! Use my referral code: ${stats.referral_code}`,
-      url: stats.referral_link,
-    };
-
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch {
-        // User cancelled or share failed
-      }
-    } else {
-      copyToClipboard(stats.referral_link, "link");
     }
   };
 
@@ -163,31 +137,12 @@ export default function ReferralsPage() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => copyToClipboard(stats?.referral_code || "", "code")}
+                    onClick={() => copyToClipboard(stats?.referral_code || "")}
                     className="text-emerald-400 hover:text-emerald-300"
                   >
                     {copiedCode ? <CheckCircle2 className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
                   </Button>
                 </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => copyToClipboard(stats?.referral_link || "", "link")}
-                  className="flex-1 sm:flex-none border-emerald-600 text-emerald-400 hover:bg-emerald-900/40"
-                >
-                  {copiedLink ? <CheckCircle2 className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
-                  Copy Link
-                </Button>
-                <Button
-                  onClick={shareReferral}
-                  className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white"
-                >
-                  <Share2 className="w-4 h-4 mr-2" />
-                  Share
-                </Button>
               </div>
             </div>
 
