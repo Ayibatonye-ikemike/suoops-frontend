@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, Gift, Clock, Users, Copy, CheckCircle, Wallet } from "lucide-react";
+import { ChevronRight, Gift, Clock, Users, Copy, CheckCircle, Wallet, FileText } from "lucide-react";
 
 export default function HowReferralsWorkArticle() {
   return (
@@ -32,21 +32,25 @@ export default function HowReferralsWorkArticle() {
             How the Referral Program Works
           </h1>
           <p className="mt-3 text-lg text-slate-600">
-            Earn free months of SuoOps by referring friends and colleagues to the platform.
+            Earn free invoices by referring friends and colleagues to SuoOps.
           </p>
         </div>
 
         {/* Highlight Box */}
         <div className="mb-8 rounded-xl bg-gradient-to-r from-purple-50 to-emerald-50 border border-purple-200 p-6">
           <h3 className="font-semibold text-purple-900 mb-2">🎁 Referral Rewards</h3>
-          <div className="grid sm:grid-cols-2 gap-4 text-sm">
+          <div className="grid gap-3 text-sm">
             <div className="flex items-center gap-2">
               <Users className="h-5 w-5 text-purple-600" />
-              <span><strong>You get:</strong> 1 free month per referral</span>
+              <span><strong>8 free signups:</strong> You get 100 free invoices (₦2,500 value)</span>
             </div>
             <div className="flex items-center gap-2">
-              <Gift className="h-5 w-5 text-emerald-600" />
-              <span><strong>They get:</strong> Extended free trial</span>
+              <Wallet className="h-5 w-5 text-emerald-600" />
+              <span><strong>2 paid subscribers:</strong> You get 100 free invoices (₦2,500 value)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Gift className="h-5 w-5 text-blue-600" />
+              <span><strong>They get:</strong> Free account to start using SuoOps</span>
             </div>
           </div>
         </div>
@@ -55,9 +59,9 @@ export default function HowReferralsWorkArticle() {
         <article className="prose prose-slate prose-emerald max-w-none">
           <h2>Overview</h2>
           <p>
-            Our referral program rewards you for spreading the word about SuoOps. When someone 
-            signs up using your unique referral code and becomes a paying customer, you earn 
-            free subscription time.
+            Our referral program rewards you for spreading the word about SuoOps. When friends 
+            sign up using your unique referral code, you earn free invoice credits that you can 
+            use for your business invoicing.
           </p>
 
           <h2>How It Works</h2>
@@ -104,7 +108,7 @@ export default function HowReferralsWorkArticle() {
                 <div>
                   <h4 className="font-semibold text-slate-900">Earn Rewards</h4>
                   <p className="text-sm text-slate-600">
-                    Once they subscribe, you get 1 free month added to your subscription!
+                    When you reach 8 free signups or 2 paid subscribers, you get 100 free invoices!
                   </p>
                 </div>
               </div>
@@ -129,27 +133,30 @@ export default function HowReferralsWorkArticle() {
             <li>Fill in your business details</li>
             <li>In the <strong>&quot;Referral Code&quot;</strong> field, enter the code you received</li>
             <li>Complete your registration</li>
-            <li>You&apos;ll receive an extended trial period!</li>
+            <li>You&apos;ll get a free account to start using SuoOps!</li>
           </ol>
 
           <h2>Referral Rewards Explained</h2>
           
           <h3>What You Earn</h3>
           <ul>
-            <li><strong>1 free month</strong> for each successful referral</li>
-            <li>Rewards stack - refer 5 friends, get 5 free months!</li>
+            <li><strong>100 free invoices</strong> for every 8 free signups (₦2,500 value)</li>
+            <li><strong>100 free invoices</strong> for every 2 paid subscribers (₦2,500 value)</li>
+            <li>Rewards stack - the more you refer, the more free invoices you earn!</li>
             <li>No limit on how many people you can refer</li>
           </ul>
 
-          <h3>What Makes a &quot;Successful&quot; Referral?</h3>
+          <h3>What Counts as a Referral?</h3>
           <p>
-            A referral is counted as successful when:
+            Referrals are tracked in two ways:
           </p>
           <ul>
-            <li><CheckCircle className="inline h-4 w-4 text-emerald-600" /> They create an account using your code</li>
-            <li><CheckCircle className="inline h-4 w-4 text-emerald-600" /> They subscribe to a paid plan</li>
-            <li><CheckCircle className="inline h-4 w-4 text-emerald-600" /> Their first payment is successful</li>
+            <li><CheckCircle className="inline h-4 w-4 text-emerald-600" /> <strong>Free signup:</strong> When someone creates an account using your code</li>
+            <li><CheckCircle className="inline h-4 w-4 text-emerald-600" /> <strong>Paid signup:</strong> When they subscribe to Pro (₦5,000/month) or Business (₦10,000/month) plan</li>
           </ul>
+          <p className="text-sm text-slate-600">
+            Note: Starter plan users who pay-per-invoice count as free signups. Only Pro and Business subscriptions count as paid referrals.
+          </p>
 
           <h2>Tracking Your Referrals</h2>
           <p>
@@ -157,9 +164,10 @@ export default function HowReferralsWorkArticle() {
           </p>
           <ul>
             <li><strong>Total referrals</strong> - How many people used your code</li>
-            <li><strong>Successful conversions</strong> - How many became paying customers</li>
-            <li><strong>Pending rewards</strong> - Referrals waiting for first payment</li>
-            <li><strong>Months earned</strong> - Total free months you&apos;ve earned</li>
+            <li><strong>Free signups</strong> - Users who created free accounts</li>
+            <li><strong>Paid signups</strong> - Users who subscribed to Pro or Business plans</li>
+            <li><strong>Rewards earned</strong> - Total invoice rewards you&apos;ve earned</li>
+            <li><strong>Progress</strong> - How close you are to your next reward</li>
           </ul>
 
           <h2>Tips for Successful Referrals</h2>
@@ -189,7 +197,8 @@ export default function HowReferralsWorkArticle() {
           
           <h3>When do I receive my reward?</h3>
           <p>
-            Your free month is credited immediately after your referral&apos;s first successful payment.
+            Your reward becomes available to claim as soon as you reach the threshold (8 free signups or 2 paid subscribers). 
+            Go to Dashboard → Referrals and click &quot;Claim Reward&quot; to add the invoices to your balance.
           </p>
 
           <h3>Can I use my own referral code?</h3>
@@ -199,13 +208,19 @@ export default function HowReferralsWorkArticle() {
 
           <h3>Do rewards expire?</h3>
           <p>
-            No, your earned free months never expire. They&apos;re applied to your next billing cycle.
+            Pending rewards must be claimed within 90 days. Once claimed, the invoice credits are added to your account and never expire.
           </p>
 
           <h3>What if my friend forgets to enter the code?</h3>
           <p>
             Unfortunately, referral codes must be entered during registration. 
             <Link href="/contact">Contact support</Link> if there&apos;s an issue.
+          </p>
+
+          <h3>What are free invoices?</h3>
+          <p>
+            Free invoices are credits added to your account balance. Each credit lets you create and send one invoice 
+            to your customers at no cost. 100 free invoices = ₦2,500 value!
           </p>
         </article>
 
