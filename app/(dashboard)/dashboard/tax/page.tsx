@@ -701,11 +701,11 @@ export default function TaxPage() {
                   )}
                 </div>
 
-                {/* Debug Info - Shows invoice breakdown for troubleshooting */}
+                {/* Invoice Breakdown - Shows invoice counts for transparency */}
                 {report.debug_info && (
                   <div className="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4">
                     <p className="mb-3 text-sm font-semibold text-gray-700">
-                      🔍 Debug Info (Invoice Breakdown)
+                      📊 Invoice Breakdown
                     </p>
                     <div className="grid gap-2 text-xs text-gray-600 sm:grid-cols-2 lg:grid-cols-4">
                       <div>
