@@ -58,7 +58,7 @@ const categories = [
     icon: Users,
     color: "bg-orange-500",
     articles: [
-      { slug: "how-it-works", title: "How referral rewards work" },
+      { slug: "how-referrals-work", title: "How referral rewards work" },
       { slug: "share-code", title: "How to share your referral code" },
       { slug: "claim-rewards", title: "Claiming your rewards" },
       { slug: "referral-terms", title: "Referral program terms" },

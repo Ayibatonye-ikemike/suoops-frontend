@@ -65,7 +65,7 @@ const popularArticles = [
   { title: "How to create your first invoice", href: "/articles/getting-started/first-invoice" },
   { title: "Understanding subscription plans", href: "/articles/billing/plans" },
   { title: "How to connect WhatsApp", href: "/articles/whatsapp/setup" },
-  { title: "How referral rewards work", href: "/articles/referrals/how-it-works" },
+  { title: "How referral rewards work", href: "/articles/referrals/how-referrals-work" },
   { title: "How to delete your account", href: "/articles/account/delete-account" },
   { title: "Adding bank details for payments", href: "/articles/getting-started/bank-details" },
 ];
