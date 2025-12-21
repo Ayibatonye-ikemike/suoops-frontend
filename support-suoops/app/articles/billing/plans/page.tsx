@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, CreditCard, Clock, Check, Zap, Building2, Crown } from "lucide-react";
+import { ChevronRight, CreditCard, Clock, Check, Zap, Building2, Crown, Package } from "lucide-react";
 
 export default function PlansArticle() {
   return (
@@ -30,7 +30,7 @@ export default function PlansArticle() {
             Understanding Subscription Plans
           </h1>
           <p className="mt-3 text-lg text-slate-600">
-            Choose the right plan for your business needs. Start free, upgrade as you grow.
+            Choose the right plan for your business needs. Start free, pay as you go.
           </p>
         </div>
 
@@ -44,24 +44,27 @@ export default function PlansArticle() {
             </div>
             <div className="mb-4">
               <span className="text-3xl font-bold text-slate-900">₦0</span>
-              <span className="text-slate-500">/month</span>
             </div>
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>5 invoices/month</span>
+                <span>5 free invoices to start</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>WhatsApp notifications</span>
+                <span>Buy more: 100 for ₦2,500</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>PDF downloads</span>
+                <span>WhatsApp & Email delivery</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>Basic reports</span>
+                <span>PDF generation</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-emerald-500" />
+                <span>QR verification</span>
               </li>
             </ul>
           </div>
@@ -78,21 +81,25 @@ export default function PlansArticle() {
               <h3 className="font-bold text-slate-900">Pro</h3>
             </div>
             <div className="mb-4">
-              <span className="text-3xl font-bold text-slate-900">₦2,500</span>
+              <span className="text-3xl font-bold text-slate-900">₦5,000</span>
               <span className="text-slate-500">/month</span>
             </div>
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span><strong>100 invoices</strong>/month</span>
+                <span><strong>100 invoices</strong> included</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>Expense tracking</span>
+                <span>Custom logo branding</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>Tax calculations</span>
+                <span>Inventory management</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-emerald-500" />
+                <span>Team management (3 members)</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
@@ -108,25 +115,29 @@ export default function PlansArticle() {
               <h3 className="font-bold text-slate-900">Business</h3>
             </div>
             <div className="mb-4">
-              <span className="text-3xl font-bold text-slate-900">₦7,500</span>
+              <span className="text-3xl font-bold text-slate-900">₦10,000</span>
               <span className="text-slate-500">/month</span>
             </div>
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span><strong>Unlimited</strong> invoices</span>
+                <span><strong>100 invoices</strong> included</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>Team access</span>
+                <span>Everything in Pro</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>Inventory management</span>
+                <span>Voice invoices</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>Advanced analytics</span>
+                <span>Photo OCR (15/month)</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-emerald-500" />
+                <span>API access</span>
               </li>
             </ul>
           </div>
@@ -136,13 +147,27 @@ export default function PlansArticle() {
         <article className="prose prose-slate prose-emerald max-w-none">
           <h2>Invoice Packs (Pay-As-You-Go)</h2>
           <p>
-            Need more invoices without committing to a monthly plan? Purchase invoice packs:
+            All plans work with invoice packs - purchase as you need:
           </p>
           <ul>
-            <li><strong>100 invoices</strong> for ₦2,500 (no expiry)</li>
+            <li><strong>100 invoices</strong> for ₦2,500 (never expires)</li>
             <li>Works on any plan, including Free</li>
-            <li>Invoices never expire - use them anytime</li>
+            <li>Pro &amp; Business plans include 100 invoices/month in subscription</li>
+            <li>Buy additional packs anytime when you need more</li>
           </ul>
+
+          <h2>How to Get Started</h2>
+          <ol>
+            <li>Sign up for a <strong>Free account</strong> (5 free invoices included)</li>
+            <li>When you need more, either:
+              <ul>
+                <li>Buy invoice packs (100 for ₦2,500) - pay as you go</li>
+                <li>Upgrade to Pro/Business for monthly subscription with 100 invoices included</li>
+              </ul>
+            </li>
+            <li>Complete payment via Paystack</li>
+            <li>Invoices are added to your balance immediately</li>
+          </ol>
 
           <h2>How to Upgrade</h2>
           <ol>
@@ -156,20 +181,20 @@ export default function PlansArticle() {
           
           <h3>When am I charged?</h3>
           <p>
-            Subscriptions are billed monthly on the same date you first subscribed. 
-            For example, if you subscribe on December 15th, you&apos;ll be charged again on January 15th.
+            Pro and Business subscriptions are billed monthly on the same date you first subscribed. 
+            Invoice packs are one-time purchases with no recurring charges.
           </p>
 
           <h3>Can I cancel anytime?</h3>
           <p>
             Yes! Cancel from Settings → Subscription. You&apos;ll keep access until the end of your 
-            billing period, then revert to the Free plan.
+            billing period, then revert to the Free plan. Your invoice balance is preserved.
           </p>
 
-          <h3>What happens to my data if I downgrade?</h3>
+          <h3>What happens to my invoice balance if I downgrade?</h3>
           <p>
-            All your invoices and data are preserved. You just won&apos;t be able to create new 
-            invoices beyond the Free tier limit until you upgrade again.
+            Your invoice balance is preserved when you downgrade. Any purchased invoices never expire.
+            You just lose access to premium features like voice invoices, OCR, and team management.
           </p>
 
           <h3>Do you offer refunds?</h3>
