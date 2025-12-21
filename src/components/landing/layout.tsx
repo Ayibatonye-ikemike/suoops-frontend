@@ -118,8 +118,23 @@ export function Footer() {
             <h4 className="font-semibold text-brand-evergreen">Company</h4>
             <ul className="mt-4 space-y-2 text-sm text-slate-600">
               <li>
-                <a href="mailto:info@suoops.com" className="hover:text-brand-jade transition-colors">
+                <a 
+                  href="https://support.suoops.com/contact" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-brand-jade transition-colors"
+                >
                   Contact
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://support.suoops.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-brand-jade transition-colors"
+                >
+                  Help Center
                 </a>
               </li>
               <li>
