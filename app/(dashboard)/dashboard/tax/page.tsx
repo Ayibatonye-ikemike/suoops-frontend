@@ -46,6 +46,7 @@ interface MonthlyReport {
   assessable_profit: number;
   levy_amount: number;
   pit_amount: number;
+  cit_amount: number;
   vat_collected: number;
   taxable_sales: number;
   zero_rated_sales: number;
@@ -54,6 +55,7 @@ interface MonthlyReport {
   basis: string;
   user_plan: string; // free, starter, pro, business
   is_vat_eligible: boolean; // PRO and BUSINESS plans
+  is_cit_eligible: boolean; // PRO and BUSINESS plans
   pit_band_info: string; // e.g., "15% band (₦800K-₦3M)"
   alerts: Array<{
     type: string;
@@ -580,20 +582,19 @@ export default function TaxPage() {
                       <p className="mt-2 text-xs text-gray-600">
                         🚀 <strong>Starter Plan:</strong> Automated PIT
                         calculation with expense deductions. Upgrade to{" "}
-                        <strong>Pro</strong> for VAT tracking and custom
-                        branding.
+                        <strong>Pro</strong> for CIT + VAT tracking.
                       </p>
                     )}
                     {report.user_plan === "pro" && (
                       <p className="mt-2 text-xs text-gray-600">
-                        ⭐ <strong>Pro Plan:</strong> PIT + VAT hybrid
-                        reporting. Upgrade to <strong>Business</strong> for
-                        CIT/VAT e-invoice compliant reports and API access.
+                        ⭐ <strong>Pro Plan:</strong> Full PIT + CIT + VAT
+                        reporting with automated calculations. Upgrade to{" "}
+                        <strong>Business</strong> for Voice/OCR invoices and API access.
                       </p>
                     )}
                     {report.user_plan === "business" && (
                       <p className="mt-2 text-xs text-gray-600">
-                        💼 <strong>Business Plan:</strong> Full CIT + VAT
+                        💼 <strong>Business Plan:</strong> Full PIT + CIT + VAT
                         e-invoice compliant reports, ready for FIRS filing.
                       </p>
                     )}
@@ -619,6 +620,23 @@ export default function TaxPage() {
                       </p>
                     </div>
                   ))}
+
+                  {/* CIT field - only shown for PRO and BUSINESS plans */}
+                  {report.is_cit_eligible && (
+                    <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+                      <p className="text-sm font-medium text-amber-700">
+                        Company Tax (CIT)
+                      </p>
+                      <p className="mt-2 text-2xl font-semibold text-amber-800">
+                        ₦{(report.cit_amount || 0).toLocaleString()}
+                      </p>
+                      <p className="mt-1 text-xs text-amber-600">
+                        {report.annual_revenue_estimate <= 50_000_000
+                          ? "Small company (≤₦50M): Exempt"
+                          : "30% of taxable profit"}
+                      </p>
+                    </div>
+                  )}
 
                   {/* VAT fields - only shown for PRO and BUSINESS plans */}
                   {report.is_vat_eligible &&

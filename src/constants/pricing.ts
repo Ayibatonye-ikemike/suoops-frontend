@@ -92,6 +92,7 @@ export const PLANS: Record<PlanTier, Plan> = {
     features: [
       "100 invoices/month included",
       "Everything in Starter",
+      "PIT + CIT tax reports",
       "Custom logo branding",
       "Inventory management",
       "Team management (3 members)",
