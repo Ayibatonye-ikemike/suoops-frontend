@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { AlertTriangle, Trash2 } from "lucide-react";
 
@@ -21,6 +21,7 @@ type CurrentUser = components["schemas"]["UserOut"];
 
 export default function SettingsPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const clearTokens = useAuthStore((state) => state.clearTokens);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
@@ -99,6 +100,10 @@ export default function SettingsPage() {
               currentPhone={
                 user?.phone_verified && user?.phone ? user.phone : null
               }
+              onPhoneVerified={() => {
+                // Refetch user data to persist verified state
+                queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+              }}
             />
           </CardContent>
         </Card>

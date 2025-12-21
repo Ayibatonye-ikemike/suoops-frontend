@@ -12,7 +12,7 @@
 
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { requestPhoneOTP, verifyPhoneOTP, removePhone } from "./phone-api";
 import { OTPInput } from "@/features/auth/otp-input";
 import { Button } from "@/components/ui/button";
@@ -59,6 +59,14 @@ export function PhoneNumberSection({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  // Sync state when currentPhone prop changes (e.g., after page refresh and data fetch)
+  useEffect(() => {
+    if (currentPhone) {
+      setStep("verified");
+      setPhone(currentPhone);
+    }
+  }, [currentPhone]);
 
   /**
    * Handle phone number input and request OTP
