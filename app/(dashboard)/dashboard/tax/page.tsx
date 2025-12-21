@@ -631,9 +631,11 @@ export default function TaxPage() {
                         ₦{(report.cit_amount || 0).toLocaleString()}
                       </p>
                       <p className="mt-1 text-xs text-amber-600">
-                        {report.annual_revenue_estimate <= 50_000_000
-                          ? "Small company (≤₦50M): Exempt"
-                          : "30% of taxable profit"}
+                        {report.annual_revenue_estimate <= 25_000_000
+                          ? "Small (≤₦25M): Exempt"
+                          : report.annual_revenue_estimate < 100_000_000
+                          ? "Medium (₦25M-₦100M): 20%"
+                          : "Large (≥₦100M): 30%"}
                       </p>
                     </div>
                   )}
