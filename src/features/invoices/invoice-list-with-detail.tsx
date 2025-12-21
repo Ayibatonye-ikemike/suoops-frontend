@@ -15,7 +15,7 @@ export function InvoiceListWithDetail() {
   const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(
     null
   );
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("awaiting_confirmation");
   const [searchQuery, setSearchQuery] = useState("");
 
   const invoices = useMemo(() => data ?? [], [data]);
@@ -139,10 +139,10 @@ export function InvoiceListWithDetail() {
         <div className="mb-4 flex flex-wrap gap-2">
           {(
             [
-              { key: "all", label: "All" },
-              { key: "pending", label: "Pending" },
               { key: "awaiting_confirmation", label: "Awaiting" },
+              { key: "pending", label: "Pending" },
               { key: "paid", label: "Paid" },
+              { key: "all", label: "All" },
             ] as const
           ).map((filter) => (
             <button
