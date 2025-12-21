@@ -107,7 +107,7 @@ export const PLANS: Record<PlanTier, Plan> = {
     invoicesDisplay: "100 invoices included",
     hasMonthlySubscription: true,
     icon: "💼",
-    description: "All features for scaling businesses",
+    description: "For registered companies up to ₦100M revenue",
     features: [
       "100 invoices/month included",
       "Everything in Pro",

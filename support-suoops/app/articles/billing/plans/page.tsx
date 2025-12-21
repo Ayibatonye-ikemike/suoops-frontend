@@ -109,11 +109,14 @@ export default function PlansArticle() {
           </div>
 
           {/* Business Plan */}
-          <div className="rounded-xl border border-slate-200 p-6">
-            <div className="flex items-center gap-2 mb-3">
+          <div className="rounded-xl border-2 border-amber-200 bg-amber-50/30 p-6">
+            <div className="flex items-center gap-2 mb-2">
               <Crown className="h-5 w-5 text-amber-500" />
               <h3 className="font-bold text-slate-900">Business</h3>
             </div>
+            <p className="text-xs text-amber-700 mb-3 font-medium">
+              For registered companies with up to ₦100M annual revenue
+            </p>
             <div className="mb-4">
               <span className="text-3xl font-bold text-slate-900">₦10,000</span>
               <span className="text-slate-500">/month</span>
@@ -168,6 +171,41 @@ export default function PlansArticle() {
             <li>Complete payment via Paystack</li>
             <li>Invoices are added to your balance immediately</li>
           </ol>
+
+          <h2>Which Plan is Right for Me?</h2>
+          <div className="not-prose">
+            <div className="space-y-4 mb-8">
+              <div className="rounded-lg border border-slate-200 p-4">
+                <h4 className="font-semibold text-slate-900 mb-2">Free / Starter (Pay-as-you-go)</h4>
+                <p className="text-sm text-slate-600">
+                  Best for individuals, freelancers, and small traders just getting started. 
+                  Pay only for invoices you need without any monthly commitment.
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-200 p-4">
+                <h4 className="font-semibold text-slate-900 mb-2">Pro (₦5,000/month)</h4>
+                <p className="text-sm text-slate-600">
+                  Best for growing businesses that need custom branding, team access, and send 
+                  more than 100 invoices monthly. Great value if you&apos;re regularly invoicing.
+                </p>
+              </div>
+              <div className="rounded-lg border-2 border-amber-200 bg-amber-50/50 p-4">
+                <h4 className="font-semibold text-slate-900 mb-2">Business (₦10,000/month)</h4>
+                <p className="text-sm text-slate-600 mb-3">
+                  <strong className="text-amber-700">Designed for registered companies</strong> with annual 
+                  revenue up to ₦100 million that are registered to pay Company Income Tax (CIT). 
+                  This plan includes advanced features for formal business operations.
+                </p>
+                <p className="text-sm text-slate-600">
+                  Features like Voice Invoices, Photo OCR, and API access help streamline 
+                  high-volume invoicing and integrate with your existing systems.
+                </p>
+                <p className="text-xs text-amber-700 mt-3 font-medium">
+                  💡 If you&apos;re a small trader or freelancer, the Pro plan is likely a better fit.
+                </p>
+              </div>
+            </div>
+          </div>
 
           <h2>How to Upgrade</h2>
           <ol>
