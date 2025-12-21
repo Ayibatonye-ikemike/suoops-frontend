@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { InvoiceCreateForm } from "@/features/invoices/invoice-create-form";
 import { InvoiceListWithDetail } from "@/features/invoices/invoice-list-with-detail";
 import { InvoiceStatusCard } from "@/features/invoices/invoice-status-card";
+import { WhatsAppSetupBanner } from "@/features/dashboard/whatsapp-setup-banner";
 
 // Wrap InvoiceListWithDetail in its own Suspense for useSearchParams
 function InvoiceListWrapper() {
@@ -30,6 +31,9 @@ export default function DashboardPage() {
             Create invoices and review activity
           </p>
         </div>
+
+        {/* WhatsApp Setup Banner for new users */}
+        <WhatsAppSetupBanner />
 
         <div className="space-y-4 sm:space-y-6">
           {/* 3-Column Grid */}
