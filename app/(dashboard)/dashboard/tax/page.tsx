@@ -63,6 +63,19 @@ interface MonthlyReport {
     message: string;
   }>;
   annual_revenue_estimate: number;
+  debug_info?: {
+    total_invoices_in_period: number;
+    paid_invoices: number;
+    non_refunded_invoices: number;
+    invoices_counted_for_basis: number;
+    calculated_revenue: number;
+    top_5_invoices: Array<{
+      invoice_id: string;
+      amount: number;
+      status: string;
+      created_at: string | null;
+    }>;
+  };
 }
 
 interface ExpenseRecord {
@@ -679,6 +692,70 @@ export default function TaxPage() {
                     </div>
                   )}
                 </div>
+
+                {/* Debug Info - Shows invoice breakdown for troubleshooting */}
+                {report.debug_info && (
+                  <div className="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4">
+                    <p className="mb-3 text-sm font-semibold text-gray-700">
+                      🔍 Debug Info (Invoice Breakdown)
+                    </p>
+                    <div className="grid gap-2 text-xs text-gray-600 sm:grid-cols-2 lg:grid-cols-4">
+                      <div>
+                        <strong>Total invoices in period:</strong>{" "}
+                        {report.debug_info.total_invoices_in_period}
+                      </div>
+                      <div>
+                        <strong>Paid invoices:</strong>{" "}
+                        {report.debug_info.paid_invoices}
+                      </div>
+                      <div>
+                        <strong>Non-refunded:</strong>{" "}
+                        {report.debug_info.non_refunded_invoices}
+                      </div>
+                      <div>
+                        <strong>Counted for &quot;{report.basis}&quot;:</strong>{" "}
+                        {report.debug_info.invoices_counted_for_basis}
+                      </div>
+                    </div>
+                    <div className="mt-2 text-xs text-gray-600">
+                      <strong>Calculated Revenue:</strong> ₦
+                      {(report.debug_info.calculated_revenue || 0).toLocaleString()}
+                    </div>
+                    {report.debug_info.top_5_invoices?.length > 0 && (
+                      <div className="mt-3">
+                        <p className="mb-1 text-xs font-medium text-gray-700">
+                          Top 5 Invoices by Amount:
+                        </p>
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-xs">
+                            <thead>
+                              <tr className="border-b text-left text-gray-500">
+                                <th className="pb-1 pr-4">Invoice ID</th>
+                                <th className="pb-1 pr-4">Amount</th>
+                                <th className="pb-1 pr-4">Status</th>
+                                <th className="pb-1">Created</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {report.debug_info.top_5_invoices.map((inv) => (
+                                <tr key={inv.invoice_id} className="border-b border-gray-100">
+                                  <td className="py-1 pr-4 font-mono">{inv.invoice_id}</td>
+                                  <td className="py-1 pr-4">₦{(inv.amount || 0).toLocaleString()}</td>
+                                  <td className="py-1 pr-4">{inv.status}</td>
+                                  <td className="py-1">
+                                    {inv.created_at
+                                      ? new Date(inv.created_at).toLocaleDateString()
+                                      : "-"}
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </>
             ) : null}
           </CardContent>
