@@ -22,19 +22,19 @@ const faqCategories: FAQCategory[] = [
     faqs: [
       {
         question: "How do I create my first invoice?",
-        answer: "After signing up, go to Dashboard → Invoices → Create Invoice. Enter your customer details, add line items with descriptions and amounts, then click 'Create Invoice'. You can then download, email, or share via WhatsApp."
+        answer: "You have two options: (1) From the dashboard, click 'New Invoice', fill in customer name, phone, and line items, then click 'Create'. (2) Via WhatsApp, message our bot with: 'Invoice [Name] [Phone], [Amount] [Item]' - e.g., 'Invoice Joy 08012345678, 12000 wig'."
       },
       {
-        question: "Is there a free trial?",
-        answer: "Yes! SuoOps offers a free tier that allows you to create up to 5 invoices per month with basic features. No credit card required to get started."
+        question: "Is there a free plan?",
+        answer: "Yes! New users get 5 free invoices to start. After that, you can purchase invoice packs (100 invoices for ₦2,500) or subscribe to a monthly plan for additional features."
       },
       {
         question: "How do I set up my business profile?",
-        answer: "Go to Settings → Business Profile to add your business name, logo, address, and contact information. This information appears on all your invoices."
+        answer: "Go to Settings in your dashboard. You can add your business name, upload a logo (appears on all invoices), and add your bank account details for customers to pay you."
       },
       {
         question: "Can I use SuoOps on my phone?",
-        answer: "Absolutely! SuoOps is fully responsive and works on smartphones, tablets, and computers. Simply visit suoops.com from any device."
+        answer: "Yes! SuoOps works on any device. You can use our web dashboard at suoops.com, or create invoices directly via WhatsApp by messaging our bot."
       }
     ]
   },
@@ -43,24 +43,24 @@ const faqCategories: FAQCategory[] = [
     icon: <FileText className="h-5 w-5" />,
     faqs: [
       {
-        question: "Can I customize my invoice template?",
-        answer: "Yes, you can customize colors, add your logo, and configure which information appears on your invoices. Go to Settings → Invoice Settings to personalize your template."
+        question: "Can I add my logo to invoices?",
+        answer: "Yes! Upload your business logo in Settings. It will appear on all your PDF invoices. Custom branding (colors, fonts) is available on Pro and Business plans."
       },
       {
         question: "How do I add VAT/Tax to invoices?",
-        answer: "When creating an invoice, enable the 'Apply Tax' toggle and enter your tax rate. The tax will be automatically calculated and added to the total."
+        answer: "Tax features are available on Starter, Pro, and Business plans. When creating an invoice, you can enable tax calculation and the system will automatically compute VAT and development levy."
       },
       {
-        question: "Can I create recurring invoices?",
-        answer: "Recurring invoices are available on Pro and Business plans. Set up automatic invoice generation on a weekly, monthly, or custom schedule."
+        question: "How do invoices get sent to customers?",
+        answer: "When you include a customer's phone number, they receive a WhatsApp notification with invoice details. If you add their email, they also get an email with the PDF attached."
       },
       {
-        question: "How do I send an invoice reminder?",
-        answer: "Open the invoice and click 'Send Reminder'. You can send via email or WhatsApp. Automatic reminders can be set up in Invoice Settings."
+        question: "How do I track payment status?",
+        answer: "View all invoices in your dashboard. Each invoice shows its status (pending, paid, etc.). When a customer pays, click 'Mark as Paid' to update the status and optionally send a receipt."
       },
       {
-        question: "Can I accept payments through invoices?",
-        answer: "Yes! Connect your bank account to receive payments directly. Customers can pay via bank transfer, and payments are automatically tracked."
+        question: "Can I download invoices as PDF?",
+        answer: "Yes! Every invoice can be downloaded as a professional PDF. PDFs include your logo, business details, bank account info, and a QR code for payment verification."
       }
     ]
   },
@@ -69,24 +69,24 @@ const faqCategories: FAQCategory[] = [
     icon: <CreditCard className="h-5 w-5" />,
     faqs: [
       {
-        question: "What payment methods do you accept?",
-        answer: "We accept payments via Paystack (card payments) and bank transfers. All transactions are secured with bank-level encryption."
+        question: "How does billing work?",
+        answer: "New users get 5 free invoices. After that, you can either buy invoice packs (100 for ₦2,500) or subscribe monthly. Invoice packs never expire - use them anytime."
+      },
+      {
+        question: "What are the subscription plans?",
+        answer: "We offer: Free (5 invoices to start), Starter (pay-as-you-go with tax features), Pro (₦5,000/month with inventory & team access), and Business (₦10,000/month with voice invoices & OCR)."
       },
       {
         question: "How do I upgrade my plan?",
-        answer: "Go to Settings → Subscription and click 'Upgrade'. Choose your preferred plan and complete the payment. The upgrade takes effect immediately."
+        answer: "Go to Settings → Subscription and click 'Upgrade'. Choose your preferred plan and complete payment via Paystack. Your new plan activates immediately."
       },
       {
         question: "Can I cancel my subscription?",
-        answer: "Yes, you can cancel anytime from Settings → Subscription → Cancel. You'll continue to have access until the end of your billing period."
+        answer: "Yes, you can cancel anytime from Settings → Subscription. You keep access until the end of your billing period, then revert to the free tier."
       },
       {
-        question: "Do you offer refunds?",
-        answer: "We offer a 14-day money-back guarantee on all paid plans. Contact support within 14 days of your first payment to request a refund."
-      },
-      {
-        question: "What happens when my subscription ends?",
-        answer: "Your account reverts to the free tier. You keep all your data but can only create 5 invoices per month. Upgrade anytime to restore full access."
+        question: "What happens to my invoices if I downgrade?",
+        answer: "All your data is preserved. You just won't be able to create new invoices beyond your remaining balance until you purchase more or upgrade."
       }
     ]
   },
@@ -96,15 +96,15 @@ const faqCategories: FAQCategory[] = [
     faqs: [
       {
         question: "How does the referral program work?",
-        answer: "Share your unique referral code with friends. When they sign up and subscribe, you get 1 free month added to your subscription. There's no limit to how many people you can refer!"
+        answer: "Share your unique referral code with friends. When they sign up and make their first purchase, you earn rewards. There's no limit to how many people you can refer!"
       },
       {
         question: "Where do I find my referral code?",
-        answer: "Your referral code is available at Dashboard → Referrals. Click the copy button to copy your code and share it with friends."
+        answer: "Your referral code is in your dashboard under the Referrals section. Click the copy button to share it easily."
       },
       {
         question: "When do I receive my referral reward?",
-        answer: "Your free month is credited immediately after your referral's first successful payment is processed."
+        answer: "Rewards are credited after your referral makes their first successful payment or purchase."
       },
       {
         question: "Can I use multiple referral codes?",
@@ -113,24 +113,24 @@ const faqCategories: FAQCategory[] = [
     ]
   },
   {
-    title: "WhatsApp Integration",
+    title: "WhatsApp Bot",
     icon: <MessageCircle className="h-5 w-5" />,
     faqs: [
       {
-        question: "How do I send invoices via WhatsApp?",
-        answer: "When viewing an invoice, click 'Share via WhatsApp'. This opens WhatsApp with a pre-filled message and link to your invoice."
+        question: "How do I connect my WhatsApp?",
+        answer: "Go to Settings in your dashboard and enter your WhatsApp phone number (with country code, e.g., +2348012345678). Save, then message the SuoOps bot to start creating invoices."
       },
       {
-        question: "How do I receive notifications on WhatsApp?",
-        answer: "Go to Settings → Notifications and enable WhatsApp notifications. Verify your phone number and reply 'YES' to the confirmation message."
+        question: "How do I create invoices via WhatsApp?",
+        answer: "Message the SuoOps bot with: 'Invoice [Customer Name] [Phone], [Amount] [Item]'. Example: 'Invoice Joy 08012345678, 12000 wig'. You can also send voice notes!"
       },
       {
-        question: "What notifications can I receive via WhatsApp?",
-        answer: "You can receive payment confirmations, payment reminders, referral notifications, and important account alerts on WhatsApp."
+        question: "Why does my customer need to reply 'OK'?",
+        answer: "WhatsApp requires customers to opt-in before receiving detailed messages. After they reply once, they'll automatically receive full invoice details and PDFs for future invoices."
       },
       {
-        question: "How do I stop WhatsApp notifications?",
-        answer: "Reply 'STOP' to any SuoOps WhatsApp message, or toggle off WhatsApp notifications in Settings → Notifications."
+        question: "What notifications do I receive on WhatsApp?",
+        answer: "You receive confirmation when invoices are created and when customers confirm payment. Your customers receive invoice details and payment instructions."
       }
     ]
   },
@@ -139,20 +139,20 @@ const faqCategories: FAQCategory[] = [
     icon: <Shield className="h-5 w-5" />,
     faqs: [
       {
-        question: "How do I reset my password?",
-        answer: "Click 'Forgot Password' on the login page. Enter your email and we'll send you a link to reset your password."
+        question: "How do I log in?",
+        answer: "Go to suoops.com and click 'Login'. You can log in with your phone number (OTP sent via WhatsApp) or with Google/email if you signed up that way."
       },
       {
         question: "Is my data secure?",
-        answer: "Yes! We use bank-level encryption (SSL/TLS) for all data transmission and storage. Your data is backed up regularly and stored securely in the cloud."
+        answer: "Yes! We use bank-level encryption (SSL/TLS) for all data. Your passwords are hashed, and we never store sensitive payment card details."
       },
       {
-        question: "Can I export my data?",
-        answer: "Yes, you can download your invoices as PDFs. For bulk data export, contact support and we'll provide a complete export of your data."
+        question: "Can I download my invoices?",
+        answer: "Yes, you can download any invoice as a PDF from your dashboard. Click on an invoice and use the download button."
       },
       {
         question: "How do I delete my account?",
-        answer: "Go to Settings → scroll to 'Danger Zone' → Click 'Delete Account'. You'll need to type 'DELETE MY ACCOUNT' to confirm. This action is permanent and cannot be undone."
+        answer: "Go to Settings → scroll to 'Danger Zone' → Click 'Delete Account'. You'll need to confirm by typing 'DELETE MY ACCOUNT'. This action is permanent and cannot be undone."
       }
     ]
   }
