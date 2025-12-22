@@ -44,7 +44,6 @@ interface PlatformMetrics {
   active_subscriptions: {
     free?: number;
     starter?: number;
-    basic?: number;
     pro?: number;
     business?: number;
   };
@@ -168,14 +167,12 @@ export default function MetricsPage() {
   const totalSubscribers = metrics
     ? ((metrics.active_subscriptions.free || 0) +
         (metrics.active_subscriptions.starter || 0) +
-        (metrics.active_subscriptions.basic || 0) +
         (metrics.active_subscriptions.pro || 0) +
         (metrics.active_subscriptions.business || 0))
     : 0;
     
   const paidCount = metrics
-    ? ((metrics.active_subscriptions.basic || 0) +
-        (metrics.active_subscriptions.pro || 0) +
+    ? ((metrics.active_subscriptions.pro || 0) +
         (metrics.active_subscriptions.business || 0))
     : 0;
     
@@ -288,12 +285,6 @@ export default function MetricsPage() {
               label="Starter Plan"
               value={metrics?.active_subscriptions.starter || 0}
               total={totalSubscribers || 1}
-              color="bg-slate-500"
-            />
-            <ProgressBar
-              label="Basic Plan"
-              value={metrics?.active_subscriptions.basic || 0}
-              total={totalSubscribers || 1}
               color="bg-blue-500"
             />
             <ProgressBar
@@ -333,7 +324,7 @@ export default function MetricsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-semibold text-slate-900">Paid Subscribers</h3>
-              <p className="text-sm text-slate-500">Basic, Pro, and Business plan users</p>
+              <p className="text-sm text-slate-500">Pro and Business plan users</p>
             </div>
             <div className="flex gap-4 text-sm">
               <div className="flex items-center gap-2">
