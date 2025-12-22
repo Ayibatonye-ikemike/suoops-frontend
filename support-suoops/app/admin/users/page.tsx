@@ -18,19 +18,16 @@ import { useAdminAuth } from "../layout";
 
 interface UserInfo {
   id: number;
-  email: string;
-  full_name: string;
-  phone_number: string;
+  email: string | null;
+  name: string;  // Backend returns 'name' not 'full_name'
+  phone: string;  // Backend returns 'phone' not 'phone_number'
+  phone_verified: boolean;
   role: string;
   plan: string;
-  is_active: boolean;
+  invoices_this_month: number;
   created_at: string;
   last_login: string | null;
-  business_name?: string;
-  business_id?: number;
-  total_invoices?: number;
-  total_revenue?: number;
-  subscription_status?: string;
+  business_name?: string | null;
 }
 
 const planColors: Record<string, string> = {
@@ -184,7 +181,7 @@ export default function UsersPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium text-slate-900 truncate">
-                          {user.full_name || "No Name"}
+                          {user.name || "No Name"}
                         </span>
                         <span
                           className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium capitalize ${
@@ -215,14 +212,14 @@ export default function UsersPage() {
                 <div className="p-6">
                   <div className="flex items-start gap-4">
                     <div className="h-16 w-16 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white text-xl font-bold">
-                      {(selectedUser.full_name || selectedUser.email)
+                      {(selectedUser.name || selectedUser.email || selectedUser.phone || "U")
                         .charAt(0)
                         .toUpperCase()}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <h2 className="text-xl font-bold text-slate-900">
-                          {selectedUser.full_name || "No Name"}
+                          {selectedUser.name || "No Name"}
                         </h2>
                         {selectedUser.role === "admin" && (
                           <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
@@ -243,12 +240,12 @@ export default function UsersPage() {
                         </span>
                         <span
                           className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
-                            selectedUser.is_active
+                            selectedUser.phone_verified
                               ? "bg-green-100 text-green-700"
-                              : "bg-red-100 text-red-700"
+                              : "bg-yellow-100 text-yellow-700"
                           }`}
                         >
-                          {selectedUser.is_active ? "Active" : "Inactive"}
+                          {selectedUser.phone_verified ? "Verified" : "Unverified"}
                         </span>
                       </div>
                     </div>
@@ -288,7 +285,7 @@ export default function UsersPage() {
                       <div>
                         <p className="text-xs text-slate-400">Phone</p>
                         <p className="text-sm text-slate-700">
-                          {selectedUser.phone_number || "Not provided"}
+                          {selectedUser.phone || "Not provided"}
                         </p>
                       </div>
                     </div>
