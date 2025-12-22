@@ -347,45 +347,12 @@ export default function UsersPage() {
                         <CreditCard className="h-4 w-4 text-slate-500" />
                       </div>
                       <div>
-                        <p className="text-xs text-slate-400">Subscription</p>
-                        <p className="text-sm text-slate-700 capitalize">
-                          {selectedUser.subscription_status || "N/A"}
+                        <p className="text-xs text-slate-400">Invoices This Month</p>
+                        <p className="text-sm text-slate-700">
+                          {selectedUser.invoices_this_month}
                         </p>
                       </div>
                     </div>
-
-                    {selectedUser.total_invoices !== undefined && (
-                      <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-lg bg-slate-100 flex items-center justify-center">
-                          <Receipt className="h-4 w-4 text-slate-500" />
-                        </div>
-                        <div>
-                          <p className="text-xs text-slate-400">
-                            Total Invoices
-                          </p>
-                          <p className="text-sm text-slate-700">
-                            {selectedUser.total_invoices.toLocaleString()}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedUser.total_revenue !== undefined && (
-                      <div className="flex items-center gap-3">
-                        <div className="h-8 w-8 rounded-lg bg-emerald-100 flex items-center justify-center">
-                          <Receipt className="h-4 w-4 text-emerald-600" />
-                        </div>
-                        <div>
-                          <p className="text-xs text-slate-400">
-                            Total Revenue
-                          </p>
-                          <p className="text-sm font-medium text-emerald-600">
-                            ₦
-                            {(selectedUser.total_revenue || 0).toLocaleString()}
-                          </p>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
