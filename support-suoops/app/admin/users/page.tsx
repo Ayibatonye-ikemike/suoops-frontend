@@ -30,6 +30,23 @@ interface UserInfo {
   business_name?: string | null;
 }
 
+interface UserActivity {
+  total_invoices: number;
+  revenue_invoices: number;
+  expense_invoices: number;
+  total_customers: number;
+  has_logo: boolean;
+  has_bank_details: boolean;
+  invoice_balance: number;
+  invoices_used: number;
+  pack_purchases: Array<{
+    reference: string;
+    amount: number;
+    invoices_added: number;
+    date: string | null;
+  }>;
+}
+
 const planColors: Record<string, string> = {
   free: "bg-slate-100 text-slate-700",
   starter: "bg-blue-100 text-blue-700",
@@ -41,6 +58,7 @@ export default function UsersPage() {
   const { token } = useAdminAuth();
   const [users, setUsers] = useState<UserInfo[]>([]);
   const [selectedUser, setSelectedUser] = useState<UserInfo | null>(null);
+  const [userActivity, setUserActivity] = useState<UserActivity | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -99,7 +117,16 @@ export default function UsersPage() {
 
       if (!res.ok) throw new Error("Failed to fetch user details");
       const data = await res.json();
-      setSelectedUser(data);
+      
+      // Backend returns { user: {...}, activity: {...} }
+      if (data.user) {
+        setSelectedUser(data.user);
+        setUserActivity(data.activity || null);
+      } else {
+        // If response is flat (from search), use as-is
+        setSelectedUser(data);
+        setUserActivity(null);
+      }
     } catch (err) {
       console.error("Failed to fetch user details:", err);
     }
@@ -353,6 +380,82 @@ export default function UsersPage() {
                         </p>
                       </div>
                     </div>
+
+                    {userActivity && (
+                      <>
+                        <div className="flex items-center gap-3">
+                          <div className="h-8 w-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                            <Receipt className="h-4 w-4 text-emerald-600" />
+                          </div>
+                          <div>
+                            <p className="text-xs text-slate-400">Total Invoices</p>
+                            <p className="text-sm text-slate-700">
+                              {userActivity.total_invoices} ({userActivity.revenue_invoices} revenue, {userActivity.expense_invoices} expense)
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <div className="h-8 w-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                            <User className="h-4 w-4 text-blue-600" />
+                          </div>
+                          <div>
+                            <p className="text-xs text-slate-400">Total Customers</p>
+                            <p className="text-sm text-slate-700">{userActivity.total_customers}</p>
+                          </div>
+                        </div>
+
+                        {/* Invoice Balance */}
+                        <div className="mt-4 p-4 rounded-lg bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-100">
+                          <div className="flex items-center justify-between mb-3">
+                            <h4 className="text-sm font-semibold text-slate-700">Invoice Balance</h4>
+                            <span className="text-lg font-bold text-purple-600">{userActivity.invoice_balance} remaining</span>
+                          </div>
+                          <div className="grid grid-cols-2 gap-3 text-sm">
+                            <div>
+                              <p className="text-slate-500">Used</p>
+                              <p className="font-medium text-slate-700">{userActivity.invoices_used}</p>
+                            </div>
+                            <div>
+                              <p className="text-slate-500">Remaining</p>
+                              <p className="font-medium text-purple-600">{userActivity.invoice_balance}</p>
+                            </div>
+                          </div>
+                          
+                          {/* Pack Purchase History */}
+                          {userActivity.pack_purchases && userActivity.pack_purchases.length > 0 && (
+                            <div className="mt-4 pt-3 border-t border-purple-100">
+                              <p className="text-xs font-medium text-slate-600 mb-2">Pack Purchases</p>
+                              <div className="space-y-2">
+                                {userActivity.pack_purchases.map((purchase, idx) => (
+                                  <div key={idx} className="flex justify-between text-xs">
+                                    <span className="text-slate-500">
+                                      {purchase.date ? new Date(purchase.date).toLocaleDateString() : "Unknown"}
+                                    </span>
+                                    <span className="text-emerald-600 font-medium">
+                                      +{purchase.invoices_added} invoices (₦{purchase.amount.toLocaleString()})
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {userActivity.has_logo && (
+                            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">
+                              Has Logo
+                            </span>
+                          )}
+                          {userActivity.has_bank_details && (
+                            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">
+                              Bank Details Set
+                            </span>
+                          )}
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
