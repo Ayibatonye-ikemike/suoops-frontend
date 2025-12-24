@@ -96,7 +96,6 @@ export const PLANS: Record<PlanTier, Plan> = {
       "Custom logo branding",
       "Inventory management",
       "Team management (3 members)",
-      "Voice invoices (15/mo)",
       "Priority support",
     ],
   },
