@@ -106,24 +106,33 @@ export function Hero({ onWatchDemo }: HeroProps) {
 
 function FeaturePills() {
   const features = [
-    { emoji: "💬", text: "Text invoices" },
-    { emoji: "📸", text: "Photo OCR" },
+    { emoji: "💬", text: "WhatsApp invoices" },
+    { emoji: "📧", text: "Email delivery" },
     { emoji: "🔐", text: "QR verification" },
     { emoji: "📱", text: "Mobile-first" },
     { emoji: "⚡", text: "Fast setup" },
-    { emoji: "📧", text: "Email delivery" },
-    { emoji: "💬", text: "Text invoices" },
-    { emoji: "📸", text: "Photo OCR" },
-    { emoji: "🔐", text: "QR verification" },
-    { emoji: "📧", text: "Email delivery" },
+    { emoji: "📊", text: "Tax reports" },
+    { emoji: "📦", text: "Inventory" },
+    { emoji: "🎨", text: "Custom branding" },
   ];
 
   return (
     <div className="mt-16 overflow-hidden">
-      <div className="flex animate-scroll gap-4">
+      <div className="flex animate-scroll gap-4" style={{ width: "max-content" }}>
+        {/* First set */}
         {features.map((feature, i) => (
           <div
-            key={i}
+            key={`a-${i}`}
+            className="flex-shrink-0 flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm px-5 py-2.5 text-sm font-medium text-white border border-white/20"
+          >
+            <span>{feature.emoji}</span>
+            <span>{feature.text}</span>
+          </div>
+        ))}
+        {/* Duplicate set for seamless loop */}
+        {features.map((feature, i) => (
+          <div
+            key={`b-${i}`}
             className="flex-shrink-0 flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm px-5 py-2.5 text-sm font-medium text-white border border-white/20"
           >
             <span>{feature.emoji}</span>

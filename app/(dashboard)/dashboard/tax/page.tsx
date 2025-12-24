@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
@@ -12,14 +12,10 @@ interface TaxProfile {
   business_size: string;
   annual_turnover: number;
   fixed_assets: number;
-  tax_rates: { CIT: number; CGT: number; DEV_LEVY: number; VAT: number };
-  vat_number: string | null;
-  tin: string | null;
+  tax_rates: { PIT: number; VAT: number };
 }
 
 interface ComplianceSummary {
-  compliance_score: number;
-  requirements: { tin_registered: boolean; vat_registered: boolean };
   business_size: string;
 }
 
@@ -90,13 +86,6 @@ interface ExpenseRecord {
 
 export default function TaxPage() {
   const queryClient = useQueryClient();
-  const [editMode, setEditMode] = useState(false);
-  const [formData, setFormData] = useState({
-    annual_turnover: "",
-    fixed_assets: "",
-    tin: "",
-    vat_number: "",
-  });
   const now = new Date();
 
   // Expense form state
@@ -120,7 +109,7 @@ export default function TaxPage() {
   const [reportWeek, setReportWeek] = useState(1);
   const [basis, setBasis] = useState<"paid" | "all">("paid");
 
-  const { data: profile, isLoading } = useQuery<TaxProfile>({
+  const { isLoading } = useQuery<TaxProfile>({
     queryKey: ["taxProfile"],
     queryFn: async () => (await apiClient.get("/tax/profile")).data,
   });
@@ -175,27 +164,6 @@ export default function TaxPage() {
       return response.data;
     },
   });
-
-  const updateProfile = useMutation({
-    mutationFn: async (data: Partial<TaxProfile>) =>
-      (await apiClient.put("/tax/profile", data)).data,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["taxProfile"] });
-      queryClient.invalidateQueries({ queryKey: ["taxCompliance"] });
-      setEditMode(false);
-    },
-  });
-
-  const handleSave = () => {
-    const data: Partial<TaxProfile> = {};
-    if (formData.annual_turnover)
-      data.annual_turnover = Number(formData.annual_turnover);
-    if (formData.fixed_assets)
-      data.fixed_assets = Number(formData.fixed_assets);
-    if (formData.tin) data.tin = formData.tin;
-    if (formData.vat_number) data.vat_number = formData.vat_number;
-    updateProfile.mutate(data);
-  };
 
   const handleDownload = async () => {
     if (!report || !report.id) return;
@@ -395,45 +363,17 @@ export default function TaxPage() {
           </Card>
         )}
 
-        {/* Compliance Summary - PRO Plan Only */}
-        {compliance && report?.user_plan === "pro" && (
-          <div className="mb-6 grid gap-3 sm:mb-8 sm:gap-4 md:grid-cols-3">
-            <StatCard
-              label="Compliance Score"
-              value={`${compliance.compliance_score}%`}
-              icon="📊"
-            />
-            <StatCard
-              label="Business Size"
-              value={compliance.business_size.toUpperCase()}
-              icon="🏢"
-            />
-            <StatCard
-              label="Registration"
-              value={
-                compliance.requirements.tin_registered &&
-                compliance.requirements.vat_registered
-                  ? "Complete"
-                  : "Pending"
-              }
-              icon={
-                compliance.requirements.tin_registered &&
-                compliance.requirements.vat_registered
-                  ? "✅"
-                  : "⚠️"
-              }
-            />
-          </div>
-        )}
-
-        {/* Business Size Only - For FREE and STARTER Plans */}
-        {compliance && report?.user_plan !== "pro" && (
+        {/* Business Size - Simple indicator for all plans */}
+        {compliance && (
           <div className="mb-6 sm:mb-8">
             <StatCard
               label="Business Size"
               value={compliance.business_size.toUpperCase()}
               icon="🏢"
             />
+            <p className="mt-2 text-xs text-brand-textMuted">
+              Small businesses (≤₦25M annual revenue) are exempt from Company Income Tax in Nigeria.
+            </p>
           </div>
         )}
 
@@ -592,35 +532,19 @@ export default function TaxPage() {
                     <p className="text-sm font-medium text-gray-700">
                       <strong>Tax Band:</strong> {report.pit_band_info}
                     </p>
-                    {report.user_plan === "free" && (
-                      <p className="mt-2 text-xs text-gray-600">
-                        💡 <strong>Free Plan:</strong> Basic income/expense
-                        summary. Upgrade to <strong>Starter</strong> for
-                        automated PIT calculations and VAT alerts.
-                      </p>
-                    )}
-                    {report.user_plan === "starter" && (
-                      <p className="mt-2 text-xs text-gray-600">
-                        🚀 <strong>Starter Plan:</strong> Automated PIT
-                        calculation with expense deductions. Upgrade to{" "}
-                        <strong>Pro</strong> for CIT + VAT tracking.
-                      </p>
-                    )}
-                    {report.user_plan === "pro" && (
-                      <p className="mt-2 text-xs text-gray-600">
-                        ⭐ <strong>Pro Plan:</strong> Full PIT + CIT + VAT
-                        reporting with automated calculations, Voice/OCR invoices and API access.
-                      </p>
-                    )}
+                    <p className="mt-2 text-xs text-gray-600">
+                      💡 This shows your estimated Personal Income Tax (PIT) band based on your profit.
+                      Small businesses under ₦25M annual revenue are exempt from Company Income Tax (CIT).
+                    </p>
                   </div>
                 )}
 
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {/* PIT fields - always shown for all plans */}
+                  {/* Core tax fields - Revenue, Expenses, Profit, PIT */}
                   {[
+                    { label: "Revenue", value: report.debug_info?.calculated_revenue || 0 },
                     { label: "Profit", value: report.assessable_profit },
-                    { label: "Income Tax (PIT)", value: report.pit_amount },
-                    { label: "Levy", value: report.levy_amount },
+                    { label: "Estimated Income Tax (PIT)", value: report.pit_amount },
                   ].map((item) => (
                     <div
                       key={item.label}
@@ -635,63 +559,35 @@ export default function TaxPage() {
                     </div>
                   ))}
 
-                  {/* CIT field - only shown for PRO plan */}
-                  {report.is_cit_eligible && (
-                    <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
-                      <p className="text-sm font-medium text-amber-700">
-                        Company Tax (CIT)
+                  {/* VAT Collected - Simple display for businesses that charge VAT */}
+                  {report.vat_collected > 0 && (
+                    <div className="rounded-xl border border-brand-border bg-brand-background p-4">
+                      <p className="text-sm font-medium text-brand-textMuted">
+                        VAT Collected
                       </p>
-                      <p className="mt-2 text-2xl font-semibold text-amber-800">
-                        ₦{(report.cit_amount || 0).toLocaleString()}
+                      <p className="mt-2 text-2xl font-semibold text-brand-primary">
+                        ₦{(report.vat_collected || 0).toLocaleString()}
                       </p>
-                      <p className="mt-1 text-xs text-amber-600">
-                        {report.annual_revenue_estimate <= 25_000_000
-                          ? "Small (≤₦25M): Exempt"
-                          : report.annual_revenue_estimate < 100_000_000
-                          ? "Medium (₦25M-₦100M): 20%"
-                          : "Large (≥₦100M): 30%"}
+                      <p className="mt-1 text-xs text-brand-textMuted">
+                        7.5% of taxable sales
                       </p>
                     </div>
                   )}
 
-                  {/* VAT fields - only shown for PRO plan */}
-                  {report.is_vat_eligible &&
-                    [
-                      { label: "VAT", value: report.vat_collected },
-                      { label: "Taxable", value: report.taxable_sales },
-                      { label: "Zero-rated", value: report.zero_rated_sales },
-                      { label: "Exempt", value: report.exempt_sales },
-                    ].map((item) => (
-                      <div
-                        key={item.label}
-                        className="rounded-xl border border-brand-border bg-brand-background p-4"
-                      >
-                        <p className="text-sm font-medium text-brand-textMuted">
-                          {item.label}
-                        </p>
-                        <p className="mt-2 text-2xl font-semibold text-brand-primary">
-                          ₦{(item.value || 0).toLocaleString()}
-                        </p>
-                      </div>
-                    ))}
-
-                  {/* Show upgrade message for FREE and STARTER users */}
-                  {!report.is_vat_eligible && (
-                    <div className="col-span-full rounded-xl border border-blue-200 bg-blue-50 p-4">
-                      <p className="text-sm text-blue-800">
-                        <strong>💼 VAT Tracking:</strong> Upgrade to{" "}
-                        <strong>
-                          {report.user_plan === "free" ? "STARTER" : "PRO"}
-                        </strong>{" "}
-                        plan to{" "}
-                        {report.user_plan === "free"
-                          ? "get automated tax reports and "
-                          : ""}
-                        track VAT, taxable sales, and zero-rated/exempt
-                        transactions.
-                      </p>
-                    </div>
-                  )}
+                  {/* CIT - Company Income Tax for registered businesses */}
+                  <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+                    <p className="text-sm font-medium text-amber-700">
+                      Company Tax (CIT)
+                    </p>
+                    <p className="mt-2 text-2xl font-semibold text-amber-800">
+                      ₦{(report.cit_amount || 0).toLocaleString()}
+                    </p>
+                    <p className="mt-1 text-xs text-amber-600">
+                      {report.annual_revenue_estimate <= 25_000_000
+                        ? "Small (≤₦25M): Exempt"
+                        : "Medium (₦25M-₦100M): 20%"}
+                    </p>
+                  </div>
                 </div>
 
                 {/* Invoice Breakdown - Shows invoice counts for transparency */}
@@ -761,123 +657,6 @@ export default function TaxPage() {
             ) : null}
           </CardContent>
         </Card>
-
-        {/* Tax Profile - PRO Plan Only */}
-        {report?.user_plan === "pro" && (
-          <Card>
-            <CardHeader className="border-b border-brand-border/60">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-[22px] font-semibold text-brand-text">
-                    Tax Profile
-                  </h2>
-                  <p className="mt-1 text-sm text-brand-textMuted">
-                    CIT/VAT registration details for FIRS compliance
-                  </p>
-                </div>
-                {!editMode ? (
-                  <Button onClick={() => setEditMode(true)}>Edit</Button>
-                ) : (
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      onClick={() => setEditMode(false)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      onClick={handleSave}
-                      disabled={updateProfile.isPending}
-                    >
-                      {updateProfile.isPending ? "Saving..." : "Save"}
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <div className="grid gap-6 md:grid-cols-2">
-                {[
-                  {
-                    label: "Annual Turnover",
-                    key: "annual_turnover",
-                    value: formData.annual_turnover,
-                    display: fmt(profile?.annual_turnover || 0),
-                  },
-                  {
-                    label: "Fixed Assets",
-                    key: "fixed_assets",
-                    value: formData.fixed_assets,
-                    display: fmt(profile?.fixed_assets || 0),
-                  },
-                  {
-                    label: "TIN",
-                    key: "tin",
-                    value: formData.tin,
-                    display: profile?.tin || "Not set",
-                  },
-                  {
-                    label: "VAT Number",
-                    key: "vat_number",
-                    value: formData.vat_number,
-                    display: profile?.vat_number || "Not set",
-                  },
-                ].map((field) => (
-                  <div key={field.key}>
-                    <label className="mb-2 block text-sm font-semibold text-brand-textMuted uppercase tracking-wide">
-                      {field.label}
-                    </label>
-                    {editMode ? (
-                      <input
-                        type={
-                          field.key === "tin" || field.key === "vat_number"
-                            ? "text"
-                            : "number"
-                        }
-                        value={field.value}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            [field.key]: e.target.value,
-                          })
-                        }
-                        placeholder={field.display}
-                        className="w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
-                      />
-                    ) : (
-                      <p className="text-lg font-semibold text-brand-text">
-                        {field.display}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              {profile && (
-                <div className="mt-6 border-t border-brand-border/60 pt-6">
-                  <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-brand-textMuted">
-                    Tax Rates
-                  </h3>
-                  <div className="grid grid-cols-4 gap-4">
-                    {Object.entries(profile.tax_rates).map(([key, value]) => (
-                      <div
-                        key={key}
-                        className="rounded-xl border border-brand-border bg-brand-background p-3 text-center"
-                      >
-                        <p className="mb-1 text-xs uppercase tracking-wide text-brand-textMuted">
-                          {key}
-                        </p>
-                        <p className="text-2xl font-semibold text-brand-primary">
-                          {value}%
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
 
         {/* Recorded Expenses */}
         <Card className="mt-6 sm:mt-8">

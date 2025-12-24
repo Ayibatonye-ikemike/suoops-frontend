@@ -91,6 +91,10 @@ export default function PlansArticle() {
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
+                <span>Tax reports (PIT + CIT)</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-emerald-500" />
                 <span>Custom logo branding</span>
               </li>
               <li className="flex items-center gap-2">
@@ -103,11 +107,7 @@ export default function PlansArticle() {
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>Voice invoices & Photo OCR</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-emerald-500" />
-                <span>API access</span>
+                <span>Voice invoices (15/mo)</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
@@ -157,7 +157,7 @@ export default function PlansArticle() {
                 <h4 className="font-semibold text-slate-900 mb-2">Pro (₦5,000/month)</h4>
                 <p className="text-sm text-slate-600">
                   Best for growing small and medium businesses that need premium features like 
-                  custom branding, team access, voice invoices, and photo OCR. Great value if 
+                  custom branding, team access, and voice invoices. Great value if 
                   you&apos;re regularly invoicing customers.
                 </p>
               </div>
@@ -189,7 +189,7 @@ export default function PlansArticle() {
           <h3>What happens to my invoice balance if I downgrade?</h3>
           <p>
             Your invoice balance is preserved when you downgrade. Any purchased invoices never expire.
-            You just lose access to premium features like voice invoices, OCR, and team management.
+            You just lose access to premium features like voice invoices and team management.
           </p>
 
           <h3>Do you offer refunds?</h3>

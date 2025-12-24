@@ -12,7 +12,6 @@ import { parseFeatureGateError } from "@/lib/feature-gate";
 import { PlanSelectionModal } from "../settings/plan-selection-modal";
 
 // Components
-import { OcrPhotoPrompt } from "./ocr-photo-prompt";
 import { WhatsAppTip } from "./whatsapp-tip";
 import { RevenueFields } from "./revenue-fields";
 import { InvoiceLineItems, type LineDraft } from "./invoice-line-items";
@@ -181,9 +180,6 @@ export function InvoiceCreateForm() {
           Set customer details and line items to generate a payment-ready invoice.
         </p>
       </div>
-
-      {/* OCR Photo Upload */}
-      <OcrPhotoPrompt />
 
       {/* WhatsApp Tip */}
       <WhatsAppTip />

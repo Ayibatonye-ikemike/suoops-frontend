@@ -74,11 +74,11 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: "What are the subscription plans?",
-        answer: "We offer: Free (5 invoices to start), Starter (pay-as-you-go with tax features), and Pro (₦5,000/month with all premium features including voice invoices, OCR, inventory & team access)."
+        answer: "We offer: Free (5 invoices to start), Starter (pay-as-you-go with tax features), and Pro (₦5,000/month with all premium features including voice invoices, inventory & team access)."
       },
       {
         question: "Who should use the Pro plan?",
-        answer: "The Pro plan (₦5,000/month) is perfect for growing small and medium businesses that need premium features. It includes 100 invoices/month, custom branding, team management, voice invoices, photo OCR, and API access."
+        answer: "The Pro plan (₦5,000/month) is perfect for growing small and medium businesses that need premium features. It includes 100 invoices/month, custom branding, team management, and voice invoices."
       },
       {
         question: "How do I upgrade my plan?",

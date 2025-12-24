@@ -17,7 +17,7 @@ export function Pricing() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 max-w-3xl mx-auto">
+        <div className="mt-12 grid gap-6 sm:grid-cols-3 max-w-5xl mx-auto">
           {LANDING_PLANS.map((plan: Plan) => (
             <PricingCard key={plan.id} plan={plan} />
           ))}
