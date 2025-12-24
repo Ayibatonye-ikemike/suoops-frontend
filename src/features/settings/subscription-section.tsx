@@ -40,8 +40,8 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
   const subscriptionStartedAt = user?.subscription_started_at
     ? new Date(user.subscription_started_at)
     : null;
-  // Only PRO and BUSINESS have monthly subscriptions
-  const hasMonthlySubscription = currentPlan === "PRO" || currentPlan === "BUSINESS";
+  // Only PRO has monthly subscriptions
+  const hasMonthlySubscription = currentPlan === "PRO";
   const isExpiringSoon =
     subscriptionExpiresAt &&
     subscriptionExpiresAt.getTime() - Date.now() < 7 * 24 * 60 * 60 * 1000;
@@ -80,7 +80,6 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                   {currentPlan === "FREE" && "🆓"}
                   {currentPlan === "STARTER" && "🚀"}
                   {currentPlan === "PRO" && "⭐"}
-                  {currentPlan === "BUSINESS" && "💼"}
                 </div>
                 <div>
                   <div className="inline-flex items-center gap-2 rounded-full bg-brand-jade px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
@@ -189,8 +188,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
           </div>
         </div>
 
-        {currentPlan !== "PRO" &&
-          currentPlan !== "BUSINESS" && (
+        {currentPlan !== "PRO" && (
             <div className="mt-8 rounded-2xl border border-brand-border bg-brand-background p-5">
               <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
@@ -198,8 +196,8 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                     Need more headroom?
                   </p>
                   <p className="text-sm text-brand-textMuted">
-                    Upgrade to unlock tax automation (Starter), custom branding
-                    (Pro), or voice+OCR (Business).
+                    Upgrade to unlock tax automation (Starter), or custom branding,
+                    voice invoices and OCR (Pro).
                   </p>
                 </div>
                 <Button

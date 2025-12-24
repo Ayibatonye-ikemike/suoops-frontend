@@ -152,10 +152,10 @@ export default function HowReferralsWorkArticle() {
           </p>
           <ul>
             <li><CheckCircle className="inline h-4 w-4 text-emerald-600" /> <strong>Free signup:</strong> When someone creates an account using your code</li>
-            <li><CheckCircle className="inline h-4 w-4 text-emerald-600" /> <strong>Paid signup:</strong> When they subscribe to Pro (₦5,000/month) or Business (₦10,000/month) plan</li>
+            <li><CheckCircle className="inline h-4 w-4 text-emerald-600" /> <strong>Paid signup:</strong> When they subscribe to Pro (₦5,000/month) plan</li>
           </ul>
           <p className="text-sm text-slate-600">
-            Note: Starter plan users who pay-per-invoice count as free signups. Only Pro and Business subscriptions count as paid referrals.
+            Note: Starter plan users who pay-per-invoice count as free signups. Only Pro subscriptions count as paid referrals.
           </p>
 
           <h2>Tracking Your Referrals</h2>
@@ -165,7 +165,7 @@ export default function HowReferralsWorkArticle() {
           <ul>
             <li><strong>Total referrals</strong> - How many people used your code</li>
             <li><strong>Free signups</strong> - Users who created free accounts</li>
-            <li><strong>Paid signups</strong> - Users who subscribed to Pro or Business plans</li>
+            <li><strong>Paid signups</strong> - Users who subscribed to the Pro plan</li>
             <li><strong>Rewards earned</strong> - Total invoice rewards you&apos;ve earned</li>
             <li><strong>Progress</strong> - How close you are to your next reward</li>
           </ul>

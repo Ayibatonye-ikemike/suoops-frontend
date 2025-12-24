@@ -53,9 +53,9 @@ interface MonthlyReport {
   exempt_sales: number;
   pdf_url: string | null;
   basis: string;
-  user_plan: string; // free, starter, pro, business
-  is_vat_eligible: boolean; // PRO and BUSINESS plans
-  is_cit_eligible: boolean; // PRO and BUSINESS plans
+  user_plan: string; // free, starter, pro
+  is_vat_eligible: boolean; // PRO plan
+  is_cit_eligible: boolean; // PRO plan
   pit_band_info: string; // e.g., "15% band (₦800K-₦3M)"
   alerts: Array<{
     type: string;
@@ -395,8 +395,8 @@ export default function TaxPage() {
           </Card>
         )}
 
-        {/* Compliance Summary - BUSINESS Plan Only */}
-        {compliance && report?.user_plan === "business" && (
+        {/* Compliance Summary - PRO Plan Only */}
+        {compliance && report?.user_plan === "pro" && (
           <div className="mb-6 grid gap-3 sm:mb-8 sm:gap-4 md:grid-cols-3">
             <StatCard
               label="Compliance Score"
@@ -426,8 +426,8 @@ export default function TaxPage() {
           </div>
         )}
 
-        {/* Business Size Only - For FREE, STARTER, PRO Plans */}
-        {compliance && report?.user_plan !== "business" && (
+        {/* Business Size Only - For FREE and STARTER Plans */}
+        {compliance && report?.user_plan !== "pro" && (
           <div className="mb-6 sm:mb-8">
             <StatCard
               label="Business Size"
@@ -609,14 +609,7 @@ export default function TaxPage() {
                     {report.user_plan === "pro" && (
                       <p className="mt-2 text-xs text-gray-600">
                         ⭐ <strong>Pro Plan:</strong> Full PIT + CIT + VAT
-                        reporting with automated calculations. Upgrade to{" "}
-                        <strong>Business</strong> for Voice/OCR invoices and API access.
-                      </p>
-                    )}
-                    {report.user_plan === "business" && (
-                      <p className="mt-2 text-xs text-gray-600">
-                        💼 <strong>Business Plan:</strong> Full PIT + CIT + VAT
-                        e-invoice compliant reports, ready for FIRS filing.
+                        reporting with automated calculations, Voice/OCR invoices and API access.
                       </p>
                     )}
                   </div>
@@ -642,7 +635,7 @@ export default function TaxPage() {
                     </div>
                   ))}
 
-                  {/* CIT field - only shown for PRO and BUSINESS plans */}
+                  {/* CIT field - only shown for PRO plan */}
                   {report.is_cit_eligible && (
                     <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
                       <p className="text-sm font-medium text-amber-700">
@@ -661,7 +654,7 @@ export default function TaxPage() {
                     </div>
                   )}
 
-                  {/* VAT fields - only shown for PRO and BUSINESS plans */}
+                  {/* VAT fields - only shown for PRO plan */}
                   {report.is_vat_eligible &&
                     [
                       { label: "VAT", value: report.vat_collected },
@@ -769,8 +762,8 @@ export default function TaxPage() {
           </CardContent>
         </Card>
 
-        {/* Tax Profile - BUSINESS Plan Only */}
-        {report?.user_plan === "business" && (
+        {/* Tax Profile - PRO Plan Only */}
+        {report?.user_plan === "pro" && (
           <Card>
             <CardHeader className="border-b border-brand-border/60">
               <div className="flex items-center justify-between">

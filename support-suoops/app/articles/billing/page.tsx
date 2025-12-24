@@ -5,7 +5,7 @@ const articles = [
   { 
     slug: "plans", 
     title: "Understanding subscription plans",
-    description: "Compare Free, Pro, and Business plans to find the right fit for you."
+    description: "Compare Free and Pro plans to find the right fit for you."
   },
 ];
 

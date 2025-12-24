@@ -71,7 +71,7 @@ export default function InventoryPage() {
             Inventory Management requires Pro plan
           </h2>
           <p className="text-gray-500 dark:text-gray-400 max-w-md mb-6">
-            Upgrade to Pro or Business to unlock inventory management, track stock levels,
+            Upgrade to Pro to unlock inventory management, track stock levels,
             and get low-stock alerts for your products.
           </p>
           <Link href="/dashboard/settings">

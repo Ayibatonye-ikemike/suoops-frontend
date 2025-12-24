@@ -2,17 +2,19 @@
  * Centralized pricing and plan configuration
  * Single source of truth for all subscription tiers
  * 
- * BILLING MODEL:
+ * BILLING MODEL (Small & Medium Business Focus):
  * - FREE: 5 free invoices to start, basic features
  * - STARTER: No monthly fee, buy invoice packs (100 = ₦2,500) + tax features
- * - PRO: ₦5,000/month = 100 invoices included + premium features
- * - BUSINESS: ₦10,000/month = 100 invoices included + all features
+ * - PRO: ₦5,000/month = 100 invoices included + ALL premium features
  * - All plans can buy additional packs (100 invoices = ₦2,500)
+ * 
+ * Note: BUSINESS plan removed - we focus on businesses under ₦100M annual revenue.
+ * PRO now includes voice invoices, OCR, and API access.
  * 
  * IMPORTANT: Keep in sync with backend app/models/models.py SubscriptionPlan
  */
 
-export type PlanTier = "FREE" | "STARTER" | "PRO" | "BUSINESS";
+export type PlanTier = "FREE" | "STARTER" | "PRO";
 
 export interface PlanFeature {
   text: string;
@@ -54,7 +56,6 @@ export const PLANS: Record<PlanTier, Plan> = {
     features: [
       "5 free invoices to start",
       "Buy more: 100 for ₦2,500",
-      "Tax reports & automation",
       "WhatsApp & Email delivery",
       "PDF generation",
       "QR verification",
@@ -68,7 +69,7 @@ export const PLANS: Record<PlanTier, Plan> = {
     invoicesIncluded: 0,
     invoicesDisplay: "Buy invoice packs",
     hasMonthlySubscription: false,
-    popular: false, // No longer shown on landing page
+    popular: false,
     icon: "🚀",
     description: "Pay as you go + Tax features",
     features: [
@@ -88,7 +89,7 @@ export const PLANS: Record<PlanTier, Plan> = {
     hasMonthlySubscription: true,
     popular: true,
     icon: "⭐",
-    description: "Premium features for professionals",
+    description: "All premium features for your business",
     features: [
       "100 invoices/month included",
       "Everything in Starter",
@@ -96,25 +97,10 @@ export const PLANS: Record<PlanTier, Plan> = {
       "Custom logo branding",
       "Inventory management",
       "Team management (3 members)",
-      "Priority support",
-    ],
-  },
-  BUSINESS: {
-    id: "BUSINESS",
-    name: "Business",
-    price: 10000,
-    priceDisplay: "₦10,000/month",
-    invoicesIncluded: 100,
-    invoicesDisplay: "100 invoices included",
-    hasMonthlySubscription: true,
-    icon: "💼",
-    description: "For registered companies up to ₦100M revenue",
-    features: [
-      "100 invoices/month included",
-      "Everything in Pro",
       "Voice invoices",
       "Photo OCR (15/mo)",
       "API access",
+      "Priority support",
     ],
   },
 };
@@ -125,7 +111,6 @@ export const PLANS: Record<PlanTier, Plan> = {
  */
 export const PAID_PLANS: Plan[] = [
   PLANS.PRO,
-  PLANS.BUSINESS,
 ];
 
 /**
@@ -135,36 +120,35 @@ export const ALL_PLANS: Plan[] = [
   PLANS.FREE,
   PLANS.STARTER,
   PLANS.PRO,
-  PLANS.BUSINESS,
 ];
 
 /**
  * Landing page pricing display
- * Excludes STARTER - it's not a plan, just a legacy pay-per-invoice tier
- * Users start FREE and can buy packs or upgrade to PRO/BUSINESS for monthly subscription
+ * Shows FREE and PRO plans only
+ * Users start FREE and can buy packs or upgrade to PRO for monthly subscription
  */
 export const LANDING_PLANS: Plan[] = [
   PLANS.FREE,
   PLANS.PRO,
-  PLANS.BUSINESS,
 ];
 
 /**
  * Feature availability by plan tier
  */
 export const FEATURE_GATES = {
-  TAX_REPORTS: ["STARTER", "PRO", "BUSINESS"] as PlanTier[],
-  CUSTOM_BRANDING: ["PRO", "BUSINESS"] as PlanTier[],
-  INVENTORY: ["PRO", "BUSINESS"] as PlanTier[],
-  TEAM_MANAGEMENT: ["PRO", "BUSINESS"] as PlanTier[],
-  PHOTO_OCR: ["BUSINESS"] as PlanTier[],
-  API_ACCESS: ["BUSINESS"] as PlanTier[],
+  TAX_REPORTS: ["STARTER", "PRO"] as PlanTier[],
+  CUSTOM_BRANDING: ["PRO"] as PlanTier[],
+  INVENTORY: ["PRO"] as PlanTier[],
+  TEAM_MANAGEMENT: ["PRO"] as PlanTier[],
+  VOICE_INVOICE: ["PRO"] as PlanTier[],
+  PHOTO_OCR: ["PRO"] as PlanTier[],
+  API_ACCESS: ["PRO"] as PlanTier[],
 } as const;
 
 /**
- * Business plan quota limitations
+ * Pro plan quota limitations
  */
-export const BUSINESS_QUOTA = {
+export const PRO_QUOTA = {
   OCR_LIMIT: 15, // Voice + Photo OCR per month
   INVOICES_INCLUDED: 100,
 } as const;

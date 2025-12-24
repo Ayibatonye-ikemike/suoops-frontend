@@ -17,7 +17,7 @@ export function Pricing() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 max-w-3xl mx-auto">
           {LANDING_PLANS.map((plan: Plan) => (
             <PricingCard key={plan.id} plan={plan} />
           ))}
@@ -56,15 +56,12 @@ export function Pricing() {
 
 function PricingCard({ plan }: { plan: Plan }) {
   const isFree = plan.id === "FREE";
-  const isBusiness = plan.id === "BUSINESS";
   
   return (
     <div
       className={`rounded-2xl bg-white p-6 border transition-all hover:shadow-lg ${
         plan.popular
           ? "border-brand-jade ring-2 ring-brand-jade shadow-lg"
-          : isBusiness
-          ? "border-amber-300 ring-1 ring-amber-200"
           : "border-slate-200"
       }`}
     >
@@ -73,17 +70,7 @@ function PricingCard({ plan }: { plan: Plan }) {
           MOST POPULAR
         </div>
       )}
-      {isBusiness && (
-        <div className="mb-3 inline-block rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-          FOR REGISTERED COMPANIES
-        </div>
-      )}
       <h3 className="text-lg font-bold text-brand-evergreen">{plan.name}</h3>
-      {isBusiness && (
-        <p className="mt-1 text-xs text-amber-700 font-medium">
-          Up to ₦100M annual revenue
-        </p>
-      )}
       <div className="mt-3">
         <span className="text-3xl font-bold text-brand-evergreen">{plan.priceDisplay}</span>
         {plan.hasMonthlySubscription && <span className="text-slate-500">/mo</span>}

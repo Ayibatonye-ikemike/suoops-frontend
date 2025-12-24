@@ -45,7 +45,6 @@ interface PlatformMetrics {
     free?: number;
     starter?: number;
     pro?: number;
-    business?: number;
   };
   total_customers: number;
   paid_users: PaidUserInfo[];
@@ -167,14 +166,12 @@ export default function MetricsPage() {
   const totalSubscribers = metrics
     ? ((metrics.active_subscriptions.free || 0) +
         (metrics.active_subscriptions.starter || 0) +
-        (metrics.active_subscriptions.pro || 0) +
-        (metrics.active_subscriptions.business || 0))
+        (metrics.active_subscriptions.pro || 0))
     : 0;
     
   const paidCount = metrics
     ? ((metrics.active_subscriptions.starter || 0) +
-        (metrics.active_subscriptions.pro || 0) +
-        (metrics.active_subscriptions.business || 0))
+        (metrics.active_subscriptions.pro || 0))
     : 0;
     
   const referredPaidUsers = metrics?.paid_users?.filter(u => u.was_referred) || [];
@@ -190,9 +187,9 @@ export default function MetricsPage() {
       {/* Overview Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          title="Total Customers"
-          value={metrics?.total_customers?.toLocaleString() || 0}
-          subtitle={`${totalSubscribers} users`}
+          title="Registered Users"
+          value={totalSubscribers.toLocaleString()}
+          subtitle={`${metrics?.total_customers || 0} invoiced customers`}
           icon={Users}
         />
         <StatCard
@@ -294,12 +291,6 @@ export default function MetricsPage() {
               total={totalSubscribers || 1}
               color="bg-purple-500"
             />
-            <ProgressBar
-              label="Business Plan"
-              value={metrics?.active_subscriptions.business || 0}
-              total={totalSubscribers || 1}
-              color="bg-emerald-500"
-            />
           </div>
 
           <div className="mt-6 pt-6 border-t border-slate-100 grid grid-cols-2 gap-4">
@@ -325,7 +316,7 @@ export default function MetricsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-semibold text-slate-900">Paid Subscribers</h3>
-              <p className="text-sm text-slate-500">Starter, Pro, and Business plan users</p>
+              <p className="text-sm text-slate-500">Starter and Pro plan users</p>
             </div>
             <div className="flex gap-4 text-sm">
               <div className="flex items-center gap-2">
@@ -361,7 +352,6 @@ export default function MetricsPage() {
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        user.plan === "business" ? "bg-emerald-100 text-emerald-700" :
                         user.plan === "pro" ? "bg-purple-100 text-purple-700" :
                         "bg-blue-100 text-blue-700"
                       }`}>

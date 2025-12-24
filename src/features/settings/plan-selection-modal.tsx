@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { useState } from "react";
 import { initializeSubscription, switchToStarter } from "@/api/subscription";
-import { PAID_PLANS, PLANS, type Plan } from "../../constants/pricing";
+import { PAID_PLANS, type Plan } from "../../constants/pricing";
 
 interface PlanModalProps {
   isOpen: boolean;
@@ -159,8 +159,6 @@ export function PlanSelectionModal({
                     ? "border-brand-border bg-brand-background cursor-not-allowed opacity-60"
                     : isSelected
                     ? "border-brand-jade bg-brand-jade/5 shadow-lg"
-                    : plan.id === "BUSINESS"
-                    ? "border-amber-300 bg-amber-50/30 hover:border-amber-400 hover:shadow-md"
                     : "border-brand-border bg-white hover:border-brand-jade/50 hover:shadow-md"
                 }`}
               >
@@ -168,14 +166,6 @@ export function PlanSelectionModal({
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                     <span className="rounded-full bg-brand-jade px-3 py-1 text-xs font-semibold text-white">
                       MOST POPULAR
-                    </span>
-                  </div>
-                )}
-
-                {plan.id === "BUSINESS" && !isCurrent && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="rounded-full bg-amber-500 px-3 py-1 text-xs font-semibold text-white">
-                      REGISTERED COMPANIES
                     </span>
                   </div>
                 )}
@@ -191,11 +181,6 @@ export function PlanSelectionModal({
                 <div className="mb-4">
                   <div className="text-4xl mb-2">{plan.icon}</div>
                   <h3 className="text-xl font-bold">{plan.name}</h3>
-                  {plan.id === "BUSINESS" && (
-                    <p className="text-xs text-amber-700 font-medium mt-1">
-                      For companies up to ₦100M annual revenue (CIT registered)
-                    </p>
-                  )}
                 </div>
 
                 <div className="mb-4">

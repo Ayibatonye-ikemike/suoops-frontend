@@ -148,7 +148,7 @@ export default function OcrInvoicePage() {
           <div className="flex items-center gap-3 mb-2">
             <Lock className="h-4 w-4 text-amber-600 shrink-0" />
             <span className="font-semibold text-gray-900 dark:text-white text-sm">
-              Business plan required
+              Pro plan required
             </span>
           </div>
           <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
@@ -157,7 +157,7 @@ export default function OcrInvoicePage() {
           <div className="flex items-center gap-3">
             <Link href="/dashboard/settings">
               <Button size="sm" className="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-1.5 h-auto">
-                Upgrade - {PLANS.BUSINESS.priceDisplay}/mo
+                Upgrade - {PLANS.PRO.priceDisplay}/mo
               </Button>
             </Link>
             <Link 
