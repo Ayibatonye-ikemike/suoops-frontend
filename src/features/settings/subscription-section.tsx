@@ -197,7 +197,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                   </p>
                   <p className="text-sm text-brand-textMuted">
                     Upgrade to unlock tax automation (Starter), or custom branding,
-                    voice invoices and OCR (Pro).
+                    inventory, and team management (Pro).
                   </p>
                 </div>
                 <Button

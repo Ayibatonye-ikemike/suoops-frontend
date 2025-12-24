@@ -100,8 +100,8 @@ export function PlanSelectionModal({
           <h2 className="text-2xl font-bold sm:text-3xl">Choose Your Plan</h2>
           <p className="mt-2 text-brand-textMuted">
             {showStarter 
-              ? "Switch to Starter (free, pay-per-invoice) or upgrade to Pro/Business for premium features"
-              : "Upgrade to Pro for custom branding or Business for voice+OCR features"
+              ? "Switch to Starter (free, pay-per-invoice) or upgrade to Pro for premium features"
+              : "Upgrade to Pro for custom branding, inventory, and team management"
             }
           </p>
         </div>
