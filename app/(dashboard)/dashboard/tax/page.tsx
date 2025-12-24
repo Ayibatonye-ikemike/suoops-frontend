@@ -2,11 +2,16 @@
 
 import { useState, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import Link from "next/link";
 import { apiClient } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { StatCard } from "@/components/ui/stat-card";
+import { components } from "@/api/types.generated";
+import { hasPlanFeature, type PlanTier } from "@/constants/pricing";
 import toast from "react-hot-toast";
+
+type CurrentUser = components["schemas"]["UserOut"];
 
 interface TaxProfile {
   business_size: string;
@@ -88,6 +93,19 @@ export default function TaxPage() {
   const queryClient = useQueryClient();
   const now = new Date();
 
+  // Get current user to check plan
+  const { data: user, isLoading: userLoading } = useQuery<CurrentUser>({
+    queryKey: ["currentUser"],
+    queryFn: async () => {
+      const response = await apiClient.get<CurrentUser>("/users/me");
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const currentPlan = (user?.plan?.toUpperCase() || "FREE") as PlanTier;
+  const hasTaxAccess = hasPlanFeature(currentPlan, "TAX_REPORTS");
+
   // Expense form state
   const [showExpenseForm, setShowExpenseForm] = useState(false);
   const [expenseForm, setExpenseForm] = useState({
@@ -112,11 +130,13 @@ export default function TaxPage() {
   const { isLoading } = useQuery<TaxProfile>({
     queryKey: ["taxProfile"],
     queryFn: async () => (await apiClient.get("/tax/profile")).data,
+    enabled: hasTaxAccess,
   });
 
   const { data: compliance } = useQuery<ComplianceSummary>({
     queryKey: ["taxCompliance"],
     queryFn: async () => (await apiClient.get("/tax/compliance")).data,
+    enabled: hasTaxAccess,
   });
 
   const { data: report, isFetching: reportLoading } = useQuery<MonthlyReport>({
@@ -149,6 +169,7 @@ export default function TaxPage() {
         .data;
     },
     refetchOnWindowFocus: false,
+    enabled: hasTaxAccess,
   });
 
   // Fetch expense records for the current period
@@ -163,6 +184,7 @@ export default function TaxPage() {
       });
       return response.data;
     },
+    enabled: hasTaxAccess,
   });
 
   const handleDownload = async () => {
@@ -174,10 +196,61 @@ export default function TaxPage() {
       } else {
         toast.error("PDF not available. Please try again.");
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to download report. Please try again.");
     }
   };
+
+  // Show upgrade prompt for FREE users
+  if (!userLoading && !hasTaxAccess) {
+    return (
+      <div className="min-h-screen bg-brand-background p-4 sm:p-8">
+        <div className="mx-auto max-w-2xl">
+          <Card className="text-center">
+            <CardHeader>
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-brand-jade/10 text-4xl">
+                💼
+              </div>
+              <h1 className="text-2xl font-bold text-brand-text">Tax Reports & Automation</h1>
+              <p className="mt-2 text-brand-textMuted">
+                Unlock tax reports, PIT/CIT calculations, and expense tracking by upgrading to Starter or Pro.
+              </p>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="rounded-lg border border-brand-jade/20 bg-brand-jade/5 p-4">
+                  <h3 className="font-semibold text-brand-text">What you&apos;ll get:</h3>
+                  <ul className="mt-2 space-y-2 text-left text-sm text-brand-textMuted">
+                    <li className="flex items-center gap-2">
+                      <span className="text-brand-jade">✓</span>
+                      Monthly & yearly tax reports
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-brand-jade">✓</span>
+                      PIT & CIT calculations
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-brand-jade">✓</span>
+                      Expense tracking with receipts
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-brand-jade">✓</span>
+                      PDF & CSV report downloads
+                    </li>
+                  </ul>
+                </div>
+                <Link href="/dashboard/settings">
+                  <Button className="w-full">
+                    Upgrade Your Plan
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   // Handle expense submission with receipt upload
   const handleExpenseSubmit = async (e: React.FormEvent) => {

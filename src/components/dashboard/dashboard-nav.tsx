@@ -2,19 +2,42 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import { useLogout } from "@/features/auth/use-auth-session";
+import { apiClient } from "@/api/client";
+import { components } from "@/api/types.generated";
+import { hasPlanFeature, type PlanTier } from "@/constants/pricing";
 
-const navItems = [
-  { href: "/dashboard", label: "Invoices", icon: "📄" },
-  { href: "/dashboard/inventory", label: "Inventory", icon: "📦" },
-  { href: "/dashboard/tax", label: "Tax", icon: "💼" },
-  { href: "/dashboard/referrals", label: "Referrals", icon: "🎁" },
-  { href: "/dashboard/settings", label: "Settings", icon: "⚙️" },
+type CurrentUser = components["schemas"]["UserOut"];
+
+const allNavItems = [
+  { href: "/dashboard", label: "Invoices", icon: "📄", gate: null },
+  { href: "/dashboard/inventory", label: "Inventory", icon: "📦", gate: "INVENTORY" as const },
+  { href: "/dashboard/tax", label: "Tax", icon: "💼", gate: "TAX_REPORTS" as const },
+  { href: "/dashboard/referrals", label: "Referrals", icon: "🎁", gate: null },
+  { href: "/dashboard/settings", label: "Settings", icon: "⚙️", gate: null },
 ];
 
 export function DashboardNav() {
   const pathname = usePathname();
   const logout = useLogout();
+
+  const { data: user } = useQuery<CurrentUser>({
+    queryKey: ["currentUser"],
+    queryFn: async () => {
+      const response = await apiClient.get<CurrentUser>("/users/me");
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const currentPlan = (user?.plan?.toUpperCase() || "FREE") as PlanTier;
+
+  // Filter nav items based on plan
+  const navItems = allNavItems.filter((item) => {
+    if (!item.gate) return true;
+    return hasPlanFeature(currentPlan, item.gate);
+  });
 
   return (
     <nav className="border-b border-brand-teal/30 bg-brand-evergreen text-white shadow-sm">
