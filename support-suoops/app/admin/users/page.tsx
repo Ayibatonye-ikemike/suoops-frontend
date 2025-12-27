@@ -13,6 +13,7 @@ import {
   AlertCircle,
   ChevronRight,
   Crown,
+  Download,
 } from "lucide-react";
 import { useAdminAuth } from "../layout";
 
@@ -132,11 +133,46 @@ export default function UsersPage() {
     }
   }
 
+  // Export users as CSV for Brevo
+  async function exportUsersCSV() {
+    if (!token) return;
+    
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
+      const res = await fetch(`${apiUrl}/admin/users/export/csv`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      if (!res.ok) throw new Error("Failed to export users");
+      
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "suoops_users.csv";
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Export failed");
+    }
+  }
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">User Lookup</h1>
-        <p className="text-slate-500">Search and view customer details</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">User Lookup</h1>
+          <p className="text-slate-500">Search and view customer details</p>
+        </div>
+        <button
+          onClick={exportUsersCSV}
+          className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition text-sm font-medium"
+        >
+          <Download className="h-4 w-4" />
+          Export CSV (Brevo)
+        </button>
       </div>
 
       {/* Search */}
