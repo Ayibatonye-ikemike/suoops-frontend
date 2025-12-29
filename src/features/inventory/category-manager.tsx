@@ -104,17 +104,17 @@ export function CategoryManager() {
                   key={category.id}
                   className="flex items-center justify-between rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-3 hover:border-brand-jade transition-colors"
                 >
-                  <div className="flex items-center gap-3 flex-1">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
                     <div
                       className="h-8 w-8 rounded-lg flex-shrink-0"
                       style={{ backgroundColor: category.color ?? "#10b981" }}
                     />
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
+                      <h4 className="text-sm font-semibold text-gray-900 dark:text-white truncate">
                         {category.name}
                       </h4>
                       {category.description && (
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 break-words">
                           {category.description}
                         </p>
                       )}
