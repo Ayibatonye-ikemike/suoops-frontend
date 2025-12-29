@@ -106,6 +106,9 @@ export default function SettingsPage() {
             <h2 className="text-lg sm:text-[22px] font-semibold text-brand-text">
               WhatsApp
             </h2>
+            <p className="mt-1 text-xs text-brand-textMuted">
+              This is where Suoops works best. You&apos;ll receive payment updates here.
+            </p>
           </CardHeader>
           <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
             <PhoneNumberSection
@@ -136,6 +139,9 @@ export default function SettingsPage() {
             <h2 className="text-lg sm:text-[22px] font-semibold text-brand-text">
               Bank Account
             </h2>
+            <p className="mt-1 text-xs text-brand-textMuted">
+              Your bank stays yours. We just help customers pay you faster.
+            </p>
           </CardHeader>
           <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
             <BankDetailsForm />

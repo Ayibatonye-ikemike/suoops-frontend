@@ -230,7 +230,8 @@ export function InvoiceListWithDetail() {
             </div>
           ) : (
             <div className="rounded-lg border border-dashed border-brand-border bg-brand-background p-6 text-center text-sm text-brand-textMuted">
-              No invoices yet. Create one to see it here.
+              <p className="font-medium text-brand-text">No invoices yet</p>
+              <p className="text-xs mt-1">Your business gets paid when invoices go out. Send your first invoice.</p>
             </div>
           )}
         </div>

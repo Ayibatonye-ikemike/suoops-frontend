@@ -328,9 +328,9 @@ export default function TaxPage() {
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10 text-brand-text">
         <div className="mb-6 sm:mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-brand-text">Tax Compliance</h1>
+            <h1 className="text-2xl font-bold text-brand-text">Tax confidence as you earn</h1>
             <p className="mt-1 text-sm text-brand-textMuted">
-              Monitor obligations and reports
+              Based on your income so far. Updates as invoices are paid.
             </p>
           </div>
           <Button
@@ -445,7 +445,7 @@ export default function TaxPage() {
               icon="🏢"
             />
             <p className="mt-2 text-xs text-brand-textMuted">
-              Small businesses (≤₦25M annual revenue) are exempt from Company Income Tax in Nigeria.
+              Small businesses (≤₦25M annual revenue) focus on earning first. CIT obligations come later as you grow.
             </p>
           </div>
         )}
@@ -779,7 +779,7 @@ export default function TaxPage() {
               </div>
             ) : (
               <p className="text-center text-sm text-brand-textMuted py-6">
-                No expenses recorded for this period
+                No expenses recorded yet. Expenses help show your real profit — add them later. Getting paid comes first.
               </p>
             )}
           </CardContent>

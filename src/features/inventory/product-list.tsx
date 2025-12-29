@@ -110,7 +110,8 @@ export function ProductList({ onSelectProduct, onCreateProduct, onEditProduct }:
         ) : !productData?.products.length ? (
           <div className="p-8 text-center text-gray-500">
             <Package className="mx-auto h-12 w-12 mb-4 text-gray-300" />
-            <p>No products found</p>
+            <p className="font-medium text-gray-700 dark:text-gray-300">No products yet</p>
+            <p className="text-sm text-gray-500 mt-1">Add products to invoice faster and avoid payment delays</p>
             {onCreateProduct && (
               <button
                 onClick={onCreateProduct}
