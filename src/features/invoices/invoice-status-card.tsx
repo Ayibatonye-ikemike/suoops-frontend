@@ -33,7 +33,7 @@ export function InvoiceStatusCard() {
         <div>
           <h2 className="text-lg font-bold text-brand-text">Money Coming In</h2>
           <p className="mt-1 text-xs text-brand-textMuted">
-            Track what's paid and what still needs follow-up
+            Track what&apos;s paid and what still needs follow-up
           </p>
         </div>
         <Button size="sm" onClick={() => refetch()} disabled={isFetching}>
@@ -50,7 +50,7 @@ export function InvoiceStatusCard() {
           <p className="mt-2 text-3xl font-bold text-brand-primary">
             {statusCounts.total}
           </p>
-          <p className="mt-1 text-xs text-brand-textMuted">All invoices you've sent</p>
+          <p className="mt-1 text-xs text-brand-textMuted">All invoices you&apos;ve sent</p>
         </div>
 
         <div className="grid grid-cols-2 gap-3">

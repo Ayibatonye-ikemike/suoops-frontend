@@ -23,7 +23,7 @@ function AcceptInvitationContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   
-  const { status: authStatus, accessToken, setTokens, logout, user } = useAuthStore();
+  const { status: authStatus, accessToken, setTokens, clearTokens, user } = useAuthStore();
   
   const [pageStatus, setPageStatus] = useState<PageStatus>("loading");
   const [invitation, setInvitation] = useState<InvitationDetails | null>(null);
@@ -185,7 +185,7 @@ function AcceptInvitationContent() {
     // Handle email mismatch specially
     if (isEmailMismatch && invitation?.email) {
       const handleLogoutAndRetry = () => {
-        logout();
+        clearTokens();
         // Stay on page - will now show unauthenticated flow
         setIsEmailMismatch(false);
         setErrorMessage("");
