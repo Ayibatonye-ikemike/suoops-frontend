@@ -23,11 +23,12 @@ function AcceptInvitationContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   
-  const { status: authStatus, accessToken, setTokens } = useAuthStore();
+  const { status: authStatus, accessToken, setTokens, logout, user } = useAuthStore();
   
   const [pageStatus, setPageStatus] = useState<PageStatus>("loading");
   const [invitation, setInvitation] = useState<InvitationDetails | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isEmailMismatch, setIsEmailMismatch] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
 
   // Validate invitation on mount
@@ -79,7 +80,14 @@ function AcceptInvitationContent() {
     } catch (error: unknown) {
       console.error("Error accepting invitation:", error);
       const err = error as { response?: { data?: { detail?: string } } };
-      setErrorMessage(err.response?.data?.detail || "Failed to accept invitation. Please try again.");
+      const detail = err.response?.data?.detail || "Failed to accept invitation. Please try again.";
+      
+      // Check if this is an email mismatch error
+      if (detail.includes("different email address")) {
+        setIsEmailMismatch(true);
+      }
+      
+      setErrorMessage(detail);
       setPageStatus("error");
     }
   };
@@ -174,6 +182,48 @@ function AcceptInvitationContent() {
 
   // Error accepting invitation
   if (pageStatus === "error") {
+    // Handle email mismatch specially
+    if (isEmailMismatch && invitation?.email) {
+      const handleLogoutAndRetry = () => {
+        logout();
+        // Stay on page - will now show unauthenticated flow
+        setIsEmailMismatch(false);
+        setErrorMessage("");
+        setPageStatus("valid");
+      };
+      
+      return (
+        <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
+          <Card className="w-full max-w-md">
+            <CardHeader className="text-center">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100">
+                <XCircle className="h-6 w-6 text-amber-600" />
+              </div>
+              <h2 className="text-lg font-semibold">Email Mismatch</h2>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <p>This invitation was sent to:</p>
+                <p className="font-medium text-foreground">{invitation.email}</p>
+                {user?.email && (
+                  <>
+                    <p className="mt-2">You are currently logged in as:</p>
+                    <p className="font-medium text-foreground">{user.email}</p>
+                  </>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-3">
+              <Button onClick={handleLogoutAndRetry} className="w-full">
+                Sign out & use {invitation.email}
+              </Button>
+              <Button variant="outline" onClick={() => router.push("/")}>
+                Go to Homepage
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+    
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
         <Card className="w-full max-w-md">

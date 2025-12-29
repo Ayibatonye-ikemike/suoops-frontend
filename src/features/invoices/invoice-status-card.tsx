@@ -31,9 +31,9 @@ export function InvoiceStatusCard() {
     <div className="rounded-lg border border-brand-border bg-white p-6 shadow-card">
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-lg font-bold text-brand-text">Invoice Status</h2>
+          <h2 className="text-lg font-bold text-brand-text">Money Coming In</h2>
           <p className="mt-1 text-xs text-brand-textMuted">
-            Overview of all invoice statuses
+            Track what's paid and what still needs follow-up
           </p>
         </div>
         <Button size="sm" onClick={() => refetch()} disabled={isFetching}>
@@ -50,6 +50,7 @@ export function InvoiceStatusCard() {
           <p className="mt-2 text-3xl font-bold text-brand-primary">
             {statusCounts.total}
           </p>
+          <p className="mt-1 text-xs text-brand-textMuted">All invoices you've sent</p>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -60,6 +61,7 @@ export function InvoiceStatusCard() {
             <p className="mt-1 text-2xl font-bold text-brand-statusPaidText">
               {statusCounts.paid}
             </p>
+            <p className="mt-1 text-xs text-green-700">Money already received ✅</p>
           </div>
 
           <div className="rounded-lg border border-amber-200 bg-brand-statusPendingBg p-3">
@@ -69,6 +71,7 @@ export function InvoiceStatusCard() {
             <p className="mt-1 text-2xl font-bold text-brand-statusPendingText">
               {statusCounts.pending}
             </p>
+            <p className="mt-1 text-xs text-amber-700">Needs follow-up ⏳</p>
           </div>
         </div>
 

@@ -26,10 +26,10 @@ export default function DashboardPage() {
       <div className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
         <div className="mb-6 sm:mb-8">
           <h1 className="text-xl  text-white font-bold sm:text-2xl">
-            Dashboard
+            Your Payment Overview
           </h1>
           <p className="mt-1 text-xs text-brand-mint sm:text-sm">
-            Create invoices and review activity
+            Your money status at a glance
           </p>
         </div>
 
