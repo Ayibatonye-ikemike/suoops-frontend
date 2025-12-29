@@ -166,16 +166,16 @@ export default function SupportHomePage() {
         </div>
       </section>
 
-      {/* ConMessageSquare className="mx-auto h-12 w-12 text-emerald-400" />
+      {/* Contact CTA */}
+      <section className="py-16">
+        <div className="mx-auto max-w-4xl px-4 text-center">
+          <div className="rounded-2xl bg-slate-900 p-8 sm:p-12">
+            <MessageSquare className="mx-auto h-12 w-12 text-emerald-400" />
             <h2 className="mt-4 text-2xl font-bold text-white">
               Still have questions?
             </h2>
             <p className="mt-2 text-slate-400">
-              We're here to help. Most users create their first invoice on WhatsApp without ever reading docs—but if you need us, we're ready
-              Can&apos;t find what you&apos;re looking for?
-            </h2>
-            <p className="mt-2 text-slate-400">
-              Our support team is here to help. Get in touch and we&apos;ll respond as soon as possible.
+              We're here to help. Most users create their first invoice on WhatsApp without ever reading docs—but if you need us, we're ready.
             </p>
             <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link

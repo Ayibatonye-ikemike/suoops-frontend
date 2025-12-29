@@ -10,7 +10,6 @@ import { INVOICE_PACK_PRICE, INVOICE_PACK_SIZE } from "@/constants/pricing";
 
 export default function PurchaseInvoicePackPage() {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,9 +36,10 @@ export default function PurchaseInvoicePackPage() {
       
       // Redirect to Paystack checkout
       window.location.href = response.authorization_url;
-    } catch (err: any) {
+    } catch (err) {
+      const error = err as { response?: { data?: { detail?: string } } };
       setError(
-        err.response?.data?.detail || 
+        error.response?.data?.detail || 
         "Failed to initialize payment. Please try again."
       );
       setIsLoading(false);

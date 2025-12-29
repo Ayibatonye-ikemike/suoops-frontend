@@ -68,7 +68,6 @@ export function PlanSelectionModal({
   };
 
   const isPending = initializeMutation.isPending || starterMutation.isPending;
-  const isStarterCurrent = currentPlan === "STARTER";
   const showStarter = currentPlan === "FREE"; // Only show STARTER option for FREE users
 
   return (
