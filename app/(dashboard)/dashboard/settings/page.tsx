@@ -13,6 +13,7 @@ import { SubscriptionSection } from "@/features/settings/subscription-section";
 import { TeamManagementSection } from "@/features/settings/team-management-section";
 import { LogoUpload } from "@/features/settings/logo-upload";
 import { PhoneNumberSection } from "@/features/settings/phone-number-section";
+import { ProfileSection } from "@/features/settings/profile-section";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { type PlanTier } from "@/constants/pricing";
 import { useAuthStore } from "@/features/auth/auth-store";
@@ -88,6 +89,17 @@ export default function SettingsPage() {
         <div className="mb-6 sm:mb-8">
           <TeamManagementSection userPlan={(user?.plan?.toUpperCase() || "FREE") as PlanTier} />
         </div>
+
+        <Card className="mb-6 sm:mb-8">
+          <CardHeader className="border-b border-brand-border/60 px-4 sm:px-6">
+            <h2 className="text-lg sm:text-[22px] font-semibold text-brand-text">
+              Profile
+            </h2>
+          </CardHeader>
+          <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
+            <ProfileSection currentName={user?.name} />
+          </CardContent>
+        </Card>
 
         <Card className="mb-6 sm:mb-8">
           <CardHeader className="border-b border-brand-border/60 px-4 sm:px-6">
