@@ -15,25 +15,28 @@ export function Hero({ onWatchDemo }: HeroProps) {
           {/* Left: Text Content */}
           <div className="flex flex-col justify-center">
             <h1 className="font-heading text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-              Invoice via WhatsApp
+              Invoice customers and get paid —
               <br />
-              <span className="text-brand-citrus">or Email. Get paid faster.</span>
+              <span className="text-brand-citrus">straight from WhatsApp</span>
             </h1>
             <p className="mt-6 text-lg text-white/80 max-w-lg">
-              Create invoices via WhatsApp text or from our web dashboard. Customers receive invoices via WhatsApp and Email—wherever they prefer.
+              Create invoices, track payments, manage inventory, and stay tax-aware without switching banks or learning accounting software.
+            </p>
+            <p className="mt-4 text-sm text-white/60 max-w-lg">
+              Built for freelancers and small businesses in Nigeria who already do business on WhatsApp.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <Link
                 href="/register"
                 className="inline-flex items-center justify-center rounded-lg bg-brand-jade px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:scale-105 hover:bg-brand-teal"
               >
-                Get started
+                Start invoicing on WhatsApp
               </Link>
               <button
                 onClick={onWatchDemo}
                 className="inline-flex items-center justify-center rounded-lg border border-white/30 bg-white/5 backdrop-blur-sm px-8 py-4 text-base font-semibold text-white transition-all hover:bg-white/15"
               >
-                Watch demo
+                See how it works
               </button>
             </div>
           </div>

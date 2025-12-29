@@ -6,48 +6,47 @@ export function Pricing() {
     <section id="pricing" className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-brand-jade">
-            Pricing
-          </p>
-          <h2 className="mt-3 text-3xl font-bold text-brand-evergreen sm:text-4xl">
-            Start free, upgrade as you grow
+          <h2 className="text-3xl font-bold text-brand-evergreen sm:text-4xl">
+            Simple pricing that grows with you
           </h2>
           <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-            Simple, transparent pricing. No hidden fees. Cancel anytime.
+            No invoices sent? No pressure. Only pay as your business grows.
           </p>
         </div>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-3 max-w-5xl mx-auto">
-          {LANDING_PLANS.map((plan: Plan) => (
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 max-w-4xl mx-auto">
+          {LANDING_PLANS.filter(plan => plan.id !== "FREE").map((plan: Plan) => (
             <PricingCard key={plan.id} plan={plan} />
           ))}
         </div>
 
-        <div className="mt-12 text-center">
+        {/* Invoice Packs */}
+        <div className="mt-12 max-w-3xl mx-auto">
+          <div className="rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 p-8 border-2 border-brand-jade text-center">
+            <h3 className="text-2xl font-bold text-brand-evergreen">📦 Need More Invoices?</h3>
+            <p className="mt-2 text-lg text-slate-700">Sell more? Just add more invoices.</p>
+            <div className="mt-6 flex items-center justify-center gap-4 text-2xl font-bold text-brand-jade">
+              <span>100 invoices</span>
+              <span className="text-slate-400">→</span>
+              <span>₦2,500</span>
+            </div>
+            <p className="mt-4 text-sm text-slate-600">
+              💡 <strong>No forced upgrade.</strong> Buy invoice packs as you grow—scales with your success.
+            </p>
+          </div>
+        </div>
+
+        <p className="mt-12 text-center text-lg font-semibold text-slate-700">
+          👉 No forced banking. No accounting setup. No hidden stress.
+        </p>
+
+        <div className="mt-8 text-center">
           <Link
             href="/register"
             className="inline-flex items-center justify-center rounded-lg bg-brand-jade px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:bg-brand-teal hover:scale-105"
           >
-            Get Started Free
+            Start invoicing on WhatsApp
           </Link>
-        </div>
-
-        {/* Trust Indicators */}
-        <div className="mt-16 rounded-2xl bg-white p-8 border border-slate-200 shadow-sm">
-          <div className="grid gap-8 sm:grid-cols-3 text-center">
-            <div>
-              <div className="text-3xl font-bold text-brand-jade">99.9%</div>
-              <div className="mt-1 text-sm text-slate-600">Uptime SLA</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-brand-jade">256-bit</div>
-              <div className="mt-1 text-sm text-slate-600">Encryption</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-brand-jade">FIRS</div>
-              <div className="mt-1 text-sm text-slate-600">Tax Ready</div>
-            </div>
-          </div>
         </div>
       </div>
     </section>

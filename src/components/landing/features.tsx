@@ -3,169 +3,139 @@ import Link from "next/link";
 export function Features() {
   return (
     <>
-      {/* How It Works */}
-      <section id="features" className="bg-white px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
+      {/* Problem Section */}
+      <section className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl">
           <div className="text-center">
-            <p className="text-sm font-semibold uppercase tracking-widest text-brand-jade">
-              How it works
-            </p>
-            <h2 className="mt-3 text-3xl font-bold text-brand-evergreen sm:text-4xl">
-              Create invoices your way
+            <h2 className="text-3xl font-bold text-brand-evergreen sm:text-4xl">
+              Invoicing shouldn&apos;t slow your business down
             </h2>
-            <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-              Use WhatsApp or our web dashboard. Customers get invoices via WhatsApp + Email.
+          </div>
+          <div className="mt-8 space-y-4">
+            <p className="text-lg text-slate-700">
+              Most small businesses already sell, negotiate, and follow up with customers on WhatsApp. 
+              But invoicing tools still force you into dashboards, emails, and accounting complexity.
+            </p>
+            <p className="font-semibold text-slate-900">That leads to:</p>
+            <ul className="space-y-3">
+              <ProblemItem text="Late payments" />
+              <ProblemItem text="Lost invoice records" />
+              <ProblemItem text="Unclear stock levels" />
+              <ProblemItem text="Confusion about taxes" />
+              <ProblemItem text="Too much time spent &quot;just admin&quot;" />
+            </ul>
+            <p className="mt-6 text-lg font-semibold text-brand-jade">
+              Suoops fixes this by bringing invoicing to where your business already runs.
             </p>
           </div>
+        </div>
+      </section>
 
-          <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Core Value Proposition */}
+      <section className="bg-white px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-brand-evergreen sm:text-4xl">
+              Built for WhatsApp-first businesses
+            </h2>
+          </div>
+
+          <div className="mt-12 grid gap-8 md:grid-cols-3">
+            <ValueCard
+              icon="💬"
+              title="Create invoices by texting"
+              description="Send a message like:"
+              codeExample="Invoice John ₦50k for design"
+              footer="Suoops turns it into a professional, payment-ready invoice instantly."
+            />
+            <ValueCard
+              icon="🏦"
+              title="Works with any Nigerian bank"
+              description="Add your existing bank account once. Invoices include clear transfer instructions—no forced bank lock-in."
+            />
+            <ValueCard
+              icon="📊"
+              title="Know where your money stands"
+              description="See who has paid, who hasn't, what stock is low, and whether you're tax-safe—all in one dashboard."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section id="features" className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-brand-evergreen sm:text-4xl">
+              How it works
+            </h2>
+          </div>
+
+          <div className="mt-16 grid gap-8 sm:grid-cols-3">
             <StepCard
               number={1}
-              title="Sign Up"
-              description="Create your free SuoOps account and set up your business profile."
+              title="Create an invoice"
+              description="From WhatsApp or the dashboard. Add line items, customers, or products."
             />
             <StepCard
               number={2}
-              title="Connect WhatsApp"
-              description="Link your WhatsApp to start sending invoices from chat."
+              title="Send instantly"
+              description="Send invoices directly on WhatsApp or download a PDF."
             />
             <StepCard
               number={3}
-              title="Send a Message"
-              description='Type: "Invoice Joy 08012345678, 2000 boxers, 5000 hair".'
-            />
-            <StepCard
-              number={4}
-              title="Get Paid"
-              description="Customer receives invoice via WhatsApp + Email, pays, and you get notified."
+              title="Get paid & track"
+              description="Get notified when customers pay. Track pending invoices and follow up easily."
             />
           </div>
         </div>
       </section>
 
-      {/* Invoice Feature Section */}
-      <section className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-12 lg:grid-cols-2 items-center">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-widest text-brand-jade">
-                Invoice
-              </p>
-              <h2 className="mt-3 text-3xl font-bold text-brand-evergreen sm:text-4xl">
-                Invoice creation made simple
-              </h2>
-              <p className="mt-4 text-lg text-slate-600">
-                Create invoices from WhatsApp or our web dashboard. Customers receive them via WhatsApp and Email automatically.
-              </p>
-              <ul className="mt-8 space-y-4">
-                <FeatureItem text="WhatsApp: Text messages" />
-                <FeatureItem text="Web dashboard: Create invoices online" />
-                <FeatureItem text="Delivery: WhatsApp + Email to customers" />
-                <FeatureItem text="QR code verification on every invoice" />
-              </ul>
-              <Link
-                href="/register"
-                className="mt-8 inline-flex items-center justify-center rounded-lg bg-brand-jade px-6 py-3 text-base font-semibold text-white shadow-lg transition-all hover:bg-brand-teal"
-              >
-                Get started
-              </Link>
-            </div>
-            <div className="relative">
-              <div className="rounded-2xl bg-white p-6 shadow-xl border border-slate-200">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-brand-jade/10 flex items-center justify-center">
-                      <span className="text-xl">📄</span>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-slate-800">Invoice Created</p>
-                      <p className="text-sm text-slate-500">Just now</p>
-                    </div>
-                  </div>
-                  <span className="text-2xl">✅</span>
-                </div>
-                <div className="mt-4 space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Invoice ID</span>
-                    <span className="font-mono text-slate-800">INV-2024-001</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Customer</span>
-                    <span className="text-slate-800">Joy</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Amount</span>
-                    <span className="font-semibold text-brand-evergreen">₦7,000</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Status</span>
-                    <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-700">Pending</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Track Feature Section */}
+      {/* Features Section */}
       <section className="bg-white px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="grid gap-12 lg:grid-cols-2 items-center">
-            <div className="order-2 lg:order-1">
-              <div className="rounded-2xl bg-slate-50 p-6 border border-slate-200">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="h-10 w-10 rounded-full bg-brand-jade/10 flex items-center justify-center">
-                    <span className="text-xl">📊</span>
-                  </div>
-                  <p className="font-semibold text-slate-800">Payment Tracking</p>
-                </div>
-                <div className="space-y-4">
-                  <div className="rounded-xl bg-white p-4 border border-slate-100">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="font-medium text-slate-800">Jane Doe</p>
-                        <p className="text-sm text-slate-500">INV-2024-001</p>
-                      </div>
-                      <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">Paid</span>
-                    </div>
-                    <p className="mt-2 text-lg font-semibold text-brand-evergreen">₦50,000</p>
-                  </div>
-                  <div className="rounded-xl bg-white p-4 border border-slate-100">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="font-medium text-slate-800">John Smith</p>
-                        <p className="text-sm text-slate-500">INV-2024-002</p>
-                      </div>
-                      <span className="rounded-full bg-yellow-100 px-3 py-1 text-sm font-medium text-yellow-700">Pending</span>
-                    </div>
-                    <p className="mt-2 text-lg font-semibold text-brand-evergreen">₦75,000</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="order-1 lg:order-2">
-              <p className="text-sm font-semibold uppercase tracking-widest text-brand-jade">
-                Track
-              </p>
-              <h2 className="mt-3 text-3xl font-bold text-brand-evergreen sm:text-4xl">
-                Seamless payment tracking
-              </h2>
-              <p className="mt-4 text-lg text-slate-600">
-                Monitor payment streams with precision. Get real-time notifications when customers pay, and track your cash flow effortlessly.
-              </p>
-              <ul className="mt-8 space-y-4">
-                <FeatureItem text="Real-time payment notifications" />
-                <FeatureItem text="Daily and weekly reports" />
-                <FeatureItem text="Customer payment confirmation via WhatsApp" />
-              </ul>
-              <Link
-                href="/register"
-                className="mt-8 inline-flex items-center justify-center rounded-lg bg-brand-jade px-6 py-3 text-base font-semibold text-white shadow-lg transition-all hover:bg-brand-teal"
-              >
-                Get started
-              </Link>
-            </div>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-brand-evergreen sm:text-4xl">
+              Everything you need to run your business
+            </h2>
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-2">
+            <FeatureCard
+              title="✅ Invoicing, without complexity"
+              features={[
+                "Create and send invoices in seconds",
+                "Track paid, pending, and overdue invoices",
+                "Custom branding with your logo",
+                "Team access for small teams"
+              ]}
+            />
+            <FeatureCard
+              title="📦 Inventory that actually helps you sell"
+              features={[
+                "Manage products and categories",
+                "Automatic stock updates when invoicing",
+                "Low-stock alerts before you run out"
+              ]}
+            />
+            <FeatureCard
+              title="🧾 Simple tax insight (Nigeria-focused)"
+              features={[
+                "See your tax band clearly",
+                "Know when you're exempt",
+                "Understand your obligations without accounting jargon"
+              ]}
+              note="Small businesses under ₦25M annual revenue are exempt from Company Income Tax."
+            />
+            <FeatureCard
+              title="💬 WhatsApp Bot (your unfair advantage)"
+              features={[
+                "Create invoices by chat",
+                "Receive invoice notifications",
+                "Follow up where conversations already happen"
+              ]}
+              highlight="This is not an add-on. This is the core workflow."
+            />
           </div>
         </div>
       </section>
@@ -187,6 +157,71 @@ function StepCard({ number, title, description }: StepCardProps) {
       </div>
       <h3 className="mt-4 text-lg font-bold text-brand-evergreen">{title}</h3>
       <p className="mt-2 text-sm text-slate-600">{description}</p>
+    </div>
+  );
+}
+
+function ProblemItem({ text }: { text: string }) {
+  return (
+    <li className="flex items-start gap-3 p-4 bg-white rounded-lg border-l-4 border-red-500">
+      <span className="font-medium text-slate-700">{text}</span>
+    </li>
+  );
+}
+
+interface ValueCardProps {
+  icon: string;
+  title: string;
+  description: string;
+  codeExample?: string;
+  footer?: string;
+}
+
+function ValueCard({ icon, title, description, codeExample, footer }: ValueCardProps) {
+  return (
+    <div className="p-6 bg-white border-2 border-slate-200 rounded-xl hover:border-brand-jade transition-all hover:shadow-lg">
+      <div className="text-4xl mb-4">{icon}</div>
+      <h3 className="text-xl font-bold text-brand-evergreen mb-3">{title}</h3>
+      <p className="text-slate-600 mb-3">{description}</p>
+      {codeExample && (
+        <div className="bg-slate-900 text-green-400 p-3 rounded-lg font-mono text-sm my-3">
+          &quot;{codeExample}&quot;
+        </div>
+      )}
+      {footer && <p className="text-slate-600 mt-3">{footer}</p>}
+    </div>
+  );
+}
+
+interface FeatureCardProps {
+  title: string;
+  features: string[];
+  note?: string;
+  highlight?: string;
+}
+
+function FeatureCard({ title, features, note, highlight }: FeatureCardProps) {
+  return (
+    <div className="p-6 bg-slate-50 rounded-xl">
+      <h3 className="text-xl font-bold text-brand-evergreen mb-4">{title}</h3>
+      <ul className="space-y-3">
+        {features.map((feature, i) => (
+          <li key={i} className="flex items-start gap-2 text-slate-700">
+            <span className="text-brand-jade mt-1">•</span>
+            <span>{feature}</span>
+          </li>
+        ))}
+      </ul>
+      {note && (
+        <div className="mt-4 p-3 bg-brand-jade/10 rounded-lg text-sm text-slate-700">
+          {note}
+        </div>
+      )}
+      {highlight && (
+        <p className="mt-4 font-semibold text-brand-jade">
+          {highlight}
+        </p>
+      )}
     </div>
   );
 }
