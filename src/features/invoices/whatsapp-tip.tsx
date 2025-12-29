@@ -39,10 +39,10 @@ export function WhatsAppTip() {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-emerald-800">
-            Create via WhatsApp
+            Faster: Create & send via WhatsApp
           </p>
           <p className="text-xs text-emerald-600 truncate">
-            Text: &quot;Invoice John 50k for design&quot;
+            Text: &quot;Invoice John 50k for design&quot; — Done in seconds
           </p>
         </div>
         <ExternalLink className="h-4 w-4 text-emerald-500 group-hover:text-emerald-700 shrink-0" />

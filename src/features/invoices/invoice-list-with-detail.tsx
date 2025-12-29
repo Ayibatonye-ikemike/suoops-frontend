@@ -122,9 +122,14 @@ export function InvoiceListWithDetail() {
     <>
       {/* Invoice List Card */}
       <div className="rounded-lg border border-brand-border bg-white p-5 shadow-card">
-        <h2 className="mb-4 text-lg font-bold text-brand-text">
-          Recent Invoices
-        </h2>
+        <div className="mb-4">
+          <h2 className="text-lg font-bold text-brand-text">
+            Track your payments
+          </h2>
+          <p className="mt-1 text-xs text-brand-textMuted">
+            See which invoices are paid and which need follow-up
+          </p>
+        </div>
 
         {/* Search */}
         <input

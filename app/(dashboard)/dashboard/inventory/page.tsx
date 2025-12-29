@@ -107,9 +107,9 @@ export default function InventoryPage() {
           <Package className="h-6 w-6 text-brand-jade" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Inventory</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Inventory that supports your sales</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Manage your products and stock levels
+            Track stock to invoice faster and avoid payment delays
           </p>
         </div>
       </div>

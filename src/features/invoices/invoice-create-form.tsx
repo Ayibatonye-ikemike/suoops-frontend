@@ -174,10 +174,10 @@ export function InvoiceCreateForm() {
       {/* Header */}
       <div className="space-y-2">
         <h2 className="text-[22px] font-semibold text-brand-text">
-          Create Invoice
+          Create an invoice & get paid
         </h2>
         <p className="text-sm text-brand-textMuted">
-          Set customer details and line items to generate a payment-ready invoice.
+          Enter customer details and what they&apos;re paying for — we&apos;ll handle the rest.
         </p>
       </div>
 
@@ -217,7 +217,7 @@ export function InvoiceCreateForm() {
           ? "Creating..."
           : quota && !quota.can_create
           ? "Limit Reached"
-          : "Create Invoice"}
+          : "Create invoice & send for payment"}
       </Button>
 
       {/* Messages (Quota, Errors, Success) */}

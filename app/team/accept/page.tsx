@@ -2,13 +2,18 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "@/features/auth/auth-store";
 import { validateInvitation, acceptInvitation, acceptInvitationDirect } from "@/api/team";
+import { apiClient } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, CheckCircle, XCircle, Users } from "lucide-react";
+import type { components } from "@/api/types";
+
+type CurrentUser = components["schemas"]["UserOut"];
 
 type PageStatus = "loading" | "valid" | "invalid" | "accepting" | "success" | "error";
 
@@ -23,7 +28,18 @@ function AcceptInvitationContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   
-  const { status: authStatus, accessToken, setTokens, clearTokens, user } = useAuthStore();
+  const { status: authStatus, accessToken, setTokens, clearTokens } = useAuthStore();
+  
+  // Fetch current user data
+  const { data: user } = useQuery<CurrentUser>({
+    queryKey: ["currentUser"],
+    queryFn: async () => {
+      const response = await apiClient.get<CurrentUser>("/users/me");
+      return response.data;
+    },
+    enabled: authStatus === "authenticated" && !!accessToken,
+    staleTime: 60000,
+  });
   
   const [pageStatus, setPageStatus] = useState<PageStatus>("loading");
   const [invitation, setInvitation] = useState<InvitationDetails | null>(null);

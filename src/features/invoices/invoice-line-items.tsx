@@ -113,7 +113,10 @@ export function InvoiceLineItems({
   return (
     <section className="rounded-lg border border-brand-border bg-white p-6 shadow-card">
       <header className="mb-3 flex flex-wrap items-center justify-between gap-3">
-        <h3 className="text-base font-semibold text-brand-text">Line items</h3>
+        <div>
+          <h3 className="text-base font-semibold text-brand-text">Line items</h3>
+          <p className="text-xs text-brand-textMuted mt-0.5">What your customer is paying for</p>
+        </div>
         <Button type="button" size="sm" onClick={onAddLine}>
           Add line
         </Button>

@@ -74,14 +74,14 @@ export function InventorySummaryCards() {
       <StatCard
         title="Stock Value"
         value={formatCurrency(summary.total_stock_value)}
-        subtitle="At cost price"
+        subtitle="What you can sell right now"
         icon={<TrendingUp className="h-5 w-5" />}
         variant="success"
       />
       <StatCard
         title="Low Stock"
         value={summary.low_stock_count}
-        subtitle="Need restocking"
+        subtitle="May affect incoming payments"
         icon={<AlertTriangle className="h-5 w-5" />}
         variant={summary.low_stock_count > 0 ? "warning" : "default"}
       />
