@@ -140,14 +140,14 @@ export default function SupportHomePage() {
         </div>
       </section>
 
-      {/* Popular Articles */}4">
+      {/* Popular Articles */}
+      <section className="border-t border-slate-200 bg-slate-50 py-16">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3 mb-4">
             <Zap className="h-6 w-6 text-emerald-600" />
             <h2 className="text-2xl font-bold text-slate-900">Quick Wins</h2>
           </div>
-          <p className="text-slate-600 mb-8">Most users start here and send their first invoice within minutes</pclassName="flex items-center gap-3 mb-8">
-            <BookOpen className="h-6 w-6 text-emerald-600" />
-            <h2 className="text-2xl font-bold text-slate-900">Popular Articles</h2>
-          </div>
+          <p className="text-slate-600 mb-8">Most users start here and send their first invoice within minutes</p>
           
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {popularArticles.map((article) => (

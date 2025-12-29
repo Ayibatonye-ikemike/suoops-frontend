@@ -37,9 +37,6 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
   const subscriptionExpiresAt = user?.subscription_expires_at
     ? new Date(user.subscription_expires_at)
     : null;
-  const subscriptionStartedAt = user?.subscription_started_at
-    ? new Date(user.subscription_started_at)
-    : null;
   // Only PRO has monthly subscriptions
   const hasMonthlySubscription = currentPlan === "PRO";
   const isExpiringSoon =

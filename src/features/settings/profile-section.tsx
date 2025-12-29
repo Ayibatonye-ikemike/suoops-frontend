@@ -17,7 +17,7 @@ export function ProfileSection({ currentName }: ProfileSectionProps) {
 
   const updateMutation = useMutation({
     mutationFn: updateProfile,
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success("Name updated successfully!");
       setIsEditing(false);
       // Invalidate user query to refresh all user data
