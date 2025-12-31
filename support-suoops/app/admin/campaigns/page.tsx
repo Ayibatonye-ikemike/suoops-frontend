@@ -75,6 +75,12 @@ const campaignIcons: Record<string, typeof Megaphone> = {
   invoice_pack_promo: Gift,
   first_invoice_followup: Zap,
   email_whatsapp_promotion: Mail,
+  email_pro_retention: TrendingUp,
+  email_starter_to_pro: TrendingUp,
+  email_active_free_users: Users,
+  email_churned_users: Clock,
+  email_low_balance: AlertCircle,
+  email_inactive_users: Clock,
 };
 
 const campaignColors: Record<string, string> = {
@@ -85,6 +91,12 @@ const campaignColors: Record<string, string> = {
   invoice_pack_promo: "bg-emerald-500",
   first_invoice_followup: "bg-cyan-500",
   email_whatsapp_promotion: "bg-indigo-500",
+  email_pro_retention: "bg-yellow-500",
+  email_starter_to_pro: "bg-purple-500",
+  email_active_free_users: "bg-green-500",
+  email_churned_users: "bg-rose-500",
+  email_low_balance: "bg-orange-500",
+  email_inactive_users: "bg-slate-500",
 };
 
 export default function CampaignsPage() {
