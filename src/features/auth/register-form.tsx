@@ -129,11 +129,19 @@ export function RegisterForm() {
         startResendCountdown();
       } catch (requestError: unknown) {
         console.error(requestError);
-        const message =
-          typeof requestError === "object" && requestError !== null && "response" in requestError
-            ? (requestError as { response?: { data?: { detail?: string } } }).response?.data?.detail
-            : undefined;
-        setError(message || "Unable to send verification code. Please try again.");
+        const response = (requestError as { response?: { data?: { detail?: string }; status?: number } }).response;
+        const message = response?.data?.detail;
+        
+        // Provide specific guidance based on error type
+        if (message?.toLowerCase().includes("already") || response?.status === 409) {
+          setError("This email is already registered. Please log in instead.");
+        } else if (message?.toLowerCase().includes("too many")) {
+          setError("Too many attempts. Please wait a few minutes before trying again.");
+        } else if (!navigator.onLine) {
+          setError("You appear to be offline. Please check your internet connection.");
+        } else {
+          setError(message || "Unable to send verification code. Please check your details and try again.");
+        }
       } finally {
         setLoading(false);
       }
@@ -162,11 +170,19 @@ export function RegisterForm() {
       } catch (verifyError: unknown) {
         console.error(verifyError);
         setOtp("");
-        const message =
-          typeof verifyError === "object" && verifyError !== null && "response" in verifyError
-            ? (verifyError as { response?: { data?: { detail?: string } } }).response?.data?.detail
-            : undefined;
-        setError(message || "Invalid code. Please try again.");
+        const response = (verifyError as { response?: { data?: { detail?: string }; status?: number } }).response;
+        const message = response?.data?.detail;
+        
+        // Provide specific guidance based on error type
+        if (message?.toLowerCase().includes("expired")) {
+          setError("This code has expired. Please request a new one.");
+        } else if (message?.toLowerCase().includes("invalid") || response?.status === 401) {
+          setError("Invalid code. Please check and try again, or request a new code.");
+        } else if (message?.toLowerCase().includes("too many")) {
+          setError("Too many failed attempts. Please wait a few minutes and try again.");
+        } else {
+          setError(message || "Verification failed. Please try again.");
+        }
       } finally {
         setLoading(false);
       }

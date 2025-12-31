@@ -56,11 +56,19 @@ export function LoginForm() {
         startCountdown();
       } catch (requestError: unknown) {
         console.error(requestError);
-        const message =
-          typeof requestError === "object" && requestError !== null && "response" in requestError
-            ? (requestError as { response?: { data?: { detail?: string } } }).response?.data?.detail
-            : undefined;
-        setError(message || "We could not send an OTP to that email.");
+        const response = (requestError as { response?: { data?: { detail?: string }; status?: number } }).response;
+        const message = response?.data?.detail;
+        
+        // Provide specific guidance based on error type
+        if (response?.status === 404 || message?.toLowerCase().includes("not found")) {
+          setError("No account found with this email. Please check the address or sign up for a new account.");
+        } else if (message?.toLowerCase().includes("too many")) {
+          setError("Too many login attempts. Please wait a few minutes before trying again.");
+        } else if (!navigator.onLine) {
+          setError("You appear to be offline. Please check your internet connection.");
+        } else {
+          setError(message || "Unable to send verification code. Please try again.");
+        }
       } finally {
         setLoading(false);
       }
@@ -84,11 +92,19 @@ export function LoginForm() {
       } catch (verifyError: unknown) {
         console.error(verifyError);
         setOtp("");
-        const message =
-          typeof verifyError === "object" && verifyError !== null && "response" in verifyError
-            ? (verifyError as { response?: { data?: { detail?: string } } }).response?.data?.detail
-            : undefined;
-        setError(message || "Invalid code. Please try again.");
+        const response = (verifyError as { response?: { data?: { detail?: string }; status?: number } }).response;
+        const message = response?.data?.detail;
+        
+        // Provide specific guidance based on error type
+        if (message?.toLowerCase().includes("expired")) {
+          setError("This code has expired. Please request a new one.");
+        } else if (message?.toLowerCase().includes("invalid") || response?.status === 401) {
+          setError("Invalid code. Please check and try again, or request a new code.");
+        } else if (message?.toLowerCase().includes("too many")) {
+          setError("Too many failed attempts. Please wait a few minutes and try again.");
+        } else {
+          setError(message || "Verification failed. Please try again.");
+        }
       } finally {
         setLoading(false);
       }

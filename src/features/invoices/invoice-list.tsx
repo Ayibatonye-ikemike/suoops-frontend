@@ -105,11 +105,34 @@ export function InvoiceList() {
   }, [dataUpdatedAt]);
 
   if (isLoading) {
-    return <p>Loading invoices...</p>;
+    return (
+      <div className="flex flex-col items-center justify-center py-12 space-y-4">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-primary border-t-transparent" />
+        <p className="text-sm text-brand-textMuted">Loading your invoices...</p>
+      </div>
+    );
   }
 
   if (error) {
-    return <p>Failed to load invoices. Please refresh.</p>;
+    return (
+      <div className="flex flex-col items-center justify-center py-12 space-y-4 text-center">
+        <div className="rounded-full bg-red-100 p-3">
+          <svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <div>
+          <p className="font-medium text-brand-text">Unable to load invoices</p>
+          <p className="text-sm text-brand-textMuted mt-1">Please check your connection and try again.</p>
+        </div>
+        <button
+          onClick={() => refetch()}
+          className="mt-2 px-4 py-2 text-sm font-medium text-white bg-brand-primary rounded-lg hover:bg-brand-primaryDark transition-colors"
+        >
+          Try Again
+        </button>
+      </div>
+    );
   }
 
   const badgeToneClass = (tone: string | undefined) => {
@@ -280,8 +303,16 @@ export function InvoiceList() {
           </button>
         </div>
       ) : (
-        <div className="rounded-xl border border-dashed border-brand-border bg-brand-background p-6 text-center text-sm text-brand-textMuted">
-          No invoices yet. Create one from WhatsApp or the API to see it here.
+        <div className="rounded-xl border border-dashed border-brand-border bg-brand-background p-8 text-center">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-brand-primary/10">
+            <svg className="h-6 w-6 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-brand-text">No invoices yet</h3>
+          <p className="mt-2 text-sm text-brand-textMuted max-w-sm mx-auto">
+            Create your first invoice using the form above, or send a WhatsApp message like &quot;Invoice John 50000&quot; to get started.
+          </p>
         </div>
       )}
 

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Users, Mail, Crown, UserMinus, Loader2, Plus, X, AlertTriangle } from "lucide-react";
+import { toast } from "react-hot-toast";
 import {
   getTeam,
   getTeamRole,
@@ -21,20 +22,6 @@ type UserTeamRole = components["schemas"]["UserTeamRole"];
 
 interface TeamManagementSectionProps {
   userPlan: PlanTier;
-}
-
-// Simple toast implementation
-function useSimpleToast() {
-  const toast = (options: { title: string; description?: string; variant?: "default" | "destructive" }) => {
-    // In a real implementation, this would show a toast notification
-    // For now, we'll use console.log and alert for errors
-    if (options.variant === "destructive") {
-      console.error(`${options.title}: ${options.description}`);
-    } else {
-      console.log(`${options.title}: ${options.description}`);
-    }
-  };
-  return { toast };
 }
 
 // Simple confirm dialog
@@ -81,7 +68,6 @@ function ConfirmDialog({
 }
 
 export function TeamManagementSection({ userPlan }: TeamManagementSectionProps) {
-  const { toast } = useSimpleToast();
   const [loading, setLoading] = useState(true);
   const [teamRole, setTeamRole] = useState<UserTeamRole | null>(null);
   const [team, setTeam] = useState<TeamWithMembersOut | null>(null);
@@ -114,30 +100,19 @@ export function TeamManagementSection({ userPlan }: TeamManagementSectionProps) 
 
   const handleCreateTeam = async () => {
     if (!teamName.trim()) {
-      toast({
-        title: "Error",
-        description: "Please enter a team name",
-        variant: "destructive",
-      });
+      toast.error("Please enter a team name");
       return;
     }
 
     try {
       setCreating(true);
       await createTeam(teamName);
-      toast({
-        title: "Team created",
-        description: "Your team has been created successfully",
-      });
+      toast.success("Team created successfully!");
       await loadTeamData();
       setTeamName("");
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Failed to create team";
-      toast({
-        title: "Error",
-        description: message,
-        variant: "destructive",
-      });
+      toast.error(message);
     } finally {
       setCreating(false);
     }
@@ -145,21 +120,14 @@ export function TeamManagementSection({ userPlan }: TeamManagementSectionProps) 
 
   const handleInvite = async () => {
     if (!inviteEmail.trim()) {
-      toast({
-        title: "Error",
-        description: "Please enter an email address",
-        variant: "destructive",
-      });
+      toast.error("Please enter an email address");
       return;
     }
 
     try {
       setInviting(true);
       await sendInvitation(inviteEmail);
-      toast({
-        title: "Invitation sent",
-        description: `Invitation sent to ${inviteEmail}`,
-      });
+      toast.success(`Invitation sent to ${inviteEmail}`);
       await loadTeamData();
       setInviteEmail("");
     } catch (error: unknown) {
@@ -167,11 +135,7 @@ export function TeamManagementSection({ userPlan }: TeamManagementSectionProps) 
       const message = typeof errorData?.detail === "string" 
         ? errorData.detail 
         : (errorData?.detail as { message?: string })?.message || "Failed to send invitation";
-      toast({
-        title: "Error",
-        description: message,
-        variant: "destructive",
-      });
+      toast.error(message);
     } finally {
       setInviting(false);
     }
@@ -180,34 +144,20 @@ export function TeamManagementSection({ userPlan }: TeamManagementSectionProps) 
   const handleRevokeInvitation = async (invitationId: number) => {
     try {
       await revokeInvitation(invitationId);
-      toast({
-        title: "Invitation revoked",
-        description: "The invitation has been cancelled",
-      });
+      toast.success("Invitation revoked");
       await loadTeamData();
     } catch {
-      toast({
-        title: "Error",
-        description: "Failed to revoke invitation",
-        variant: "destructive",
-      });
+      toast.error("Failed to revoke invitation. Please try again.");
     }
   };
 
   const handleRemoveMember = async (userId: number, userName: string) => {
     try {
       await removeMember(userId);
-      toast({
-        title: "Member removed",
-        description: `${userName} has been removed from the team`,
-      });
+      toast.success(`${userName} has been removed from the team`);
       await loadTeamData();
     } catch {
-      toast({
-        title: "Error",
-        description: "Failed to remove member",
-        variant: "destructive",
-      });
+      toast.error("Failed to remove member. Please try again.");
     }
   };
 

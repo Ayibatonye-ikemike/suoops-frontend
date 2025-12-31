@@ -164,8 +164,24 @@ export function InvoiceCreateForm() {
         return;
       }
 
-      // Fallback generic error
-      setError("Failed to create invoice. Check inputs and try again.");
+      // Fallback - try to extract specific error message from response
+      const errorData = (submitError as { response?: { data?: { detail?: string } } })?.response?.data;
+      if (errorData?.detail && typeof errorData.detail === "string") {
+        setError(errorData.detail);
+        return;
+      }
+      
+      // Network error
+      if (submitError instanceof Error && submitError.message.includes("Network")) {
+        setError("Connection error. Please check your internet and try again.");
+        return;
+      }
+
+      // Generic fallback with helpful guidance
+      setError(
+        "Unable to create invoice. Please check that all fields are filled correctly. " +
+        "If the problem persists, try refreshing the page."
+      );
     }
   }
 
