@@ -17,6 +17,8 @@ import {
   Gift,
   Clock,
   UserPlus,
+  Mail,
+  MessageSquare,
 } from "lucide-react";
 
 interface Campaign {
@@ -25,6 +27,7 @@ interface Campaign {
   description: string;
   parameters: string[];
   goal: string;
+  channel?: string;
 }
 
 interface Candidate {
@@ -32,6 +35,7 @@ interface Candidate {
   name: string;
   phone: string;
   email?: string;
+  phone_verified?: boolean;
   invoice_balance?: number;
   invoice_count?: number;
   plan?: string;
@@ -42,6 +46,7 @@ interface CampaignResult {
   success: boolean;
   campaign: string;
   template: string;
+  channel?: string;
   dry_run: boolean;
   candidates: number;
   sent: number;
@@ -52,7 +57,8 @@ interface CampaignResult {
   details?: Array<{
     user_id: number;
     name: string;
-    phone: string;
+    phone?: string;
+    email?: string;
     status: string;
     reason?: string;
   }>;
@@ -65,6 +71,7 @@ const campaignIcons: Record<string, typeof Megaphone> = {
   pro_upgrade: TrendingUp,
   invoice_pack_promo: Gift,
   first_invoice_followup: Zap,
+  email_whatsapp_promotion: Mail,
 };
 
 const campaignColors: Record<string, string> = {
@@ -74,6 +81,7 @@ const campaignColors: Record<string, string> = {
   pro_upgrade: "bg-purple-500",
   invoice_pack_promo: "bg-emerald-500",
   first_invoice_followup: "bg-cyan-500",
+  email_whatsapp_promotion: "bg-indigo-500",
 };
 
 export default function CampaignsPage() {
@@ -165,8 +173,13 @@ export default function CampaignsPage() {
   async function sendCampaign() {
     if (!token || !selectedCampaign) return;
     
+    const selectedCampaignData = campaigns.find(c => c.type === selectedCampaign);
+    const isEmail = selectedCampaignData?.channel === "email";
+    
     const confirmed = window.confirm(
-      `⚠️ You are about to send REAL WhatsApp messages to up to ${limit} users.\n\nThis will use your WhatsApp Business API quota.\n\nAre you sure you want to proceed?`
+      isEmail
+        ? `⚠️ You are about to send REAL emails to up to ${limit} users.\n\nThis will use your SMTP/Brevo quota.\n\nAre you sure you want to proceed?`
+        : `⚠️ You are about to send REAL WhatsApp messages to up to ${limit} users.\n\nThis will use your WhatsApp Business API quota.\n\nAre you sure you want to proceed?`
     );
     if (!confirmed) return;
 
@@ -219,7 +232,7 @@ export default function CampaignsPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Marketing Campaigns</h1>
           <p className="text-slate-600 mt-1">
-            Send WhatsApp marketing messages to engage and convert users
+            Send WhatsApp and Email marketing messages to engage and convert users
           </p>
         </div>
       </div>
@@ -241,6 +254,7 @@ export default function CampaignsPage() {
           const Icon = campaignIcons[campaign.type] || Megaphone;
           const colorClass = campaignColors[campaign.type] || "bg-slate-500";
           const isSelected = selectedCampaign === campaign.type;
+          const isEmail = campaign.channel === "email";
 
           return (
             <button
@@ -257,9 +271,20 @@ export default function CampaignsPage() {
                   <Icon className="h-5 w-5" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-slate-900 capitalize">
-                    {campaign.type.replace(/_/g, " ")}
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold text-slate-900 capitalize">
+                      {campaign.type.replace(/_/g, " ")}
+                    </h3>
+                    {isEmail ? (
+                      <span className="px-1.5 py-0.5 rounded text-[10px] bg-indigo-100 text-indigo-700 flex items-center gap-1">
+                        <Mail className="h-2.5 w-2.5" /> Email
+                      </span>
+                    ) : (
+                      <span className="px-1.5 py-0.5 rounded text-[10px] bg-green-100 text-green-700 flex items-center gap-1">
+                        <MessageSquare className="h-2.5 w-2.5" /> WhatsApp
+                      </span>
+                    )}
+                  </div>
                   <p className="text-sm text-slate-500 mt-1 line-clamp-2">
                     {campaign.description}
                   </p>
@@ -367,7 +392,14 @@ export default function CampaignsPage() {
                 <thead className="bg-slate-50 text-slate-600">
                   <tr>
                     <th className="px-4 py-3 text-left font-medium">Name</th>
-                    <th className="px-4 py-3 text-left font-medium">Phone</th>
+                    {selectedCampaign === "email_whatsapp_promotion" ? (
+                      <>
+                        <th className="px-4 py-3 text-left font-medium">Email</th>
+                        <th className="px-4 py-3 text-left font-medium">Phone Status</th>
+                      </>
+                    ) : (
+                      <th className="px-4 py-3 text-left font-medium">Phone</th>
+                    )}
                     {selectedCampaign === "pro_upgrade" && (
                       <>
                         <th className="px-4 py-3 text-left font-medium">Plan</th>
@@ -378,7 +410,7 @@ export default function CampaignsPage() {
                       selectedCampaign === "invoice_pack_promo") && (
                       <th className="px-4 py-3 text-left font-medium">Balance</th>
                     )}
-                    {selectedCampaign === "activation_welcome" && (
+                    {(selectedCampaign === "activation_welcome" || selectedCampaign === "email_whatsapp_promotion") && (
                       <th className="px-4 py-3 text-left font-medium">Signed Up</th>
                     )}
                   </tr>
@@ -389,9 +421,34 @@ export default function CampaignsPage() {
                       <td className="px-4 py-3 font-medium text-slate-900">
                         {candidate.name || "—"}
                       </td>
-                      <td className="px-4 py-3 text-slate-600 font-mono text-xs">
-                        {candidate.phone}
-                      </td>
+                      {selectedCampaign === "email_whatsapp_promotion" ? (
+                        <>
+                          <td className="px-4 py-3 text-slate-600 font-mono text-xs">
+                            {candidate.email || "—"}
+                          </td>
+                          <td className="px-4 py-3">
+                            {candidate.phone ? (
+                              candidate.phone_verified ? (
+                                <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">
+                                  ✓ Verified
+                                </span>
+                              ) : (
+                                <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs">
+                                  Not verified
+                                </span>
+                              )
+                            ) : (
+                              <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">
+                                Not connected
+                              </span>
+                            )}
+                          </td>
+                        </>
+                      ) : (
+                        <td className="px-4 py-3 text-slate-600 font-mono text-xs">
+                          {candidate.phone}
+                        </td>
+                      )}
                       {selectedCampaign === "pro_upgrade" && (
                         <>
                           <td className="px-4 py-3">
@@ -417,6 +474,13 @@ export default function CampaignsPage() {
                         </td>
                       )}
                       {selectedCampaign === "activation_welcome" && (
+                        <td className="px-4 py-3 text-slate-500 text-xs">
+                          {candidate.signed_up 
+                            ? new Date(candidate.signed_up).toLocaleDateString()
+                            : "—"}
+                        </td>
+                      )}
+                      {selectedCampaign === "email_whatsapp_promotion" && (
                         <td className="px-4 py-3 text-slate-500 text-xs">
                           {candidate.signed_up 
                             ? new Date(candidate.signed_up).toLocaleDateString()
@@ -501,13 +565,31 @@ export default function CampaignsPage() {
       {/* Info Box */}
       <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
         <h4 className="font-medium text-slate-700 mb-2">📋 Before Running Campaigns</h4>
-        <ul className="text-sm text-slate-600 space-y-1">
-          <li>• Templates must be approved in Meta Business Suite before sending</li>
-          <li>• Marketing messages require user opt-in within 24 hours</li>
-          <li>• Rate limited to ~2 messages/second to avoid WhatsApp blocks</li>
-          <li>• Always preview before sending to verify candidate list</li>
-          <li>• Maximum 100 messages per campaign run</li>
-        </ul>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <h5 className="text-sm font-medium text-green-700 mb-1 flex items-center gap-1">
+              <MessageSquare className="h-3.5 w-3.5" /> WhatsApp Campaigns
+            </h5>
+            <ul className="text-sm text-slate-600 space-y-1">
+              <li>• Templates must be approved in Meta Business Suite</li>
+              <li>• Requires user opt-in within 24 hours</li>
+              <li>• Rate limited to ~2 messages/second</li>
+            </ul>
+          </div>
+          <div>
+            <h5 className="text-sm font-medium text-indigo-700 mb-1 flex items-center gap-1">
+              <Mail className="h-3.5 w-3.5" /> Email Campaigns
+            </h5>
+            <ul className="text-sm text-slate-600 space-y-1">
+              <li>• Sent via Brevo/SMTP relay</li>
+              <li>• Targets users without verified WhatsApp</li>
+              <li>• Promotes WhatsApp bot benefits</li>
+            </ul>
+          </div>
+        </div>
+        <p className="text-sm text-slate-500 mt-3 border-t border-slate-200 pt-3">
+          💡 Always preview before sending • Maximum 100 messages per campaign run
+        </p>
       </div>
     </div>
   );
