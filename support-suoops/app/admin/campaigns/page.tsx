@@ -54,6 +54,9 @@ interface CampaignResult {
   skipped: number;
   message?: string;
   errors?: string[];
+  async?: boolean;
+  task_id?: string;
+  limit?: number;
   details?: Array<{
     user_id: number;
     name: string;
@@ -175,11 +178,16 @@ export default function CampaignsPage() {
     
     const selectedCampaignData = campaigns.find(c => c.type === selectedCampaign);
     const isEmail = selectedCampaignData?.channel === "email";
+    const useAsync = limit > 50; // Use async for larger batches
+    
+    const asyncNote = useAsync 
+      ? "\n\n📋 Large batch detected - this will be processed in the background."
+      : "";
     
     const confirmed = window.confirm(
       isEmail
-        ? `⚠️ You are about to send REAL emails to up to ${limit} users.\n\nThis will use your SMTP/Brevo quota.\n\nAre you sure you want to proceed?`
-        : `⚠️ You are about to send REAL WhatsApp messages to up to ${limit} users.\n\nThis will use your WhatsApp Business API quota.\n\nAre you sure you want to proceed?`
+        ? `⚠️ You are about to send REAL emails to up to ${limit} users.\n\nThis will use your SMTP/Brevo quota.${asyncNote}\n\nAre you sure you want to proceed?`
+        : `⚠️ You are about to send REAL WhatsApp messages to up to ${limit} users.\n\nThis will use your WhatsApp Business API quota.${asyncNote}\n\nAre you sure you want to proceed?`
     );
     if (!confirmed) return;
 
@@ -197,6 +205,7 @@ export default function CampaignsPage() {
           campaign_type: selectedCampaign,
           dry_run: false,
           limit,
+          async_send: useAsync,
         }),
       });
       if (!res.ok) throw new Error("Send failed");
@@ -338,7 +347,14 @@ export default function CampaignsPage() {
                     <option value={20}>20</option>
                     <option value={50}>50</option>
                     <option value={100}>100</option>
+                    <option value={200}>200</option>
+                    <option value={500}>500</option>
                   </select>
+                  {limit > 50 && (
+                    <span className="text-xs text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">
+                      Async
+                    </span>
+                  )}
                 </label>
 
                 <button
@@ -499,14 +515,18 @@ export default function CampaignsPage() {
       {/* Results Panel */}
       {result && (
         <div className={`rounded-xl border-2 p-6 ${
-          result.dry_run 
-            ? "bg-blue-50 border-blue-200" 
-            : result.failed > 0 
-              ? "bg-yellow-50 border-yellow-200"
-              : "bg-green-50 border-green-200"
+          result.async
+            ? "bg-indigo-50 border-indigo-200"
+            : result.dry_run 
+              ? "bg-blue-50 border-blue-200" 
+              : result.failed > 0 
+                ? "bg-yellow-50 border-yellow-200"
+                : "bg-green-50 border-green-200"
         }`}>
           <div className="flex items-start gap-4">
-            {result.dry_run ? (
+            {result.async ? (
+              <Loader2 className="h-6 w-6 text-indigo-500 flex-shrink-0 animate-spin" />
+            ) : result.dry_run ? (
               <Eye className="h-6 w-6 text-blue-500 flex-shrink-0" />
             ) : result.failed > 0 ? (
               <AlertCircle className="h-6 w-6 text-yellow-500 flex-shrink-0" />
@@ -515,31 +535,51 @@ export default function CampaignsPage() {
             )}
             <div className="flex-1">
               <h3 className="font-semibold text-slate-900">
-                {result.dry_run ? "Preview Results" : "Campaign Sent!"}
+                {result.async 
+                  ? "Campaign Queued for Background Processing"
+                  : result.dry_run 
+                    ? "Preview Results" 
+                    : "Campaign Sent!"}
               </h3>
               <p className="text-sm text-slate-600 mt-1">
                 {result.message || `Template: ${result.template}`}
               </p>
+              
+              {/* Async Task Info */}
+              {result.async && result.task_id && (
+                <div className="mt-3 bg-white rounded-lg p-3 border border-indigo-100">
+                  <p className="text-sm text-indigo-700">
+                    <span className="font-medium">Task ID:</span>{" "}
+                    <code className="bg-indigo-100 px-1 rounded">{result.task_id}</code>
+                  </p>
+                  <p className="text-xs text-slate-500 mt-1">
+                    The campaign is being processed in the background. 
+                    Check the server logs for progress. Sending up to {result.limit || limit} emails.
+                  </p>
+                </div>
+              )}
 
-              {/* Stats Grid */}
-              <div className="grid grid-cols-4 gap-4 mt-4">
-                <div className="bg-white rounded-lg p-3 text-center">
-                  <div className="text-2xl font-bold text-slate-900">{result.candidates}</div>
-                  <div className="text-xs text-slate-500">Candidates</div>
+              {/* Stats Grid - only show for non-async results */}
+              {!result.async && (
+                <div className="grid grid-cols-4 gap-4 mt-4">
+                  <div className="bg-white rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-slate-900">{result.candidates}</div>
+                    <div className="text-xs text-slate-500">Candidates</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-emerald-600">{result.sent}</div>
+                    <div className="text-xs text-slate-500">Sent</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-red-600">{result.failed}</div>
+                    <div className="text-xs text-slate-500">Failed</div>
+                  </div>
+                  <div className="bg-white rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-slate-400">{result.skipped}</div>
+                    <div className="text-xs text-slate-500">Skipped</div>
+                  </div>
                 </div>
-                <div className="bg-white rounded-lg p-3 text-center">
-                  <div className="text-2xl font-bold text-emerald-600">{result.sent}</div>
-                  <div className="text-xs text-slate-500">Sent</div>
-                </div>
-                <div className="bg-white rounded-lg p-3 text-center">
-                  <div className="text-2xl font-bold text-red-600">{result.failed}</div>
-                  <div className="text-xs text-slate-500">Failed</div>
-                </div>
-                <div className="bg-white rounded-lg p-3 text-center">
-                  <div className="text-2xl font-bold text-slate-400">{result.skipped}</div>
-                  <div className="text-xs text-slate-500">Skipped</div>
-                </div>
-              </div>
+              )}
 
               {/* Error Details */}
               {result.errors && result.errors.length > 0 && (
@@ -565,7 +605,7 @@ export default function CampaignsPage() {
       {/* Info Box */}
       <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
         <h4 className="font-medium text-slate-700 mb-2">📋 Before Running Campaigns</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <h5 className="text-sm font-medium text-green-700 mb-1 flex items-center gap-1">
               <MessageSquare className="h-3.5 w-3.5" /> WhatsApp Campaigns
@@ -586,9 +626,19 @@ export default function CampaignsPage() {
               <li>• Promotes WhatsApp bot benefits</li>
             </ul>
           </div>
+          <div>
+            <h5 className="text-sm font-medium text-purple-700 mb-1 flex items-center gap-1">
+              <Zap className="h-3.5 w-3.5" /> Batch Sizes
+            </h5>
+            <ul className="text-sm text-slate-600 space-y-1">
+              <li>• ≤50: Processed immediately</li>
+              <li>• &gt;50: Background processing (async)</li>
+              <li>• Up to 500 users per campaign</li>
+            </ul>
+          </div>
         </div>
         <p className="text-sm text-slate-500 mt-3 border-t border-slate-200 pt-3">
-          💡 Always preview before sending • Maximum 100 messages per campaign run
+          💡 Always preview before sending • Large batches (&gt;50) are processed in the background
         </p>
       </div>
     </div>
