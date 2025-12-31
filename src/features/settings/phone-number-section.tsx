@@ -20,12 +20,27 @@ import { Button } from "@/components/ui/button";
 /**
  * Normalize phone number to E.164 format
  * Handles Nigerian numbers: 0801234567 → +2348012345678
+ * Handles international numbers: +14155551234 → +14155551234
  */
 function normalizePhone(input: string): string {
   const trimmed = input.replace(/\s+/g, "");
+  
+  // Already has + prefix - international format
   if (trimmed.startsWith("+")) return trimmed;
-  if (trimmed.startsWith("0")) return `+234${trimmed.slice(1)}`;
-  if (trimmed.startsWith("234")) return `+${trimmed}`;
+  
+  // Nigerian formats
+  if (trimmed.startsWith("0") && trimmed.length === 11 && "789".includes(trimmed[1])) {
+    return `+234${trimmed.slice(1)}`;
+  }
+  if (trimmed.startsWith("234") && trimmed.length === 13) {
+    return `+${trimmed}`;
+  }
+  // 10-digit Nigerian mobile without leading 0
+  if (trimmed.length === 10 && "789".includes(trimmed[0])) {
+    return `+234${trimmed}`;
+  }
+  
+  // Other formats - add + prefix
   return `+${trimmed}`;
 }
 

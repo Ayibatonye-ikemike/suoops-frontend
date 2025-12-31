@@ -31,7 +31,7 @@ export function RevenueFields({
         <input
           value={customerPhone}
           onChange={(e) => onCustomerPhoneChange(e.target.value)}
-          placeholder="Optional (e.g., 08012345678)"
+          placeholder="Optional (e.g., +2348012345678 or +14155551234)"
           className="w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
         />
       </div>
