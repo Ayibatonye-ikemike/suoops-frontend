@@ -47,7 +47,7 @@ describe("InvoiceDetailPanel", () => {
     const invoice: InvoiceDetail = {
       invoice_id: "INV-100",
       amount: "5000",
-      status: "pending",
+      status: "awaiting_confirmation",
       pdf_url: null,
       created_at: "2025-10-17T10:00:00Z",
       due_date: null,
@@ -80,8 +80,10 @@ describe("InvoiceDetailPanel", () => {
     expect(screen.getByText(/Invoice INV-100/)).toBeInTheDocument();
     expect(screen.getByText(/Consulting/)).toBeInTheDocument();
 
-    const select = screen.getByRole("combobox");
-    await userEvent.selectOptions(select, "paid");
+    const markPaidButton = screen.getByRole("button", {
+      name: /mark as paid/i,
+    });
+    await userEvent.click(markPaidButton);
 
     expect(mutate).toHaveBeenCalledWith("paid");
   });
