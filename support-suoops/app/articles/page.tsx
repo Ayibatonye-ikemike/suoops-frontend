@@ -6,6 +6,8 @@ import {
   MessageSquare, 
   Shield,
   Zap,
+  Package,
+  Calculator,
   ChevronRight
 } from "lucide-react";
 
@@ -19,8 +21,6 @@ const categories = [
     articles: [
       { slug: "first-invoice", title: "How to create your first invoice" },
       { slug: "bank-details", title: "Adding bank details for payments" },
-      { slug: "business-setup", title: "Setting up your business profile" },
-      { slug: "understanding-dashboard", title: "Understanding your dashboard" },
     ],
   },
   {
@@ -30,11 +30,7 @@ const categories = [
     icon: FileText,
     color: "bg-emerald-500",
     articles: [
-      { slug: "create-invoice", title: "Creating invoices manually" },
-      { slug: "send-invoice", title: "Sending invoices via WhatsApp or Email" },
       { slug: "track-payments", title: "Tracking payment status" },
-      { slug: "invoice-limits", title: "Understanding invoice limits" },
-      { slug: "pdf-receipts", title: "Generating PDF receipts" },
     ],
   },
   {
@@ -45,10 +41,6 @@ const categories = [
     color: "bg-purple-500",
     articles: [
       { slug: "plans", title: "Understanding subscription plans" },
-      { slug: "upgrade", title: "How to upgrade your plan" },
-      { slug: "payment-methods", title: "Payment methods accepted" },
-      { slug: "billing-cycle", title: "Billing cycle explained" },
-      { slug: "cancel-subscription", title: "Canceling your subscription" },
     ],
   },
   {
@@ -59,9 +51,6 @@ const categories = [
     color: "bg-orange-500",
     articles: [
       { slug: "how-referrals-work", title: "How referral rewards work" },
-      { slug: "share-code", title: "How to share your referral code" },
-      { slug: "claim-rewards", title: "Claiming your rewards" },
-      { slug: "referral-terms", title: "Referral program terms" },
     ],
   },
   {
@@ -72,9 +61,29 @@ const categories = [
     color: "bg-green-500",
     articles: [
       { slug: "setup", title: "How to connect WhatsApp" },
-      { slug: "send-via-whatsapp", title: "Sending invoices via WhatsApp" },
-      { slug: "bot-commands", title: "WhatsApp bot commands" },
-      { slug: "troubleshooting", title: "WhatsApp troubleshooting" },
+      { slug: "text-commands", title: "Creating invoices by texting" },
+    ],
+  },
+  {
+    slug: "inventory",
+    title: "Inventory & Stock",
+    description: "Track products and manage your stock levels",
+    icon: Package,
+    color: "bg-orange-500",
+    articles: [
+      { slug: "track-stock", title: "Track your inventory and stock levels" },
+      { slug: "low-stock-alerts", title: "Set up low-stock alerts" },
+      { slug: "products", title: "Add and manage products" },
+    ],
+  },
+  {
+    slug: "tax",
+    title: "Tax & Compliance",
+    description: "Understanding tax exemptions and compliance in Nigeria",
+    icon: Calculator,
+    color: "bg-indigo-500",
+    articles: [
+      { slug: "exemptions", title: "Understanding tax exemptions (under ₦25M)" },
     ],
   },
   {
@@ -85,9 +94,6 @@ const categories = [
     color: "bg-red-500",
     articles: [
       { slug: "delete-account", title: "How to delete your account" },
-      { slug: "change-email", title: "Changing your email address" },
-      { slug: "data-privacy", title: "Data privacy and GDPR" },
-      { slug: "security-tips", title: "Account security tips" },
     ],
   },
 ];
