@@ -445,7 +445,7 @@ export default function TaxPage() {
               icon="🏢"
             />
             <p className="mt-2 text-xs text-brand-textMuted">
-              Small businesses (≤₦25M annual revenue) focus on earning first. CIT obligations come later as you grow.
+              Small businesses (≤₦100M annual turnover) are exempt from CIT under NTA 2025.
             </p>
           </div>
         )}
@@ -607,7 +607,7 @@ export default function TaxPage() {
                     </p>
                     <p className="mt-2 text-xs text-gray-600">
                       💡 This shows your estimated Personal Income Tax (PIT) band based on your profit.
-                      Small businesses under ₦25M annual revenue are exempt from Company Income Tax (CIT).
+                      Small businesses under ₦100M annual turnover are exempt from Company Income Tax (CIT) per NTA 2025.
                     </p>
                   </div>
                 )}
@@ -656,9 +656,11 @@ export default function TaxPage() {
                       ₦{(report.cit_amount || 0).toLocaleString()}
                     </p>
                     <p className="mt-1 text-xs text-amber-600">
-                      {report.annual_revenue_estimate <= 25_000_000
-                        ? "Small (≤₦25M): Exempt"
-                        : "Medium (₦25M-₦100M): 20%"}
+                      {report.annual_revenue_estimate <= 100_000_000
+                        ? "Small (≤₦100M): Exempt"
+                        : report.annual_revenue_estimate <= 250_000_000
+                        ? "Medium (₦100M-₦250M): 20%"
+                        : "Large (>₦250M): 30%"}
                     </p>
                   </div>
                 </div>

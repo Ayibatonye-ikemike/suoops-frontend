@@ -67,7 +67,7 @@ const popularArticles = [
   { title: "Add bank details to get paid", href: "/articles/getting-started/bank-details" },
   { title: "Invoice by texting: 'Invoice John ₦50k for design'", href: "/articles/whatsapp/text-commands" },
   { title: "Track payments and follow up easily", href: "/articles/invoicing/track-payments" },
-  { title: "Understanding tax exemptions (under ₦25M)", href: "/articles/tax/exemptions" },
+  { title: "Nigerian Tax Exemptions 2026 (NTA 2025)", href: "/articles/tax/exemptions" },
 ];
 
 export default function SupportHomePage() {

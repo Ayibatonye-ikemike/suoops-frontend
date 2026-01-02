@@ -83,7 +83,7 @@ const categories = [
     icon: Calculator,
     color: "bg-indigo-500",
     articles: [
-      { slug: "exemptions", title: "Understanding tax exemptions (under ₦25M)" },
+      { slug: "exemptions", title: "Nigerian Tax Exemptions 2026 (NTA 2025)" },
     ],
   },
   {
