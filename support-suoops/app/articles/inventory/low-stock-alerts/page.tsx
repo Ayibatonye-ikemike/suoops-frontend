@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, Bell, Clock, AlertTriangle, Settings } from "lucide-react";
+import { ChevronRight, Bell, Clock, AlertTriangle } from "lucide-react";
 
 export default function LowStockAlertsArticle() {
   return (
@@ -183,40 +183,9 @@ export default function LowStockAlertsArticle() {
           <h3>View All Low-Stock Products</h3>
           <ol>
             <li>Go to <strong>Inventory</strong></li>
-            <li>Click the <strong>&quot;Low Stock&quot;</strong> filter at the top</li>
-            <li>See all products below their threshold</li>
-            <li>Click <strong>&quot;Restock&quot;</strong> on any product to add more units</li>
+            <li>Look for products showing the &quot;Low Stock&quot; badge</li>
+            <li>Click on any product to view details or restock</li>
           </ol>
-
-          <h3>Notification Preferences</h3>
-          <p>
-            Control how you get notified:
-          </p>
-          <ol>
-            <li>Go to <strong>Settings</strong> → <strong>&quot;Notifications&quot;</strong></li>
-            <li>Find <strong>&quot;Inventory Alerts&quot;</strong> section</li>
-            <li>Toggle on/off:
-              <ul>
-                <li>Dashboard notifications</li>
-                <li>Email alerts</li>
-                <li>WhatsApp messages</li>
-              </ul>
-            </li>
-            <li>Choose alert frequency (immediate, daily summary, weekly summary)</li>
-          </ol>
-
-          <h3>Snooze Alerts</h3>
-          <p>
-            Sometimes you know stock is low but can&apos;t restock immediately. You can snooze alerts:
-          </p>
-          <ol>
-            <li>Click the low-stock notification</li>
-            <li>Click <strong>&quot;Snooze for...&quot;</strong></li>
-            <li>Choose: 1 day, 3 days, 1 week</li>
-          </ol>
-          <p>
-            The alert will reappear after the snooze period if stock is still low.
-          </p>
 
           <h2>Common Questions</h2>
 
@@ -230,14 +199,14 @@ export default function LowStockAlertsArticle() {
             <li>One-time items you won&apos;t restock</li>
           </ul>
 
-          <h3>What if I ignore a low-stock alert?</h3>
+          <h3>What happens when stock is low?</h3>
           <p>
-            The alert stays active until you either:
+            When a product drops below its alert threshold:
           </p>
           <ul>
-            <li>Restock the product (stock goes above threshold)</li>
-            <li>Mark it as &quot;Out of Stock&quot; (can&apos;t be invoiced)</li>
-            <li>Snooze the alert</li>
+            <li>The product shows a &quot;Low Stock&quot; badge in your inventory</li>
+            <li>You can still create invoices for the remaining stock</li>
+            <li>Once stock reaches zero, the product shows as &quot;Out of Stock&quot;</li>
           </ul>
 
           <h3>Can I get alerts before I completely run out?</h3>
@@ -246,38 +215,26 @@ export default function LowStockAlertsArticle() {
             Once you hit zero, you&apos;ll see an &quot;Out of Stock&quot; status instead.
           </p>
 
-          <h3>Do alerts consider pending invoices?</h3>
-          <p>
-            Yes! Suoops counts both:
-          </p>
-          <ul>
-            <li>Sold stock (paid invoices)</li>
-            <li>Reserved stock (pending invoices not yet paid)</li>
-          </ul>
-          <p>
-            This prevents overselling even if customers haven&apos;t paid yet.
-          </p>
-
           <h2>Best Practices</h2>
 
-          <h3>1. Review Alerts Weekly</h3>
+          <h3>1. Review Your Inventory Regularly</h3>
           <p>
-            Set aside time each week to:
+            Check your inventory page regularly to:
           </p>
           <ul>
-            <li>Check which products are low</li>
-            <li>Place restock orders</li>
-            <li>Adjust thresholds if needed</li>
+            <li>Spot products that are running low</li>
+            <li>Plan your restocking orders</li>
+            <li>Adjust thresholds based on actual sales patterns</li>
           </ul>
 
-          <h3>2. Track Restocking Patterns</h3>
+          <h3>2. Set Smart Thresholds</h3>
           <p>
-            After a few months, you&apos;ll see patterns:
+            When setting your low-stock threshold, consider:
           </p>
           <ul>
-            <li>Which products need restocking most often</li>
-            <li>Seasonal demand changes</li>
-            <li>Optimal reorder quantities</li>
+            <li>How long it takes to get more stock from your supplier</li>
+            <li>How quickly the product typically sells</li>
+            <li>A buffer for unexpected demand spikes</li>
           </ul>
 
           <h3>3. Communicate with Customers</h3>
@@ -285,27 +242,9 @@ export default function LowStockAlertsArticle() {
             If a popular item is low and restocking is delayed:
           </p>
           <ul>
-            <li>Add a note to the product page</li>
             <li>Inform customers upfront when they order</li>
             <li>Consider pre-orders for when stock arrives</li>
           </ul>
-
-          <h3>4. Use the Dashboard Widget</h3>
-          <p>
-            Pin the &quot;Low Stock Products&quot; widget to your main dashboard. See alerts immediately when you log in.
-          </p>
-
-          <h2>Advanced: Multiple Alert Levels</h2>
-          <p>
-            For critical products, you can set up two alerts:
-          </p>
-          <ol>
-            <li><strong>Warning level</strong> - First alert (e.g., at 10 units): &quot;Consider restocking soon&quot;</li>
-            <li><strong>Critical level</strong> - Second alert (e.g., at 3 units): &quot;Restock urgently&quot;</li>
-          </ol>
-          <p>
-            This is available in <strong>Settings</strong> → <strong>&quot;Inventory&quot;</strong> → <strong>&quot;Advanced Alerts&quot;</strong>.
-          </p>
         </article>
 
         {/* Next Steps */}

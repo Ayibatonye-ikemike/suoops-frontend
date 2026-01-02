@@ -134,13 +134,13 @@ export default function TaxExemptionsArticle() {
 
           <h2>How Suoops Helps</h2>
           <p>
-            Suoops automatically tracks your revenue so you know where you stand:
+            Suoops helps you track your revenue so you know where you stand:
           </p>
           <ul>
             <li><strong>Dashboard overview:</strong> See your total revenue month by month</li>
-            <li><strong>Annual reports:</strong> Export your income for the year</li>
-            <li><strong>Tax status indicator:</strong> Get notified when approaching ₦25M</li>
-            <li><strong>VAT toggle:</strong> Easily enable VAT on invoices when you cross the threshold</li>
+            <li><strong>Analytics:</strong> View your revenue trends and totals</li>
+            <li><strong>Invoice history:</strong> All your invoices in one place for easy tracking</li>
+            <li><strong>Export reports:</strong> Download your invoice data for tax filing</li>
           </ul>
 
           <h2>What Happens When You Cross ₦25M?</h2>
@@ -156,11 +156,11 @@ export default function TaxExemptionsArticle() {
 
           <div className="not-prose my-6 rounded-lg bg-slate-50 border border-slate-200 p-4">
             <p className="text-sm text-slate-900 font-medium mb-2">
-              📊 Suoops notifies you when you&apos;re approaching ₦25M
+              📊 Track your revenue in Suoops
             </p>
             <p className="text-sm text-slate-600">
-              We&apos;ll send a dashboard alert when your year-to-date revenue hits ₦20M, giving you 
-              time to prepare for VAT registration.
+              Use the Analytics page to monitor your year-to-date revenue and plan ahead 
+              for tax compliance.
             </p>
           </div>
 

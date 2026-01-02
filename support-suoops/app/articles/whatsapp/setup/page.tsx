@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, MessageCircle, Clock, Smartphone, CheckCircle, Bell } from "lucide-react";
+import { ChevronRight, MessageCircle, Clock, CheckCircle } from "lucide-react";
 
 export default function WhatsAppSetupArticle() {
   return (
@@ -29,32 +29,32 @@ export default function WhatsAppSetupArticle() {
             </span>
           </div>
           <h1 className="text-3xl font-bold text-slate-900">
-            Setting Up WhatsApp Notifications
+            Setting Up WhatsApp for SuoOps
           </h1>
           <p className="mt-3 text-lg text-slate-600">
-            Receive instant invoice notifications and business alerts directly on WhatsApp.
+            Connect your WhatsApp number to receive payment updates and create invoices via chat.
           </p>
         </div>
 
         {/* Feature Highlight */}
         <div className="mb-8 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 p-6">
-          <h3 className="font-semibold text-green-900 mb-3">📱 WhatsApp Notifications Include:</h3>
+          <h3 className="font-semibold text-green-900 mb-3">📱 What You Can Do with WhatsApp:</h3>
           <div className="grid sm:grid-cols-2 gap-3 text-sm">
             <div className="flex items-center gap-2">
               <CheckCircle className="h-4 w-4 text-green-600" />
-              <span>Invoice payment confirmations</span>
+              <span>Create invoices by texting</span>
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle className="h-4 w-4 text-green-600" />
-              <span>New invoice reminders</span>
+              <span>Receive payment updates</span>
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle className="h-4 w-4 text-green-600" />
-              <span>Payment due alerts</span>
+              <span>Log in with OTP via WhatsApp</span>
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle className="h-4 w-4 text-green-600" />
-              <span>Referral reward notifications</span>
+              <span>Send invoices to customers</span>
             </div>
           </div>
         </div>
@@ -63,7 +63,7 @@ export default function WhatsAppSetupArticle() {
         <article className="prose prose-slate prose-emerald max-w-none">
           <h2>Prerequisites</h2>
           <p>
-            Before setting up WhatsApp notifications, make sure you have:
+            Before connecting WhatsApp, make sure you have:
           </p>
           <ul>
             <li>An active SuoOps account</li>
@@ -71,104 +71,92 @@ export default function WhatsAppSetupArticle() {
             <li>A valid phone number linked to WhatsApp</li>
           </ul>
 
-          <h2>How to Enable WhatsApp Notifications</h2>
+          <h2>How to Connect Your WhatsApp Number</h2>
           
           <h3>Step 1: Go to Settings</h3>
           <p>
-            Log in to SuoOps and navigate to <strong>Settings</strong> → <strong>Notifications</strong>.
+            Log in to SuoOps and navigate to <strong>Settings</strong> from your dashboard.
           </p>
 
-          <h3>Step 2: Verify Your Phone Number</h3>
+          <h3>Step 2: Find the WhatsApp Section</h3>
           <p>
-            Make sure your phone number is entered correctly in your profile. 
-            This should be the number linked to your WhatsApp account.
+            Scroll down to the <strong>WhatsApp</strong> section. This is where you&apos;ll verify your phone number.
+          </p>
+
+          <h3>Step 3: Enter Your Phone Number</h3>
+          <p>
+            Enter your WhatsApp phone number with the country code.
           </p>
           <div className="not-prose my-4 rounded-lg bg-amber-50 border border-amber-200 p-4">
             <p className="text-sm text-amber-800">
               <strong>Important:</strong> Include your country code. For Nigeria, use format: 
-              <code className="ml-1 bg-amber-100 px-1 rounded">234XXXXXXXXXX</code>
+              <code className="ml-1 bg-amber-100 px-1 rounded">+234XXXXXXXXXX</code>
             </p>
           </div>
 
-          <h3>Step 3: Enable WhatsApp Toggle</h3>
+          <h3>Step 4: Verify with OTP</h3>
           <p>
-            In the Notifications settings, find the <strong>&quot;WhatsApp Notifications&quot;</strong> section 
-            and toggle it <strong>ON</strong>.
-          </p>
-
-          <h3>Step 4: Opt-In Confirmation</h3>
-          <p>
-            You&apos;ll receive a WhatsApp message from SuoOps asking you to confirm your subscription. 
-            Reply with <strong>&quot;YES&quot;</strong> to complete the setup.
+            After entering your number, click <strong>Send OTP</strong>. You&apos;ll receive a 6-digit 
+            code via WhatsApp. Enter this code to verify your number.
           </p>
 
           <h3>Step 5: Done!</h3>
           <p>
-            You&apos;ll now receive important business notifications directly on WhatsApp.
+            Once verified, your WhatsApp number is connected. You can now:
           </p>
-
-          <h2>Types of Notifications</h2>
-          
-          <h3><Bell className="inline h-5 w-5 text-emerald-600" /> Payment Notifications</h3>
           <ul>
-            <li>When a customer views your invoice</li>
-            <li>When a payment is made</li>
-            <li>When a payment fails</li>
+            <li>Log in to SuoOps using WhatsApp OTP</li>
+            <li>Receive payment updates on WhatsApp</li>
+            <li>Use the SuoOps WhatsApp bot to create invoices</li>
           </ul>
 
-          <h3><Bell className="inline h-5 w-5 text-emerald-600" /> Invoice Reminders</h3>
-          <ul>
-            <li>Payment due date approaching</li>
-            <li>Overdue invoice alerts</li>
-          </ul>
-
-          <h3><Bell className="inline h-5 w-5 text-emerald-600" /> Business Alerts</h3>
-          <ul>
-            <li>New referral sign-ups</li>
-            <li>Referral reward earned</li>
-            <li>Subscription status updates</li>
-          </ul>
-
-          <h2>Managing Notification Preferences</h2>
+          <h2>Using the SuoOps WhatsApp Bot</h2>
           <p>
-            You can customize which notifications you receive:
+            After connecting your number, you can message our WhatsApp bot to create invoices:
           </p>
           <ol>
-            <li>Go to <strong>Settings</strong> → <strong>Notifications</strong></li>
-            <li>Under WhatsApp section, toggle individual notification types</li>
-            <li>Turn off notifications you don&apos;t want</li>
-            <li>Changes take effect immediately</li>
+            <li>Open WhatsApp and message <strong>+234 810 686 5807</strong></li>
+            <li>Send a message like: <code>Invoice John ₦50,000 for website design</code></li>
+            <li>The bot creates your invoice instantly</li>
+            <li>You get a link to view, edit, or send it to your customer</li>
           </ol>
 
-          <h2>Disabling WhatsApp Notifications</h2>
+          <h2>Changing Your WhatsApp Number</h2>
           <p>
-            To stop receiving WhatsApp messages:
+            If you need to update your WhatsApp number:
           </p>
           <ol>
-            <li>Reply <strong>&quot;STOP&quot;</strong> to any SuoOps WhatsApp message, OR</li>
-            <li>Go to Settings → Notifications and toggle WhatsApp OFF</li>
+            <li>Go to <strong>Settings</strong></li>
+            <li>In the WhatsApp section, click <strong>Change Number</strong></li>
+            <li>Enter your new number and verify with OTP</li>
           </ol>
+
+          <h2>Removing Your WhatsApp Number</h2>
+          <p>
+            To disconnect WhatsApp from your account:
+          </p>
+          <ol>
+            <li>Go to <strong>Settings</strong></li>
+            <li>In the WhatsApp section, click <strong>Remove</strong></li>
+            <li>Confirm the removal</li>
+          </ol>
+          <p>
+            You can still use SuoOps via the web dashboard without a connected WhatsApp number.
+          </p>
 
           <h2>Troubleshooting</h2>
           
-          <h3>Not receiving messages?</h3>
+          <h3>Not receiving the OTP?</h3>
           <ul>
-            <li>Check that your phone number includes the country code</li>
-            <li>Ensure WhatsApp is active on your phone</li>
+            <li>Check that you entered your number with the country code (+234 for Nigeria)</li>
+            <li>Make sure WhatsApp is active on your phone</li>
             <li>Check if you&apos;ve blocked the SuoOps number</li>
-            <li>Try disabling and re-enabling notifications</li>
+            <li>Wait a minute and request a new OTP</li>
           </ul>
-
-          <h3>Receiving too many messages?</h3>
-          <p>
-            Customize your preferences in Settings → Notifications to only receive 
-            the most important alerts.
-          </p>
 
           <h3>Changed phone number?</h3>
           <p>
-            Update your phone number in Settings → Profile, then re-enable WhatsApp 
-            notifications to link the new number.
+            Go to Settings → WhatsApp and click &quot;Change Number&quot; to verify your new number.
           </p>
 
           <h2>Data Privacy</h2>
@@ -176,10 +164,9 @@ export default function WhatsAppSetupArticle() {
             Your privacy is important to us:
           </p>
           <ul>
-            <li>We only send business-related notifications</li>
+            <li>We only send business-related messages</li>
             <li>Your number is never shared with third parties</li>
-            <li>You can opt out at any time</li>
-            <li>Messages are sent via secure channels</li>
+            <li>Messages are sent via secure WhatsApp channels</li>
           </ul>
         </article>
 
@@ -187,14 +174,14 @@ export default function WhatsAppSetupArticle() {
         <div className="mt-12 rounded-xl border border-slate-200 bg-slate-50 p-6">
           <h3 className="font-semibold text-slate-900 mb-4">Related Articles</h3>
           <div className="space-y-3">
-            <Link href="/articles/whatsapp/send-invoices" className="block text-sm text-emerald-600 hover:underline">
-              → Sending invoices via WhatsApp
+            <Link href="/articles/whatsapp/text-commands" className="block text-sm text-emerald-600 hover:underline">
+              → Creating invoices by texting
             </Link>
-            <Link href="/articles/account/profile-settings" className="block text-sm text-emerald-600 hover:underline">
-              → Updating your profile
+            <Link href="/articles/getting-started/first-invoice" className="block text-sm text-emerald-600 hover:underline">
+              → Creating your first invoice
             </Link>
-            <Link href="/articles/invoicing/track-payments" className="block text-sm text-emerald-600 hover:underline">
-              → Tracking invoice payments
+            <Link href="/articles/getting-started/bank-details" className="block text-sm text-emerald-600 hover:underline">
+              → Adding bank details for payments
             </Link>
           </div>
         </div>
