@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, Calculator, Clock, AlertCircle, CheckCircle2, Shield } from "lucide-react";
+import { ChevronRight, Calculator, Clock, AlertCircle, CheckCircle2, Shield, TrendingUp } from "lucide-react";
 
 export default function TaxExemptionsArticle() {
   return (
@@ -11,7 +11,7 @@ export default function TaxExemptionsArticle() {
           <ChevronRight className="h-4 w-4" />
           <Link href="/articles" className="hover:text-emerald-600">Articles</Link>
           <ChevronRight className="h-4 w-4" />
-          <span className="text-slate-900">Tax Exemptions</span>
+          <span className="text-slate-900">Tax Exemptions (2026 Update)</span>
         </nav>
 
         {/* Article Header */}
@@ -21,17 +21,21 @@ export default function TaxExemptionsArticle() {
               <Calculator className="h-3 w-3" />
               Tax & Compliance
             </span>
+            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700">
+              <TrendingUp className="h-3 w-3" />
+              Updated for 2026
+            </span>
             <span className="inline-flex items-center gap-1 text-xs text-slate-500">
               <Clock className="h-3 w-3" />
-              5 min read
+              7 min read
             </span>
           </div>
           <h1 className="text-3xl font-bold text-slate-900">
-            Understanding Tax Exemptions (Under ₦25M)
+            Nigerian Tax Exemptions 2026 (NTA 2025)
           </h1>
           <p className="mt-3 text-lg text-slate-600">
-            If your annual revenue is under ₦25 million, you may qualify for tax exemptions in Nigeria. 
-            Here&apos;s what you need to know.
+            The Nigeria Tax Act 2025 (NTA 2025) came into effect on January 1, 2026, with significant 
+            changes to small business tax thresholds. Here&apos;s what you need to know.
           </p>
         </div>
 
@@ -40,96 +44,211 @@ export default function TaxExemptionsArticle() {
           <div className="flex items-start gap-3">
             <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
             <div>
-              <h3 className="font-semibold text-amber-900 mb-1">Not Legal or Tax Advice</h3>
+              <h3 className="font-semibold text-amber-900 mb-1">Important Disclaimer</h3>
               <p className="text-sm text-amber-800">
-                This article provides general information based on Nigerian tax laws. Always consult 
-                a qualified tax professional or accountant for advice specific to your business.
+                This article provides general information based on the Nigeria Tax Act 2025 (NTA 2025). 
+                Tax laws can change. Always consult a qualified tax professional or accountant for 
+                advice specific to your business situation.
               </p>
             </div>
           </div>
         </div>
 
+        {/* Key Changes Summary */}
+        <div className="mb-8 rounded-xl bg-blue-50 border border-blue-200 p-6">
+          <h3 className="font-semibold text-blue-900 mb-3">🆕 What Changed in 2026?</h3>
+          <div className="space-y-2 text-sm text-blue-800">
+            <p><strong>Company Income Tax (CIT):</strong> Small business exemption raised from ₦25M to <strong>₦100M</strong></p>
+            <p><strong>VAT:</strong> Threshold remains at <strong>₦25M</strong> (unchanged)</p>
+            <p><strong>Medium Companies:</strong> New 20% CIT rate for ₦100M - ₦250M turnover</p>
+            <p><strong>Personal Income Tax:</strong> New progressive bands with ₦800K tax-free threshold</p>
+          </div>
+        </div>
+
         {/* Article Content */}
         <article className="prose prose-slate prose-emerald max-w-none">
-          <h2>The ₦25 Million Threshold</h2>
+          <h2>Key Tax Thresholds for Small Businesses</h2>
+          
           <p>
-            Under Nigerian tax law, small businesses with annual gross revenue under ₦25 million 
-            may qualify for preferential tax treatment or exemptions.
+            Under the Nigeria Tax Act 2025 (NTA 2025), businesses are categorized by annual turnover 
+            for tax purposes. The thresholds have been updated significantly.
           </p>
+
+          <div className="not-prose my-6 overflow-x-auto">
+            <table className="min-w-full text-sm border border-slate-200 rounded-lg overflow-hidden">
+              <thead className="bg-slate-100">
+                <tr>
+                  <th className="px-4 py-3 text-left font-semibold text-slate-900">Tax Type</th>
+                  <th className="px-4 py-3 text-left font-semibold text-slate-900">Old Threshold</th>
+                  <th className="px-4 py-3 text-left font-semibold text-slate-900">2026 Threshold</th>
+                  <th className="px-4 py-3 text-left font-semibold text-slate-900">Rate</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200">
+                <tr className="bg-emerald-50">
+                  <td className="px-4 py-3 font-medium">VAT Exemption</td>
+                  <td className="px-4 py-3">₦25M</td>
+                  <td className="px-4 py-3">₦25M</td>
+                  <td className="px-4 py-3 text-emerald-700 font-semibold">0% (exempt)</td>
+                </tr>
+                <tr className="bg-emerald-50">
+                  <td className="px-4 py-3 font-medium">CIT - Small Company</td>
+                  <td className="px-4 py-3">₦25M</td>
+                  <td className="px-4 py-3 font-semibold text-emerald-700">₦100M</td>
+                  <td className="px-4 py-3 text-emerald-700 font-semibold">0% (exempt)</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3 font-medium">CIT - Medium Company</td>
+                  <td className="px-4 py-3">N/A</td>
+                  <td className="px-4 py-3">₦100M - ₦250M</td>
+                  <td className="px-4 py-3">20%</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3 font-medium">CIT - Large Company</td>
+                  <td className="px-4 py-3">&gt;₦25M</td>
+                  <td className="px-4 py-3">&gt;₦250M</td>
+                  <td className="px-4 py-3">30%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
           <div className="not-prose my-6 rounded-lg bg-emerald-50 border border-emerald-200 p-4">
             <div className="flex items-start gap-3">
               <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5" />
               <div>
                 <p className="text-sm text-emerald-900 font-medium mb-1">
-                  What This Means for You
+                  Great News for Small Businesses!
                 </p>
                 <p className="text-sm text-emerald-800">
-                  If your business makes less than ₦25 million per year (~₦2 million per month), 
-                  you likely pay less tax or may be exempt from certain taxes.
+                  If your annual turnover is under ₦100 million, you&apos;re now exempt from Company 
+                  Income Tax (CIT). That&apos;s a 4x increase from the previous ₦25M threshold!
                 </p>
               </div>
             </div>
           </div>
 
-          <h2>Types of Tax Exemptions</h2>
-
-          <h3>1. Value Added Tax (VAT)</h3>
+          <h2>1. Value Added Tax (VAT)</h2>
           <p>
-            Small businesses below the ₦25 million threshold are typically <strong>exempt from 
-            collecting and remitting VAT</strong>.
+            The VAT exemption threshold remains <strong>unchanged at ₦25 million</strong> annual turnover.
           </p>
           <ul>
-            <li><strong>Standard VAT rate:</strong> 7.5% on goods and services</li>
-            <li><strong>Below ₦25M:</strong> You don&apos;t charge VAT on your invoices</li>
-            <li><strong>Above ₦25M:</strong> You must register for VAT and charge customers</li>
+            <li><strong>Below ₦25M:</strong> Exempt from VAT collection and remittance</li>
+            <li><strong>Above ₦25M:</strong> Must register for VAT and charge 7.5% on invoices</li>
           </ul>
+          
+          <div className="not-prose my-6 rounded-lg bg-amber-50 border border-amber-200 p-4">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
+              <div>
+                <p className="text-sm text-amber-900 font-medium mb-1">
+                  Important Note
+                </p>
+                <p className="text-sm text-amber-800">
+                  Even if you&apos;re exempt from CIT (under ₦100M), you may still need to register 
+                  for VAT if your turnover exceeds ₦25M. These are separate thresholds.
+                </p>
+              </div>
+            </div>
+          </div>
 
-          <h3>2. Company Income Tax (CIT)</h3>
+          <h2>2. Company Income Tax (CIT)</h2>
           <p>
-            Small companies may qualify for reduced tax rates:
+            The NTA 2025 significantly increased the small business exemption threshold:
           </p>
-          <ul>
-            <li><strong>First ₦25 million:</strong> 0% (tax exempt)</li>
-            <li><strong>Next ₦25 million (₦25M - ₦50M):</strong> 20%</li>
-            <li><strong>Above ₦50 million:</strong> 30% (standard rate)</li>
-          </ul>
+
+          <div className="not-prose my-6 space-y-3">
+            <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-4">
+              <p className="font-semibold text-emerald-900">Small Companies (≤₦100M turnover)</p>
+              <p className="text-2xl font-bold text-emerald-700 mt-1">0% CIT</p>
+              <p className="text-sm text-emerald-700 mt-1">Completely exempt from Company Income Tax</p>
+            </div>
+            <div className="rounded-lg bg-blue-50 border border-blue-200 p-4">
+              <p className="font-semibold text-blue-900">Medium Companies (₦100M - ₦250M turnover)</p>
+              <p className="text-2xl font-bold text-blue-700 mt-1">20% CIT</p>
+              <p className="text-sm text-blue-700 mt-1">Reduced rate for medium-sized businesses</p>
+            </div>
+            <div className="rounded-lg bg-slate-50 border border-slate-200 p-4">
+              <p className="font-semibold text-slate-900">Large Companies (&gt;₦250M turnover)</p>
+              <p className="text-2xl font-bold text-slate-700 mt-1">30% CIT</p>
+              <p className="text-sm text-slate-700 mt-1">Standard corporate rate</p>
+            </div>
+          </div>
 
           <div className="not-prose my-6 rounded-lg bg-blue-50 border border-blue-200 p-4">
             <div className="flex items-start gap-3">
               <Shield className="h-5 w-5 text-blue-600 mt-0.5" />
               <div>
                 <p className="text-sm text-blue-900 font-medium mb-1">
-                  Example Calculation
+                  Example: Medium Company Tax Calculation
                 </p>
                 <p className="text-sm text-blue-800">
-                  If your company makes ₦20 million in profit annually:
-                  <br />
-                  <strong>Tax = ₦0</strong> (fully exempt)
+                  Company with ₦150 million annual turnover and ₦30 million profit:
                 </p>
                 <p className="text-sm text-blue-800 mt-2">
-                  If your company makes ₦40 million in profit:
-                  <br />
-                  First ₦25M = ₦0 (exempt)
-                  <br />
-                  Next ₦15M = ₦3M (20% of ₦15M)
-                  <br />
-                  <strong>Total Tax = ₦3 million</strong>
+                  CIT = ₦30,000,000 × 20% = <strong>₦6,000,000</strong>
                 </p>
               </div>
             </div>
           </div>
 
-          <h3>3. Personal Income Tax</h3>
+          <h2>3. Personal Income Tax (PIT)</h2>
           <p>
             If you&apos;re a freelancer or sole proprietor (not a registered company), you pay 
-            personal income tax instead of CIT. Nigeria uses progressive tax bands:
+            Personal Income Tax using the new progressive bands under NTA 2025:
+          </p>
+
+          <div className="not-prose my-6 overflow-x-auto">
+            <table className="min-w-full text-sm border border-slate-200 rounded-lg overflow-hidden">
+              <thead className="bg-slate-100">
+                <tr>
+                  <th className="px-4 py-3 text-left font-semibold text-slate-900">Annual Taxable Income</th>
+                  <th className="px-4 py-3 text-left font-semibold text-slate-900">Tax Rate</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200">
+                <tr className="bg-emerald-50">
+                  <td className="px-4 py-3">First ₦800,000</td>
+                  <td className="px-4 py-3 text-emerald-700 font-semibold">0% (Tax-free)</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3">₦800,001 - ₦3,000,000</td>
+                  <td className="px-4 py-3">15%</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3">₦3,000,001 - ₦12,000,000</td>
+                  <td className="px-4 py-3">18%</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3">₦12,000,001 - ₦25,000,000</td>
+                  <td className="px-4 py-3">21%</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3">₦25,000,001 - ₦50,000,000</td>
+                  <td className="px-4 py-3">23%</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3">Above ₦50,000,000</td>
+                  <td className="px-4 py-3">25%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            <strong>Key change:</strong> The first ₦800,000 is now completely tax-free, up from 
+            the previous Consolidated Relief Allowance system.
+          </p>
+
+          <h2>What Still Applies (Even If Exempt)</h2>
+          <p>
+            Even if your business is exempt from CIT and VAT, you must still:
           </p>
           <ul>
-            <li>First ₦300,000: 7%</li>
-            <li>Next ₦300,000: 11%</li>
-            <li>Next ₦500,000: 15%</li>
-            <li>Above ₦1.6 million: 24%</li>
+            <li><strong>Register for tax:</strong> Obtain a Tax Identification Number (TIN)</li>
+            <li><strong>Keep accurate records:</strong> Maintain proper financial records</li>
+            <li><strong>File tax returns:</strong> Submit annual returns (even if you owe ₦0)</li>
+            <li><strong>Maintain documentation:</strong> Keep invoices and receipts for 6 years</li>
           </ul>
 
           <h2>How Suoops Helps</h2>
@@ -143,113 +262,46 @@ export default function TaxExemptionsArticle() {
             <li><strong>Export reports:</strong> Download your invoice data for tax filing</li>
           </ul>
 
-          <h2>What Happens When You Cross ₦25M?</h2>
-          <p>
-            If your business grows past ₦25 million in annual revenue:
-          </p>
+          <h2>Key Thresholds to Watch</h2>
           <ol>
-            <li><strong>Register for VAT:</strong> Apply for a Tax Identification Number (TIN) if you don&apos;t have one</li>
-            <li><strong>Start charging VAT:</strong> Add 7.5% to your invoices</li>
-            <li><strong>File monthly returns:</strong> Submit VAT returns to FIRS</li>
-            <li><strong>Pay higher CIT:</strong> Income above ₦25M is taxed at 20%</li>
+            <li><strong>₦25M:</strong> VAT registration required</li>
+            <li><strong>₦100M:</strong> No longer CIT exempt, pay 20% CIT</li>
+            <li><strong>₦250M:</strong> Large company rate (30% CIT)</li>
           </ol>
-
-          <div className="not-prose my-6 rounded-lg bg-slate-50 border border-slate-200 p-4">
-            <p className="text-sm text-slate-900 font-medium mb-2">
-              📊 Track your revenue in Suoops
-            </p>
-            <p className="text-sm text-slate-600">
-              Use the Analytics page to monitor your year-to-date revenue and plan ahead 
-              for tax compliance.
-            </p>
-          </div>
 
           <h2>Common Questions</h2>
 
-          <h3>Do I need to register my business?</h3>
+          <h3>What&apos;s the difference between CIT and PIT?</h3>
           <p>
-            Technically, you can operate as a sole proprietor without formal registration. However, 
-            registering as a business (with CAC) gives you:
+            <strong>Company Income Tax (CIT)</strong> applies to registered companies. 
+            <strong>Personal Income Tax (PIT)</strong> applies to individuals, freelancers, 
+            and sole proprietors. Most Nigerian small business owners pay PIT.
           </p>
+
+          <h3>Do I need to register my business to benefit?</h3>
+          <p>
+            You need a TIN (Tax Identification Number) regardless of your business structure. 
+            However, you can operate as a sole proprietor without formal CAC registration and 
+            still benefit from the tax exemptions.
+          </p>
+
+          <h3>Is it based on revenue or profit?</h3>
+          <p>
+            <strong>Thresholds</strong> (₦25M, ₦100M) are based on <strong>gross turnover/revenue</strong>.
+            <strong>Tax calculation</strong> is based on <strong>profit</strong> (revenue minus expenses).
+          </p>
+
+          <h3>Do I need to file returns even if exempt?</h3>
+          <p>
+            Yes! Even if you owe ₦0 in tax, you must file annual returns. This keeps you 
+            compliant and creates a clean record for future growth.
+          </p>
+
+          <h2>Filing Deadlines</h2>
           <ul>
-            <li>Legal protection for your personal assets</li>
-            <li>Access to business bank accounts</li>
-            <li>Easier tax filing</li>
-            <li>More credibility with customers</li>
-          </ul>
-
-          <h3>Is the ₦25M based on revenue or profit?</h3>
-          <p>
-            <strong>Gross revenue</strong> (total money earned), not profit. Even if your expenses 
-            are high and profit is low, the threshold is based on how much you invoiced customers.
-          </p>
-
-          <h3>What if I only work part-time or seasonally?</h3>
-          <p>
-            The ₦25 million threshold is <strong>annual</strong>. If you make ₦5 million in 
-            3 months then stop, your annual revenue is still ₦5M (below the threshold).
-          </p>
-
-          <h3>Do I need to file tax returns even if exempt?</h3>
-          <p>
-            Yes! Even if you owe ₦0 in tax, you should still file returns. This keeps you compliant 
-            and creates a clean record for future growth.
-          </p>
-
-          <h3>Can I claim business expenses to reduce taxable income?</h3>
-          <p>
-            Absolutely. Legitimate business expenses (rent, equipment, marketing, etc.) reduce your 
-            taxable profit. Keep receipts for everything!
-          </p>
-
-          <h2>How to Check Your Revenue in Suoops</h2>
-          <ol>
-            <li>Go to your <strong>Dashboard</strong></li>
-            <li>Look at the <strong>&quot;Total Revenue&quot;</strong> card</li>
-            <li>Use the date filter to see:
-              <ul>
-                <li>This month</li>
-                <li>This year (year-to-date)</li>
-                <li>Last 12 months</li>
-              </ul>
-            </li>
-            <li>Click <strong>&quot;View Reports&quot;</strong> for detailed breakdowns</li>
-          </ol>
-
-          <h2>Staying Tax Compliant</h2>
-          <p>
-            Here&apos;s what you should do to stay compliant:
-          </p>
-
-          <h3>✅ Keep Good Records</h3>
-          <ul>
-            <li>Use Suoops to invoice all your work (creates automatic paper trail)</li>
-            <li>Mark invoices as paid when you receive money</li>
-            <li>Keep receipts for business expenses</li>
-          </ul>
-
-          <h3>✅ Track Your Annual Revenue</h3>
-          <ul>
-            <li>Check your Suoops dashboard monthly</li>
-            <li>Watch for the ₦25M threshold notification</li>
-            <li>Plan ahead if you&apos;re approaching the limit</li>
-          </ul>
-
-          <h3>✅ File Returns on Time</h3>
-          <ul>
-            <li>Personal income tax: File by March 31 each year</li>
-            <li>Company income tax: File within 6 months of year-end</li>
-            <li>VAT (if applicable): File monthly by the 21st</li>
-          </ul>
-
-          <h3>✅ Get Professional Help When Needed</h3>
-          <p>
-            As your business grows, consider hiring:
-          </p>
-          <ul>
-            <li>A bookkeeper to manage your finances</li>
-            <li>An accountant for tax planning and filing</li>
-            <li>A tax consultant when crossing major thresholds</li>
+            <li><strong>Personal Income Tax:</strong> File by March 31 each year</li>
+            <li><strong>Company Income Tax:</strong> File within 6 months of financial year-end</li>
+            <li><strong>VAT Returns:</strong> File monthly by the 21st of the following month</li>
           </ul>
 
           <h2>Resources</h2>
@@ -276,13 +328,13 @@ export default function TaxExemptionsArticle() {
 
           <h2>Final Thoughts</h2>
           <p>
-            Tax exemptions for small businesses exist to help you grow without the burden of complex 
-            compliance. Focus on serving your customers and building your business — Suoops will help 
-            you track the numbers.
+            The Nigeria Tax Act 2025 is great news for small businesses! With the CIT exemption 
+            threshold raised to ₦100 million, more businesses can now focus on growth without 
+            the burden of corporate income tax.
           </p>
           <p>
-            When you do cross ₦25 million (and you will!), celebrate it. It means your business is 
-            growing. We&apos;ll be there to help you navigate the next phase.
+            Focus on building your business — Suoops will help you track the numbers. And when 
+            you do cross those thresholds, celebrate! It means your business is thriving.
           </p>
         </article>
 

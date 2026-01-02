@@ -123,7 +123,7 @@ export function Features() {
                 "Know when you're exempt",
                 "Understand your obligations without accounting jargon"
               ]}
-              note="Small businesses under ₦25M annual revenue are exempt from Company Income Tax."
+              note="Small businesses under ₦100M annual turnover are exempt from Company Income Tax (NTA 2025)."
             />
             <FeatureCard
               title="💬 WhatsApp Bot (your unfair advantage)"
