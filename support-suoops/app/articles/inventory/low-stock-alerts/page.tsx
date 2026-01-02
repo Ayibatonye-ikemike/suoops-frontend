@@ -87,34 +87,27 @@ export default function LowStockAlertsArticle() {
 
           <div className="not-prose my-6 rounded-lg bg-blue-50 border border-blue-200 p-4">
             <div className="flex items-start gap-3">
-              <Settings className="h-5 w-5 text-blue-600 mt-0.5" />
+              <Bell className="h-5 w-5 text-blue-600 mt-0.5" />
               <div>
                 <p className="text-sm text-blue-900 font-medium mb-1">
-                  Batch Update Multiple Products
+                  Update Multiple Products
                 </p>
                 <p className="text-sm text-blue-800">
-                  Need to set alerts for many products? Use the bulk actions:
+                  You can set alert thresholds for each product individually when adding or editing them.
                 </p>
-                <ol className="text-sm text-blue-800 mt-2 space-y-1">
-                  <li>1. Check the boxes next to products</li>
-                  <li>2. Click <strong>&quot;Bulk Actions&quot;</strong> → <strong>&quot;Set Alert Threshold&quot;</strong></li>
-                  <li>3. Enter the threshold (applies to all selected)</li>
-                </ol>
               </div>
             </div>
           </div>
 
           <h2>How Alerts Work</h2>
           
-          <h3>When You Get Notified</h3>
+          <h3>When Stock Drops Below Threshold</h3>
           <p>
-            Suoops checks stock levels after every sale. When a product drops to or below your threshold:
+            When a product drops to or below your alert threshold:
           </p>
           <ul>
-            <li><strong>Dashboard banner</strong> - Shows at the top when you log in</li>
-            <li><strong>WhatsApp notification</strong> - If enabled in settings</li>
-            <li><strong>Email alert</strong> - Sent to your registered email</li>
-            <li><strong>Inventory badge</strong> - Product shows &quot;Low Stock&quot; label</li>
+            <li><strong>Low Stock badge</strong> - Product shows a &quot;Low Stock&quot; label in your inventory</li>
+            <li><strong>Visual indicator</strong> - Easy to spot which products need restocking</li>
           </ul>
 
           <h3>Example Scenario</h3>
