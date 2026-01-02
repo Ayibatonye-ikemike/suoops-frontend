@@ -31,7 +31,7 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
   const [invoice, setInvoice] = useState<InvoicePublic>(initialInvoice);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPolling, setIsPolling] = useState(false);
 
@@ -86,14 +86,14 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
     return () => clearInterval(interval);
   }, [apiBaseUrl, invoiceId, isPaid, isClosed]);
 
-  const copyAllDetails = useCallback(async () => {
-    const details = `${invoice.bank_name}\n${invoice.account_number}\n${invoice.account_name}`;
+  const copyField = useCallback(async (field: string, value: string | null | undefined) => {
+    if (!value) return;
     try {
-      await navigator.clipboard.writeText(details);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      await navigator.clipboard.writeText(value);
+      setCopiedField(field);
+      setTimeout(() => setCopiedField(null), 2000);
     } catch {}
-  }, [invoice]);
+  }, []);
 
   // Status indicator
   const statusConfig = useMemo(() => {
@@ -142,32 +142,54 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
             {/* Bank Details */}
             {!isPaid && !isClosed && (
               <div className="border-b border-slate-100 px-6 py-6">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-sm font-semibold text-slate-900">Bank Transfer Details</h2>
-                  <button
-                    onClick={copyAllDetails}
-                    className="text-xs font-medium text-brand-primary hover:text-brand-primary/80"
-                  >
-                    {copied ? "Copied!" : "Copy all"}
-                  </button>
-                </div>
+                <h2 className="text-sm font-semibold text-slate-900">Bank Transfer Details</h2>
                 
                 <div className="mt-4 space-y-4">
-                  <div className="rounded-xl bg-slate-50 px-4 py-3">
-                    <p className="text-xs text-slate-500">Bank</p>
-                    <p className="font-semibold text-slate-900">{invoice.bank_name || "—"}</p>
+                  <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+                    <div>
+                      <p className="text-xs text-slate-500">Bank</p>
+                      <p className="font-semibold text-slate-900">{invoice.bank_name || "—"}</p>
+                    </div>
+                    {invoice.bank_name && (
+                      <button
+                        onClick={() => copyField("bank", invoice.bank_name)}
+                        className="rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-brand-primary shadow-sm hover:bg-slate-100"
+                      >
+                        {copiedField === "bank" ? "✓" : "Copy"}
+                      </button>
+                    )}
                   </div>
                   
-                  <div className="rounded-xl bg-slate-50 px-4 py-3">
-                    <p className="text-xs text-slate-500">Account Number</p>
-                    <p className="font-mono text-lg font-bold tracking-wider text-slate-900">
-                      {invoice.account_number || "—"}
-                    </p>
+                  <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+                    <div>
+                      <p className="text-xs text-slate-500">Account Number</p>
+                      <p className="font-mono text-lg font-bold tracking-wider text-slate-900">
+                        {invoice.account_number || "—"}
+                      </p>
+                    </div>
+                    {invoice.account_number && (
+                      <button
+                        onClick={() => copyField("account", invoice.account_number)}
+                        className="rounded-lg bg-brand-primary px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-brand-primary/90"
+                      >
+                        {copiedField === "account" ? "✓ Copied" : "Copy"}
+                      </button>
+                    )}
                   </div>
                   
-                  <div className="rounded-xl bg-slate-50 px-4 py-3">
-                    <p className="text-xs text-slate-500">Account Name</p>
-                    <p className="font-semibold text-slate-900">{invoice.account_name || "—"}</p>
+                  <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+                    <div>
+                      <p className="text-xs text-slate-500">Account Name</p>
+                      <p className="font-semibold text-slate-900">{invoice.account_name || "—"}</p>
+                    </div>
+                    {invoice.account_name && (
+                      <button
+                        onClick={() => copyField("name", invoice.account_name)}
+                        className="rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-brand-primary shadow-sm hover:bg-slate-100"
+                      >
+                        {copiedField === "name" ? "✓" : "Copy"}
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
