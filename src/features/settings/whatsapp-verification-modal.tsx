@@ -250,22 +250,58 @@ export function WhatsAppVerificationModal({
               </div>
             )}
 
-            <form onSubmit={handleRequestOTP} className="space-y-4">
+            <div className="space-y-4">
               <input
                 type="tel"
-                name="phone"
+                id="phone-input"
                 placeholder="08012345678"
                 className="w-full rounded-lg border border-gray-300 px-4 py-3 text-center text-lg focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                 autoFocus
               />
               <Button
-                type="submit"
+                type="button"
                 disabled={loading}
                 className="w-full"
+                onClick={async () => {
+                  const input = document.getElementById("phone-input") as HTMLInputElement;
+                  const phoneInput = input?.value || "";
+                  console.log("[WhatsApp Modal] Button clicked, phone:", phoneInput);
+                  
+                  if (!phoneInput?.trim()) {
+                    setError("Enter your WhatsApp number");
+                    return;
+                  }
+                  
+                  setError(null);
+                  setLoading(true);
+                  const normalizedPhone = normalizePhone(phoneInput);
+                  console.log("[WhatsApp Modal] Normalized phone:", normalizedPhone);
+                  
+                  try {
+                    console.log("[WhatsApp Modal] Calling API...");
+                    const result = await requestPhoneOTP({ phone: normalizedPhone });
+                    console.log("[WhatsApp Modal] Success:", result);
+                    setPhone(normalizedPhone);
+                    setStep("otp");
+                  } catch (err: unknown) {
+                    console.error("[WhatsApp Modal] Error:", err);
+                    let message = "Failed to send OTP. Try again.";
+                    if (err && typeof err === "object") {
+                      const axiosError = err as { 
+                        response?: { data?: { detail?: string }, status?: number }, 
+                        message?: string 
+                      };
+                      message = axiosError?.response?.data?.detail || axiosError?.message || message;
+                    }
+                    setError(message);
+                  } finally {
+                    setLoading(false);
+                  }
+                }}
               >
                 {loading ? "Sending..." : "Send OTP via WhatsApp"}
               </Button>
-            </form>
+            </div>
 
             <button
               onClick={() => setStep("connect")}
