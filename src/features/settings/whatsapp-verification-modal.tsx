@@ -144,17 +144,25 @@ export function WhatsAppVerificationModal({
 
   const handleVerifyOTP = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    e.stopPropagation();
+    console.log("=== WhatsApp Modal: Verify OTP form submitted ===");
+    console.log("Current OTP:", otp);
+    console.log("Phone:", phone);
+    
     setError(null);
 
     if (otp.length !== 6) {
+      console.log("OTP too short");
       setError("Enter the 6-digit code");
       return;
     }
 
     setLoading(true);
+    console.log("Calling verifyPhoneOTP API...");
 
     try {
-      await verifyPhoneOTP({ phone, otp });
+      const result = await verifyPhoneOTP({ phone, otp });
+      console.log("Verify success:", result);
       setStep("success");
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       onVerified?.(phone);
@@ -164,6 +172,7 @@ export function WhatsAppVerificationModal({
         onClose();
       }, 2000);
     } catch (err) {
+      console.error("Verify failed:", err);
       const message =
         (err as { response?: { data?: { detail?: string } } })?.response?.data
           ?.detail || "Invalid code. Try again.";
@@ -330,20 +339,56 @@ export function WhatsAppVerificationModal({
               </div>
             )}
 
-            <form onSubmit={handleVerifyOTP} className="space-y-4">
+            <div className="space-y-4">
               <OTPInput
                 value={otp}
                 onChange={setOtp}
                 length={6}
               />
               <Button
-                type="submit"
+                type="button"
                 disabled={loading || otp.length !== 6}
                 className="w-full"
+                onClick={async () => {
+                  console.log("=== WhatsApp Modal: Verify button clicked ===");
+                  console.log("OTP:", otp, "Phone:", phone);
+                  
+                  setError(null);
+
+                  if (otp.length !== 6) {
+                    setError("Enter the 6-digit code");
+                    return;
+                  }
+
+                  setLoading(true);
+                  console.log("Calling verifyPhoneOTP API...");
+
+                  try {
+                    const result = await verifyPhoneOTP({ phone, otp });
+                    console.log("Verify success:", result);
+                    setStep("success");
+                    queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+                    onVerified?.(phone);
+                    
+                    // Auto-close after success
+                    setTimeout(() => {
+                      onClose();
+                    }, 2000);
+                  } catch (err) {
+                    console.error("Verify failed:", err);
+                    const message =
+                      (err as { response?: { data?: { detail?: string } } })?.response?.data
+                        ?.detail || "Invalid code. Try again.";
+                    setError(message);
+                    setOtp("");
+                  } finally {
+                    setLoading(false);
+                  }
+                }}
               >
                 {loading ? "Verifying..." : "Verify & Connect"}
               </Button>
-            </form>
+            </div>
 
             <button
               onClick={() => {
