@@ -1,10 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { MessageCircle, ExternalLink, Settings } from "lucide-react";
+import { MessageCircle, ExternalLink } from "lucide-react";
 import { apiClient } from "@/api/client";
 import type { components } from "@/api/types";
-import Link from "next/link";
+import { WhatsAppVerificationModal } from "@/features/settings/whatsapp-verification-modal";
 
 type CurrentUser = components["schemas"]["UserOut"];
 
@@ -13,6 +14,8 @@ const BOT_NUMBER = "2348106865807";
 const WHATSAPP_LINK = `https://wa.me/${BOT_NUMBER}?text=Hi`;
 
 export function WhatsAppTip() {
+  const [showModal, setShowModal] = useState(false);
+  
   // Fetch current user to check if phone is verified
   const { data: user } = useQuery<CurrentUser>({
     queryKey: ["currentUser"],
@@ -50,26 +53,33 @@ export function WhatsAppTip() {
     );
   }
 
-  // User hasn't verified - link to settings
+  // User hasn't verified - show modal trigger
   return (
-    <Link
-      href="/dashboard/settings#whatsapp"
-      className="flex items-center gap-3 rounded-lg border border-blue-200 bg-blue-50 p-3 transition-colors hover:bg-blue-100 hover:border-blue-300 group"
-    >
-      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 text-white shrink-0">
-        <Settings className="h-4 w-4" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-blue-800">
-          Set up WhatsApp invoicing
-        </p>
-        <p className="text-xs text-blue-600">
-          Connect your number to create invoices via chat
-        </p>
-      </div>
-      <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-0.5 rounded shrink-0">
-        Set up →
-      </span>
-    </Link>
+    <>
+      <button
+        onClick={() => setShowModal(true)}
+        className="flex w-full items-center gap-3 rounded-lg border border-blue-200 bg-blue-50 p-3 transition-colors hover:bg-blue-100 hover:border-blue-300 group text-left"
+      >
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 text-white shrink-0">
+          <MessageCircle className="h-4 w-4" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium text-blue-800">
+            Faster: Create & send via WhatsApp
+          </p>
+          <p className="text-xs text-blue-600">
+            Text: &quot;Invoice John 50k for design&quot; — Done in seconds
+          </p>
+        </div>
+        <span className="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-0.5 rounded shrink-0">
+          Set up →
+        </span>
+      </button>
+      
+      <WhatsAppVerificationModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+      />
+    </>
   );
 }
