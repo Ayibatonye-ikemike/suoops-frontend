@@ -7,7 +7,7 @@
 
 "use client";
 
-import { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import { requestPhoneOTP, verifyPhoneOTP } from "./phone-api";
 import { OTPInput } from "@/features/auth/otp-input";
@@ -58,26 +58,40 @@ export function WhatsAppVerificationModal({
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [wasOpen, setWasOpen] = useState(false);
+  
+  // Track previous open state with ref to avoid infinite loops
+  const prevOpenRef = useRef(false);
 
-  // Reset state only when modal FIRST opens (not on re-renders)
+  // Reset state only when modal transitions from closed to open
   useEffect(() => {
-    if (isOpen && !wasOpen) {
+    if (isOpen && !prevOpenRef.current) {
       // Modal just opened - reset state
+      console.log("[WhatsApp Modal] Opening modal, resetting state");
       setStep("connect");
       setPhone("");
       setOtp("");
       setError(null);
+      setLoading(false);
     }
-    setWasOpen(isOpen);
-  }, [isOpen, wasOpen]);
+    prevOpenRef.current = isOpen;
+  }, [isOpen]);
 
   const handleRequestOTP = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    e.stopPropagation();
+    console.log("[WhatsApp Modal] handleRequestOTP called");
+    
+    // Prevent any double submission
+    if (loading) {
+      console.log("[WhatsApp Modal] Already loading, ignoring");
+      return;
+    }
+    
     setError(null);
 
     const formData = new FormData(e.currentTarget);
     const phoneInput = formData.get("phone") as string;
+    console.log("[WhatsApp Modal] Phone input:", phoneInput);
 
     if (!phoneInput?.trim()) {
       setError("Enter your WhatsApp number");
@@ -86,22 +100,47 @@ export function WhatsAppVerificationModal({
 
     setLoading(true);
     const normalizedPhone = normalizePhone(phoneInput);
+    console.log("[WhatsApp Modal] Normalized phone:", normalizedPhone);
 
     try {
+      console.log("[WhatsApp Modal] Calling requestPhoneOTP...");
       const result = await requestPhoneOTP({ phone: normalizedPhone });
       console.log("[WhatsApp Modal] OTP request success:", result);
       setPhone(normalizedPhone);
       setStep("otp");
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("[WhatsApp Modal] OTP request failed:", err);
-      const axiosError = err as { response?: { data?: { detail?: string }, status?: number } };
-      const message = axiosError?.response?.data?.detail 
-        || (axiosError?.response?.status === 500 ? "Server error. Check if WhatsApp template is approved." : "Failed to send OTP. Try again.");
+      let message = "Failed to send OTP. Try again.";
+      
+      if (err && typeof err === "object") {
+        const axiosError = err as { 
+          response?: { data?: { detail?: string }, status?: number }, 
+          message?: string,
+          code?: string 
+        };
+        console.error("[WhatsApp Modal] Error details:", {
+          status: axiosError?.response?.status,
+          detail: axiosError?.response?.data?.detail,
+          message: axiosError?.message,
+          code: axiosError?.code,
+        });
+        
+        if (axiosError?.response?.data?.detail) {
+          message = axiosError.response.data.detail;
+        } else if (axiosError?.response?.status === 500) {
+          message = "Server error. Please try again.";
+        } else if (axiosError?.code === "ERR_NETWORK") {
+          message = "Network error. Check your connection.";
+        } else if (axiosError?.message) {
+          message = axiosError.message;
+        }
+      }
+      
       setError(message);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [loading]);
 
   const handleVerifyOTP = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
