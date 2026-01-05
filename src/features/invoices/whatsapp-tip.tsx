@@ -17,6 +17,7 @@ export function WhatsAppTip() {
   const [showModal, setShowModal] = useState(false);
   
   // Fetch current user to check if phone is verified
+  // Disable refetch on window focus to prevent modal state from being lost
   const { data: user } = useQuery<CurrentUser>({
     queryKey: ["currentUser"],
     queryFn: async () => {
@@ -24,38 +25,51 @@ export function WhatsAppTip() {
       return response.data;
     },
     staleTime: 60000,
+    refetchOnWindowFocus: false, // Prevent refetch when returning from WhatsApp
   });
 
   const hasVerifiedPhone = user?.phone_verified && user?.phone;
 
+  // Always render the modal to keep it mounted during verification flow
+  const modal = (
+    <WhatsAppVerificationModal
+      isOpen={showModal}
+      onClose={() => setShowModal(false)}
+    />
+  );
+
   // User has verified WhatsApp - link directly to bot
   if (hasVerifiedPhone) {
     return (
-      <a
-        href={WHATSAPP_LINK}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-3 rounded-lg border border-emerald-300 bg-emerald-50 p-3 transition-colors hover:bg-emerald-100 hover:border-emerald-400 group"
-      >
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500 text-white shrink-0">
-          <MessageCircle className="h-4 w-4" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-emerald-800">
-            Faster: Create & send via WhatsApp
-          </p>
-          <p className="text-xs text-emerald-600 truncate">
-            Text: &quot;Invoice John 50k for design&quot; — Done in seconds
-          </p>
-        </div>
-        <ExternalLink className="h-4 w-4 text-emerald-500 group-hover:text-emerald-700 shrink-0" />
-      </a>
+      <>
+        {modal}
+        <a
+          href={WHATSAPP_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 rounded-lg border border-emerald-300 bg-emerald-50 p-3 transition-colors hover:bg-emerald-100 hover:border-emerald-400 group"
+        >
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500 text-white shrink-0">
+            <MessageCircle className="h-4 w-4" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-emerald-800">
+              Faster: Create & send via WhatsApp
+            </p>
+            <p className="text-xs text-emerald-600 truncate">
+              Text: &quot;Invoice John 50k for design&quot; — Done in seconds
+            </p>
+          </div>
+          <ExternalLink className="h-4 w-4 text-emerald-500 group-hover:text-emerald-700 shrink-0" />
+        </a>
+      </>
     );
   }
 
   // User hasn't verified - show modal trigger
   return (
     <>
+      {modal}
       <button
         onClick={() => setShowModal(true)}
         className="flex w-full items-center gap-3 rounded-lg border border-blue-200 bg-blue-50 p-3 transition-colors hover:bg-blue-100 hover:border-blue-300 group text-left"
@@ -75,11 +89,6 @@ export function WhatsAppTip() {
           Set up →
         </span>
       </button>
-      
-      <WhatsAppVerificationModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-      />
     </>
   );
 }

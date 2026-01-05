@@ -58,16 +58,19 @@ export function WhatsAppVerificationModal({
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [wasOpen, setWasOpen] = useState(false);
 
-  // Reset state when modal opens
+  // Reset state only when modal FIRST opens (not on re-renders)
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !wasOpen) {
+      // Modal just opened - reset state
       setStep("connect");
       setPhone("");
       setOtp("");
       setError(null);
     }
-  }, [isOpen]);
+    setWasOpen(isOpen);
+  }, [isOpen, wasOpen]);
 
   const handleRequestOTP = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -85,13 +88,15 @@ export function WhatsAppVerificationModal({
     const normalizedPhone = normalizePhone(phoneInput);
 
     try {
-      await requestPhoneOTP({ phone: normalizedPhone });
+      const result = await requestPhoneOTP({ phone: normalizedPhone });
+      console.log("[WhatsApp Modal] OTP request success:", result);
       setPhone(normalizedPhone);
       setStep("otp");
     } catch (err) {
-      const message =
-        (err as { response?: { data?: { detail?: string } } })?.response?.data
-          ?.detail || "Failed to send OTP. Try again.";
+      console.error("[WhatsApp Modal] OTP request failed:", err);
+      const axiosError = err as { response?: { data?: { detail?: string }, status?: number } };
+      const message = axiosError?.response?.data?.detail 
+        || (axiosError?.response?.status === 500 ? "Server error. Check if WhatsApp template is approved." : "Failed to send OTP. Try again.");
       setError(message);
     } finally {
       setLoading(false);
