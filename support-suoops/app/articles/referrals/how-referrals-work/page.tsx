@@ -32,25 +32,25 @@ export default function HowReferralsWorkArticle() {
             How the Referral Program Works
           </h1>
           <p className="mt-3 text-lg text-slate-600">
-            Earn free invoices by referring friends and colleagues to SuoOps.
+            Earn ₦500 for every friend who subscribes to Pro!
           </p>
         </div>
 
         {/* Highlight Box */}
         <div className="mb-8 rounded-xl bg-gradient-to-r from-purple-50 to-emerald-50 border border-purple-200 p-6">
-          <h3 className="font-semibold text-purple-900 mb-2">🎁 Referral Rewards</h3>
+          <h3 className="font-semibold text-purple-900 mb-2">💰 10% Cash Commission on Every Pro Referral</h3>
           <div className="grid gap-3 text-sm">
             <div className="flex items-center gap-2">
-              <Users className="h-5 w-5 text-purple-600" />
-              <span><strong>8 free signups:</strong> You get 100 free invoices (₦2,500 value)</span>
-            </div>
-            <div className="flex items-center gap-2">
               <Wallet className="h-5 w-5 text-emerald-600" />
-              <span><strong>2 paid subscribers:</strong> You get 100 free invoices (₦2,500 value)</span>
+              <span><strong>Pro subscriber referral:</strong> You earn ₦500 cash (10% of ₦5,000)</span>
             </div>
             <div className="flex items-center gap-2">
-              <Gift className="h-5 w-5 text-blue-600" />
-              <span><strong>They get:</strong> Free account to start using SuoOps</span>
+              <FileText className="h-5 w-5 text-blue-600" />
+              <span><strong>Monthly payout:</strong> Cash paid at the end of each month</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Gift className="h-5 w-5 text-purple-600" />
+              <span><strong>No limit:</strong> The more you refer, the more you earn!</span>
             </div>
           </div>
         </div>
@@ -59,9 +59,9 @@ export default function HowReferralsWorkArticle() {
         <article className="prose prose-slate prose-emerald max-w-none">
           <h2>Overview</h2>
           <p>
-            Our referral program rewards you for spreading the word about SuoOps. When friends 
-            sign up using your unique referral code, you earn free invoice credits that you can 
-            use for your business invoicing.
+            Our referral program rewards you with a <strong>10% cash commission</strong> for every friend who subscribes 
+            to the Pro plan. When someone signs up using your unique referral code and becomes a Pro subscriber, 
+            you earn ₦500 cash paid out at the end of each month.
           </p>
 
           <h2>How It Works</h2>
@@ -95,9 +95,9 @@ export default function HowReferralsWorkArticle() {
                   3
                 </div>
                 <div>
-                  <h4 className="font-semibold text-slate-900">They Sign Up</h4>
+                  <h4 className="font-semibold text-slate-900">They Subscribe to Pro</h4>
                   <p className="text-sm text-slate-600">
-                    Your friend enters your code during registration and creates an account.
+                    Your friend signs up with your code and subscribes to Pro (₦5,000/month).
                   </p>
                 </div>
               </div>
@@ -106,9 +106,9 @@ export default function HowReferralsWorkArticle() {
                   4
                 </div>
                 <div>
-                  <h4 className="font-semibold text-slate-900">Earn Rewards</h4>
+                  <h4 className="font-semibold text-slate-900">Earn ₦500 Cash!</h4>
                   <p className="text-sm text-slate-600">
-                    When you reach 8 free signups or 2 paid subscribers, you get 100 free invoices!
+                    You instantly earn a ₦500 commission, paid out in cash at the end of the month!
                   </p>
                 </div>
               </div>
@@ -140,34 +140,30 @@ export default function HowReferralsWorkArticle() {
           
           <h3>What You Earn</h3>
           <ul>
-            <li><strong>100 free invoices</strong> for every 8 free signups (₦2,500 value)</li>
-            <li><strong>100 free invoices</strong> for every 2 paid subscribers (₦2,500 value)</li>
-            <li>Rewards stack - the more you refer, the more free invoices you earn!</li>
+            <li><strong>₦500 cash commission</strong> for each Pro subscriber you refer (10% of ₦5,000)</li>
+            <li>Commissions are <strong>paid out in cash</strong> at the end of each month</li>
+            <li>Rewards stack - the more Pro subscribers you refer, the more you earn!</li>
             <li>No limit on how many people you can refer</li>
           </ul>
 
-          <h3>What Counts as a Referral?</h3>
+          <h3>What Counts as a Paid Referral?</h3>
           <p>
-            Referrals are tracked in two ways:
+            Only Pro plan subscriptions (₦5,000/month) earn you commission:
           </p>
           <ul>
-            <li><CheckCircle className="inline h-4 w-4 text-emerald-600" /> <strong>Free signup:</strong> When someone creates an account using your code</li>
-            <li><CheckCircle className="inline h-4 w-4 text-emerald-600" /> <strong>Paid signup:</strong> When they subscribe to Pro (₦5,000/month) plan</li>
+            <li><CheckCircle className="inline h-4 w-4 text-emerald-600" /> <strong>Pro subscriber:</strong> You earn ₦500 (10% commission)</li>
+            <li className="text-slate-500"><strong>Free/Starter signups:</strong> No commission (focus on quality referrals)</li>
           </ul>
-          <p className="text-sm text-slate-600">
-            Note: Starter plan users who pay-per-invoice count as free signups. Only Pro subscriptions count as paid referrals.
-          </p>
 
           <h2>Tracking Your Referrals</h2>
           <p>
             The Referrals dashboard shows:
           </p>
           <ul>
-            <li><strong>Total referrals</strong> - How many people used your code</li>
-            <li><strong>Free signups</strong> - Users who created free accounts</li>
-            <li><strong>Paid signups</strong> - Users who subscribed to the Pro plan</li>
-            <li><strong>Rewards earned</strong> - Total invoice rewards you&apos;ve earned</li>
-            <li><strong>Progress</strong> - How close you are to your next reward</li>
+            <li><strong>Pro Referrals</strong> - How many Pro subscribers used your code</li>
+            <li><strong>Total Earned</strong> - Your total commission earned (₦500 × Pro referrals)</li>
+            <li><strong>Pending</strong> - Signups waiting for Pro subscription</li>
+            <li><strong>Ready to Claim</strong> - Commissions ready to add to your balance</li>
           </ul>
 
           <h2>Tips for Successful Referrals</h2>
@@ -195,10 +191,16 @@ export default function HowReferralsWorkArticle() {
 
           <h2>Frequently Asked Questions</h2>
           
-          <h3>When do I receive my reward?</h3>
+          <h3>When do I receive my commission?</h3>
           <p>
-            Your reward becomes available to claim as soon as you reach the threshold (8 free signups or 2 paid subscribers). 
-            Go to Dashboard → Referrals and click &quot;Claim Reward&quot; to add the invoices to your balance.
+            Your commission is earned instantly when your referred friend subscribes to Pro. 
+            All commissions are paid out in cash at the end of each month to your bank account.
+          </p>
+
+          <h3>How much do I earn per referral?</h3>
+          <p>
+            You earn ₦500 cash (10% of the ₦5,000 Pro plan) for each Pro subscriber you refer. 
+            There&apos;s no limit - refer 10 Pro subscribers and earn ₦5,000 cash!
           </p>
 
           <h3>Can I use my own referral code?</h3>
@@ -208,7 +210,7 @@ export default function HowReferralsWorkArticle() {
 
           <h3>Do rewards expire?</h3>
           <p>
-            Pending rewards must be claimed within 90 days. Once claimed, the invoice credits are added to your account and never expire.
+            Commissions must be claimed within 90 days. Once claimed, they&apos;re queued for payout at month end.
           </p>
 
           <h3>What if my friend forgets to enter the code?</h3>
@@ -217,10 +219,10 @@ export default function HowReferralsWorkArticle() {
             <Link href="/contact">Contact support</Link> if there&apos;s an issue.
           </p>
 
-          <h3>What are free invoices?</h3>
+          <h3>How do I receive my cash payout?</h3>
           <p>
-            Free invoices are credits added to your account balance. Each credit lets you create and send one invoice 
-            to your customers at no cost. 100 free invoices = ₦2,500 value!
+            At the end of each month, we&apos;ll transfer your earned commissions to your registered bank account. 
+            Make sure your banking details are up to date in your profile settings.
           </p>
         </article>
 

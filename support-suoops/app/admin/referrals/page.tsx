@@ -10,6 +10,7 @@ import {
   XCircle,
   AlertCircle,
   Award,
+  Banknote,
 } from "lucide-react";
 import { useAdminAuth } from "../layout";
 
@@ -25,12 +26,18 @@ interface ReferralStats {
   pending_rewards: number;
   applied_rewards: number;
   expired_rewards: number;
+  // Commission/payout fields
+  total_commission_earned: number;
+  pending_payout_amount: number;
+  users_with_payout_bank: number;
   top_referrers: Array<{
     user_id: number;
     name: string;
     email: string | null;
     phone: string;
     referral_count: number;
+    commission_earned: number;
+    payout_bank_name: string | null;
   }>;
   referrals_today: number;
   referrals_this_week: number;
@@ -138,23 +145,23 @@ export default function ReferralsPage() {
           icon={Users}
         />
         <StatCard
-          title="Referral Codes"
-          value={stats?.total_referral_codes || 0}
-          subtitle="Active codes issued"
+          title="Paid Referrals"
+          value={stats?.paid_referrals || 0}
+          subtitle="Pro subscribers referred"
           icon={Gift}
           color="purple"
         />
         <StatCard
-          title="Rewards Earned"
-          value={stats?.total_rewards_earned || 0}
-          subtitle={`${stats?.applied_rewards || 0} applied`}
+          title="Commission Earned"
+          value={`₦${((stats?.paid_referrals || 0) * 500).toLocaleString()}`}
+          subtitle="₦500 per Pro referral"
           icon={Award}
           color="orange"
         />
         <StatCard
-          title="This Month"
-          value={stats?.referrals_this_month || 0}
-          subtitle={`${stats?.referrals_today || 0} today`}
+          title="Pending Payouts"
+          value={`₦${(stats?.pending_payout_amount || 0).toLocaleString()}`}
+          subtitle={`${stats?.users_with_payout_bank || 0} users ready`}
           icon={TrendingUp}
           color="blue"
         />
@@ -255,7 +262,7 @@ export default function ReferralsPage() {
       <div className="rounded-xl border border-slate-200 bg-white">
         <div className="border-b border-slate-100 px-6 py-4">
           <h3 className="text-lg font-semibold text-slate-900">Top Referrers</h3>
-          <p className="text-sm text-slate-500">Users with the most completed referrals</p>
+          <p className="text-sm text-slate-500">Users with the most Pro referrals (₦500 commission each)</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -264,7 +271,9 @@ export default function ReferralsPage() {
                 <th className="px-6 py-3 font-medium">Rank</th>
                 <th className="px-6 py-3 font-medium">User</th>
                 <th className="px-6 py-3 font-medium">Contact</th>
-                <th className="px-6 py-3 font-medium text-right">Referrals</th>
+                <th className="px-6 py-3 font-medium text-right">Pro Referrals</th>
+                <th className="px-6 py-3 font-medium text-right">Commission</th>
+                <th className="px-6 py-3 font-medium text-center">Payout Bank</th>
               </tr>
             </thead>
             <tbody>
@@ -296,11 +305,29 @@ export default function ReferralsPage() {
                         {referrer.referral_count}
                       </span>
                     </td>
+                    <td className="px-6 py-4 text-right">
+                      <span className="font-semibold text-slate-900">
+                        ₦{(referrer.commission_earned || referrer.referral_count * 500).toLocaleString()}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      {referrer.payout_bank_name ? (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
+                          <Banknote className="h-3 w-3" />
+                          {referrer.payout_bank_name}
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-600">
+                          <XCircle className="h-3 w-3" />
+                          Not set
+                        </span>
+                      )}
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-slate-500">
+                  <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
                     No referrals yet
                   </td>
                 </tr>
