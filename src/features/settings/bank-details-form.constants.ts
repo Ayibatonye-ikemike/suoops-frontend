@@ -19,8 +19,11 @@ export const NIGERIAN_BANKS = [
   "Guaranty Trust Bank (GTBank)",
   "Heritage Bank",
   "Keystone Bank",
+  "Optimus Bank",
   "Polaris Bank",
+  "Premium Trust Bank",
   "Providus Bank",
+  "Signature Bank",
   "Stanbic IBTC Bank",
   "Standard Chartered Bank",
   "Sterling Bank",
@@ -44,6 +47,10 @@ export const NIGERIAN_BANKS = [
   "VBank (VFD Microfinance Bank)",
   "Eyowo",
   "Mint Finex MFB",
+  "Pocket App",
+  "Chipper Cash",
+  "Fundall",
+  "Umba",
   
   // Microfinance Banks
   "AB Microfinance Bank",
@@ -56,20 +63,36 @@ export const NIGERIAN_BANKS = [
   "Accion Microfinance Bank",
   "Fina Trust Microfinance Bank",
   "Grooming Microfinance Bank",
+  "Mainstreet Microfinance Bank",
+  "Letshego MFB",
+  "Ibile Microfinance Bank",
+  "Aella Credit MFB",
+  "Branch MFB",
   
   // Payment Service Banks
   "9PSB (9 Payment Service Bank)",
   "Hope PSB",
   "MTN MoMo PSB",
+  "Airtel SmartCash PSB",
+  "MoneyMaster PSB",
   
-  // Other Banks
-  "Jaiz Bank",
-  "Lotus Bank",
-  "TAJBank",
-  "Parallex Bank",
+  // Merchant Banks
   "Coronation Merchant Bank",
   "FBNQuest Merchant Bank",
   "FSDH Merchant Bank",
   "Nova Merchant Bank",
   "Rand Merchant Bank",
+  "Greenwich Merchant Bank",
+  
+  // Non-Interest (Islamic) Banks
+  "Jaiz Bank",
+  "Lotus Bank",
+  "TAJBank",
+  
+  // Other Banks
+  "Parallex Bank",
+  "WAYA Microfinance Bank",
+  "Kredi Money MFB",
+  "CreditDirect MFB",
+  "Page Financials",
 ];
