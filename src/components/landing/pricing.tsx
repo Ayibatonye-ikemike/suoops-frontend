@@ -36,6 +36,46 @@ export function Pricing() {
           </div>
         </div>
 
+        {/* Referral Program */}
+        <div className="mt-12 max-w-3xl mx-auto">
+          <div className="rounded-2xl bg-gradient-to-r from-brand-evergreen to-brand-jade p-8 text-center shadow-xl">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-chartreuse rounded-full mb-4">
+              <span className="text-3xl">💰</span>
+            </div>
+            <h3 className="text-2xl font-bold text-white">Refer & Earn Cash!</h3>
+            <p className="mt-2 text-lg text-green-100">
+              Share SuoOps with friends and earn <span className="font-bold text-brand-chartreuse">₦500</span> for every Pro subscriber
+            </p>
+            <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <div className="bg-white/10 backdrop-blur rounded-xl px-6 py-3 text-center">
+                <p className="text-3xl font-bold text-brand-chartreuse">10%</p>
+                <p className="text-sm text-green-100">Commission</p>
+              </div>
+              <div className="text-4xl text-white hidden sm:block">→</div>
+              <div className="text-2xl text-white sm:hidden">↓</div>
+              <div className="bg-white/10 backdrop-blur rounded-xl px-6 py-3 text-center">
+                <p className="text-3xl font-bold text-brand-chartreuse">₦500</p>
+                <p className="text-sm text-green-100">Per Referral</p>
+              </div>
+              <div className="text-4xl text-white hidden sm:block">→</div>
+              <div className="text-2xl text-white sm:hidden">↓</div>
+              <div className="bg-white/10 backdrop-blur rounded-xl px-6 py-3 text-center">
+                <p className="text-3xl font-bold text-brand-chartreuse">Monthly</p>
+                <p className="text-sm text-green-100">Cash Payouts</p>
+              </div>
+            </div>
+            <p className="mt-6 text-sm text-green-200">
+              No limits! The more you refer, the more you earn. Paid directly to your bank account.
+            </p>
+            <Link
+              href="/register"
+              className="mt-6 inline-flex items-center justify-center rounded-lg bg-brand-chartreuse px-6 py-3 text-base font-semibold text-brand-evergreen shadow-lg transition-all hover:bg-white hover:scale-105"
+            >
+              Start Earning Today →
+            </Link>
+          </div>
+        </div>
+
         <p className="mt-12 text-center text-lg font-semibold text-slate-700">
           👉 No forced banking. No accounting setup. No hidden stress.
         </p>
