@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Crown,
   Download,
+  Trash2,
 } from "lucide-react";
 import { useAdminAuth } from "../layout";
 
@@ -62,6 +63,12 @@ export default function UsersPage() {
   const [userActivity, setUserActivity] = useState<UserActivity | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Delete modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
 
   // Search
   const [searchInput, setSearchInput] = useState("");
@@ -156,6 +163,47 @@ export default function UsersPage() {
       a.remove();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Export failed");
+    }
+  }
+
+  // Delete user account
+  async function deleteUser() {
+    if (!token || !selectedUser) return;
+    
+    if (deleteConfirmation !== "DELETE MY ACCOUNT") {
+      setDeleteError("Type 'DELETE MY ACCOUNT' to confirm");
+      return;
+    }
+
+    setIsDeleting(true);
+    setDeleteError("");
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
+      const res = await fetch(`${apiUrl}/users/admin/${selectedUser.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ confirmation: "DELETE MY ACCOUNT" }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.detail || "Failed to delete user");
+      }
+
+      // Success - clear selection and remove from list
+      setUsers(users.filter((u) => u.id !== selectedUser.id));
+      setSelectedUser(null);
+      setUserActivity(null);
+      setShowDeleteModal(false);
+      setDeleteConfirmation("");
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : "Delete failed");
+    } finally {
+      setIsDeleting(false);
     }
   }
 
@@ -312,6 +360,34 @@ export default function UsersPage() {
                         </span>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Danger Zone - Delete User */}
+              <div className="rounded-xl border-2 border-red-200 bg-red-50">
+                <div className="px-6 py-4 border-b border-red-200">
+                  <h3 className="font-semibold text-red-700">Danger Zone</h3>
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-slate-900">Delete this user account</p>
+                      <p className="text-sm text-slate-500">
+                        Permanently delete this user and all their data. This cannot be undone.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setShowDeleteModal(true);
+                        setDeleteConfirmation("");
+                        setDeleteError("");
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm font-medium"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      Delete User
+                    </button>
                   </div>
                 </div>
               </div>
@@ -509,6 +585,86 @@ export default function UsersPage() {
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && selectedUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setShowDeleteModal(false)}
+          />
+          <div className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <div className="text-center mb-6">
+              <div className="mx-auto h-12 w-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
+                <Trash2 className="h-6 w-6 text-red-600" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900">
+                Delete User Account
+              </h3>
+              <p className="mt-2 text-sm text-slate-500">
+                You are about to permanently delete the account for:
+              </p>
+              <p className="mt-1 font-medium text-slate-700">
+                {selectedUser.name || selectedUser.email || selectedUser.phone}
+              </p>
+              <p className="text-xs text-slate-400">
+                ID: {selectedUser.id}
+              </p>
+            </div>
+
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+              <p className="text-sm text-red-700">
+                <strong>⚠️ Warning:</strong> This will permanently delete:
+              </p>
+              <ul className="mt-2 text-sm text-red-600 list-disc list-inside space-y-1">
+                <li>All invoices and customers</li>
+                <li>Business profile and logo</li>
+                <li>Referral data and commissions</li>
+                <li>All associated data</li>
+              </ul>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Type <span className="font-mono bg-slate-100 px-1 rounded">DELETE MY ACCOUNT</span> to confirm:
+              </label>
+              <input
+                type="text"
+                value={deleteConfirmation}
+                onChange={(e) => setDeleteConfirmation(e.target.value)}
+                placeholder="DELETE MY ACCOUNT"
+                className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+              />
+            </div>
+
+            {deleteError && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-700">{deleteError}</p>
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setDeleteConfirmation("");
+                  setDeleteError("");
+                }}
+                className="flex-1 px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={deleteUser}
+                disabled={isDeleting || deleteConfirmation !== "DELETE MY ACCOUNT"}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isDeleting ? "Deleting..." : "Delete Account"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
