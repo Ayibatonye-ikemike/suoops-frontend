@@ -41,22 +41,11 @@ export default function DataDeletionPage() {
 
           <section>
             <h2 className="text-2xl font-bold text-slate-900">How to Request Data Deletion</h2>
-            <p className="mt-4">You can delete your data in the following ways:</p>
+            <p className="mt-4">You can request deletion of your data in the following ways:</p>
             
             <div className="mt-6 space-y-6">
               <div className="rounded-lg border border-slate-200 bg-slate-50 p-6">
-                <h3 className="text-lg font-semibold text-slate-900">Option 1: Self-Service Deletion</h3>
-                <ol className="mt-3 list-decimal space-y-2 pl-6">
-                  <li>Log in to your SuoOps account at <a href="https://suoops.com/login" className="text-blue-600 hover:underline">suoops.com/login</a></li>
-                  <li>Go to <strong>Settings</strong></li>
-                  <li>Scroll to <strong>Account Management</strong></li>
-                  <li>Click <strong>&quot;Delete My Account&quot;</strong></li>
-                  <li>Confirm your decision</li>
-                </ol>
-              </div>
-
-              <div className="rounded-lg border border-slate-200 bg-slate-50 p-6">
-                <h3 className="text-lg font-semibold text-slate-900">Option 2: Email Request</h3>
+                <h3 className="text-lg font-semibold text-slate-900">Option 1: Email Request</h3>
                 <p className="mt-3">
                   Send an email to <a href="mailto:support@suoops.com" className="text-blue-600 hover:underline">support@suoops.com</a> with:
                 </p>
@@ -66,17 +55,24 @@ export default function DataDeletionPage() {
                   <li>Your phone number (for verification)</li>
                 </ul>
                 <p className="mt-3 text-sm text-slate-600">
-                  We will process your request within 7 business days.
+                  We will verify your identity and process your request within 48 hours.
                 </p>
               </div>
 
               <div className="rounded-lg border border-slate-200 bg-slate-50 p-6">
-                <h3 className="text-lg font-semibold text-slate-900">Option 3: WhatsApp Request</h3>
+                <h3 className="text-lg font-semibold text-slate-900">Option 2: WhatsApp Request</h3>
                 <p className="mt-3">
                   Send a message to our WhatsApp number with the text: <strong>&quot;Delete my account&quot;</strong>
                 </p>
                 <p className="mt-3 text-sm text-slate-600">
-                  You must send this from the phone number registered with your account.
+                  You must send this from the phone number registered with your account. Our team will confirm and process your request.
+                </p>
+              </div>
+
+              <div className="rounded-lg border border-slate-200 bg-slate-50 p-6">
+                <h3 className="text-lg font-semibold text-slate-900">Option 3: In-App Request</h3>
+                <p className="mt-3">
+                  Go to <strong>Settings</strong> in your dashboard and click <strong>&quot;Contact Support&quot;</strong> in the Delete Account section. This will open an email to our support team.
                 </p>
               </div>
             </div>
