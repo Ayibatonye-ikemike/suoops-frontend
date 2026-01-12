@@ -79,6 +79,12 @@ export default function SettingsPage() {
     e.preventDefault();
     if (!token) return;
 
+    // Validate email domain
+    if (!inviteEmail.toLowerCase().endsWith("@suoops.com")) {
+      setError("Only @suoops.com email addresses can be invited as admins");
+      return;
+    }
+
     setIsInviting(true);
     setError("");
 
