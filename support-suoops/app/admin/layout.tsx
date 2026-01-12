@@ -22,6 +22,7 @@ interface AdminUser {
   name: string;
   email: string;
   role: string;
+  is_super_admin: boolean;
 }
 
 interface AdminAuthContextType {
@@ -83,6 +84,7 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
         name: userData.name,
         email: userData.email,
         role: userData.role,
+        is_super_admin: userData.is_super_admin || false,
       });
 
       localStorage.setItem("admin_token", data.access_token);
@@ -91,6 +93,7 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
         name: userData.name,
         email: userData.email,
         role: userData.role,
+        is_super_admin: userData.is_super_admin || false,
       }));
 
       return true;

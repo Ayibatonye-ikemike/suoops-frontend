@@ -29,10 +29,14 @@ interface AdminMember {
 }
 
 export default function SettingsPage() {
-  const { token } = useAdminAuth();
+  const { token, user } = useAdminAuth();
   const [admins, setAdmins] = useState<AdminMember[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // Delete admin state
+  const [adminToDelete, setAdminToDelete] = useState<AdminMember | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Invite form
   const [showInviteForm, setShowInviteForm] = useState(false);
@@ -123,6 +127,40 @@ export default function SettingsPage() {
       navigator.clipboard.writeText(inviteSuccess);
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 2000);
+    }
+  }
+
+  async function handleDeleteAdmin() {
+    if (!adminToDelete || !token) return;
+
+    setIsDeleting(true);
+    setError("");
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
+      const res = await fetch(`${apiUrl}/admin/auth/admins/${adminToDelete.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.detail || "Failed to remove admin");
+      }
+
+      // Refresh admins list
+      const adminsRes = await fetch(`${apiUrl}/admin/auth/admins`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (adminsRes.ok) {
+        setAdmins(await adminsRes.json());
+      }
+
+      setAdminToDelete(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to remove admin");
+    } finally {
+      setIsDeleting(false);
     }
   }
 
@@ -234,6 +272,16 @@ export default function SettingsPage() {
                       Last login {new Date(admin.last_login).toLocaleDateString()}
                     </span>
                   )}
+                  {/* Delete button - only visible to super admins, can't delete self or other super admins */}
+                  {user?.is_super_admin && admin.id !== user.id && !admin.is_super_admin && (
+                    <button
+                      onClick={() => setAdminToDelete(admin)}
+                      className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Remove admin"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
@@ -338,6 +386,51 @@ export default function SettingsPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {adminToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md bg-white rounded-2xl shadow-xl">
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center">
+                  <Trash2 className="h-5 w-5 text-red-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-slate-900">Remove Admin</h3>
+                  <p className="text-sm text-slate-500">This action cannot be undone</p>
+                </div>
+              </div>
+
+              <p className="text-slate-600 mb-6">
+                Are you sure you want to remove <strong>{adminToDelete.name}</strong> ({adminToDelete.email}) from the admin team?
+              </p>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setAdminToDelete(null)}
+                  disabled={isDeleting}
+                  className="flex-1 px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteAdmin}
+                  disabled={isDeleting}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium disabled:opacity-50"
+                >
+                  {isDeleting ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-4 w-4" />
+                  )}
+                  Remove Admin
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
