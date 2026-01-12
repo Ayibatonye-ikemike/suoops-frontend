@@ -241,7 +241,15 @@ export default function SettingsPage() {
           </div>
         ) : (
           <div className="divide-y divide-slate-100">
-            {admins.map((admin) => (
+            {admins
+              .filter((admin) => {
+                // Non-super admins shouldn't see super admin details
+                if (!user?.is_super_admin && admin.is_super_admin) {
+                  return false;
+                }
+                return true;
+              })
+              .map((admin) => (
               <div key={admin.id} className="p-4 flex items-center gap-4">
                 <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-medium">
                   {admin.name.charAt(0).toUpperCase()}
