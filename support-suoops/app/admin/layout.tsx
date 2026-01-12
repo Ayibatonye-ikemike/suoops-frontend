@@ -224,13 +224,13 @@ function AdminContent({ children }: { children: React.ReactNode }) {
 
   // Redirect to login if not authenticated
   useEffect(() => {
-    if (!isLoading && !user && !pathname.includes("/login")) {
+    if (!isLoading && !user && !pathname.includes("/login") && !pathname.includes("/accept-invite")) {
       router.push("/admin/login");
     }
   }, [user, isLoading, pathname, router]);
 
-  // Don't show layout on login page
-  if (pathname.includes("/login")) {
+  // Don't show layout on login page or accept-invite page
+  if (pathname.includes("/login") || pathname.includes("/accept-invite")) {
     return <>{children}</>;
   }
 
