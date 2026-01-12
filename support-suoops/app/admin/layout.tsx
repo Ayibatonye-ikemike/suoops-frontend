@@ -48,17 +48,22 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
-    // Check for stored token on mount
+    // Check for stored token on mount and whenever pathname changes
+    // This ensures we pick up new tokens stored by accept-invite page
     const storedToken = localStorage.getItem("admin_token");
     const storedUser = localStorage.getItem("admin_user");
     if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      // Only update if token changed (avoid unnecessary re-renders)
+      if (storedToken !== token) {
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+      }
     }
     setIsLoading(false);
-  }, []);
+  }, [pathname, token]);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
