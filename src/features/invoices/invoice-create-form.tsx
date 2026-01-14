@@ -44,6 +44,7 @@ export function InvoiceCreateForm() {
   // UI State
   const [lastPdfUrl, setLastPdfUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showBankDetailsError, setShowBankDetailsError] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [quotaError, setQuotaError] = useState<string | null>(null);
   const [currentPlan, setCurrentPlan] = useState<string>("FREE");
@@ -87,11 +88,13 @@ export function InvoiceCreateForm() {
     setCustomerEmail("");
     setAmount("");
     setLines([emptyLine()]);
+    setShowBankDetailsError(false);
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
+    setShowBankDetailsError(false);
     setLastPdfUrl(null);
     const parsedAmount = Number(amount);
 
@@ -136,16 +139,18 @@ export function InvoiceCreateForm() {
       console.error(submitError);
 
       // Handle feature gate errors (403) and invoice errors (400)
-      const gate = parseFeatureGateError(submitError);
+      // First check for enriched error from use-create-invoice mutation
+      const enrichedGate = (submitError as { featureGate?: ReturnType<typeof parseFeatureGateError> })?.featureGate;
+      const gate = enrichedGate || parseFeatureGateError(submitError);
       
-      // Handle missing bank details error
+      // Handle missing bank details error with special UI
       if (gate?.type === "missing_bank_details") {
-        setError(
-          "Please add your bank details in Settings before creating revenue invoices. " +
-          "Your customers need to know where to pay!"
-        );
+        setShowBankDetailsError(true);
+        setError(null);
         return;
       }
+      
+      setShowBankDetailsError(false);
       
       if (gate?.type === "invoice_limit") {
         const composed = [
@@ -235,6 +240,27 @@ export function InvoiceCreateForm() {
           ? "Limit Reached"
           : "Create invoice & send for payment"}
       </Button>
+
+      {/* Bank Details Error - Special Treatment */}
+      {showBankDetailsError && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+          <p className="text-sm font-semibold text-amber-900">
+            🏦 Bank Details Required
+          </p>
+          <p className="mt-1 text-sm text-amber-800">
+            Please add your bank account details before creating invoices. 
+            Your customers need to know where to send payment!
+          </p>
+          <div className="mt-3">
+            <a
+              href="/dashboard/settings"
+              className="inline-flex items-center justify-center rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-amber-700 transition"
+            >
+              Add Bank Details →
+            </a>
+          </div>
+        </div>
+      )}
 
       {/* Messages (Quota, Errors, Success) */}
       <InvoiceFormMessages
