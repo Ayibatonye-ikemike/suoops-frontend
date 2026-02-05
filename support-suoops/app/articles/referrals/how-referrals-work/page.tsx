@@ -38,11 +38,11 @@ export default function HowReferralsWorkArticle() {
 
         {/* Highlight Box */}
         <div className="mb-8 rounded-xl bg-gradient-to-r from-purple-50 to-emerald-50 border border-purple-200 p-6">
-          <h3 className="font-semibold text-purple-900 mb-2">💰 10% Cash Commission on Every Pro Referral</h3>
+          <h3 className="font-semibold text-purple-900 mb-2">💰 ₦500 Cash Commission on Every Pro Referral</h3>
           <div className="grid gap-3 text-sm">
             <div className="flex items-center gap-2">
               <Wallet className="h-5 w-5 text-emerald-600" />
-              <span><strong>Pro subscriber referral:</strong> You earn ₦500 cash (10% of ₦5,000)</span>
+              <span><strong>Pro subscriber referral:</strong> You earn ₦500 cash per referral</span>
             </div>
             <div className="flex items-center gap-2">
               <FileText className="h-5 w-5 text-blue-600" />
@@ -97,7 +97,7 @@ export default function HowReferralsWorkArticle() {
                 <div>
                   <h4 className="font-semibold text-slate-900">They Subscribe to Pro</h4>
                   <p className="text-sm text-slate-600">
-                    Your friend signs up with your code and subscribes to Pro (₦5,000/month).
+                    Your friend signs up with your code and subscribes to Pro (₦3,250/month).
                   </p>
                 </div>
               </div>
@@ -140,7 +140,7 @@ export default function HowReferralsWorkArticle() {
           
           <h3>What You Earn</h3>
           <ul>
-            <li><strong>₦500 cash commission</strong> for each Pro subscriber you refer (10% of ₦5,000)</li>
+            <li><strong>₦500 cash commission</strong> for each Pro subscriber you refer</li>
             <li>Commissions are <strong>paid out in cash</strong> at the end of each month</li>
             <li>Rewards stack - the more Pro subscribers you refer, the more you earn!</li>
             <li>No limit on how many people you can refer</li>
@@ -148,10 +148,10 @@ export default function HowReferralsWorkArticle() {
 
           <h3>What Counts as a Paid Referral?</h3>
           <p>
-            Only Pro plan subscriptions (₦5,000/month) earn you commission:
+            Only Pro plan subscriptions (₦3,250/month) earn you commission:
           </p>
           <ul>
-            <li><CheckCircle className="inline h-4 w-4 text-emerald-600" /> <strong>Pro subscriber:</strong> You earn ₦500 (10% commission)</li>
+            <li><CheckCircle className="inline h-4 w-4 text-emerald-600" /> <strong>Pro subscriber:</strong> You earn ₦500 cash commission</li>
             <li className="text-slate-500"><strong>Free/Starter signups:</strong> No commission (focus on quality referrals)</li>
           </ul>
 
@@ -199,7 +199,7 @@ export default function HowReferralsWorkArticle() {
 
           <h3>How much do I earn per referral?</h3>
           <p>
-            You earn ₦500 cash (10% of the ₦5,000 Pro plan) for each Pro subscriber you refer. 
+            You earn ₦500 cash for each Pro subscriber you refer. 
             There&apos;s no limit - refer 10 Pro subscribers and earn ₦5,000 cash!
           </p>
 
