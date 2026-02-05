@@ -74,15 +74,11 @@ export default function TermsPage() {
             <p className="mt-4">We offer the following subscription tiers:</p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
               <li><strong>Free Plan:</strong> ₦0 - 5 free invoices to start</li>
-              <li><strong>Starter Plan:</strong> No monthly fee - Buy invoice packs (₦2,500 per 100) + Tax reports & automation</li>
-              <li><strong>Pro Plan:</strong> ₦5,000/month - 100 invoices included + Custom logo branding + Priority support</li>
-              <li><strong>Business Plan:</strong> ₦10,000/month - 100 invoices included + Photo OCR (15/mo) + API access</li>
+              <li><strong>Starter Plan:</strong> No monthly fee - Buy invoice packs (₦1,250 per 50) + Tax reports & automation</li>
+              <li><strong>Pro Plan:</strong> ₦3,250/month - 50 invoices included + Custom logo branding + Priority support</li>
             </ul>
             <p className="mt-4">
-              <strong>Invoice Packs:</strong> All plans can purchase additional invoice packs at ₦2,500 per 100 invoices. Starter plan users buy packs as needed with no monthly subscription fee.
-            </p>
-            <p className="mt-4">
-              <strong>Business Plan OCR Quota:</strong> The Business plan includes up to 15 photo OCR invoices per 30-day billing cycle. This quota resets every 30 days from your subscription start date.
+              <strong>Invoice Packs:</strong> All plans can purchase additional invoice packs at ₦1,250 per 50 invoices. Starter plan users buy packs as needed with no monthly subscription fee.
             </p>
           </section>          <section>
             <h2 className="text-2xl font-bold text-slate-900">5. Payment Terms</h2>

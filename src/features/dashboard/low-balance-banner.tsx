@@ -108,7 +108,7 @@ export function LowBalanceBanner() {
               className="inline-flex items-center gap-2 rounded-lg bg-brand-jade px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-brand-teal"
             >
               <ShoppingCart className="h-4 w-4" />
-              Buy 100 for ₦2,500
+              Buy 50 for ₦1,250
             </Link>
             {plan === "FREE" && (
               <Link
@@ -122,7 +122,7 @@ export function LowBalanceBanner() {
           
           {isZeroBalance && (
             <p className="mt-2 text-xs text-gray-500">
-              💡 Pro tip: Pro users get 100 invoices/month included!
+              💡 Pro tip: Pro users get 50 invoices/month included!
             </p>
           )}
         </div>
