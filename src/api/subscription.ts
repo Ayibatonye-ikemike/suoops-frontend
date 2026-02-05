@@ -6,6 +6,8 @@ export interface InitializeSubscriptionResponse {
   reference: string;
   amount: number;
   plan: string;
+  billing_type?: "recurring" | "one-time";
+  message?: string;
 }
 
 export interface VerifySubscriptionResponse {
@@ -115,7 +117,7 @@ export interface InvoicePackPurchaseResponse {
 
 /**
  * Initialize Paystack payment for invoice pack purchase.
- * @param quantity Number of packs to purchase (default 1). Each pack = 100 invoices = ₦2,500
+ * @param quantity Number of packs to purchase (default 1). Each pack = 50 invoices = ₦1,250
  */
 export async function initializeInvoicePackPurchase(
   quantity: number = 1
@@ -143,5 +145,42 @@ export interface SwitchToStarterResponse {
  */
 export async function switchToStarter(): Promise<SwitchToStarterResponse> {
   const response = await apiClient.post("/subscriptions/switch-to-starter");
+  return response.data;
+}
+
+// ============================================
+// Subscription Status & Cancellation
+// ============================================
+
+export interface SubscriptionStatusResponse {
+  plan: string;
+  is_recurring: boolean;
+  subscription_code: string | null;
+  subscription_started_at: string | null;
+  expires_at: string | null;
+  invoice_balance: number;
+}
+
+export interface CancelSubscriptionResponse {
+  status: "success" | "info" | "error";
+  message: string;
+  plan?: string;
+  expires_at: string | null;
+}
+
+/**
+ * Get current subscription status including billing info.
+ */
+export async function getSubscriptionStatus(): Promise<SubscriptionStatusResponse> {
+  const response = await apiClient.get("/subscriptions/status");
+  return response.data;
+}
+
+/**
+ * Cancel recurring subscription (stop auto-renewal).
+ * User keeps their plan until the current billing period ends.
+ */
+export async function cancelSubscription(): Promise<CancelSubscriptionResponse> {
+  const response = await apiClient.post("/subscriptions/cancel");
   return response.data;
 }

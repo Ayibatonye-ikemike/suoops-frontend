@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PlanSelectionModal } from "./plan-selection-modal";
+import { SubscriptionManagement } from "./subscription-management";
 import { type PlanTier, getPlan, INVOICE_PACK_PRICE, INVOICE_PACK_SIZE } from "../../constants/pricing";
 
 interface SubscriptionSectionProps {
@@ -164,6 +165,11 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                   </div>
                 </div>
               </div>
+            )}
+            
+            {/* Subscription Management (Cancel/Status) for Pro users */}
+            {hasMonthlySubscription && (
+              <SubscriptionManagement />
             )}
 
             <div>

@@ -4,9 +4,9 @@
  * 
  * BILLING MODEL (Small & Medium Business Focus):
  * - FREE: 5 free invoices to start, basic features
- * - STARTER: No monthly fee, buy invoice packs (100 = ₦2,500) + tax features
- * - PRO: ₦5,000/month = 100 invoices included + ALL premium features
- * - All plans can buy additional packs (100 invoices = ₦2,500)
+ * - STARTER: No monthly fee, buy invoice packs (50 = ₦1,250) + tax features
+ * - PRO: ₦3,250/month = 100 invoices included + ALL premium features
+ * - All plans can buy additional packs (50 invoices = ₦1,250)
  * 
  * Note: BUSINESS plan removed - we focus on businesses under ₦100M annual revenue.
  * PRO now includes voice invoices.
@@ -36,8 +36,8 @@ export interface Plan {
 }
 
 // Invoice pack pricing
-export const INVOICE_PACK_SIZE = 100;
-export const INVOICE_PACK_PRICE = 2500;
+export const INVOICE_PACK_SIZE = 50;
+export const INVOICE_PACK_PRICE = 1250;
 
 /**
  * Complete plan definitions
@@ -55,7 +55,7 @@ export const PLANS: Record<PlanTier, Plan> = {
     description: "Get started for free",
     features: [
       "5 free invoices to start",
-      "Buy more: 100 for ₦2,500",
+      "Buy more: 50 for ₦1,250",
       "WhatsApp & Email delivery",
       "PDF generation",
       "QR verification",
@@ -64,8 +64,8 @@ export const PLANS: Record<PlanTier, Plan> = {
   STARTER: {
     id: "STARTER",
     name: "Starter",
-    price: 2500,
-    priceDisplay: "₦2,500 per 100 invoices",
+    price: 1250,
+    priceDisplay: "₦1,250 per 50 invoices",
     invoicesIncluded: 0,
     invoicesDisplay: "Buy invoice packs",
     hasMonthlySubscription: false,
@@ -74,7 +74,7 @@ export const PLANS: Record<PlanTier, Plan> = {
     description: "Pay as you go + Tax features",
     features: [
       "No monthly fee",
-      "100 invoices for ₦2,500",
+      "50 invoices for ₦1,250",
       "Tax reports & automation",
       "WhatsApp & Email delivery",
     ],
@@ -82,16 +82,16 @@ export const PLANS: Record<PlanTier, Plan> = {
   PRO: {
     id: "PRO",
     name: "Pro",
-    price: 5000,
-    priceDisplay: "₦5,000",
-    invoicesIncluded: 100,
-    invoicesDisplay: "100 invoices included",
+    price: 3250,
+    priceDisplay: "₦3,250",
+    invoicesIncluded: 50,
+    invoicesDisplay: "50 invoices included",
     hasMonthlySubscription: true,
     popular: true,
     icon: "⭐",
     description: "All premium features for your business",
     features: [
-      "100 invoices/month included",
+      "50 invoices/month included",
       "Tax reports (PIT + CIT)",
       "Custom logo branding",
       "Inventory management",
@@ -145,7 +145,7 @@ export const FEATURE_GATES = {
  */
 export const PRO_QUOTA = {
   VOICE_LIMIT: 15, // Voice invoices per month
-  INVOICES_INCLUDED: 100,
+  INVOICES_INCLUDED: 50,
 } as const;
 
 /**

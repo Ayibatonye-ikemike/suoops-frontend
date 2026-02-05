@@ -26,7 +26,7 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: "Is there a free plan?",
-        answer: "Yes! New users get 5 free invoices to start. After that, you can purchase invoice packs (100 invoices for ₦2,500) or subscribe to a monthly plan for additional features."
+        answer: "Yes! New users get 5 free invoices to start. After that, you can purchase invoice packs (50 invoices for ₦1,250) or subscribe to a monthly plan for additional features."
       },
       {
         question: "How do I set up my business profile?",
@@ -70,15 +70,15 @@ const faqCategories: FAQCategory[] = [
     faqs: [
       {
         question: "How does billing work?",
-        answer: "New users get 5 free invoices. After that, you can either buy invoice packs (100 for ₦2,500) or subscribe monthly. Invoice packs never expire - use them anytime."
+        answer: "New users get 5 free invoices. After that, you can either buy invoice packs (50 for ₦1,250) or subscribe monthly. Invoice packs never expire - use them anytime."
       },
       {
         question: "What are the subscription plans?",
-        answer: "We offer: Free (5 invoices to start), Starter (pay-as-you-go with tax features), and Pro (₦5,000/month with all premium features including voice invoices, inventory & team access)."
+        answer: "We offer: Free (5 invoices to start), Starter (pay-as-you-go with tax features), and Pro (₦3,250/month with all premium features including voice invoices, inventory & team access)."
       },
       {
         question: "Who should use the Pro plan?",
-        answer: "The Pro plan (₦5,000/month) is perfect for growing small and medium businesses that need premium features. It includes 100 invoices/month, custom branding, team management, and voice invoices."
+        answer: "The Pro plan (₦3,250/month) is perfect for growing small and medium businesses that need premium features. It includes 50 invoices/month, custom branding, team management, and voice invoices."
       },
       {
         question: "How do I upgrade my plan?",

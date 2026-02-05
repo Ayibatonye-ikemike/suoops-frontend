@@ -123,7 +123,7 @@ export function PlanSelectionModal({
                   <h3 className="text-xl font-bold">Starter</h3>
                   <div className="text-2xl font-bold text-brand-jade mt-2">No Monthly Fee</div>
                   <p className="text-sm text-brand-textMuted mt-1">
-                    Pay ₦2,500 per 100 invoices • Unlock tax reports & automation
+                    Pay ₦1,250 per 50 invoices • Unlock tax reports & automation
                   </p>
                 </div>
                 {selectedPlan === "STARTER" && (

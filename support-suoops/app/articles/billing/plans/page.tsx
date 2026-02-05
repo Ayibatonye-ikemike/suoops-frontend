@@ -52,7 +52,7 @@ export default function PlansArticle() {
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>Buy more: 100 for ₦2,500</span>
+                <span>Buy more: 50 for ₦1,250</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
@@ -81,13 +81,13 @@ export default function PlansArticle() {
               <h3 className="font-bold text-slate-900">Pro</h3>
             </div>
             <div className="mb-4">
-              <span className="text-3xl font-bold text-slate-900">₦5,000</span>
+              <span className="text-3xl font-bold text-slate-900">₦3,250</span>
               <span className="text-slate-500">/month</span>
             </div>
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span><strong>100 invoices</strong> included</span>
+                <span><strong>50 invoices</strong> included</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
@@ -124,9 +124,9 @@ export default function PlansArticle() {
             All plans work with invoice packs - purchase as you need:
           </p>
           <ul>
-            <li><strong>100 invoices</strong> for ₦2,500 (never expires)</li>
+            <li><strong>50 invoices</strong> for ₦1,250 (never expires)</li>
             <li>Works on any plan, including Free</li>
-            <li>Pro plan includes 100 invoices/month in subscription</li>
+            <li>Pro plan includes 50 invoices/month in subscription</li>
             <li>Buy additional packs anytime when you need more</li>
           </ul>
 
@@ -135,8 +135,8 @@ export default function PlansArticle() {
             <li>Sign up for a <strong>Free account</strong> (5 free invoices included)</li>
             <li>When you need more, either:
               <ul>
-                <li>Buy invoice packs (100 for ₦2,500) - pay as you go</li>
-                <li>Upgrade to Pro for monthly subscription with 100 invoices included</li>
+                <li>Buy invoice packs (50 for ₦1,250) - pay as you go</li>
+                <li>Upgrade to Pro for monthly subscription with 50 invoices included</li>
               </ul>
             </li>
             <li>Complete payment via Paystack</li>
@@ -154,7 +154,7 @@ export default function PlansArticle() {
                 </p>
               </div>
               <div className="rounded-lg border-2 border-emerald-200 bg-emerald-50/50 p-4">
-                <h4 className="font-semibold text-slate-900 mb-2">Pro (₦5,000/month)</h4>
+                <h4 className="font-semibold text-slate-900 mb-2">Pro (₦3,250/month)</h4>
                 <p className="text-sm text-slate-600">
                   Best for growing small and medium businesses that need premium features like 
                   custom branding, team access, and voice invoices. Great value if 
