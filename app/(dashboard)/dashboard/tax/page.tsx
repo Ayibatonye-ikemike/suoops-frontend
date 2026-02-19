@@ -44,6 +44,9 @@ interface MonthlyReport {
   end_date: string | null;
   year: number;
   month: number | null;
+  total_revenue: number;
+  total_expenses: number;
+  cogs_amount: number;
   assessable_profit: number;
   levy_amount: number;
   pit_amount: number;
@@ -615,7 +618,8 @@ export default function TaxPage() {
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {/* Core tax fields - Revenue, Expenses, Profit, PIT */}
                   {[
-                    { label: "Revenue", value: report.debug_info?.calculated_revenue || 0 },
+                    { label: "Revenue", value: report.total_revenue || 0 },
+                    { label: "Expenses", value: report.total_expenses || 0 },
                     { label: "Profit", value: report.assessable_profit },
                     { label: "Estimated Income Tax (PIT)", value: report.pit_amount },
                   ].map((item) => (
