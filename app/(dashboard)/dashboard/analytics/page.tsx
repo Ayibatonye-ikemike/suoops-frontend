@@ -42,10 +42,10 @@ export default function AnalyticsPage() {
         {/* Header */}
         <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-brand-text">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
               Analytics Dashboard
             </h1>
-            <p className="mt-1 text-sm text-brand-textMuted">
+            <p className="mt-1 text-sm text-brand-mint">
               Track your business performance and insights
             </p>
           </div>
