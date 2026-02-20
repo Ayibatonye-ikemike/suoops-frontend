@@ -75,6 +75,52 @@ export interface ConversionFunnel {
   };
 }
 
+// ── Cash-First Dashboard ──────────────────────────────────────────
+
+export interface CashPosition {
+  cash_collected_today: number;
+  cash_collected_this_week: number;
+  total_outstanding: number;
+  total_overdue: number;
+  overdue_count: number;
+  expected_inflow_7_days: number;
+  invoices_created_today: number;
+  expenses_today: number;
+  net_today: number;
+}
+
+// ── Professionalism Score ─────────────────────────────────────────
+
+export interface ProfessionalismScore {
+  score: number;
+  checks: Record<string, boolean>;
+  tips: string[];
+  level: string;
+}
+
+// ── Customer Insights ─────────────────────────────────────────────
+
+export interface CustomerInsight {
+  id: number;
+  name: string;
+  phone: string | null;
+  total_spent: number;
+  invoice_count: number;
+  paid_count: number;
+  payment_rate: number;
+  last_purchase_days_ago: number;
+  status: "vip" | "active" | "new" | "at_risk" | "dormant";
+}
+
+export interface CustomerInsights {
+  customers: CustomerInsight[];
+  summary: Record<string, number>;
+  dormant_customers: CustomerInsight[];
+  total_analyzed: number;
+}
+
+// ── API Functions ─────────────────────────────────────────────────
+
 export async function getAnalyticsDashboard(
   period: "7d" | "30d" | "90d" | "1y" | "all" = "30d",
   currency: "NGN" | "USD" = "NGN"
@@ -100,6 +146,29 @@ export async function getConversionFunnel(
 ): Promise<{ period: string } & ConversionFunnel> {
   const response = await apiClient.get(
     `/analytics/conversion-funnel?period=${period}`
+  );
+  return response.data;
+}
+
+export async function getCashPosition(): Promise<CashPosition> {
+  const response = await apiClient.get<CashPosition>(
+    "/analytics/cash-position"
+  );
+  return response.data;
+}
+
+export async function getProfessionalismScore(): Promise<ProfessionalismScore> {
+  const response = await apiClient.get<ProfessionalismScore>(
+    "/analytics/professionalism-score"
+  );
+  return response.data;
+}
+
+export async function getCustomerInsights(
+  limit: number = 20
+): Promise<CustomerInsights> {
+  const response = await apiClient.get<CustomerInsights>(
+    `/analytics/customer-insights?limit=${limit}`
   );
   return response.data;
 }

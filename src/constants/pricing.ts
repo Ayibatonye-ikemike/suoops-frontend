@@ -96,6 +96,11 @@ export const PLANS: Record<PlanTier, Plan> = {
       "Custom logo branding",
       "Inventory management",
       "Team management (3 members)",
+      "Cash-first dashboard & insights",
+      "Customer value & dormancy alerts",
+      "Margin & discount analysis",
+      "Daily WhatsApp business summary",
+      "Professionalism score & tips",
       "Priority support",
     ],
   },
@@ -138,6 +143,11 @@ export const FEATURE_GATES = {
   INVENTORY: ["PRO"] as PlanTier[],
   TEAM_MANAGEMENT: ["PRO"] as PlanTier[],
   VOICE_INVOICE: ["PRO"] as PlanTier[],
+  CASH_DASHBOARD: ["PRO"] as PlanTier[],
+  CUSTOMER_INSIGHTS: ["PRO"] as PlanTier[],
+  PROFESSIONALISM_SCORE: ["PRO"] as PlanTier[],
+  MARGIN_INSIGHTS: ["PRO"] as PlanTier[],
+  DAILY_SUMMARY: ["PRO"] as PlanTier[],
 } as const;
 
 /**

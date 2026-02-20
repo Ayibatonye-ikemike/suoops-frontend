@@ -6,6 +6,8 @@ import { InvoiceListWithDetail } from "@/features/invoices/invoice-list-with-det
 import { InvoiceStatusCard } from "@/features/invoices/invoice-status-card";
 import { WhatsAppSetupBanner } from "@/features/dashboard/whatsapp-setup-banner";
 import { LowBalanceBanner } from "@/features/dashboard/low-balance-banner";
+import { CashPositionCard } from "@/features/dashboard/cash-position-card";
+import { ProfessionalismScoreCard } from "@/features/dashboard/professionalism-score-card";
 
 // Wrap InvoiceListWithDetail in its own Suspense for useSearchParams
 function InvoiceListWrapper() {
@@ -40,6 +42,9 @@ export default function DashboardPage() {
         <LowBalanceBanner />
 
         <div className="space-y-4 sm:space-y-6">
+          {/* Cash-First Position Cards — the numbers that matter most */}
+          <CashPositionCard />
+
           {/* 3-Column Grid */}
           <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-12">
             {/* Create Invoice - Left side (6 columns) */}
@@ -51,13 +56,18 @@ export default function DashboardPage() {
 
             {/* Invoice Status - Middle (3 columns) */}
             <div className="lg:col-span-3">
-              <Suspense
-                fallback={
-                  <div className="h-48 animate-pulse rounded-lg bg-brand-background sm:h-64" />
-                }
-              >
-                <InvoiceStatusCard />
-              </Suspense>
+              <div className="space-y-4">
+                <Suspense
+                  fallback={
+                    <div className="h-48 animate-pulse rounded-lg bg-brand-background sm:h-64" />
+                  }
+                >
+                  <InvoiceStatusCard />
+                </Suspense>
+
+                {/* Professionalism Score — motivational nudge */}
+                <ProfessionalismScoreCard />
+              </div>
             </div>
 
             {/* Invoice List - Right side (3 columns) */}

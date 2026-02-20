@@ -12,6 +12,7 @@ type CurrentUser = components["schemas"]["UserOut"];
 
 const allNavItems = [
   { href: "/dashboard", label: "Invoices", icon: "📄", gate: null },
+  { href: "/dashboard/analytics", label: "Insights", icon: "📊", gate: "CASH_DASHBOARD" as const },
   { href: "/dashboard/inventory", label: "Inventory", icon: "📦", gate: "INVENTORY" as const },
   { href: "/dashboard/tax", label: "Tax", icon: "💼", gate: "TAX_REPORTS" as const },
   { href: "/dashboard/referrals", label: "Referrals", icon: "🎁", gate: null },
