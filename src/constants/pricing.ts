@@ -4,7 +4,7 @@
  * 
  * BILLING MODEL (Small & Medium Business Focus):
  * - FREE: 5 free invoices to start, basic features
- * - STARTER: No monthly fee, buy invoice packs (50 = ₦1,250) + tax features
+ * - STARTER: No monthly fee, buy invoice packs (50 = ₦1,250)
  * - PRO: ₦3,250/month = 100 invoices included + ALL premium features
  * - All plans can buy additional packs (50 invoices = ₦1,250)
  * 
@@ -71,12 +71,12 @@ export const PLANS: Record<PlanTier, Plan> = {
     hasMonthlySubscription: false,
     popular: false,
     icon: "🚀",
-    description: "Pay as you go + Tax features",
+    description: "Pay as you go invoicing",
     features: [
       "No monthly fee",
       "50 invoices for ₦1,250",
-      "Tax reports & automation",
       "WhatsApp & Email delivery",
+      "PDF generation & QR verification",
     ],
   },
   PRO: {
@@ -133,7 +133,7 @@ export const LANDING_PLANS: Plan[] = [
  * Feature availability by plan tier
  */
 export const FEATURE_GATES = {
-  TAX_REPORTS: ["STARTER", "PRO"] as PlanTier[],
+  TAX_REPORTS: ["PRO"] as PlanTier[],
   CUSTOM_BRANDING: ["PRO"] as PlanTier[],
   INVENTORY: ["PRO"] as PlanTier[],
   TEAM_MANAGEMENT: ["PRO"] as PlanTier[],

@@ -48,7 +48,7 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: "How do I add VAT/Tax to invoices?",
-        answer: "Tax features are available on Starter and Pro plans. When creating an invoice, you can enable tax calculation and the system will automatically compute VAT and development levy."
+        answer: "Tax features are available on the Pro plan. When creating an invoice, you can enable tax calculation and the system will automatically compute VAT and development levy."
       },
       {
         question: "How do invoices get sent to customers?",
@@ -74,7 +74,7 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: "What are the subscription plans?",
-        answer: "We offer: Free (5 invoices to start), Starter (pay-as-you-go with tax features), and Pro (₦3,250/month with all premium features including voice invoices, inventory & team access)."
+        answer: "We offer: Free (5 invoices to start), Starter (pay-as-you-go invoicing), and Pro (₦3,250/month with all premium features including tax reports, voice invoices, inventory & team access)."
       },
       {
         question: "Who should use the Pro plan?",
