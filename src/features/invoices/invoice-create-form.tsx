@@ -39,6 +39,7 @@ export function InvoiceCreateForm() {
 
   // Shared Fields
   const [amount, setAmount] = useState("");
+  const [dueDate, setDueDate] = useState("");
   const [lines, setLines] = useState<LineDraft[]>([emptyLine()]);
 
   // UI State
@@ -87,6 +88,7 @@ export function InvoiceCreateForm() {
     setCustomerPhone("");
     setCustomerEmail("");
     setAmount("");
+    setDueDate("");
     setLines([emptyLine()]);
     setShowBankDetailsError(false);
   }
@@ -120,6 +122,7 @@ export function InvoiceCreateForm() {
         customer_name: customerName,
         customer_phone: customerPhone || undefined,
         customer_email: customerEmail || undefined,
+        due_date: dueDate || undefined,
         lines:
           preparedLines.length > 0
             ? preparedLines
@@ -223,6 +226,27 @@ export function InvoiceCreateForm() {
         onAddLine={addLine}
         showProductPicker={["pro", "business"].includes(quota?.current_plan?.toLowerCase() || "")}
       />
+
+      {/* Due Date */}
+      <div className="space-y-1">
+        <label
+          htmlFor="due-date"
+          className="text-sm font-medium text-brand-text"
+        >
+          Due Date{" "}
+          <span className="text-xs font-normal text-brand-textMuted">
+            (optional — defaults to 3 days)
+          </span>
+        </label>
+        <input
+          id="due-date"
+          type="date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+          min={new Date().toISOString().split("T")[0]}
+          className="w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text shadow-sm transition focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20 sm:w-48"
+        />
+      </div>
 
       {/* Submit Button */}
       <Button
