@@ -10,6 +10,7 @@ import { StatCard } from "@/components/ui/stat-card";
 import { components } from "@/api/types.generated";
 import { hasPlanFeature, type PlanTier } from "@/constants/pricing";
 import toast from "react-hot-toast";
+import TaxProfileSettings from "./tax-profile-settings";
 
 type CurrentUser = components["schemas"]["UserOut"];
 
@@ -452,6 +453,9 @@ export default function TaxPage() {
             </p>
           </div>
         )}
+
+        {/* Tax Profile Settings — VAT status, business type, registration */}
+        <TaxProfileSettings />
 
         <Card className="mb-6 sm:mb-8">
           <CardHeader className="border-b border-brand-border/60 px-4 sm:px-6">

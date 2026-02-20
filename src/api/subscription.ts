@@ -155,7 +155,6 @@ export async function switchToStarter(): Promise<SwitchToStarterResponse> {
 export interface SubscriptionStatusResponse {
   plan: string;
   is_recurring: boolean;
-  subscription_code: string | null;
   subscription_started_at: string | null;
   expires_at: string | null;
   invoice_balance: number;
