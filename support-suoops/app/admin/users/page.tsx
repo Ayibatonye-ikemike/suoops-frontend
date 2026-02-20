@@ -15,6 +15,7 @@ import {
   Crown,
   Download,
   Trash2,
+  Shield,
 } from "lucide-react";
 import { useAdminAuth } from "../layout";
 
@@ -26,6 +27,7 @@ interface UserInfo {
   phone_verified: boolean;
   role: string;
   plan: string;
+  pro_override: boolean;
   invoices_this_month: number;
   created_at: string;
   last_login: string | null;
@@ -69,6 +71,9 @@ export default function UsersPage() {
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
+
+  // Pro override toggle state
+  const [isTogglingPro, setIsTogglingPro] = useState(false);
 
   // Search
   const [searchInput, setSearchInput] = useState("");
@@ -204,6 +209,32 @@ export default function UsersPage() {
       setDeleteError(err instanceof Error ? err.message : "Delete failed");
     } finally {
       setIsDeleting(false);
+    }
+  }
+
+  // Toggle pro override
+  async function toggleProOverride() {
+    if (!token || !selectedUser) return;
+
+    setIsTogglingPro(true);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
+      const res = await fetch(`${apiUrl}/admin/users/${selectedUser.id}/pro-override`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) throw new Error("Failed to toggle PRO override");
+      const data = await res.json();
+
+      // Update local state
+      const updated = { ...selectedUser, pro_override: data.pro_override };
+      setSelectedUser(updated);
+      setUsers(users.map((u) => (u.id === selectedUser.id ? { ...u, pro_override: data.pro_override } : u)));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Toggle failed");
+    } finally {
+      setIsTogglingPro(false);
     }
   }
 
@@ -349,6 +380,12 @@ export default function UsersPage() {
                         >
                           {selectedUser.plan} Plan
                         </span>
+                        {selectedUser.pro_override && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-violet-100 px-3 py-1 text-sm font-medium text-violet-700">
+                            <Shield className="h-3 w-3" />
+                            PRO Override
+                          </span>
+                        )}
                         <span
                           className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
                             selectedUser.phone_verified
@@ -364,7 +401,45 @@ export default function UsersPage() {
                 </div>
               </div>
 
-              {/* Danger Zone - Delete User */}
+              {/* Admin Actions - Pro Override Toggle */}
+              <div className="rounded-xl border border-violet-200 bg-violet-50/50">
+                <div className="px-6 py-4 border-b border-violet-200">
+                  <h3 className="font-semibold text-violet-900 flex items-center gap-2">
+                    <Shield className="h-4 w-4" />
+                    Admin Actions
+                  </h3>
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-slate-900">PRO Features Override</p>
+                      <p className="text-sm text-slate-500 mt-1">
+                        Grant access to all PRO features (inventory, branding, voice, daily summary)
+                        <strong> without</strong> changing their plan or adding invoice packs.
+                      </p>
+                    </div>
+                    <button
+                      onClick={toggleProOverride}
+                      disabled={isTogglingPro}
+                      className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 disabled:opacity-50 ${
+                        selectedUser.pro_override ? "bg-violet-600" : "bg-slate-200"
+                      }`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                          selectedUser.pro_override ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
+                  </div>
+                  {selectedUser.pro_override && (
+                    <div className="mt-3 flex items-center gap-2 text-sm text-violet-700 bg-violet-100 rounded-lg px-3 py-2">
+                      <Shield className="h-4 w-4 shrink-0" />
+                      This user has admin-granted PRO access. Their actual plan ({selectedUser.plan}) and invoice balance are unchanged.
+                    </div>
+                  )}
+                </div>
+              </div>
               <div className="rounded-xl border-2 border-red-200 bg-red-50">
                 <div className="px-6 py-4 border-b border-red-200">
                   <h3 className="font-semibold text-red-700">Danger Zone</h3>
