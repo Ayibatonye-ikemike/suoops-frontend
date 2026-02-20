@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
 import { getProfessionalismScore } from "@/api/analytics";
 import { apiClient } from "@/api/client";
 import { hasPlanFeature, type PlanTier } from "@/constants/pricing";

@@ -39,6 +39,7 @@ interface ReferralStats {
     email: string | null;
     phone: string;
     referral_count: number;
+    paid_referral_count: number;
     commission_earned: number;
     payout_bank_name: string | null;
   }>;

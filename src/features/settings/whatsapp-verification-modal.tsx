@@ -7,7 +7,7 @@
 
 "use client";
 
-import React, { useCallback, useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import { requestPhoneOTP, verifyPhoneOTP } from "./phone-api";
 import { OTPInput } from "@/features/auth/otp-input";
@@ -76,112 +76,8 @@ export function WhatsAppVerificationModal({
     prevOpenRef.current = isOpen;
   }, [isOpen]);
 
-  const handleRequestOTP = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("[WhatsApp Modal] handleRequestOTP called");
-    
-    // Prevent any double submission
-    if (loading) {
-      console.log("[WhatsApp Modal] Already loading, ignoring");
-      return;
-    }
-    
-    setError(null);
-
-    const formData = new FormData(e.currentTarget);
-    const phoneInput = formData.get("phone") as string;
-    console.log("[WhatsApp Modal] Phone input:", phoneInput);
-
-    if (!phoneInput?.trim()) {
-      setError("Enter your WhatsApp number");
-      return;
-    }
-
-    setLoading(true);
-    const normalizedPhone = normalizePhone(phoneInput);
-    console.log("[WhatsApp Modal] Normalized phone:", normalizedPhone);
-
-    try {
-      console.log("[WhatsApp Modal] Calling requestPhoneOTP...");
-      const result = await requestPhoneOTP({ phone: normalizedPhone });
-      console.log("[WhatsApp Modal] OTP request success:", result);
-      setPhone(normalizedPhone);
-      setStep("otp");
-    } catch (err: unknown) {
-      console.error("[WhatsApp Modal] OTP request failed:", err);
-      let message = "Failed to send OTP. Try again.";
-      
-      if (err && typeof err === "object") {
-        const axiosError = err as { 
-          response?: { data?: { detail?: string }, status?: number }, 
-          message?: string,
-          code?: string 
-        };
-        console.error("[WhatsApp Modal] Error details:", {
-          status: axiosError?.response?.status,
-          detail: axiosError?.response?.data?.detail,
-          message: axiosError?.message,
-          code: axiosError?.code,
-        });
-        
-        if (axiosError?.response?.data?.detail) {
-          message = axiosError.response.data.detail;
-        } else if (axiosError?.response?.status === 500) {
-          message = "Server error. Please try again.";
-        } else if (axiosError?.code === "ERR_NETWORK") {
-          message = "Network error. Check your connection.";
-        } else if (axiosError?.message) {
-          message = axiosError.message;
-        }
-      }
-      
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
-  }, [loading]);
-
-  const handleVerifyOTP = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("=== WhatsApp Modal: Verify OTP form submitted ===");
-    console.log("Current OTP:", otp);
-    console.log("Phone:", phone);
-    
-    setError(null);
-
-    if (otp.length !== 6) {
-      console.log("OTP too short");
-      setError("Enter the 6-digit code");
-      return;
-    }
-
-    setLoading(true);
-    console.log("Calling verifyPhoneOTP API...");
-
-    try {
-      const result = await verifyPhoneOTP({ phone, otp });
-      console.log("Verify success:", result);
-      setStep("success");
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-      onVerified?.(phone);
-      
-      // Auto-close after success
-      setTimeout(() => {
-        onClose();
-      }, 2000);
-    } catch (err) {
-      console.error("Verify failed:", err);
-      const message =
-        (err as { response?: { data?: { detail?: string } } })?.response?.data
-          ?.detail || "Invalid code. Try again.";
-      setError(message);
-      setOtp("");
-    } finally {
-      setLoading(false);
-    }
-  }, [otp, phone, onVerified, onClose, queryClient]);
+  // OTP request is handled inline in the button onClick below
+  // OTP verification is handled inline in the button onClick below
 
   if (!isOpen) return null;
 
