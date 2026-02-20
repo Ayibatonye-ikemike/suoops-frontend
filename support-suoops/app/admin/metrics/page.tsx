@@ -5,16 +5,26 @@ import {
   FileText,
   DollarSign,
   TrendingUp,
+  TrendingDown,
   Receipt,
   Users,
   Crown,
   AlertCircle,
+  AlertTriangle,
   Calendar,
   BarChart3,
   Gift,
   CheckCircle,
+  Zap,
+  Target,
+  ArrowRight,
+  Clock,
+  UserX,
+  Activity,
 } from "lucide-react";
 import { useAdminAuth } from "../layout";
+
+// ─── Types ───────────────────────────────────────────────────────
 
 interface PaidUserInfo {
   id: number;
@@ -50,7 +60,46 @@ interface PlatformMetrics {
   paid_users: PaidUserInfo[];
 }
 
+interface MonthlyDataPoint {
+  month: string;
+  value: number;
+}
+
+interface ActivationFunnel {
+  total_signups: number;
+  created_first_invoice: number;
+  received_first_payment: number;
+  upgraded_to_paid: number;
+}
+
+interface GrowthMetrics {
+  mrr: number;
+  mrr_trend: MonthlyDataPoint[];
+  arr: number;
+  churned_users: number;
+  churn_rate: number;
+  activation_funnel: ActivationFunnel;
+  collection_rate: number;
+  avg_days_to_payment: number | null;
+  user_growth: MonthlyDataPoint[];
+  invoice_growth: MonthlyDataPoint[];
+  revenue_growth: MonthlyDataPoint[];
+  avg_invoices_per_user: number;
+  power_users: number;
+  zero_invoice_users: number;
+  expired_subscriptions: number;
+  expiring_soon: number;
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────
+
 function formatCurrency(amount: number): string {
+  if (amount >= 1_000_000) {
+    return `₦${(amount / 1_000_000).toFixed(1)}M`;
+  }
+  if (amount >= 1_000) {
+    return `₦${(amount / 1_000).toFixed(0)}k`;
+  }
   return new Intl.NumberFormat("en-NG", {
     style: "currency",
     currency: "NGN",
@@ -59,18 +108,41 @@ function formatCurrency(amount: number): string {
   }).format(amount);
 }
 
+function formatMonth(month: string): string {
+  const [year, m] = month.split("-");
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${months[parseInt(m) - 1]} '${year.slice(2)}`;
+}
+
+function isExpired(dateStr: string | null): boolean {
+  if (!dateStr) return false;
+  return new Date(dateStr) < new Date();
+}
+
+function isExpiringSoon(dateStr: string | null): boolean {
+  if (!dateStr) return false;
+  const d = new Date(dateStr);
+  const now = new Date();
+  const sevenDays = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+  return d >= now && d <= sevenDays;
+}
+
+// ─── Components ──────────────────────────────────────────────────
+
 function StatCard({
   title,
   value,
   subtitle,
   icon: Icon,
   color = "emerald",
+  alert,
 }: {
   title: string;
   value: string | number;
   subtitle?: string;
   icon: React.ElementType;
   color?: "emerald" | "blue" | "purple" | "orange" | "red" | "yellow";
+  alert?: boolean;
 }) {
   const colors = {
     emerald: "bg-emerald-100 text-emerald-600",
@@ -82,13 +154,13 @@ function StatCard({
   };
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6">
+    <div className={`rounded-xl border bg-white p-6 ${alert ? "border-red-300 ring-1 ring-red-100" : "border-slate-200"}`}>
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm font-medium text-slate-500">{title}</p>
           <p className="mt-2 text-2xl font-bold text-slate-900">{value}</p>
           {subtitle && (
-            <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
+            <p className={`mt-1 text-sm ${alert ? "text-red-500 font-medium" : "text-slate-500"}`}>{subtitle}</p>
           )}
         </div>
         <div className={`flex h-12 w-12 items-center justify-center rounded-lg ${colors[color]}`}>
@@ -117,25 +189,107 @@ function ProgressBar({ label, value, total, color }: { label: string; value: num
   );
 }
 
+function FunnelStep({
+  label,
+  value,
+  total,
+  icon: Icon,
+  color,
+  isLast,
+}: {
+  label: string;
+  value: number;
+  total: number;
+  icon: React.ElementType;
+  color: string;
+  isLast?: boolean;
+}) {
+  const pct = total > 0 ? ((value / total) * 100).toFixed(1) : "0";
+  return (
+    <div className="flex items-center gap-3">
+      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${color}`}>
+        <Icon className="h-5 w-5" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-slate-700">{label}</span>
+          <span className="text-sm font-bold text-slate-900">{value.toLocaleString()}</span>
+        </div>
+        <div className="mt-1 flex items-center gap-2">
+          <div className="h-1.5 flex-1 rounded-full bg-slate-100">
+            <div className={`h-1.5 rounded-full ${color.replace("/10", "")}`}
+              style={{ width: `${Math.min(parseFloat(pct), 100)}%` }} />
+          </div>
+          <span className="text-xs text-slate-500 w-10 text-right">{pct}%</span>
+        </div>
+      </div>
+      {!isLast && <ArrowRight className="h-4 w-4 text-slate-300 shrink-0 hidden sm:block" />}
+    </div>
+  );
+}
+
+function MiniBarChart({ data, color = "bg-emerald-500", label = "" }: {
+  data: MonthlyDataPoint[];
+  color?: string;
+  label?: string;
+}) {
+  const max = Math.max(...data.map(d => d.value), 1);
+  return (
+    <div>
+      {label && <p className="text-xs font-medium text-slate-500 mb-2">{label}</p>}
+      <div className="flex items-end gap-1 h-16">
+        {data.map((d) => (
+          <div key={d.month} className="flex-1 flex flex-col items-center gap-1">
+            <div
+              className={`w-full rounded-t ${color} transition-all`}
+              style={{ height: `${Math.max((d.value / max) * 100, 4)}%` }}
+              title={`${formatMonth(d.month)}: ${d.value.toLocaleString()}`}
+            />
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-1 mt-1">
+        {data.map((d) => (
+          <div key={d.month} className="flex-1 text-center">
+            <span className="text-[9px] text-slate-400">{formatMonth(d.month)}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Tabs ────────────────────────────────────────────────────────
+
+type Tab = "overview" | "growth";
+
+// ─── Page ────────────────────────────────────────────────────────
+
 export default function MetricsPage() {
   const { token } = useAdminAuth();
   const [metrics, setMetrics] = useState<PlatformMetrics | null>(null);
+  const [growth, setGrowth] = useState<GrowthMetrics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [activeTab, setActiveTab] = useState<Tab>("overview");
 
   useEffect(() => {
-    async function fetchMetrics() {
+    async function fetchAll() {
       if (!token) return;
 
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
-        const res = await fetch(`${apiUrl}/admin/metrics`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const [metricsRes, growthRes] = await Promise.all([
+          fetch(`${apiUrl}/admin/metrics`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`${apiUrl}/admin/metrics/growth`, { headers: { Authorization: `Bearer ${token}` } }),
+        ]);
 
-        if (!res.ok) throw new Error("Failed to fetch platform metrics");
-        const data = await res.json();
-        setMetrics(data);
+        if (!metricsRes.ok) throw new Error("Failed to fetch platform metrics");
+        setMetrics(await metricsRes.json());
+
+        if (growthRes.ok) {
+          setGrowth(await growthRes.json());
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load data");
       } finally {
@@ -143,7 +297,7 @@ export default function MetricsPage() {
       }
     }
 
-    fetchMetrics();
+    fetchAll();
   }, [token]);
 
   if (isLoading) {
@@ -184,36 +338,90 @@ export default function MetricsPage() {
         <p className="text-slate-500">Monitor overall platform performance</p>
       </div>
 
-      {/* Overview Stats */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          title="Registered Users"
-          value={totalSubscribers.toLocaleString()}
-          subtitle={`${metrics?.total_customers || 0} invoiced customers`}
-          icon={Users}
-        />
-        <StatCard
-          title="Total Invoices"
-          value={metrics?.total_invoices?.toLocaleString() || 0}
-          subtitle={`${metrics?.paid_invoices || 0} paid`}
-          icon={FileText}
-          color="blue"
-        />
-        <StatCard
-          title="Revenue Tracked"
-          value={formatCurrency(metrics?.total_revenue_amount || 0)}
-          subtitle="From paid invoices"
-          icon={DollarSign}
-          color="emerald"
-        />
-        <StatCard
-          title="Expenses Tracked"
-          value={formatCurrency(metrics?.total_expense_amount || 0)}
-          subtitle="Across platform"
-          icon={Receipt}
-          color="orange"
-        />
+      {/* Tabs */}
+      <div className="flex gap-4 border-b border-slate-200">
+        <button
+          onClick={() => setActiveTab("overview")}
+          className={`pb-3 px-1 text-sm font-medium border-b-2 transition-colors ${
+            activeTab === "overview"
+              ? "border-emerald-600 text-emerald-600"
+              : "border-transparent text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          Overview
+        </button>
+        <button
+          onClick={() => setActiveTab("growth")}
+          className={`pb-3 px-1 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
+            activeTab === "growth"
+              ? "border-emerald-600 text-emerald-600"
+              : "border-transparent text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          <TrendingUp className="h-4 w-4" />
+          Growth Analytics
+          {growth && (growth.expired_subscriptions > 0 || growth.expiring_soon > 0) && (
+            <span className="ml-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700">
+              {growth.expired_subscriptions + growth.expiring_soon}
+            </span>
+          )}
+        </button>
       </div>
+
+      {activeTab === "overview" ? (
+        <>
+          {/* ═══ OVERVIEW TAB ═══ */}
+
+          {/* Subscription Health Alerts */}
+          {growth && (growth.expired_subscriptions > 0 || growth.expiring_soon > 0) && (
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+              <div className="text-sm">
+                <p className="font-medium text-amber-800">Subscription Health Alert</p>
+                <p className="text-amber-700 mt-1">
+                  {growth.expired_subscriptions > 0 && (
+                    <span className="font-semibold text-red-600">{growth.expired_subscriptions} expired</span>
+                  )}
+                  {growth.expired_subscriptions > 0 && growth.expiring_soon > 0 && " · "}
+                  {growth.expiring_soon > 0 && (
+                    <span className="font-semibold text-amber-700">{growth.expiring_soon} expiring within 7 days</span>
+                  )}
+                  {" — check the Paid Subscribers table below for details."}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Overview Stats */}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <StatCard
+              title="Registered Users"
+              value={totalSubscribers.toLocaleString()}
+              subtitle={`${metrics?.total_customers || 0} invoiced customers`}
+              icon={Users}
+            />
+            <StatCard
+              title="Total Invoices"
+              value={metrics?.total_invoices?.toLocaleString() || "0"}
+              subtitle={`${metrics?.paid_invoices || 0} paid`}
+              icon={FileText}
+              color="blue"
+            />
+            <StatCard
+              title="Revenue Tracked"
+              value={formatCurrency(metrics?.total_revenue_amount || 0)}
+              subtitle="From paid invoices"
+              icon={DollarSign}
+              color="emerald"
+            />
+            <StatCard
+              title="Expenses Tracked"
+              value={formatCurrency(metrics?.total_expense_amount || 0)}
+              subtitle="Across platform"
+              icon={Receipt}
+              color="orange"
+            />
+          </div>
 
       {/* Detailed Metrics */}
       <div className="grid gap-6 lg:grid-cols-2">
@@ -243,6 +451,28 @@ export default function MetricsPage() {
               color="bg-slate-400"
             />
           </div>
+
+          {/* Collection Rate */}
+          {growth && (
+            <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Target className="h-4 w-4 text-blue-500" />
+                <span className="text-sm text-slate-600">Collection Rate</span>
+              </div>
+              <span className={`text-lg font-bold ${growth.collection_rate >= 50 ? "text-emerald-600" : growth.collection_rate >= 30 ? "text-amber-600" : "text-red-600"}`}>
+                {growth.collection_rate}%
+              </span>
+            </div>
+          )}
+          {growth?.avg_days_to_payment && (
+            <div className="mt-2 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-slate-400" />
+                <span className="text-sm text-slate-600">Avg. Days to Payment</span>
+              </div>
+              <span className="text-sm font-semibold text-slate-700">{growth.avg_days_to_payment} days</span>
+            </div>
+          )}
 
           <div className="mt-6 pt-6 border-t border-slate-100">
             <div className="flex items-center gap-3 mb-4">
@@ -307,6 +537,20 @@ export default function MetricsPage() {
               </p>
             </div>
           </div>
+
+          {/* MRR Preview */}
+          {growth && (
+            <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-2 gap-4">
+              <div className="text-center p-3 rounded-lg bg-emerald-50">
+                <p className="text-xs text-emerald-600">Monthly Recurring</p>
+                <p className="text-lg font-bold text-emerald-700">₦{growth.mrr.toLocaleString()}</p>
+              </div>
+              <div className="text-center p-3 rounded-lg bg-purple-50">
+                <p className="text-xs text-purple-600">ARR</p>
+                <p className="text-lg font-bold text-purple-700">₦{growth.arr.toLocaleString()}</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -344,7 +588,10 @@ export default function MetricsPage() {
             <tbody>
               {metrics?.paid_users && metrics.paid_users.length > 0 ? (
                 metrics.paid_users.map((user) => (
-                  <tr key={user.id} className="border-b border-slate-50 hover:bg-slate-50">
+                  <tr key={user.id} className={`border-b border-slate-50 hover:bg-slate-50 ${
+                    isExpired(user.subscription_expires_at) ? "bg-red-50/50" :
+                    isExpiringSoon(user.subscription_expires_at) ? "bg-amber-50/50" : ""
+                  }`}>
                     <td className="px-6 py-4">
                       <div className="font-medium text-slate-900">{user.name}</div>
                       <div className="text-sm text-slate-500">{user.business_name || user.phone}</div>
@@ -381,10 +628,28 @@ export default function MetricsPage() {
                         ? new Date(user.subscription_started_at).toLocaleDateString()
                         : "-"}
                     </td>
-                    <td className="px-6 py-4 text-sm text-slate-600">
-                      {user.subscription_expires_at
-                        ? new Date(user.subscription_expires_at).toLocaleDateString()
-                        : "-"}
+                    <td className="px-6 py-4 text-sm">
+                      {user.subscription_expires_at ? (
+                        <span className={`inline-flex items-center gap-1 ${
+                          isExpired(user.subscription_expires_at)
+                            ? "text-red-600 font-semibold"
+                            : isExpiringSoon(user.subscription_expires_at)
+                            ? "text-amber-600 font-semibold"
+                            : "text-slate-600"
+                        }`}>
+                          {isExpired(user.subscription_expires_at) && (
+                            <AlertCircle className="h-3.5 w-3.5" />
+                          )}
+                          {isExpiringSoon(user.subscription_expires_at) && (
+                            <AlertTriangle className="h-3.5 w-3.5" />
+                          )}
+                          {new Date(user.subscription_expires_at).toLocaleDateString()}
+                          {isExpired(user.subscription_expires_at) && " (expired)"}
+                          {isExpiringSoon(user.subscription_expires_at) && " (soon)"}
+                        </span>
+                      ) : (
+                        "-"
+                      )}
                     </td>
                   </tr>
                 ))
@@ -399,6 +664,225 @@ export default function MetricsPage() {
           </table>
         </div>
       </div>
+        </>
+      ) : (
+        <>
+          {/* ═══ GROWTH ANALYTICS TAB ═══ */}
+
+          {growth ? (
+            <div className="space-y-6">
+              {/* Revenue Health */}
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <StatCard
+                  title="MRR"
+                  value={`₦${growth.mrr.toLocaleString()}`}
+                  subtitle={`ARR: ₦${growth.arr.toLocaleString()}`}
+                  icon={DollarSign}
+                  color="emerald"
+                />
+                <StatCard
+                  title="Churn Rate"
+                  value={`${growth.churn_rate}%`}
+                  subtitle={`${growth.churned_users} expired subscriptions`}
+                  icon={growth.churn_rate > 10 ? TrendingDown : Activity}
+                  color={growth.churn_rate > 10 ? "red" : growth.churn_rate > 5 ? "orange" : "emerald"}
+                  alert={growth.churn_rate > 10}
+                />
+                <StatCard
+                  title="Collection Rate"
+                  value={`${growth.collection_rate}%`}
+                  subtitle={growth.avg_days_to_payment ? `Avg. ${growth.avg_days_to_payment} days to pay` : "No data yet"}
+                  icon={Target}
+                  color={growth.collection_rate >= 50 ? "emerald" : growth.collection_rate >= 30 ? "orange" : "red"}
+                />
+                <StatCard
+                  title="Avg. Invoices/User"
+                  value={growth.avg_invoices_per_user}
+                  subtitle={`${growth.power_users} power users (10+/mo)`}
+                  icon={Zap}
+                  color="purple"
+                />
+              </div>
+
+              {/* Subscription Health Warnings */}
+              {(growth.expired_subscriptions > 0 || growth.expiring_soon > 0) && (
+                <div className="rounded-lg border border-red-200 bg-red-50 p-4 flex items-start gap-3">
+                  <AlertTriangle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-red-800">Subscription Health Warning</p>
+                    <div className="mt-2 flex gap-6 text-sm">
+                      {growth.expired_subscriptions > 0 && (
+                        <div className="flex items-center gap-2">
+                          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-red-200 text-xs font-bold text-red-700">
+                            {growth.expired_subscriptions}
+                          </span>
+                          <span className="text-red-700">Expired — need renewal outreach</span>
+                        </div>
+                      )}
+                      {growth.expiring_soon > 0 && (
+                        <div className="flex items-center gap-2">
+                          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-200 text-xs font-bold text-amber-700">
+                            {growth.expiring_soon}
+                          </span>
+                          <span className="text-amber-700">Expiring within 7 days</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Activation Funnel + Engagement */}
+              <div className="grid gap-6 lg:grid-cols-2">
+                {/* Activation Funnel */}
+                <div className="rounded-xl border border-slate-200 bg-white p-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <Target className="h-5 w-5 text-slate-500" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-slate-900">Activation Funnel</h3>
+                      <p className="text-xs text-slate-500">Where are users dropping off?</p>
+                    </div>
+                  </div>
+                  <div className="space-y-5">
+                    <FunnelStep
+                      label="Signed Up"
+                      value={growth.activation_funnel.total_signups}
+                      total={growth.activation_funnel.total_signups}
+                      icon={Users}
+                      color="bg-slate-100 text-slate-600"
+                    />
+                    <FunnelStep
+                      label="Created First Invoice"
+                      value={growth.activation_funnel.created_first_invoice}
+                      total={growth.activation_funnel.total_signups}
+                      icon={FileText}
+                      color="bg-blue-100 text-blue-600"
+                    />
+                    <FunnelStep
+                      label="Received First Payment"
+                      value={growth.activation_funnel.received_first_payment}
+                      total={growth.activation_funnel.total_signups}
+                      icon={DollarSign}
+                      color="bg-emerald-100 text-emerald-600"
+                    />
+                    <FunnelStep
+                      label="Upgraded to Paid Plan"
+                      value={growth.activation_funnel.upgraded_to_paid}
+                      total={growth.activation_funnel.total_signups}
+                      icon={Crown}
+                      color="bg-purple-100 text-purple-600"
+                      isLast
+                    />
+                  </div>
+                </div>
+
+                {/* Engagement Health */}
+                <div className="rounded-xl border border-slate-200 bg-white p-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <Activity className="h-5 w-5 text-slate-500" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-slate-900">Engagement Health</h3>
+                      <p className="text-xs text-slate-500">User activity indicators</p>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 rounded-lg bg-red-50 border border-red-100">
+                      <div className="flex items-center gap-3">
+                        <UserX className="h-5 w-5 text-red-500" />
+                        <div>
+                          <p className="text-sm font-medium text-red-800">Zero-Invoice Users</p>
+                          <p className="text-xs text-red-600">Signed up but never created an invoice</p>
+                        </div>
+                      </div>
+                      <span className="text-2xl font-bold text-red-700">{growth.zero_invoice_users}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 rounded-lg bg-purple-50 border border-purple-100">
+                      <div className="flex items-center gap-3">
+                        <Zap className="h-5 w-5 text-purple-500" />
+                        <div>
+                          <p className="text-sm font-medium text-purple-800">Power Users</p>
+                          <p className="text-xs text-purple-600">10+ invoices this month</p>
+                        </div>
+                      </div>
+                      <span className="text-2xl font-bold text-purple-700">{growth.power_users}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 rounded-lg bg-emerald-50 border border-emerald-100">
+                      <div className="flex items-center gap-3">
+                        <BarChart3 className="h-5 w-5 text-emerald-500" />
+                        <div>
+                          <p className="text-sm font-medium text-emerald-800">Avg. Invoices/User</p>
+                          <p className="text-xs text-emerald-600">Across all active users</p>
+                        </div>
+                      </div>
+                      <span className="text-2xl font-bold text-emerald-700">{growth.avg_invoices_per_user}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 rounded-lg bg-blue-50 border border-blue-100">
+                      <div className="flex items-center gap-3">
+                        <Clock className="h-5 w-5 text-blue-500" />
+                        <div>
+                          <p className="text-sm font-medium text-blue-800">Avg. Days to Payment</p>
+                          <p className="text-xs text-blue-600">From invoice created to paid</p>
+                        </div>
+                      </div>
+                      <span className="text-2xl font-bold text-blue-700">
+                        {growth.avg_days_to_payment ?? "—"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Growth Trend Charts */}
+              <div className="grid gap-6 lg:grid-cols-3">
+                <div className="rounded-xl border border-slate-200 bg-white p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Users className="h-5 w-5 text-blue-500" />
+                    <h3 className="font-semibold text-slate-900">User Growth</h3>
+                  </div>
+                  <MiniBarChart data={growth.user_growth} color="bg-blue-500" label="New signups per month" />
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-white p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <FileText className="h-5 w-5 text-emerald-500" />
+                    <h3 className="font-semibold text-slate-900">Invoice Growth</h3>
+                  </div>
+                  <MiniBarChart data={growth.invoice_growth} color="bg-emerald-500" label="Invoices created per month" />
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-white p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <DollarSign className="h-5 w-5 text-purple-500" />
+                    <h3 className="font-semibold text-slate-900">Revenue Growth</h3>
+                  </div>
+                  <MiniBarChart data={growth.revenue_growth} color="bg-purple-500" label="Paid revenue per month" />
+                </div>
+              </div>
+
+              {/* MRR Trend */}
+              {growth.mrr_trend.length > 0 && (
+                <div className="rounded-xl border border-slate-200 bg-white p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <TrendingUp className="h-5 w-5 text-emerald-500" />
+                    <div>
+                      <h3 className="font-semibold text-slate-900">Subscription Revenue Trend</h3>
+                      <p className="text-xs text-slate-500">Monthly subscription payments received</p>
+                    </div>
+                  </div>
+                  <MiniBarChart data={growth.mrr_trend} color="bg-emerald-500" />
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="rounded-lg bg-slate-50 border border-slate-200 p-12 text-center">
+              <TrendingUp className="h-12 w-12 text-slate-300 mx-auto mb-4" />
+              <p className="text-lg font-medium text-slate-600">Growth analytics loading...</p>
+              <p className="text-sm text-slate-400 mt-1">This data requires the latest backend update.</p>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
