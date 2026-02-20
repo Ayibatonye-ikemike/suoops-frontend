@@ -265,7 +265,7 @@ export default function ReferralsPage() {
             <StatCard
               title="Commission Earned"
               value={`₦${((stats?.paid_referrals || 0) * 500).toLocaleString()}`}
-              subtitle="₦500 per Pro referral"
+              subtitle="₦488 per Pro referral"
               icon={Award}
               color="orange"
             />
@@ -373,7 +373,7 @@ export default function ReferralsPage() {
       <div className="rounded-xl border border-slate-200 bg-white">
         <div className="border-b border-slate-100 px-6 py-4">
           <h3 className="text-lg font-semibold text-slate-900">Top Referrers</h3>
-          <p className="text-sm text-slate-500">Users with the most Pro referrals (₦500 commission each)</p>
+          <p className="text-sm text-slate-500">Users with the most Pro referrals (₦488 commission each)</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -418,7 +418,7 @@ export default function ReferralsPage() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <span className="font-semibold text-slate-900">
-                        ₦{(referrer.commission_earned || referrer.referral_count * 500).toLocaleString()}
+                        ₦{(referrer.commission_earned || referrer.referral_count * 488).toLocaleString()}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-center">

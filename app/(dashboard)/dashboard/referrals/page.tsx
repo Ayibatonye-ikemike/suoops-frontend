@@ -208,7 +208,7 @@ export default function ReferralsPage() {
             Refer & Earn
           </h1>
           <p className="mt-1 text-sm text-brand-textMuted">
-            Earn ₦500 cash for every friend who subscribes to Pro!
+            Earn ₦488 cash for every friend who subscribes to Pro!
           </p>
         </div>
 
@@ -259,7 +259,7 @@ export default function ReferralsPage() {
                   <div className="w-6 h-6 rounded-full bg-emerald-900/60 flex items-center justify-center text-emerald-400 text-xs font-bold shrink-0">
                     3
                   </div>
-                  <span><strong className="text-emerald-400">You earn ₦500 cash</strong> (10% commission) paid at month end!</span>
+                  <span><strong className="text-emerald-400">You earn ₦488 cash</strong> (15% commission) paid at month end!</span>
                 </div>
               </div>
             </div>
@@ -308,11 +308,11 @@ export default function ReferralsPage() {
           <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-brand-bg/40 rounded-lg p-4 text-center">
-                <div className="text-3xl font-bold text-emerald-400">10%</div>
+                <div className="text-3xl font-bold text-emerald-400">15%</div>
                 <div className="text-sm text-brand-textMuted mt-1">Commission Rate</div>
               </div>
               <div className="bg-brand-bg/40 rounded-lg p-4 text-center">
-                <div className="text-3xl font-bold text-white">₦500</div>
+                <div className="text-3xl font-bold text-white">₦488</div>
                 <div className="text-sm text-brand-textMuted mt-1">Per Pro Subscriber</div>
               </div>
             </div>
