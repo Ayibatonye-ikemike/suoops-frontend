@@ -32,6 +32,12 @@ export function Navigation() {
             >
               Pricing
             </a>
+            <a
+              href="#support"
+              className="hidden sm:block text-sm font-medium text-white/80 hover:text-white transition-colors"
+            >
+              Support
+            </a>
             <Link
               href="/login"
               className="rounded-lg bg-brand-jade px-4 py-2 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-brand-teal"
@@ -66,6 +72,109 @@ export function CTASection() {
         <p className="mt-6 text-sm text-white/60">
           ✓ Free to start · ✓ No credit card required
         </p>
+      </div>
+    </section>
+  );
+}
+
+export function SupportEscalation() {
+  const tiers = [
+    {
+      step: "1",
+      title: "Self-Service",
+      icon: "📚",
+      description: "Browse our Help Center for guides, FAQs, and how-to articles.",
+      action: { label: "Visit Help Center", href: "https://support.suoops.com", external: true },
+      hint: "Most questions answered instantly",
+    },
+    {
+      step: "2",
+      title: "WhatsApp Bot",
+      icon: "🤖",
+      description: "Message our bot anytime — type \"help\" to see what it can do.",
+      action: { label: "Message on WhatsApp", href: "https://wa.me/2348106865807?text=help", external: true },
+      hint: "Available 24/7",
+    },
+    {
+      step: "3",
+      title: "Email Support",
+      icon: "✉️",
+      description: "Send us a detailed message and we'll get back to you within 24 hours.",
+      action: { label: "support@suoops.com", href: "mailto:support@suoops.com", external: false },
+      hint: "Response within 24 hrs",
+    },
+    {
+      step: "4",
+      title: "Urgent Escalation",
+      icon: "🚨",
+      description: "Payment issues or account locked? Reach our team directly for priority help.",
+      action: { label: "Contact Support", href: "https://support.suoops.com/contact", external: true },
+      hint: "Priority response",
+    },
+  ];
+
+  return (
+    <section id="support" className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-brand-evergreen sm:text-4xl">
+            Need Help? We&apos;ve Got You.
+          </h2>
+          <p className="mt-4 text-lg text-slate-600">
+            Get the right support at every level — from instant self-service to priority escalation.
+          </p>
+        </div>
+
+        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {tiers.map((tier) => (
+            <div
+              key={tier.step}
+              className="relative flex flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+            >
+              {/* Step badge */}
+              <span className="absolute -top-3 left-6 inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-jade text-xs font-bold text-white shadow">
+                {tier.step}
+              </span>
+
+              <span className="text-3xl">{tier.icon}</span>
+              <h3 className="mt-3 text-lg font-semibold text-brand-evergreen">
+                {tier.title}
+              </h3>
+              <p className="mt-2 flex-1 text-sm text-slate-600">
+                {tier.description}
+              </p>
+
+              <a
+                href={tier.action.href}
+                {...(tier.action.external
+                  ? { target: "_blank", rel: "noopener noreferrer" }
+                  : {})}
+                className="mt-4 inline-flex items-center justify-center rounded-lg bg-brand-evergreen/5 px-4 py-2.5 text-sm font-medium text-brand-evergreen transition-colors hover:bg-brand-evergreen/10"
+              >
+                {tier.action.label}
+                {tier.action.external && (
+                  <svg
+                    className="ml-1.5 h-3.5 w-3.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-4.5-6H18m0 0v4.5m0-4.5L10.5 13.5"
+                    />
+                  </svg>
+                )}
+              </a>
+
+              <p className="mt-3 text-center text-xs font-medium text-brand-jade">
+                {tier.hint}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -171,7 +280,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-12 border-t border-slate-200 pt-8 text-center text-sm text-slate-500">
-          © 2025 SuoOps. All rights reserved. Made with ❤️ in Nigeria 🇳🇬
+          © 2025–2026 SuoOps. All rights reserved. Made with ❤️ in Nigeria 🇳🇬
         </div>
       </div>
     </footer>

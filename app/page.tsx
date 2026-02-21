@@ -7,6 +7,7 @@ import { Pricing } from "@/components/landing/pricing";
 import {
   Navigation,
   CTASection,
+  SupportEscalation,
   Footer,
   VideoModal,
 } from "@/components/landing/layout";
@@ -28,6 +29,7 @@ export default function HomePage() {
       <Features />
       <Pricing />
       <CTASection />
+      <SupportEscalation />
       <Footer />
       <VideoModal isOpen={showVideoModal} onClose={() => setShowVideoModal(false)} />
     </div>
