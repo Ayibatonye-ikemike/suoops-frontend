@@ -43,9 +43,6 @@ export function ProfessionalismScoreCard() {
 
   if (error || !data) return null;
 
-  // Don't show if score is already perfect
-  if (data.score === 100) return null;
-
   const ringPercent = data.score;
   const circumference = 2 * Math.PI * 36;
   const strokeDashoffset = circumference - (ringPercent / 100) * circumference;
@@ -58,6 +55,25 @@ export function ProfessionalismScoreCard() {
         : data.level === "Fair"
           ? "text-amber-500"
           : "text-red-500";
+
+  // Perfect score — show a compact celebration instead of hiding
+  if (data.score === 100) {
+    return (
+      <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 shadow-card sm:p-5">
+        <div className="flex items-center gap-3">
+          <span className="text-2xl">🏆</span>
+          <div>
+            <h3 className="text-sm font-semibold text-emerald-800">
+              Perfect Professionalism Score!
+            </h3>
+            <p className="text-xs text-emerald-600">
+              Your invoices look fully professional — great job.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-lg border border-brand-border bg-white p-4 shadow-card sm:p-5">
