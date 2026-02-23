@@ -29,6 +29,40 @@ const formatCurrency = (value: string | null | undefined, currency = "NGN") => {
   }).format(amount);
 };
 
+function formatDate(value: string | null | undefined) {
+  if (!value) return null;
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toLocaleDateString(undefined, { dateStyle: "medium" });
+}
+
+/* ──────────────────────────── */
+/*  Tiny SVG icons (inline to avoid external dependencies) */
+/* ──────────────────────────── */
+function ShieldIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    </svg>
+  );
+}
+function CheckCircleIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+      <polyline points="22 4 12 14.01 9 11.01" />
+    </svg>
+  );
+}
+function LockIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </svg>
+  );
+}
+
 export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) {
   const [invoice, setInvoice] = useState<InvoicePublic>(initialInvoice);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,6 +74,7 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
   const isPaid = invoice.status === "paid";
   const isAwaiting = invoice.status === "awaiting_confirmation";
   const isClosed = invoice.status === "cancelled";
+  const cur = invoice.currency ?? "NGN";
 
   const handleConfirmTransfer = useCallback(async () => {
     if (isSubmitting || isPaid || isAwaiting || isClosed) return;
@@ -49,11 +84,14 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
     setFeedback(null);
 
     try {
-      const response = await fetch(`${apiBaseUrl}/public/invoices/${invoiceId}/confirm-transfer`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        cache: "no-store",
-      });
+      const response = await fetch(
+        `${apiBaseUrl}/public/invoices/${invoiceId}/confirm-transfer`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          cache: "no-store",
+        },
+      );
 
       if (!response.ok) {
         throw new Error("Unable to update invoice. Please try again.");
@@ -61,7 +99,9 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
 
       const data = (await response.json()) as InvoicePublic;
       setInvoice(data);
-      setFeedback("Business notified! You'll receive your receipt once they confirm.");
+      setFeedback(
+        "Business notified! You’ll receive your receipt once they confirm.",
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
@@ -73,21 +113,25 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
   useEffect(() => {
     if (isPaid || isClosed) return;
     setIsPolling(true);
-    let delay = 8_000; // start at 8s
+    let delay = 8_000;
     let timer: ReturnType<typeof setTimeout>;
 
     const poll = async () => {
       try {
-        const res = await fetch(`${apiBaseUrl}/public/invoices/${invoiceId}`, { cache: "no-store" });
+        const res = await fetch(
+          `${apiBaseUrl}/public/invoices/${invoiceId}`,
+          { cache: "no-store" },
+        );
         if (!res.ok) return;
         const data = (await res.json()) as InvoicePublic;
         setInvoice(data);
         if (data.status === "paid" || data.status === "cancelled") {
           setIsPolling(false);
-          return; // stop polling
+          return;
         }
-      } catch {}
-      // backoff: 8s → 15s → 30s cap
+      } catch {
+        /* ignore */
+      }
       delay = Math.min(delay * 1.5, 30_000);
       timer = setTimeout(poll, delay);
     };
@@ -96,115 +140,246 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
     return () => clearTimeout(timer);
   }, [apiBaseUrl, invoiceId, isPaid, isClosed]);
 
-  const copyField = useCallback(async (field: string, value: string | null | undefined) => {
-    if (!value) return;
-    try {
-      await navigator.clipboard.writeText(value);
-      setCopiedField(field);
-      setTimeout(() => setCopiedField(null), 2000);
-    } catch {}
-  }, []);
+  const copyField = useCallback(
+    async (field: string, value: string | null | undefined) => {
+      if (!value) return;
+      try {
+        await navigator.clipboard.writeText(value);
+        setCopiedField(field);
+        setTimeout(() => setCopiedField(null), 2000);
+      } catch {
+        /* ignore */
+      }
+    },
+    [],
+  );
 
-  // Status indicator
   const statusConfig = useMemo(() => {
-    if (isPaid) return { bg: "bg-brand-jade", text: "Payment Confirmed" };
-    if (isAwaiting) return { bg: "bg-amber-500", text: "Awaiting Confirmation" };
-    if (isClosed) return { bg: "bg-slate-400", text: "Cancelled" };
-    return { bg: "bg-brand-primary", text: "Pending Payment" };
+    if (isPaid)
+      return { text: "Payment Confirmed", dotColor: "bg-emerald-400" };
+    if (isAwaiting)
+      return { text: "Awaiting Confirmation", dotColor: "bg-amber-400" };
+    if (isClosed) return { text: "Cancelled", dotColor: "bg-slate-300" };
+    return { text: "Pending Payment", dotColor: "bg-blue-400" };
   }, [isPaid, isAwaiting, isClosed]);
 
+  const businessInitial = (invoice.business_name || "S")[0].toUpperCase();
+  const createdDate = formatDate(invoice.created_at ?? null);
+  const lines = invoice.lines ?? [];
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-brand-evergreen to-brand-evergreen/95">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
+      {/* Trust Bar */}
+      <div className="bg-brand-evergreen">
+        <div className="mx-auto flex max-w-lg items-center justify-center gap-2 px-4 py-2">
+          <LockIcon className="h-3 w-3 text-emerald-300" />
+          <span className="text-[11px] font-medium tracking-wide text-emerald-200">
+            Secure payment page &bull; suoops.com
+          </span>
+        </div>
+      </div>
+
       {/* Header */}
-      <header className="px-4 py-6">
+      <header className="bg-brand-evergreen px-4 pb-8 pt-4">
         <div className="mx-auto max-w-lg">
-          <div className="flex items-center justify-between">
-            <span className="text-lg font-bold text-white">suoops</span>
-            <span className="text-xs text-white/60">{invoice.invoice_id}</span>
+          {/* Business Identity */}
+          <div className="flex items-center gap-3">
+            {invoice.business_logo_url ? (
+              <img
+                src={invoice.business_logo_url}
+                alt={invoice.business_name ?? "Business"}
+                className="h-11 w-11 rounded-xl border-2 border-white/20 bg-white object-cover shadow-lg"
+              />
+            ) : (
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-white/20 bg-white/10 text-lg font-bold text-white shadow-lg">
+                {businessInitial}
+              </div>
+            )}
+            <div className="flex-1">
+              <h1 className="text-base font-bold text-white">
+                {invoice.business_name || "Business"}
+              </h1>
+              <div className="flex items-center gap-1.5">
+                <CheckCircleIcon className="h-3 w-3 text-emerald-400" />
+                <span className="text-xs text-emerald-300">
+                  Verified on Suoops
+                </span>
+              </div>
+            </div>
+            <span className="rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-medium text-white/70">
+              {invoice.invoice_id.length > 12
+                ? `${invoice.invoice_id.slice(0, 8)}…`
+                : invoice.invoice_id}
+            </span>
           </div>
+
+          {/* Personalized greeting */}
+          {invoice.customer_name && !isPaid && !isClosed && (
+            <p className="mt-4 text-sm text-white/70">
+              Hi {invoice.customer_name}, here&apos;s your invoice from{" "}
+              <span className="font-semibold text-white">
+                {invoice.business_name || "this business"}
+              </span>
+              .
+            </p>
+          )}
         </div>
       </header>
 
       {/* Main Card */}
-      <main className="px-4 pb-10">
+      <main className="-mt-1 px-4 pb-10">
         <div className="mx-auto max-w-lg">
-          <div className="overflow-hidden rounded-3xl bg-white shadow-2xl">
-            {/* Amount Header */}
-            <div className="bg-gradient-to-r from-brand-evergreen to-brand-evergreen/90 px-6 py-8 text-center text-white">
-              <p className="text-sm font-medium text-white/70">Amount Due</p>
-              <p className="mt-2 text-4xl font-bold">{formatCurrency(invoice.amount, invoice.currency)}</p>
+          <div className="overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/5">
+            {/* Amount Section */}
+            <div className="border-b border-slate-100 px-6 py-6 text-center">
+              <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">
+                {isPaid ? "Amount Paid" : "Amount Due"}
+              </p>
+              <p className="mt-2 text-4xl font-extrabold tracking-tight text-slate-900">
+                {formatCurrency(invoice.amount, cur)}
+              </p>
               {!isPaid && !isClosed && invoice.amount && (
                 <button
                   onClick={() => copyField("amount", String(invoice.amount))}
-                  className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white hover:bg-white/30 transition"
+                  className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-500 transition hover:bg-slate-200"
                   aria-label="Copy amount"
                 >
                   {copiedField === "amount" ? "✓ Copied" : "Copy amount"}
                 </button>
               )}
-              <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1">
-                <span className={`h-2 w-2 rounded-full ${statusConfig.bg}`} />
-                <span className="text-xs font-medium">{statusConfig.text}</span>
+              <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1.5 ring-1 ring-slate-100">
+                <span
+                  className={`h-2 w-2 rounded-full ${statusConfig.dotColor} animate-pulse`}
+                />
+                <span className="text-xs font-semibold text-slate-600">
+                  {statusConfig.text}
+                </span>
               </div>
-              {invoice.due_date && !isPaid && (
-                <p className="mt-3 text-xs text-white/60">
-                  Due {new Date(invoice.due_date).toLocaleDateString(undefined, { dateStyle: "medium" })}
-                </p>
-              )}
-              {isPaid && invoice.paid_at && (
-                <p className="mt-3 text-xs text-brand-citrus">
-                  Paid {formatPaidAt(invoice.paid_at)}
-                </p>
-              )}
+
+              {/* Date info */}
+              <div className="mt-3 flex flex-wrap items-center justify-center gap-3 text-xs text-slate-400">
+                {createdDate && <span>Issued {createdDate}</span>}
+                {invoice.due_date && !isPaid && (
+                  <>
+                    <span>•</span>
+                    <span>Due {formatDate(invoice.due_date)}</span>
+                  </>
+                )}
+                {isPaid && invoice.paid_at && (
+                  <span className="font-medium text-emerald-600">
+                    Paid {formatPaidAt(invoice.paid_at)}
+                  </span>
+                )}
+              </div>
             </div>
 
-            {/* Bank Details */}
+            {/* Line Items — Transparency builds trust */}
+            {lines.length > 0 && (
+              <div className="border-b border-slate-100 px-6 py-5">
+                <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-slate-400">
+                  What you&apos;re paying for
+                </h3>
+                <div className="space-y-2.5">
+                  {lines.map((line, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-start justify-between gap-3"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium text-slate-800">
+                          {line.description}
+                        </p>
+                        <p className="text-xs text-slate-400">
+                          {line.quantity} ×{" "}
+                          {formatCurrency(line.unit_price, cur)}
+                        </p>
+                      </div>
+                      <p className="whitespace-nowrap text-sm font-semibold text-slate-700">
+                        {formatCurrency(
+                          String(line.quantity * Number(line.unit_price)),
+                          cur,
+                        )}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-3 flex items-center justify-between border-t border-dashed border-slate-200 pt-3">
+                  <span className="text-xs font-semibold uppercase text-slate-400">
+                    Total
+                  </span>
+                  <span className="text-base font-bold text-slate-900">
+                    {formatCurrency(invoice.amount, cur)}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Bank Details — For unpaid invoices */}
             {!isPaid && !isClosed && (
-              <div className="border-b border-slate-100 px-6 py-6">
-                <h2 className="text-sm font-semibold text-slate-900">Bank Transfer Details</h2>
-                
-                <div className="mt-4 space-y-4">
+              <div className="border-b border-slate-100 px-6 py-5">
+                <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest text-slate-400">
+                  Bank Transfer Details
+                </h3>
+
+                <div className="space-y-3">
+                  {/* Bank Name */}
                   <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
                     <div>
-                      <p className="text-xs text-slate-500">Bank</p>
-                      <p className="font-semibold text-slate-900">{invoice.bank_name || "—"}</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                        Bank
+                      </p>
+                      <p className="font-semibold text-slate-900">
+                        {invoice.bank_name || "—"}
+                      </p>
                     </div>
                     {invoice.bank_name && (
                       <button
                         onClick={() => copyField("bank", invoice.bank_name)}
-                        className="rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-brand-primary shadow-sm hover:bg-slate-100"
+                        className="rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm ring-1 ring-slate-200 transition hover:bg-slate-100"
                       >
                         {copiedField === "bank" ? "✓" : "Copy"}
                       </button>
                     )}
                   </div>
-                  
-                  <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+
+                  {/* Account Number — Most important, visually prominent */}
+                  <div className="flex items-center justify-between rounded-xl bg-brand-evergreen/5 px-4 py-3 ring-1 ring-brand-evergreen/10">
                     <div>
-                      <p className="text-xs text-slate-500">Account Number</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                        Account Number
+                      </p>
                       <p className="font-mono text-lg font-bold tracking-wider text-slate-900">
                         {invoice.account_number || "—"}
                       </p>
                     </div>
                     {invoice.account_number && (
                       <button
-                        onClick={() => copyField("account", invoice.account_number)}
-                        className="rounded-lg bg-brand-primary px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-brand-primary/90"
+                        onClick={() =>
+                          copyField("account", invoice.account_number)
+                        }
+                        className="rounded-lg bg-brand-primary px-3 py-1.5 text-xs font-medium text-white shadow-sm transition hover:bg-brand-primary/90"
                       >
                         {copiedField === "account" ? "✓ Copied" : "Copy"}
                       </button>
                     )}
                   </div>
-                  
+
+                  {/* Account Name */}
                   <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
                     <div>
-                      <p className="text-xs text-slate-500">Account Name</p>
-                      <p className="font-semibold text-slate-900">{invoice.account_name || "—"}</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                        Account Name
+                      </p>
+                      <p className="font-semibold text-slate-900">
+                        {invoice.account_name || "—"}
+                      </p>
                     </div>
                     {invoice.account_name && (
                       <button
-                        onClick={() => copyField("name", invoice.account_name)}
-                        className="rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-brand-primary shadow-sm hover:bg-slate-100"
+                        onClick={() =>
+                          copyField("name", invoice.account_name)
+                        }
+                        className="rounded-lg bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm ring-1 ring-slate-200 transition hover:bg-slate-100"
                       >
                         {copiedField === "name" ? "✓" : "Copy"}
                       </button>
@@ -216,41 +391,101 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
 
             {/* Feedback Messages */}
             {error && (
-              <div className="mx-6 mt-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700" role="alert">
+              <div
+                className="mx-6 mt-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700"
+                role="alert"
+              >
                 {error}
               </div>
             )}
             {feedback && (
-              <div className="mx-6 mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-700" aria-live="polite">
+              <div
+                className="mx-6 mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-700"
+                aria-live="polite"
+              >
                 {feedback}
               </div>
             )}
 
-            {/* Action Button */}
+            {/* Action Area */}
             <div className="px-6 py-6">
               {!isPaid && !isClosed && (
                 <>
+                  {/* How It Works — Reduces fear */}
+                  {!isAwaiting && (
+                    <div className="mb-5 rounded-xl bg-blue-50 px-4 py-3.5 ring-1 ring-blue-100">
+                      <p className="mb-2 text-xs font-semibold text-blue-800">
+                        How it works:
+                      </p>
+                      <ol className="space-y-1.5 text-xs text-blue-700">
+                        <li className="flex gap-2">
+                          <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-blue-200 text-[10px] font-bold text-blue-800">
+                            1
+                          </span>
+                          Transfer the exact amount to the bank details above
+                        </li>
+                        <li className="flex gap-2">
+                          <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-blue-200 text-[10px] font-bold text-blue-800">
+                            2
+                          </span>
+                          Tap the button below to notify{" "}
+                          {invoice.business_name || "the business"}
+                        </li>
+                        <li className="flex gap-2">
+                          <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-blue-200 text-[10px] font-bold text-blue-800">
+                            3
+                          </span>
+                          You&apos;ll receive your receipt once payment is
+                          confirmed
+                        </li>
+                      </ol>
+                    </div>
+                  )}
+
                   <button
                     onClick={handleConfirmTransfer}
                     disabled={isSubmitting || isAwaiting}
                     className="w-full rounded-xl bg-brand-primary py-4 text-base font-semibold text-white shadow-lg transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    {isAwaiting ? "✓ Business Notified" : isSubmitting ? "Notifying..." : "I've sent the transfer"}
+                    {isAwaiting
+                      ? "✓ Business Notified — Awaiting Confirmation"
+                      : isSubmitting
+                        ? "Notifying..."
+                        : "I’ve sent the transfer"}
                   </button>
-                  {isPolling && (
-                    <p className="mt-2 text-center text-xs text-slate-400">Auto-checking status...</p>
+
+                  {isAwaiting && (
+                    <p className="mt-3 text-center text-xs text-slate-400">
+                      {invoice.business_name || "The business"} has been
+                      notified. This page will update automatically once they
+                      confirm your payment.
+                    </p>
+                  )}
+
+                  {isPolling && !isAwaiting && (
+                    <p className="mt-2 text-center text-xs text-slate-400">
+                      Auto-checking status…
+                    </p>
                   )}
                 </>
               )}
 
               {isPaid && (
                 <div className="space-y-3">
-                  <div className="rounded-xl bg-emerald-50 px-4 py-4 text-center">
-                    <span className="text-2xl">✓</span>
-                    <p className="mt-1 font-semibold text-emerald-700">Payment Confirmed</p>
-                    <p className="text-sm text-emerald-600">Your receipt has been sent.</p>
+                  <div className="rounded-xl bg-emerald-50 px-4 py-5 text-center ring-1 ring-emerald-100">
+                    <CheckCircleIcon className="mx-auto h-8 w-8 text-emerald-500" />
+                    <p className="mt-2 text-lg font-bold text-emerald-800">
+                      Payment Confirmed
+                    </p>
+                    <p className="mt-1 text-sm text-emerald-600">
+                      Thank you! Your receipt{" "}
+                      {invoice.receipt_pdf_url
+                        ? "is ready below"
+                        : "has been sent"}
+                      .
+                    </p>
                   </div>
-                  
+
                   {(invoice.receipt_pdf_url || invoice.pdf_url) && (
                     <div className="flex gap-2">
                       {invoice.receipt_pdf_url && (
@@ -258,9 +493,9 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
                           href={invoice.receipt_pdf_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-1 rounded-lg border border-emerald-200 bg-emerald-50 py-3 text-center text-sm font-semibold text-emerald-700 hover:bg-emerald-100"
+                          className="flex-1 rounded-lg border border-emerald-200 bg-emerald-50 py-3 text-center text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100"
                         >
-                          📄 Receipt
+                          📄 Download Receipt
                         </a>
                       )}
                       {invoice.pdf_url && (
@@ -268,9 +503,9 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
                           href={invoice.pdf_url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex-1 rounded-lg border border-slate-200 bg-slate-50 py-3 text-center text-sm font-semibold text-slate-700 hover:bg-slate-100"
+                          className="flex-1 rounded-lg border border-slate-200 bg-slate-50 py-3 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
                         >
-                          🧾 Invoice
+                          🧾 View Invoice
                         </a>
                       )}
                     </div>
@@ -279,18 +514,52 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
               )}
 
               {isClosed && (
-                <div className="rounded-xl bg-slate-100 px-4 py-4 text-center">
-                  <p className="font-semibold text-slate-700">Invoice Cancelled</p>
-                  <p className="text-sm text-slate-500">Contact the business for a new invoice.</p>
+                <div className="rounded-xl bg-slate-100 px-4 py-5 text-center">
+                  <p className="font-semibold text-slate-700">
+                    Invoice Cancelled
+                  </p>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Contact {invoice.business_name || "the business"} for a new
+                    invoice.
+                  </p>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Footer */}
-          <p className="mt-6 text-center text-xs text-white/50">
-            Having trouble? Contact the business directly.
-          </p>
+          {/* Trust Footer */}
+          <div className="mt-6 space-y-4">
+            {/* Security badge */}
+            <div className="flex items-center justify-center gap-3 rounded-xl bg-white px-4 py-3 shadow-sm ring-1 ring-black/5">
+              <ShieldIcon className="h-5 w-5 text-emerald-500" />
+              <div className="text-left">
+                <p className="text-xs font-semibold text-slate-700">
+                  Protected by Suoops
+                </p>
+                <p className="text-[10px] text-slate-400">
+                  Secure invoicing &amp; payment tracking
+                </p>
+              </div>
+            </div>
+
+            {/* Fine print */}
+            <div className="space-y-1.5 text-center">
+              <p className="text-[11px] text-slate-400">
+                This invoice was created by{" "}
+                <span className="font-medium text-slate-500">
+                  {invoice.business_name || "a verified business"}
+                </span>{" "}
+                using Suoops.
+              </p>
+              <p className="text-[11px] text-slate-400">
+                Suoops does not process payments. You pay the business directly
+                via bank transfer.
+              </p>
+              <p className="mt-3 text-[11px] text-slate-300">
+                Having trouble? Contact the business directly.
+              </p>
+            </div>
+          </div>
         </div>
       </main>
     </div>

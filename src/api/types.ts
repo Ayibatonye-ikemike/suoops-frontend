@@ -111,12 +111,15 @@ export interface components {
       currency?: string;
       status: "pending" | "awaiting_confirmation" | "paid" | "cancelled" | string;
       due_date?: string | null;
+      created_at?: string | null;
       customer_name?: string | null;
       business_name?: string | null;
+      business_logo_url?: string | null;
       bank_name?: string | null;
       account_number?: string | null;
       account_name?: string | null;
       paid_at?: string | null;
+      lines?: { description: string; quantity: number; unit_price: string }[];
     };
     RefreshRequest: {
       refresh_token?: string | null;
