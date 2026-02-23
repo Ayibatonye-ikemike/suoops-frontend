@@ -35,7 +35,8 @@ export function InvoiceList() {
       filtered = filtered.filter(
         (inv) =>
           inv.invoice_id.toLowerCase().includes(query) ||
-          inv.amount.toString().includes(query)
+          inv.amount.toString().includes(query) ||
+          (inv.customer_name && inv.customer_name.toLowerCase().includes(query))
       );
     }
 
