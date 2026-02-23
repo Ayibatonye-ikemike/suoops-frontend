@@ -66,6 +66,7 @@ export interface components {
       verified?: boolean | null;
       notes?: string | null;
       receipt_url?: string | null;  // Uploaded receipt/proof of purchase
+      customer_name?: string | null;
     };
     InvoiceOutDetailed: {
       invoice_id: string;

@@ -3259,6 +3259,8 @@ export interface components {
             status_updated_by_name?: string | null;
             /** Status Updated At */
             status_updated_at?: string | null;
+            /** Customer Name */
+            customer_name?: string | null;
         };
         /** InvoiceOutDetailed */
         InvoiceOutDetailed: {
