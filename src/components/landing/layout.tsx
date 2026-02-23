@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { MobileMenu } from "./mobile-menu";
+
 export function Navigation() {
   return (
     <nav className="sticky top-0 z-50 border-b border-white/10 bg-brand-evergreen/95 backdrop-blur-md">
@@ -40,10 +42,12 @@ export function Navigation() {
             </a>
             <Link
               href="/login"
-              className="rounded-lg bg-brand-jade px-4 py-2 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-brand-teal"
+              className="hidden sm:block rounded-lg bg-brand-jade px-4 py-2 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-brand-teal"
             >
               Login
             </Link>
+            {/* Mobile hamburger menu */}
+            <MobileMenu />
           </div>
         </div>
       </div>
@@ -136,7 +140,7 @@ export function SupportEscalation() {
                 {tier.step}
               </span>
 
-              <span className="text-3xl">{tier.icon}</span>
+              <span className="text-3xl" aria-hidden="true">{tier.icon}</span>
               <h3 className="mt-3 text-lg font-semibold text-brand-evergreen">
                 {tier.title}
               </h3>
@@ -280,7 +284,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-12 border-t border-slate-200 pt-8 text-center text-sm text-slate-500">
-          © 2025–2026 SuoOps. All rights reserved. Made with ❤️ in Nigeria 🇳🇬
+          © 2025–2026 SuoOps. All rights reserved. Made with <span aria-hidden="true">❤️</span> in Nigeria <span aria-hidden="true">🇳🇬</span>
         </div>
       </div>
     </footer>

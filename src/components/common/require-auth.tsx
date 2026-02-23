@@ -26,7 +26,14 @@ export function RequireAuth({ children }: { children: ReactNode }) {
   }, [pathname, router, status]);
 
   if (status === "idle" || status === "loading") {
-    return <p>Verifying session…</p>;
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-brand-jade border-t-transparent" />
+          <p className="text-sm font-medium text-white/70">Verifying session…</p>
+        </div>
+      </div>
+    );
   }
 
   if (status !== "authenticated") {

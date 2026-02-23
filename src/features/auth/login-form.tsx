@@ -36,7 +36,9 @@ export function LoginForm() {
     }, 1000);
   }, []);
 
-  const nextRoute = searchParams?.get("next") ?? "/dashboard";
+  const rawNext = searchParams?.get("next") ?? "/dashboard";
+  // Prevent open redirect: only allow relative paths starting with /
+  const nextRoute = /^\/[^/]/.test(rawNext) ? rawNext : "/dashboard";
 
   const handleRequestOTP = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
@@ -139,7 +141,7 @@ export function LoginForm() {
     const callbackBase = `${window.location.origin}/auth/callback`;
     const withNext = `${callbackBase}?next=${encodeURIComponent(nextRoute)}`;
     const redirectUri = encodeURIComponent(withNext);
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.suoops.com';
+    const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.suoops.com';
     window.location.href = `${apiUrl}/auth/oauth/google/login?redirect_uri=${redirectUri}`;
   }, [nextRoute]);
 

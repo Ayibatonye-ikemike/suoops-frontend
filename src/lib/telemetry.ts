@@ -8,8 +8,8 @@ export interface TelemetryEvent {
   detail?: Record<string, unknown>;
 }
 
-const ENDPOINT = process.env.NEXT_PUBLIC_API_URL
-  ? `${process.env.NEXT_PUBLIC_API_URL}/telemetry/frontend`
+const ENDPOINT = process.env.NEXT_PUBLIC_API_BASE_URL
+  ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/telemetry/frontend`
   : "https://api.suoops.com/telemetry/frontend";
 
 function getTraceId(): string | undefined {

@@ -9,11 +9,49 @@ const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-bod
 const poppins = Poppins({ subsets: ["latin"], weight: ["600", "700"], display: "swap", variable: "--font-heading" });
 
 export const metadata: Metadata = {
-  title: "SuoOps - Invoice & Expense Management",
-  description: "Create and send invoices for your business. Professional invoicing and expense tracking made simple.",
+  metadataBase: new URL("https://suoops.com"),
+  title: {
+    default: "SuoOps — Invoice & Expense Management for Nigerian Businesses",
+    template: "%s | SuoOps",
+  },
+  description:
+    "Create and send invoices via WhatsApp or dashboard. Professional invoicing, expense tracking, and tax compliance made simple for Nigerian businesses.",
+  keywords: [
+    "invoice",
+    "Nigeria",
+    "WhatsApp invoicing",
+    "expense tracker",
+    "small business",
+    "payment",
+    "tax",
+  ],
   icons: {
-    icon: '/icon.png',
-    apple: '/apple-icon.png',
+    icon: "/icon.png",
+    apple: "/apple-icon.png",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_NG",
+    url: "https://suoops.com",
+    siteName: "SuoOps",
+    title: "SuoOps — Invoice Customers & Get Paid from WhatsApp",
+    description:
+      "Create invoices, track payments, manage inventory, and stay tax-aware — straight from WhatsApp. Built for freelancers and small businesses in Nigeria.",
+    images: [
+      {
+        url: "/icon.png",
+        width: 512,
+        height: 512,
+        alt: "SuoOps — Invoicing for Nigerian Businesses",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
+    title: "SuoOps — Invoice & Get Paid from WhatsApp",
+    description:
+      "Professional invoicing for Nigerian businesses. WhatsApp-first, tax-aware, mobile-friendly.",
+    images: ["/icon.png"],
   },
 };
 

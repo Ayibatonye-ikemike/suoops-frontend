@@ -73,7 +73,7 @@ export async function exchangeOAuthCode(
     throw new OAuthExchangeError("invalid_state", "State mismatch. Possible CSRF/expired flow.");
   }
 
-  const baseUrl = apiBaseUrl || process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
+  const baseUrl = apiBaseUrl || process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.suoops.com";
   const traceId = getOrCreateTraceId();
   const endpoint = `${baseUrl}/auth/oauth/${encodeURIComponent(provider)}/callback?code=${encodeURIComponent(
     code
@@ -154,7 +154,6 @@ export async function exchangeOAuthCode(
         await sleep(backoffBaseMs * attempt);
         continue;
       }
-      throw new OAuthExchangeError("network", "Network failure during OAuth exchange.");
       telemetry.oauthExchangeFailure(provider, "network", attempt, (err as Error)?.message);
       throw new OAuthExchangeError("network", "Network failure during OAuth exchange.");
     }

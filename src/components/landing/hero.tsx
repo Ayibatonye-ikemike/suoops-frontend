@@ -128,7 +128,7 @@ function FeaturePills() {
             key={`a-${i}`}
             className="flex-shrink-0 flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm px-5 py-2.5 text-sm font-medium text-white border border-white/20"
           >
-            <span>{feature.emoji}</span>
+            <span aria-hidden="true">{feature.emoji}</span>
             <span>{feature.text}</span>
           </div>
         ))}
@@ -138,7 +138,7 @@ function FeaturePills() {
             key={`b-${i}`}
             className="flex-shrink-0 flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm px-5 py-2.5 text-sm font-medium text-white border border-white/20"
           >
-            <span>{feature.emoji}</span>
+            <span aria-hidden="true">{feature.emoji}</span>
             <span>{feature.text}</span>
           </div>
         ))}

@@ -93,7 +93,7 @@ export function InvoiceList() {
     if (!shouldAutoRefresh) return;
     const id = setInterval(() => {
       refetch();
-    }, 5000);
+    }, 15_000);
     return () => clearInterval(id);
   }, [shouldAutoRefresh, refetch]);
 
@@ -173,7 +173,7 @@ export function InvoiceList() {
           )}
           {shouldAutoRefresh && (
             <p className="text-[11px] text-brand-textMuted" aria-live="polite">
-              Auto-refresh active (every 5s while pending invoices exist)
+              Auto-refresh active (every 15s while pending invoices exist)
             </p>
           )}
         </div>
@@ -182,7 +182,8 @@ export function InvoiceList() {
       {/* Search & Filters */}
       <div className="space-y-4">
         <input
-          type="text"
+          type="search"
+          aria-label="Search invoices by ID or amount"
           placeholder="Search by invoice ID or amount..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -201,6 +202,7 @@ export function InvoiceList() {
             <button
               key={filter.key}
               onClick={() => setStatusFilter(filter.key)}
+              aria-pressed={statusFilter === filter.key}
               className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition ${
                 statusFilter === filter.key
                   ? "border-brand-jade bg-brand-jade text-white shadow-sm"

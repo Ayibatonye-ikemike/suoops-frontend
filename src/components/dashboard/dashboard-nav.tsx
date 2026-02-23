@@ -60,13 +60,14 @@ export function DashboardNav() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-current={isActive ? "page" : undefined}
                   className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold uppercase tracking-wide transition sm:px-4 sm:text-sm ${
                     isActive
                       ? "bg-brand-jade text-white shadow-md"
                       : "text-white/80 hover:bg-brand-teal hover:text-white"
                   }`}
                 >
-                  <span>{item.icon}</span>
+                  <span aria-hidden="true">{item.icon}</span>
                   <span>{item.label}</span>
                 </Link>
               );

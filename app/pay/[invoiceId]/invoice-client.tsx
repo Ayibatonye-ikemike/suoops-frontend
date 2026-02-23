@@ -67,23 +67,31 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
     }
   }, [apiBaseUrl, invoiceId, isAwaiting, isClosed, isPaid, isSubmitting]);
 
-  // Poll for status updates
+  // Poll for status updates with exponential backoff
   useEffect(() => {
     if (isPaid || isClosed) return;
     setIsPolling(true);
-    const interval = setInterval(async () => {
+    let delay = 8_000; // start at 8s
+    let timer: ReturnType<typeof setTimeout>;
+
+    const poll = async () => {
       try {
         const res = await fetch(`${apiBaseUrl}/public/invoices/${invoiceId}`, { cache: "no-store" });
         if (!res.ok) return;
         const data = (await res.json()) as InvoicePublic;
         setInvoice(data);
         if (data.status === "paid" || data.status === "cancelled") {
-          clearInterval(interval);
           setIsPolling(false);
+          return; // stop polling
         }
       } catch {}
-    }, 8000);
-    return () => clearInterval(interval);
+      // backoff: 8s → 15s → 30s cap
+      delay = Math.min(delay * 1.5, 30_000);
+      timer = setTimeout(poll, delay);
+    };
+
+    timer = setTimeout(poll, delay);
+    return () => clearTimeout(timer);
   }, [apiBaseUrl, invoiceId, isPaid, isClosed]);
 
   const copyField = useCallback(async (field: string, value: string | null | undefined) => {
@@ -123,6 +131,15 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
             <div className="bg-gradient-to-r from-brand-evergreen to-brand-evergreen/90 px-6 py-8 text-center text-white">
               <p className="text-sm font-medium text-white/70">Amount Due</p>
               <p className="mt-2 text-4xl font-bold">{formatCurrency(invoice.amount)}</p>
+              {!isPaid && !isClosed && invoice.amount && (
+                <button
+                  onClick={() => copyField("amount", String(invoice.amount))}
+                  className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white hover:bg-white/30 transition"
+                  aria-label="Copy amount"
+                >
+                  {copiedField === "amount" ? "✓ Copied" : "Copy amount"}
+                </button>
+              )}
               <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1">
                 <span className={`h-2 w-2 rounded-full ${statusConfig.bg}`} />
                 <span className="text-xs font-medium">{statusConfig.text}</span>
@@ -197,12 +214,12 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
 
             {/* Feedback Messages */}
             {error && (
-              <div className="mx-6 mt-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">
+              <div className="mx-6 mt-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700" role="alert">
                 {error}
               </div>
             )}
             {feedback && (
-              <div className="mx-6 mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+              <div className="mx-6 mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-700" aria-live="polite">
                 {feedback}
               </div>
             )}
