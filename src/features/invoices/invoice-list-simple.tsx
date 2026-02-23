@@ -11,7 +11,7 @@ export function InvoiceList() {
   const [statusFilter, setStatusFilter] = useState<string>("awaiting_confirmation");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const invoices = useMemo(() => data ?? [], [data]);
+  const invoices = useMemo(() => data?.items ?? [], [data]);
 
   // Filter invoices by status and search query
   const filteredInvoices = useMemo(() => {

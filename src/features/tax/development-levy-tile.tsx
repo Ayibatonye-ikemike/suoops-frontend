@@ -36,8 +36,9 @@ export function DevelopmentLevyTile() {
 
   // Compute profit as sum of invoice amounts (simplistic assessable profit approximation)
   const computedProfit = useMemo(() => {
-    if (!invoices || invoices.length === 0) return FALLBACK_PROFIT;
-    return invoices.reduce((sum, inv) => sum + Number(inv.amount || 0), 0);
+    const items = invoices?.items;
+    if (!items || items.length === 0) return FALLBACK_PROFIT;
+    return items.reduce((sum, inv) => sum + Number(inv.amount || 0), 0);
   }, [invoices]);
 
   const [manualProfit, setManualProfit] = useState<number | null>(null);
