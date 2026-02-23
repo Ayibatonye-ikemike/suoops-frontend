@@ -6,11 +6,11 @@ import { apiClient } from "@/api/client";
 import { hasPlanFeature, type PlanTier } from "@/constants/pricing";
 
 const CHECK_LABELS: Record<string, string> = {
+  has_business_name: "Business name",
   has_logo: "Business logo",
-  has_bank_details: "Bank details",
+  has_bank_details: "Bank details & payment info",
   uses_due_dates: "Due dates on invoices",
   sends_receipts: "Receipts on payment",
-  has_payment_instructions: "Payment instructions",
 };
 
 export function ProfessionalismScoreCard() {
