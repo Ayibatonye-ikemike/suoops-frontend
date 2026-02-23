@@ -2,39 +2,23 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
 
 import { InvoiceDetailPanel } from "./invoice-detail";
 import { invoiceStatusLabels } from "./status-map";
 import { type Invoice, useInvoices } from "./use-invoices";
-import { getExchangeRate } from "@/api/analytics";
+import { useCurrency } from "@/hooks/use-currency";
 
 export function InvoiceListWithDetail() {
   const { data, isLoading, error } = useInvoices();
   const searchParams = useSearchParams();
   const invoiceIdFromUrl = searchParams.get("invoice");
+  const { formatWhole } = useCurrency();
   
   const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(
     null
   );
   const [statusFilter, setStatusFilter] = useState<string>("awaiting_confirmation");
   const [searchQuery, setSearchQuery] = useState("");
-
-  // Fetch live exchange rate for USD equivalent display
-  const { data: rateInfo } = useQuery({
-    queryKey: ["exchange-rate"],
-    queryFn: getExchangeRate,
-    staleTime: 30 * 60 * 1000, // 30 minutes
-  });
-
-  const formatUsd = (ngnAmount: string | number) => {
-    if (!rateInfo?.rate) return null;
-    const amt = typeof ngnAmount === "string" ? Number(ngnAmount) : ngnAmount;
-    if (Number.isNaN(amt) || amt <= 0) return null;
-    const usd = amt / rateInfo.rate;
-    if (usd < 0.01) return null;
-    return `$${usd.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: usd >= 100 ? 0 : 2 })}`;
-  };
 
   const invoices = useMemo(() => Array.isArray(data?.items) ? data.items : [], [data]);
 
@@ -217,13 +201,8 @@ export function InvoiceListWithDetail() {
                         {invoice.invoice_id}
                       </p>
                       <p className="mt-0.5 text-sm font-bold text-brand-primary">
-                        ₦{invoice.amount.toLocaleString()}
+                        {formatWhole(Number(invoice.amount) || 0)}
                       </p>
-                      {formatUsd(invoice.amount) && (
-                        <p className="text-[10px] text-brand-textMuted">
-                          ≈ {formatUsd(invoice.amount)}
-                        </p>
-                      )}
                     </div>
                     <span
                       className={`flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold uppercase tracking-wide ${badgeToneClass(

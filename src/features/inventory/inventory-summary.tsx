@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Package, AlertTriangle, TrendingUp, Layers } from "lucide-react";
 import { useInventorySummary, useLowStockAlerts } from "./use-inventory";
+import { useCurrency } from "@/hooks/use-currency";
 
 interface StatCardProps {
   title: string;
@@ -47,6 +48,7 @@ function StatCard({ title, value, subtitle, icon, variant = "default" }: StatCar
 
 export function InventorySummaryCards() {
   const { data: summary, isLoading } = useInventorySummary();
+  const { formatAmount } = useCurrency();
 
   if (isLoading) {
     return (
@@ -60,9 +62,6 @@ export function InventorySummaryCards() {
 
   if (!summary) return null;
 
-  const formatCurrency = (value: number) =>
-    new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(value);
-
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <StatCard
@@ -73,7 +72,7 @@ export function InventorySummaryCards() {
       />
       <StatCard
         title="Stock Value"
-        value={formatCurrency(summary.total_stock_value)}
+        value={formatAmount(summary.total_stock_value)}
         subtitle="What you can sell right now"
         icon={<TrendingUp className="h-5 w-5" />}
         variant="success"

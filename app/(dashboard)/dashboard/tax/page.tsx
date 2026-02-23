@@ -10,6 +10,7 @@ import { StatCard } from "@/components/ui/stat-card";
 import { components } from "@/api/types.generated";
 import { hasPlanFeature, type PlanTier } from "@/constants/pricing";
 import toast from "react-hot-toast";
+import { useCurrency } from "@/hooks/use-currency";
 import TaxProfileSettings from "./tax-profile-settings";
 
 type CurrentUser = components["schemas"]["UserOut"];
@@ -312,12 +313,7 @@ export default function TaxPage() {
     }
   };
 
-  const fmt = (n: number) =>
-    new Intl.NumberFormat("en-NG", {
-      style: "currency",
-      currency: "NGN",
-      minimumFractionDigits: 0,
-    }).format(n);
+  const { formatWhole, symbol } = useCurrency();
 
   if (isLoading) {
     return (
@@ -369,7 +365,7 @@ export default function TaxPage() {
                   </div>
                   <div>
                     <label className="mb-1 block text-xs font-medium text-brand-textMuted">
-                      Amount (₦) *
+                      Amount ({symbol}) *
                     </label>
                     <input
                       type="number"
@@ -635,7 +631,7 @@ export default function TaxPage() {
                         {item.label}
                       </p>
                       <p className="mt-2 text-2xl font-semibold text-brand-primary">
-                        ₦{(item.value || 0).toLocaleString()}
+                        {formatWhole(item.value || 0)}
                       </p>
                     </div>
                   ))}
@@ -647,7 +643,7 @@ export default function TaxPage() {
                         VAT Collected
                       </p>
                       <p className="mt-2 text-2xl font-semibold text-brand-primary">
-                        ₦{(report.vat_collected || 0).toLocaleString()}
+                        {formatWhole(report.vat_collected || 0)}
                       </p>
                       <p className="mt-1 text-xs text-brand-textMuted">
                         7.5% of taxable sales
@@ -661,7 +657,7 @@ export default function TaxPage() {
                       Company Tax (CIT)
                     </p>
                     <p className="mt-2 text-2xl font-semibold text-amber-800">
-                      ₦{(report.cit_amount || 0).toLocaleString()}
+                      {formatWhole(report.cit_amount || 0)}
                     </p>
                     <p className="mt-1 text-xs text-amber-600">
                       {report.annual_revenue_estimate <= 100_000_000
@@ -698,8 +694,8 @@ export default function TaxPage() {
                       </div>
                     </div>
                     <div className="mt-2 text-xs text-gray-600">
-                      <strong>Calculated Revenue:</strong> ₦
-                      {(report.debug_info.calculated_revenue || 0).toLocaleString()}
+                      <strong>Calculated Revenue:</strong>{" "}
+                      {formatWhole(report.debug_info.calculated_revenue || 0)}
                     </div>
                     {report.debug_info.top_5_invoices?.length > 0 && (
                       <div className="mt-3">
@@ -720,7 +716,7 @@ export default function TaxPage() {
                               {report.debug_info.top_5_invoices.map((inv) => (
                                 <tr key={inv.invoice_id} className="border-b border-gray-100">
                                   <td className="py-1 pr-4 font-mono">{inv.invoice_id}</td>
-                                  <td className="py-1 pr-4">₦{(inv.amount || 0).toLocaleString()}</td>
+                                  <td className="py-1 pr-4">{formatWhole(inv.amount || 0)}</td>
                                   <td className="py-1 pr-4">{inv.status}</td>
                                   <td className="py-1">
                                     {inv.created_at
@@ -759,7 +755,7 @@ export default function TaxPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-brand-text">
-                          {fmt(typeof exp.amount === "string" ? parseFloat(exp.amount) : exp.amount)}
+                          {formatWhole(typeof exp.amount === "string" ? parseFloat(exp.amount) : exp.amount)}
                         </span>
                         {exp.receipt_url && (
                           <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">

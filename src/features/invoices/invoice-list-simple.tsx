@@ -5,9 +5,11 @@ import { useMemo, useState } from "react";
 
 import { invoiceStatusLabels } from "./status-map";
 import { type Invoice, useInvoices } from "./use-invoices";
+import { useCurrency } from "@/hooks/use-currency";
 
 export function InvoiceList() {
   const { data, isLoading, error } = useInvoices();
+  const { formatWhole } = useCurrency();
   const [statusFilter, setStatusFilter] = useState<string>("awaiting_confirmation");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -150,7 +152,7 @@ export function InvoiceList() {
                         </span>
                       </div>
                       <p className="mt-1 text-lg font-bold text-brand-primary">
-                        ₦{invoice.amount.toLocaleString()}
+                        {formatWhole(Number(invoice.amount) || 0)}
                       </p>
                     </div>
                   </div>

@@ -8,10 +8,12 @@ import { Button } from "@/components/ui/button";
 import { InvoiceDetailPanel } from "./invoice-detail";
 import { invoiceStatusHelpText, invoiceStatusLabels } from "./status-map";
 import { type Invoice, useInvoices } from "./use-invoices";
+import { useCurrency } from "@/hooks/use-currency";
 
 export function InvoiceList() {
   const { data, isLoading, error, isFetching, dataUpdatedAt, refetch } =
     useInvoices();
+  const { formatWhole } = useCurrency();
   const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(
     null
   );
@@ -264,7 +266,7 @@ export function InvoiceList() {
                         </span>
                       </div>
                       <p className="mt-2 text-2xl font-bold text-brand-primary">
-                        ₦{invoice.amount.toLocaleString()}
+                        {formatWhole(Number(invoice.amount) || 0)}
                       </p>
                       {helpText && (
                         <p className="mt-1 text-sm text-brand-textMuted">

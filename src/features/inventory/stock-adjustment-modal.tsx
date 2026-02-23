@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, Plus, Minus } from "lucide-react";
 import { useAdjustStock } from "./use-inventory";
+import { useCurrency } from "@/hooks/use-currency";
 import type { Product, StockMovementType } from "./types";
 
 interface StockAdjustmentModalProps {
@@ -13,6 +14,7 @@ interface StockAdjustmentModalProps {
 
 export function StockAdjustmentModal({ product, onClose, onSuccess }: StockAdjustmentModalProps) {
   const adjustStock = useAdjustStock();
+  const { symbol } = useCurrency();
 
   const [adjustmentType, setAdjustmentType] = useState<"add" | "remove">("add");
   const [quantity, setQuantity] = useState<number>(1);
@@ -170,7 +172,7 @@ export function StockAdjustmentModal({ product, onClose, onSuccess }: StockAdjus
           {adjustmentType === "add" && (
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Unit Cost (₦) - Optional
+                Unit Cost ({symbol}) - Optional
               </label>
               <input
                 type="number"

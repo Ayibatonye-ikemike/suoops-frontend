@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useProducts } from "@/features/inventory";
 import type { Product } from "@/features/inventory";
+import { useCurrency } from "@/hooks/use-currency";
 
 export interface LineDraft {
   id: string;
@@ -29,6 +30,7 @@ function ProductSelector({
   const [showDropdown, setShowDropdown] = useState(false);
   const [search, setSearch] = useState("");
   const { data } = useProducts({ search, page_size: 10 });
+  const { formatWhole: fmtPrice } = useCurrency();
 
   const products = data?.products ?? [];
   const selectedProduct = value
@@ -76,7 +78,7 @@ function ProductSelector({
               <div className="font-medium text-brand-text">{product.name}</div>
               <div className="flex justify-between text-xs text-gray-500">
                 <span>SKU: {product.sku}</span>
-                <span>₦{product.selling_price.toLocaleString()}</span>
+                <span>{fmtPrice(product.selling_price)}</span>
                 <span className={product.quantity_in_stock > 0 ? "text-green-600" : "text-red-500"}>
                   Stock: {product.quantity_in_stock}
                 </span>
@@ -96,6 +98,7 @@ export function InvoiceLineItems({
   onAddLine,
   showProductPicker = false,
 }: InvoiceLineItemsProps) {
+  const { symbol, formatWhole } = useCurrency();
   const handleProductSelect = (lineId: string, product: Product | null) => {
     if (product) {
       onUpdateLine(lineId, {
@@ -163,7 +166,7 @@ export function InvoiceLineItems({
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-brand-textMuted">Unit Price (₦)</label>
+                  <label className="mb-1 block text-xs font-medium text-brand-textMuted">Unit Price ({symbol})</label>
                   <input
                     type="number"
                     min="0"
@@ -177,7 +180,7 @@ export function InvoiceLineItems({
                 <div>
                   <label className="mb-1 block text-xs font-medium text-brand-textMuted">Total <span className="text-brand-jade">(auto)</span></label>
                   <div className="rounded-lg border border-brand-border bg-gray-50 px-3 py-2 text-sm font-medium text-brand-text">
-                    ₦{((line.quantity || 0) * (line.unit_price || 0)).toLocaleString()}
+                    {formatWhole((line.quantity || 0) * (line.unit_price || 0))}
                   </div>
                 </div>
               </div>
@@ -198,7 +201,7 @@ export function InvoiceLineItems({
       <div className="mt-4 flex items-center justify-end gap-4 border-t border-brand-border pt-4">
         <span className="text-sm font-medium text-brand-textMuted">Invoice Total:</span>
         <div className="rounded-lg bg-brand-jade/10 px-4 py-2 text-lg font-bold text-brand-jade">
-          ₦{lines.reduce((sum, line) => sum + ((line.quantity || 0) * (line.unit_price || 0)), 0).toLocaleString()}
+          {formatWhole(lines.reduce((sum, line) => sum + ((line.quantity || 0) * (line.unit_price || 0)), 0))}
         </div>
       </div>
     </section>

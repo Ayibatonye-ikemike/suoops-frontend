@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus, Search, Package, Edit, Trash2, AlertTriangle } from "lucide-react";
 import { useProducts, useCategories, useDeleteProduct } from "./use-inventory";
+import { useCurrency } from "@/hooks/use-currency";
 import type { Product } from "./types";
 
 interface ProductListProps {
@@ -30,8 +31,7 @@ export function ProductList({ onSelectProduct, onCreateProduct, onEditProduct }:
 
   const deleteProduct = useDeleteProduct();
 
-  const formatCurrency = (value: number) =>
-    new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(value);
+  const { formatAmount } = useCurrency();
 
   const handleDelete = async (product: Product) => {
     if (confirm(`Are you sure you want to delete "${product.name}"?`)) {
@@ -178,7 +178,7 @@ export function ProductList({ onSelectProduct, onCreateProduct, onEditProduct }:
                         )}
                       </td>
                       <td className="px-4 py-3 text-right text-gray-900 dark:text-white font-medium">
-                        {formatCurrency(product.selling_price)}
+                        {formatAmount(product.selling_price)}
                       </td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex items-center justify-end gap-2">
@@ -200,7 +200,7 @@ export function ProductList({ onSelectProduct, onCreateProduct, onEditProduct }:
                         </div>
                       </td>
                       <td className="px-4 py-3 text-right text-gray-600 dark:text-gray-300">
-                        {product.stock_value != null ? formatCurrency(product.stock_value) : "—"}
+                        {product.stock_value != null ? formatAmount(product.stock_value) : "—"}
                       </td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>

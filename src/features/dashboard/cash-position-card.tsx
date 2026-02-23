@@ -5,14 +5,10 @@ import Link from "next/link";
 import { getCashPosition } from "@/api/analytics";
 import { apiClient } from "@/api/client";
 import { hasPlanFeature, type PlanTier } from "@/constants/pricing";
-
-function formatMoney(n: number): string {
-  if (n >= 1_000_000) return `₦${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 1_000) return `₦${(n / 1_000).toFixed(0)}k`;
-  return `₦${n.toLocaleString("en-NG", { maximumFractionDigits: 0 })}`;
-}
+import { useCurrency } from "@/hooks/use-currency";
 
 export function CashPositionCard() {
+  const { formatCompact } = useCurrency();
   const { data: user } = useQuery({
     queryKey: ["currentUser"],
     queryFn: async () => {
@@ -73,28 +69,28 @@ export function CashPositionCard() {
   const cards = [
     {
       label: "Cash In Today",
-      value: formatMoney(data.cash_collected_today),
-      sub: `This week: ${formatMoney(data.cash_collected_this_week)}`,
+      value: formatCompact(data.cash_collected_today),
+      sub: `This week: ${formatCompact(data.cash_collected_this_week)}`,
       icon: "💰",
       color: "text-emerald-400",
     },
     {
       label: "Outstanding",
-      value: formatMoney(data.total_outstanding),
+      value: formatCompact(data.total_outstanding),
       sub: `${data.overdue_count} overdue`,
       icon: "⏳",
       color: data.total_outstanding > 0 ? "text-amber-400" : "text-emerald-400",
     },
     {
       label: "Overdue",
-      value: formatMoney(data.total_overdue),
+      value: formatCompact(data.total_overdue),
       sub: data.overdue_count > 0 ? "Send reminders →" : "All clear ✓",
       icon: "⚠️",
       color: data.total_overdue > 0 ? "text-red-400" : "text-emerald-400",
     },
     {
       label: "Expected (7 days)",
-      value: formatMoney(data.expected_inflow_7_days),
+      value: formatCompact(data.expected_inflow_7_days),
       sub: `${data.invoices_created_today} invoices today`,
       icon: "📈",
       color: "text-blue-400",

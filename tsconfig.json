@@ -38,6 +38,12 @@
       ],
       "@/constants/*": [
         "src/constants/*"
+      ],
+      "@/hooks/*": [
+        "src/hooks/*"
+      ],
+      "@/stores/*": [
+        "src/stores/*"
       ]
     },
     "incremental": true,

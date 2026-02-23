@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { apiClient } from "@/api/client";
 import { toast } from "react-hot-toast";
 import { useInvoices } from "@/features/invoices/use-invoices";
+import { useCurrency } from "@/hooks/use-currency";
 import { useQuery } from "@tanstack/react-query";
 
 interface LevyResponse {
@@ -27,6 +28,7 @@ export function DevelopmentLevyTile() {
   const [data, setData] = useState<LevyResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { formatWhole } = useCurrency();
   const { data: invoices, isLoading: invoicesLoading, error: invoicesError, refetch: refetchInvoices } = useInvoices();
   const { data: taxConfig } = useQuery({
     queryKey: ["tax-config"],
@@ -165,7 +167,7 @@ export function DevelopmentLevyTile() {
           </div>
           <div>
             <p className="text-xs font-medium uppercase tracking-wide text-slate-500">Amount</p>
-            <p className="text-sm font-semibold text-slate-900">₦{data.levy_amount.toLocaleString()}</p>
+            <p className="text-sm font-semibold text-slate-900">{formatWhole(data.levy_amount)}</p>
           </div>
           {data.exemption_reason && (
             <div className="col-span-full rounded-lg bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-700">

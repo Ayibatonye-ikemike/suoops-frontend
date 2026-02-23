@@ -6,6 +6,7 @@ import { apiClient } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { StatCard } from "@/components/ui/stat-card";
+import { useCurrency } from "@/hooks/use-currency";
 
 // Types
 interface Expense {
@@ -145,7 +146,7 @@ export default function ExpensesPage() {
     },
   });
 
-  const fmt = (n: number) => new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(n);
+  const { formatWhole, symbol } = useCurrency();
   const catLabel = (c: string) => CATEGORIES.find(x => x.value === c)?.label || c;
 
   return (
@@ -177,11 +178,11 @@ export default function ExpensesPage() {
       {/* Stats */}
       {stats && (
         <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
-          <StatCard label="Total Expenses" value={fmt(stats.total_expenses)} />
-          <StatCard label="Total Revenue" value={fmt(stats.total_revenue)} />
+          <StatCard label="Total Expenses" value={formatWhole(stats.total_expenses)} />
+          <StatCard label="Total Revenue" value={formatWhole(stats.total_revenue)} />
           <StatCard
             label="Actual Profit"
-            value={fmt(stats.actual_profit)}
+            value={formatWhole(stats.actual_profit)}
             className={stats.actual_profit >= 0 ? "text-green-600" : "text-red-600"}
           />
           <StatCard label="Expense Ratio" value={`${stats.expense_to_revenue_ratio.toFixed(1)}%`} />
@@ -196,7 +197,7 @@ export default function ExpensesPage() {
             <form onSubmit={(e) => { e.preventDefault(); createExpense.mutate(form); }} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Amount (₦) *</label>
+                  <label className="block text-sm font-medium mb-1">Amount ({symbol}) *</label>
                   <input
                     type="number"
                     step="0.01"
@@ -250,7 +251,7 @@ export default function ExpensesPage() {
                 <div key={exp.id} className="flex justify-between items-start p-3 border rounded hover:bg-gray-50">
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium">{fmt(exp.amount)}</span>
+                      <span className="font-medium">{formatWhole(exp.amount)}</span>
                       <span className="text-xs bg-gray-200 px-2 py-1 rounded">{catLabel(exp.category)}</span>
                       {!exp.verified && <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Unverified</span>}
                     </div>

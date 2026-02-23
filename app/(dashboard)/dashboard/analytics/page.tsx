@@ -10,13 +10,16 @@ import { AgingReportCard } from "@/features/analytics/aging-report-card";
 import { MonthlyTrendsChart } from "@/features/analytics/monthly-trends-chart";
 import { TopCustomersCard } from "@/features/analytics/top-customers-card";
 import { ConversionFunnelCard } from "@/features/analytics/conversion-funnel-card";
+import { useCurrencyStore } from "@/stores/currency-store";
+import { useCurrency } from "@/hooks/use-currency";
 
 type Period = "7d" | "30d" | "90d" | "1y" | "all";
-type Currency = "NGN" | "USD";
 
 export default function AnalyticsPage() {
   const [period, setPeriod] = useState<Period>("30d");
-  const [currency, setCurrency] = useState<Currency>("NGN");
+  const currency = useCurrencyStore((s) => s.currency);
+  const setCurrency = useCurrencyStore((s) => s.setCurrency);
+  const { rateDescription } = useCurrency();
 
   const {
     data: analytics,
@@ -66,12 +69,17 @@ export default function AnalyticsPage() {
 
             <select
               value={currency}
-              onChange={(e) => setCurrency(e.target.value as Currency)}
+              onChange={(e) => setCurrency(e.target.value as "NGN" | "USD")}
               className="rounded-lg border border-brand-border bg-white px-4 py-2 text-sm font-medium text-brand-text shadow-sm transition focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20"
             >
               <option value="NGN">₦ NGN</option>
               <option value="USD">$ USD</option>
             </select>
+            {currency === "USD" && rateDescription && (
+              <span className="self-center rounded-full bg-blue-50 px-3 py-1.5 text-[11px] font-medium text-blue-700 border border-blue-200">
+                🔄 Live: {rateDescription}
+              </span>
+            )}
           </div>
         </div>
 

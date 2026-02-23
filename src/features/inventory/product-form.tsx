@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import { useCreateProduct, useUpdateProduct, useCategories } from "./use-inventory";
+import { useCurrency } from "@/hooks/use-currency";
 import type { Product, ProductCreate, ProductUpdate } from "./types";
 
 interface ProductFormProps {
@@ -13,6 +14,7 @@ interface ProductFormProps {
 
 export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
   const isEditing = !!product;
+  const { symbol } = useCurrency();
   
   const { data: categories } = useCategories();
   const createProduct = useCreateProduct();
@@ -168,7 +170,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Cost Price (₦)
+                Cost Price ({symbol})
               </label>
               <input
                 type="number"
@@ -183,7 +185,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Selling Price (₦) <span className="text-red-500">*</span>
+                Selling Price ({symbol}) <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
