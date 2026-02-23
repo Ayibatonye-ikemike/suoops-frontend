@@ -7,7 +7,7 @@ import { useInvoices } from "./use-invoices";
 export function InvoiceStatusCard() {
   const { data, isFetching, dataUpdatedAt, refetch } = useInvoices();
 
-  const invoices = useMemo(() => data?.items ?? [], [data]);
+  const invoices = useMemo(() => Array.isArray(data?.items) ? data.items : [], [data]);
 
   // Status counts for display
   const statusCounts = useMemo(() => {
