@@ -133,10 +133,24 @@ export async function getAnalyticsDashboard(
 
 export async function getTopCustomers(
   period: "7d" | "30d" | "90d" | "1y" | "all" = "30d",
-  limit: number = 10
+  limit: number = 10,
+  currency: "NGN" | "USD" = "NGN"
 ): Promise<{ period: string; customers: TopCustomer[] }> {
   const response = await apiClient.get(
-    `/analytics/revenue-by-customer?period=${period}&limit=${limit}`
+    `/analytics/revenue-by-customer?period=${period}&limit=${limit}&currency=${currency}`
+  );
+  return response.data;
+}
+
+export interface ExchangeRateInfo {
+  rate: number;
+  currency_pair: string;
+  description: string;
+}
+
+export async function getExchangeRate(): Promise<ExchangeRateInfo> {
+  const response = await apiClient.get<ExchangeRateInfo>(
+    "/analytics/exchange-rate"
   );
   return response.data;
 }

@@ -2,12 +2,14 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
 
 import { invoiceStatusHelpText, invoiceStatusLabels } from "./status-map";
 import { formatPaidAt } from "../../utils/formatDate";
 import { useInvoiceDetail, InvoiceDetail } from "./use-invoice-detail";
 import { buildInvoiceShareLink } from "@/lib/share-link";
 import { useUpdateInvoiceStatus } from "./use-update-invoice-status";
+import { getExchangeRate } from "@/api/analytics";
 
 const currencyFormatter = new Intl.NumberFormat("en-NG", {
   style: "currency",
@@ -59,6 +61,22 @@ export function InvoiceDetailPanel({
   const mutation = useUpdateInvoiceStatus(invoiceId);
   const [linkCopied, setLinkCopied] = useState(false);
   const invoice = detailQuery.data as InvoiceDetail | undefined;
+
+  // Fetch live exchange rate for USD equivalent
+  const { data: rateInfo } = useQuery({
+    queryKey: ["exchange-rate"],
+    queryFn: getExchangeRate,
+    staleTime: 30 * 60 * 1000,
+  });
+
+  const usdEquivalent = useMemo(() => {
+    if (!rateInfo?.rate || !invoice?.amount) return null;
+    const amt = Number(invoice.amount);
+    if (Number.isNaN(amt) || amt <= 0) return null;
+    const usd = amt / rateInfo.rate;
+    if (usd < 0.01) return null;
+    return `$${usd.toLocaleString("en-US", { minimumFractionDigits: usd >= 100 ? 0 : 2, maximumFractionDigits: usd >= 100 ? 0 : 2 })}`;
+  }, [rateInfo, invoice?.amount]);
 
   // Compute status metadata - must be called before any conditional returns
   const statusMeta = useMemo(() => {
@@ -218,6 +236,11 @@ export function InvoiceDetailPanel({
           <p className="mt-2 text-2xl sm:text-3xl font-bold text-brand-primary break-words">
             {formatCurrency(invoice.amount)}
           </p>
+          {usdEquivalent && (
+            <p className="mt-0.5 text-xs text-brand-textMuted">
+              ≈ {usdEquivalent}
+            </p>
+          )}
           {invoice.discount_amount && (
             <p className="mt-1 text-sm text-brand-textMuted">
               Discount: {formatCurrency(invoice.discount_amount)}

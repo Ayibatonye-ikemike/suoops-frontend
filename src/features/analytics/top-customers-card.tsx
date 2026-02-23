@@ -8,8 +8,8 @@ interface TopCustomersCardProps {
 
 export function TopCustomersCard({ period, currency }: TopCustomersCardProps) {
   const { data, isLoading } = useQuery({
-    queryKey: ["topCustomers", period],
-    queryFn: () => getTopCustomers(period, 10),
+    queryKey: ["topCustomers", period, currency],
+    queryFn: () => getTopCustomers(period, 10, currency),
     staleTime: 60000,
   });
 
