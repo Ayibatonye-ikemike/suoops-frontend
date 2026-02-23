@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useProducts } from "@/features/inventory";
 import type { Product } from "@/features/inventory";
-import { useCurrency } from "@/hooks/use-currency";
 
 export interface LineDraft {
   id: string;
@@ -18,19 +17,31 @@ interface InvoiceLineItemsProps {
   onRemoveLine: (id: string) => void;
   onAddLine: () => void;
   showProductPicker?: boolean;  // Enable inventory product selection
+  /** The invoice's own currency — determines symbol and formatting (no conversion). */
+  currency?: "NGN" | "USD";
+}
+
+/** Format an amount using the invoice's own currency (no exchange-rate conversion). */
+function fmtInvoice(amount: number, cur: string): string {
+  const sym = cur === "USD" ? "$" : "₦";
+  return `${sym}${amount.toLocaleString("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: cur === "USD" ? 2 : 0,
+  })}`;
 }
 
 function ProductSelector({
   value,
   onSelect,
+  currency = "NGN",
 }: {
   value?: number | null;
   onSelect: (product: Product | null) => void;
+  currency?: string;
 }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [search, setSearch] = useState("");
   const { data } = useProducts({ search, page_size: 10 });
-  const { formatWhole: fmtPrice } = useCurrency();
 
   const products = data?.products ?? [];
   const selectedProduct = value
@@ -78,7 +89,7 @@ function ProductSelector({
               <div className="font-medium text-brand-text">{product.name}</div>
               <div className="flex justify-between text-xs text-gray-500">
                 <span>SKU: {product.sku}</span>
-                <span>{fmtPrice(product.selling_price)}</span>
+                <span>{fmtInvoice(product.selling_price, currency)}</span>
                 <span className={product.quantity_in_stock > 0 ? "text-green-600" : "text-red-500"}>
                   Stock: {product.quantity_in_stock}
                 </span>
@@ -97,8 +108,9 @@ export function InvoiceLineItems({
   onRemoveLine,
   onAddLine,
   showProductPicker = false,
+  currency = "NGN",
 }: InvoiceLineItemsProps) {
-  const { symbol, formatWhole } = useCurrency();
+  const symbol = currency === "USD" ? "$" : "₦";
   const handleProductSelect = (lineId: string, product: Product | null) => {
     if (product) {
       onUpdateLine(lineId, {
@@ -136,6 +148,7 @@ export function InvoiceLineItems({
                 <ProductSelector
                   value={line.product_id}
                   onSelect={(product) => handleProductSelect(line.id, product)}
+                  currency={currency}
                 />
                 <span className="text-xs text-gray-500 self-center">
                   {line.product_id ? "Linked to inventory" : "Optional: link to product"}
@@ -180,7 +193,7 @@ export function InvoiceLineItems({
                 <div>
                   <label className="mb-1 block text-xs font-medium text-brand-textMuted">Total <span className="text-brand-jade">(auto)</span></label>
                   <div className="rounded-lg border border-brand-border bg-gray-50 px-3 py-2 text-sm font-medium text-brand-text">
-                    {formatWhole((line.quantity || 0) * (line.unit_price || 0))}
+                    {fmtInvoice((line.quantity || 0) * (line.unit_price || 0), currency)}
                   </div>
                 </div>
               </div>
@@ -201,7 +214,7 @@ export function InvoiceLineItems({
       <div className="mt-4 flex items-center justify-end gap-4 border-t border-brand-border pt-4">
         <span className="text-sm font-medium text-brand-textMuted">Invoice Total:</span>
         <div className="rounded-lg bg-brand-jade/10 px-4 py-2 text-lg font-bold text-brand-jade">
-          {formatWhole(lines.reduce((sum, line) => sum + ((line.quantity || 0) * (line.unit_price || 0)), 0))}
+          {fmtInvoice(lines.reduce((sum, line) => sum + ((line.quantity || 0) * (line.unit_price || 0)), 0), currency)}
         </div>
       </div>
     </section>

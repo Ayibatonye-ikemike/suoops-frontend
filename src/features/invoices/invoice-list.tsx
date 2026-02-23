@@ -8,12 +8,19 @@ import { Button } from "@/components/ui/button";
 import { InvoiceDetailPanel } from "./invoice-detail";
 import { invoiceStatusHelpText, invoiceStatusLabels } from "./status-map";
 import { type Invoice, useInvoices } from "./use-invoices";
-import { useCurrency } from "@/hooks/use-currency";
+
+/** Format an amount using the invoice's own currency (no conversion). */
+function formatInvoiceAmount(amount: number, currency: string): string {
+  const sym = currency === "USD" ? "$" : "₦";
+  return `${sym}${amount.toLocaleString("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: currency === "USD" ? 2 : 0,
+  })}`;
+}
 
 export function InvoiceList() {
   const { data, isLoading, error, isFetching, dataUpdatedAt, refetch } =
     useInvoices();
-  const { formatWhole } = useCurrency();
   const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(
     null
   );
@@ -266,7 +273,7 @@ export function InvoiceList() {
                         </span>
                       </div>
                       <p className="mt-2 text-2xl font-bold text-brand-primary">
-                        {formatWhole(Number(invoice.amount) || 0)}
+                        {formatInvoiceAmount(Number(invoice.amount) || 0, invoice.currency ?? "NGN")}
                       </p>
                       {helpText && (
                         <p className="mt-1 text-sm text-brand-textMuted">

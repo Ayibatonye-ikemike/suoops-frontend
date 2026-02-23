@@ -5,11 +5,18 @@ import { useMemo, useState } from "react";
 
 import { invoiceStatusLabels } from "./status-map";
 import { type Invoice, useInvoices } from "./use-invoices";
-import { useCurrency } from "@/hooks/use-currency";
+
+/** Format an amount using the invoice's own currency (no conversion). */
+function formatInvoiceAmount(amount: number, currency: string): string {
+  const sym = currency === "USD" ? "$" : "₦";
+  return `${sym}${amount.toLocaleString("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: currency === "USD" ? 2 : 0,
+  })}`;
+}
 
 export function InvoiceList() {
   const { data, isLoading, error } = useInvoices();
-  const { formatWhole } = useCurrency();
   const [statusFilter, setStatusFilter] = useState<string>("awaiting_confirmation");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -152,7 +159,7 @@ export function InvoiceList() {
                         </span>
                       </div>
                       <p className="mt-1 text-lg font-bold text-brand-primary">
-                        {formatWhole(Number(invoice.amount) || 0)}
+                        {formatInvoiceAmount(Number(invoice.amount) || 0, invoice.currency ?? "NGN")}
                       </p>
                     </div>
                   </div>

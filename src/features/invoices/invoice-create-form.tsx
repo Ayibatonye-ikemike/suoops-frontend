@@ -251,6 +251,7 @@ export function InvoiceCreateForm() {
         onRemoveLine={removeLine}
         onAddLine={addLine}
         showProductPicker={["pro", "business"].includes(quota?.current_plan?.toLowerCase() || "")}
+        currency={currency}
       />
 
       {/* Due Date */}
