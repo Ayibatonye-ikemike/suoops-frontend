@@ -39,6 +39,7 @@ export function InvoiceCreateForm() {
 
   // Shared Fields
   const [amount, setAmount] = useState("");
+  const [currency, setCurrency] = useState<"NGN" | "USD">("NGN");
   const [dueDate, setDueDate] = useState("");
   const [lines, setLines] = useState<LineDraft[]>([emptyLine()]);
 
@@ -88,6 +89,7 @@ export function InvoiceCreateForm() {
     setCustomerPhone("");
     setCustomerEmail("");
     setAmount("");
+    setCurrency("NGN");
     setDueDate("");
     setLines([emptyLine()]);
     setShowBankDetailsError(false);
@@ -119,6 +121,7 @@ export function InvoiceCreateForm() {
       const payload: InvoiceCreatePayload = {
         invoice_type: "revenue",
         amount: parsedAmount,
+        currency,
         customer_name: customerName,
         customer_phone: customerPhone || undefined,
         customer_email: customerEmail || undefined,
@@ -217,6 +220,29 @@ export function InvoiceCreateForm() {
         onCustomerPhoneChange={setCustomerPhone}
         onCustomerEmailChange={setCustomerEmail}
       />
+
+      {/* Currency Selector */}
+      <div className="space-y-1">
+        <label className="text-sm font-medium text-brand-text">
+          Invoice Currency
+        </label>
+        <div className="flex gap-2">
+          {(["NGN", "USD"] as const).map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setCurrency(c)}
+              className={`rounded-lg border px-4 py-2 text-sm font-semibold transition ${
+                currency === c
+                  ? "border-brand-jade bg-brand-jade text-white shadow-sm"
+                  : "border-brand-border bg-white text-brand-text hover:border-brand-jade/40"
+              }`}
+            >
+              {c === "NGN" ? "🇳🇬 NGN (₦)" : "🇺🇸 USD ($)"}
+            </button>
+          ))}
+        </div>
+      </div>
 
       {/* Line Items with Inventory Product Picker (Pro/Business only) */}
       <InvoiceLineItems

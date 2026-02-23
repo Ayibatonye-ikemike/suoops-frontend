@@ -20,6 +20,7 @@ export interface components {
     };
     InvoiceCreate: {
       amount: number | string;
+      currency?: "NGN" | "USD";
       due_date?: string | null;
       lines?: components["schemas"]["InvoiceLineIn"][] | null;
       discount_amount?: number | string | null;
@@ -52,6 +53,7 @@ export interface components {
     InvoiceOut: {
       invoice_id: string;
       amount: string;
+      currency?: string;
       status: string;
       pdf_url: string | null;
       receipt_pdf_url?: string | null;
@@ -71,6 +73,7 @@ export interface components {
     InvoiceOutDetailed: {
       invoice_id: string;
       amount: string;
+      currency?: string;
       status: string;
       pdf_url: string | null;
       receipt_pdf_url?: string | null;
@@ -105,6 +108,7 @@ export interface components {
     InvoicePublicOut: {
       invoice_id: string;
       amount: string;
+      currency?: string;
       status: "pending" | "awaiting_confirmation" | "paid" | "cancelled" | string;
       due_date?: string | null;
       customer_name?: string | null;

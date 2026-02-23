@@ -16,14 +16,16 @@ type Props = {
   apiBaseUrl: string;
 };
 
-const formatCurrency = (value: string | null | undefined) => {
+const formatCurrency = (value: string | null | undefined, currency = "NGN") => {
   if (!value) return "—";
   const amount = Number(value);
   if (Number.isNaN(amount)) return value;
-  return new Intl.NumberFormat("en-NG", {
+  const cur = currency === "USD" ? "USD" : "NGN";
+  const locale = cur === "USD" ? "en-US" : "en-NG";
+  return new Intl.NumberFormat(locale, {
     style: "currency",
-    currency: "NGN",
-    minimumFractionDigits: 0,
+    currency: cur,
+    minimumFractionDigits: cur === "USD" ? 2 : 0,
   }).format(amount);
 };
 
@@ -130,7 +132,7 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
             {/* Amount Header */}
             <div className="bg-gradient-to-r from-brand-evergreen to-brand-evergreen/90 px-6 py-8 text-center text-white">
               <p className="text-sm font-medium text-white/70">Amount Due</p>
-              <p className="mt-2 text-4xl font-bold">{formatCurrency(invoice.amount)}</p>
+              <p className="mt-2 text-4xl font-bold">{formatCurrency(invoice.amount, invoice.currency)}</p>
               {!isPaid && !isClosed && invoice.amount && (
                 <button
                   onClick={() => copyField("amount", String(invoice.amount))}

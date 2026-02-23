@@ -6,13 +6,19 @@ import { useSearchParams } from "next/navigation";
 import { InvoiceDetailPanel } from "./invoice-detail";
 import { invoiceStatusLabels } from "./status-map";
 import { type Invoice, useInvoices } from "./use-invoices";
-import { useCurrency } from "@/hooks/use-currency";
+
+/** Format an amount using the invoice's own currency (no conversion). */
+function formatInvoiceAmount(amount: number, currency: string): string {
+  if (currency === "USD") {
+    return `$${amount.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+  }
+  return `₦${amount.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+}
 
 export function InvoiceListWithDetail() {
   const { data, isLoading, error } = useInvoices();
   const searchParams = useSearchParams();
   const invoiceIdFromUrl = searchParams.get("invoice");
-  const { formatWhole } = useCurrency();
   
   const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(
     null
@@ -201,7 +207,7 @@ export function InvoiceListWithDetail() {
                         {invoice.invoice_id}
                       </p>
                       <p className="mt-0.5 text-sm font-bold text-brand-primary">
-                        {formatWhole(Number(invoice.amount) || 0)}
+                        {formatInvoiceAmount(Number(invoice.amount) || 0, invoice.currency ?? "NGN")}
                       </p>
                     </div>
                     <span

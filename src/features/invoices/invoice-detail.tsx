@@ -8,7 +8,14 @@ import { formatPaidAt } from "../../utils/formatDate";
 import { useInvoiceDetail, InvoiceDetail } from "./use-invoice-detail";
 import { buildInvoiceShareLink } from "@/lib/share-link";
 import { useUpdateInvoiceStatus } from "./use-update-invoice-status";
-import { useCurrency } from "@/hooks/use-currency";
+
+/** Format an amount using the invoice's own currency (no conversion). */
+function formatInvoiceAmount(amount: number, currency: string): string {
+  if (currency === "USD") {
+    return `$${amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  }
+  return `₦${amount.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+}
 
 function formatIsoDate(value: string | null | undefined) {
   if (!value) {
@@ -43,7 +50,7 @@ export function InvoiceDetailPanel({
   const mutation = useUpdateInvoiceStatus(invoiceId);
   const [linkCopied, setLinkCopied] = useState(false);
   const invoice = detailQuery.data as InvoiceDetail | undefined;
-  const { formatAmount } = useCurrency();
+  const invoiceCurrency = invoice?.currency ?? "NGN";
 
   // Compute status metadata - must be called before any conditional returns
   const statusMeta = useMemo(() => {
@@ -201,11 +208,11 @@ export function InvoiceDetailPanel({
             Total Amount
           </p>
           <p className="mt-2 text-2xl sm:text-3xl font-bold text-brand-primary break-words">
-            {formatAmount(Number(invoice.amount) || 0)}
+            {formatInvoiceAmount(Number(invoice.amount) || 0, invoiceCurrency)}
           </p>
           {invoice.discount_amount && (
             <p className="mt-1 text-sm text-brand-textMuted">
-              Discount: {formatAmount(Number(invoice.discount_amount) || 0)}
+              Discount: {formatInvoiceAmount(Number(invoice.discount_amount) || 0, invoiceCurrency)}
             </p>
           )}
         </div>
@@ -473,7 +480,7 @@ export function InvoiceDetailPanel({
                           {line.quantity}
                         </td>
                         <td className="px-3 sm:px-4 py-2 sm:py-3 text-brand-textMuted whitespace-nowrap">
-                          {formatAmount(Number(line.unit_price) || 0)}
+                          {formatInvoiceAmount(Number(line.unit_price) || 0, invoiceCurrency)}
                         </td>
                       </tr>
                     ))}
