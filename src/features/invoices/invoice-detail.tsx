@@ -357,8 +357,8 @@ export function InvoiceDetailPanel({
             {/* Action Buttons - Only show for non-terminal states */}
             {invoice.status !== "paid" && invoice.status !== "cancelled" && (
               <div className="flex flex-wrap gap-3">
-                {/* Mark as Paid - Only available when awaiting_confirmation */}
-                {invoice.status === "awaiting_confirmation" && (
+                {/* Mark as Paid - Available for pending and awaiting_confirmation */}
+                {(invoice.status === "pending" || invoice.status === "awaiting_confirmation") && (
                   <button
                     type="button"
                     onClick={() => mutation.mutate("paid")}
@@ -381,6 +381,24 @@ export function InvoiceDetailPanel({
                   className="flex-1 sm:flex-none rounded-lg border border-rose-300 bg-white px-4 py-2.5 text-sm font-semibold text-rose-600 shadow-sm transition hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancel Invoice
+                </button>
+              </div>
+            )}
+
+            {/* Re-open cancelled invoice */}
+            {invoice.status === "cancelled" && (
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (confirm("Re-open this invoice? It will go back to Pending status.")) {
+                      mutation.mutate("pending");
+                    }
+                  }}
+                  disabled={mutation.isPending}
+                  className="flex-1 sm:flex-none rounded-lg border border-brand-jade bg-white px-4 py-2.5 text-sm font-semibold text-brand-jade shadow-sm transition hover:bg-brand-jade hover:text-white focus:outline-none focus:ring-2 focus:ring-brand-jade/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {mutation.isPending ? "Updating…" : "↩ Re-open Invoice"}
                 </button>
               </div>
             )}
