@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
 import { Copy, Gift, Users, Trophy, Clock, CheckCircle2, Banknote, ChevronDown } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
 import { NIGERIAN_BANKS } from "@/features/settings/bank-details-form.constants";
 
 interface ReferralStats {

@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getExchangeRate } from "@/api/analytics";
-import { useCurrencyStore, type Currency } from "@/stores/currency-store";
+import { useCurrencyStore } from "@/stores/currency-store";
 
 /**
  * Central hook for currency display across the entire app.

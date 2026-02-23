@@ -11,6 +11,19 @@ vi.mock("../use-update-invoice-status", () => ({
   useUpdateInvoiceStatus: vi.fn(),
 }));
 
+vi.mock("@/hooks/use-currency", () => ({
+  useCurrency: () => ({
+    currency: "NGN",
+    symbol: "₦",
+    exchangeRate: null,
+    rateDescription: "",
+    convert: (v: number) => v,
+    formatAmount: (v: number) => `₦${v.toLocaleString()}`,
+    formatCompact: (v: number) => `₦${v.toLocaleString()}`,
+    formatWhole: (v: number) => `₦${v.toLocaleString()}`,
+  }),
+}));
+
 import { InvoiceDetailPanel } from "../invoice-detail";
 import { useInvoiceDetail } from "../use-invoice-detail";
 import { useUpdateInvoiceStatus } from "../use-update-invoice-status";

@@ -111,6 +111,8 @@ export default function TaxPage() {
   const currentPlan = (user?.plan?.toUpperCase() || "FREE") as PlanTier;
   const hasTaxAccess = hasPlanFeature(currentPlan, "TAX_REPORTS");
 
+  const { formatWhole, symbol } = useCurrency();
+
   // Expense form state
   const [showExpenseForm, setShowExpenseForm] = useState(false);
   const [expenseForm, setExpenseForm] = useState({
@@ -312,8 +314,6 @@ export default function TaxPage() {
       setIsUploadingExpense(false);
     }
   };
-
-  const { formatWhole, symbol } = useCurrency();
 
   if (isLoading) {
     return (

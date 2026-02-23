@@ -54,6 +54,7 @@ export default function UpgradeToProPage() {
 
     // Initiate Pro subscription payment
     initializeMutation.mutate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, userLoading]);
 
   if (userLoading || initializeMutation.isPending) {

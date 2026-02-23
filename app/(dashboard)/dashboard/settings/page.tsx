@@ -1,9 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import toast from "react-hot-toast";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, Mail } from "lucide-react";
 
 import { apiClient } from "@/api/client";
@@ -16,14 +13,11 @@ import { PhoneNumberSection } from "@/features/settings/phone-number-section";
 import { ProfileSection } from "@/features/settings/profile-section";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { type PlanTier } from "@/constants/pricing";
-import { useAuthStore } from "@/features/auth/auth-store";
 
 type CurrentUser = components["schemas"]["UserOut"];
 
 export default function SettingsPage() {
-  const router = useRouter();
   const queryClient = useQueryClient();
-  const clearTokens = useAuthStore((state) => state.clearTokens);
 
   const { data: user } = useQuery<CurrentUser>({
     queryKey: ["currentUser"],
