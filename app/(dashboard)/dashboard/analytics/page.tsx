@@ -19,7 +19,7 @@ export default function AnalyticsPage() {
   const [period, setPeriod] = useState<Period>("30d");
   const currency = useCurrencyStore((s) => s.currency);
   const setCurrency = useCurrencyStore((s) => s.setCurrency);
-  const { rateDescription } = useCurrency();
+  const { rateDescription, refreshRate, isRefreshing } = useCurrency();
 
   const {
     data: analytics,
@@ -76,9 +76,16 @@ export default function AnalyticsPage() {
               <option value="USD">$ USD</option>
             </select>
             {currency === "USD" && rateDescription && (
-              <span className="self-center rounded-full bg-blue-50 px-3 py-1.5 text-[11px] font-medium text-blue-700 border border-blue-200">
-                🔄 Live: {rateDescription}
-              </span>
+              <button
+                type="button"
+                onClick={refreshRate}
+                disabled={isRefreshing}
+                title="Click to refresh exchange rate"
+                className="self-center rounded-full bg-blue-50 px-3 py-1.5 text-[11px] font-medium text-blue-700 border border-blue-200 hover:bg-blue-100 transition cursor-pointer disabled:opacity-50"
+              >
+                <span className={isRefreshing ? "inline-block animate-spin" : ""}>🔄</span>{" "}
+                {isRefreshing ? "Refreshing…" : `Live: ${rateDescription}`}
+              </button>
             )}
           </div>
         </div>

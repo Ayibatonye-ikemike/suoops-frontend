@@ -155,6 +155,13 @@ export async function getExchangeRate(): Promise<ExchangeRateInfo> {
   return response.data;
 }
 
+export async function refreshExchangeRate(): Promise<ExchangeRateInfo> {
+  const response = await apiClient.post<ExchangeRateInfo>(
+    "/analytics/exchange-rate/refresh"
+  );
+  return response.data;
+}
+
 export async function getConversionFunnel(
   period: "7d" | "30d" | "90d" | "1y" | "all" = "30d"
 ): Promise<{ period: string } & ConversionFunnel> {

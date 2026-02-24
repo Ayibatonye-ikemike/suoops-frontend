@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getExchangeRate } from "@/api/analytics";
+import { useEffect, useCallback, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getExchangeRate, refreshExchangeRate } from "@/api/analytics";
 import { useCurrencyStore } from "@/stores/currency-store";
 
 /**
@@ -12,7 +12,7 @@ import { useCurrencyStore } from "@/stores/currency-store";
  * Automatically fetches and caches the live exchange rate.
  *
  * Usage:
- *   const { symbol, formatAmount, formatCompact, currency } = useCurrency();
+ *   const { symbol, formatAmount, formatCompact, currency, refreshRate } = useCurrency();
  *   <p>{formatAmount(150000)}</p>   // → "₦150,000.00" or "$111.47"
  *   <p>{formatCompact(150000)}</p>  // → "₦150k" or "$111"
  */
@@ -20,13 +20,15 @@ export function useCurrency() {
   const currency = useCurrencyStore((s) => s.currency);
   const exchangeRate = useCurrencyStore((s) => s.exchangeRate);
   const setExchangeRate = useCurrencyStore((s) => s.setExchangeRate);
+  const queryClient = useQueryClient();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Fetch live exchange rate and keep it in the store
   const { data: rateInfo } = useQuery({
     queryKey: ["exchange-rate"],
     queryFn: getExchangeRate,
-    staleTime: 30 * 60 * 1000, // 30 min
-    refetchInterval: 60 * 60 * 1000, // refresh every hour
+    staleTime: 10 * 60 * 1000, // 10 min
+    refetchInterval: 15 * 60 * 1000, // auto-refresh every 15 min
   });
 
   useEffect(() => {
@@ -37,6 +39,22 @@ export function useCurrency() {
 
   const rate = exchangeRate ?? rateInfo?.rate ?? null;
   const symbol = currency === "NGN" ? "₦" : "$";
+
+  /**
+   * Force-refresh the exchange rate from the server.
+   * Busts the server-side cache and re-fetches.
+   */
+  const refreshRate = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      const fresh = await refreshExchangeRate();
+      setExchangeRate(fresh.rate);
+      // Invalidate the React Query cache so the hook picks up the new value
+      queryClient.invalidateQueries({ queryKey: ["exchange-rate"] });
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [setExchangeRate, queryClient]);
 
   /** Convert an NGN amount to the selected currency. */
   const convert = (ngnAmount: number): number => {
@@ -88,5 +106,7 @@ export function useCurrency() {
     formatAmount,
     formatCompact,
     formatWhole,
+    refreshRate,
+    isRefreshing,
   };
 }
