@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useProducts } from "@/features/inventory";
 import type { Product } from "@/features/inventory";
+import { useCurrency } from "@/hooks/use-currency";
 
 export interface LineDraft {
   id: string;
@@ -34,10 +35,13 @@ function ProductSelector({
   value,
   onSelect,
   currency = "NGN",
+  convertPrice,
 }: {
   value?: number | null;
   onSelect: (product: Product | null) => void;
   currency?: string;
+  /** Convert NGN product price to the invoice currency. */
+  convertPrice?: (ngn: number) => number;
 }) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [search, setSearch] = useState("");
@@ -89,7 +93,7 @@ function ProductSelector({
               <div className="font-medium text-brand-text">{product.name}</div>
               <div className="flex justify-between text-xs text-gray-500">
                 <span>SKU: {product.sku}</span>
-                <span>{fmtInvoice(product.selling_price, currency)}</span>
+                <span>{fmtInvoice(convertPrice ? convertPrice(product.selling_price) : product.selling_price, currency)}</span>
                 <span className={product.quantity_in_stock > 0 ? "text-green-600" : "text-red-500"}>
                   Stock: {product.quantity_in_stock}
                 </span>
@@ -111,12 +115,20 @@ export function InvoiceLineItems({
   currency = "NGN",
 }: InvoiceLineItemsProps) {
   const symbol = currency === "USD" ? "$" : "₦";
+  const { exchangeRate } = useCurrency();
+
+  /** Convert an NGN product price to the invoice currency. */
+  const convertPrice = (ngnPrice: number): number => {
+    if (currency !== "USD" || !exchangeRate) return ngnPrice;
+    return Math.round((ngnPrice / exchangeRate) * 100) / 100;
+  };
+
   const handleProductSelect = (lineId: string, product: Product | null) => {
     if (product) {
       onUpdateLine(lineId, {
         product_id: product.id,
         description: product.name,
-        unit_price: product.selling_price,
+        unit_price: convertPrice(product.selling_price),
       });
     } else {
       onUpdateLine(lineId, {
@@ -149,6 +161,7 @@ export function InvoiceLineItems({
                   value={line.product_id}
                   onSelect={(product) => handleProductSelect(line.id, product)}
                   currency={currency}
+                  convertPrice={convertPrice}
                 />
                 <span className="text-xs text-gray-500 self-center">
                   {line.product_id ? "Linked to inventory" : "Optional: link to product"}
