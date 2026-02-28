@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, createContext, useContext } from "react";
+import { useEffect, useState, useCallback, useRef, createContext, useContext } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -52,36 +52,49 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
+  const hasValidated = useRef(false);
 
+  // Restore session from localStorage on mount
   useEffect(() => {
-    // Check for stored token on mount and whenever pathname changes
     const storedToken = localStorage.getItem("admin_token");
     const storedUser = localStorage.getItem("admin_user");
     if (storedToken && storedUser) {
-      if (storedToken !== token) {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser));
-      }
-      // Validate token against the API on mount
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
-      fetch(`${apiUrl}/admin/auth/me`, {
-        headers: { Authorization: `Bearer ${storedToken}` },
+      setToken(storedToken);
+      setUser(JSON.parse(storedUser));
+    }
+    setIsLoading(false);
+  }, []);
+
+  // Validate token once after it's restored
+  useEffect(() => {
+    if (!token || hasValidated.current) return;
+    hasValidated.current = true;
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
+    fetch(`${apiUrl}/admin/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        if (res.status === 401 || res.status === 403) {
+          localStorage.removeItem("admin_token");
+          localStorage.removeItem("admin_user");
+          setToken(null);
+          setUser(null);
+        }
       })
-        .then((res) => {
-          if (res.status === 401 || res.status === 403) {
-            // Token expired or invalid — clear and redirect
-            localStorage.removeItem("admin_token");
-            localStorage.removeItem("admin_user");
-            setToken(null);
-            setUser(null);
-          }
-        })
-        .catch(() => {
-          // Network error — keep existing session
-        })
-        .finally(() => setIsLoading(false));
-    } else {
-      setIsLoading(false);
+      .catch(() => {
+        // Network error — keep existing session
+      });
+  }, [token]);
+
+  // Pick up new tokens stored by accept-invite page
+  useEffect(() => {
+    const storedToken = localStorage.getItem("admin_token");
+    const storedUser = localStorage.getItem("admin_user");
+    if (storedToken && storedUser && storedToken !== token) {
+      setToken(storedToken);
+      setUser(JSON.parse(storedUser));
+      hasValidated.current = false; // re-validate new token
     }
   }, [pathname, token]);
 
@@ -127,16 +140,16 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setUser(null);
     setToken(null);
     localStorage.removeItem("admin_token");
     localStorage.removeItem("admin_user");
     router.push("/admin/login");
-  };
+  }, [router]);
 
-  // Wrapper around fetch that auto-logs out on 401
-  const authFetch = async (url: string, options?: RequestInit): Promise<Response> => {
+  // Stable wrapper around fetch that auto-logs out on 401
+  const authFetch = useCallback(async (url: string, options?: RequestInit): Promise<Response> => {
     const currentToken = localStorage.getItem("admin_token");
     const res = await fetch(url, {
       ...options,
@@ -146,10 +159,14 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
       },
     });
     if (res.status === 401) {
-      logout();
+      localStorage.removeItem("admin_token");
+      localStorage.removeItem("admin_user");
+      setUser(null);
+      setToken(null);
+      router.push("/admin/login");
     }
     return res;
-  };
+  }, [router]);
 
   return (
     <AdminAuthContext.Provider value={{ user, token, login, logout, isLoading, authFetch }}>

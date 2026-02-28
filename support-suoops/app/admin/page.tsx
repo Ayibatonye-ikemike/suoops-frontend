@@ -179,7 +179,8 @@ export default function AdminDashboard() {
     }
 
     fetchData();
-  }, [token, authFetch]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   if (isLoading) {
     return (
