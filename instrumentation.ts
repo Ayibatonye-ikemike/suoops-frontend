@@ -14,3 +14,5 @@ export function register() {
     sendDefaultPii: true,
   });
 }
+
+export const onRequestError = Sentry.captureRequestError;
