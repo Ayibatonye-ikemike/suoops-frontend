@@ -35,11 +35,11 @@ export function middleware(request: NextRequest) {
   // Allow self, inline styles (Tailwind), Sentry, YouTube embeds, Google OAuth
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://www.googletagmanager.com https://www.google-analytics.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: blob: https: http:",
-    "connect-src 'self' https://api.suoops.com https://*.sentry.io https://accounts.google.com",
+    "connect-src 'self' https://api.suoops.com https://*.sentry.io https://accounts.google.com https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com",
     "frame-src https://www.youtube.com https://accounts.google.com",
     "frame-ancestors 'none'",
     "base-uri 'self'",
