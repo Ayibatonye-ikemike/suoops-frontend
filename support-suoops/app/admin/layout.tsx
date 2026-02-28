@@ -33,6 +33,7 @@ interface AdminAuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   isLoading: boolean;
+  authFetch: (url: string, options?: RequestInit) => Promise<Response>;
 }
 
 const AdminAuthContext = createContext<AdminAuthContextType | null>(null);
@@ -54,17 +55,34 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Check for stored token on mount and whenever pathname changes
-    // This ensures we pick up new tokens stored by accept-invite page
     const storedToken = localStorage.getItem("admin_token");
     const storedUser = localStorage.getItem("admin_user");
     if (storedToken && storedUser) {
-      // Only update if token changed (avoid unnecessary re-renders)
       if (storedToken !== token) {
         setToken(storedToken);
         setUser(JSON.parse(storedUser));
       }
+      // Validate token against the API on mount
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
+      fetch(`${apiUrl}/admin/auth/me`, {
+        headers: { Authorization: `Bearer ${storedToken}` },
+      })
+        .then((res) => {
+          if (res.status === 401 || res.status === 403) {
+            // Token expired or invalid — clear and redirect
+            localStorage.removeItem("admin_token");
+            localStorage.removeItem("admin_user");
+            setToken(null);
+            setUser(null);
+          }
+        })
+        .catch(() => {
+          // Network error — keep existing session
+        })
+        .finally(() => setIsLoading(false));
+    } else {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, [pathname, token]);
 
   const login = async (email: string, password: string): Promise<boolean> => {
@@ -117,8 +135,24 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
     router.push("/admin/login");
   };
 
+  // Wrapper around fetch that auto-logs out on 401
+  const authFetch = async (url: string, options?: RequestInit): Promise<Response> => {
+    const currentToken = localStorage.getItem("admin_token");
+    const res = await fetch(url, {
+      ...options,
+      headers: {
+        ...options?.headers,
+        Authorization: `Bearer ${currentToken}`,
+      },
+    });
+    if (res.status === 401) {
+      logout();
+    }
+    return res;
+  };
+
   return (
-    <AdminAuthContext.Provider value={{ user, token, login, logout, isLoading }}>
+    <AdminAuthContext.Provider value={{ user, token, login, logout, isLoading, authFetch }}>
       {children}
     </AdminAuthContext.Provider>
   );

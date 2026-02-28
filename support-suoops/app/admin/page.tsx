@@ -142,7 +142,7 @@ function PriorityBadge({ priority }: { priority: string }) {
 }
 
 export default function AdminDashboard() {
-  const { token } = useAdminAuth();
+  const { token, authFetch } = useAdminAuth();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentTickets, setRecentTickets] = useState<RecentTicket[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -156,19 +156,16 @@ export default function AdminDashboard() {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
         
         // Fetch dashboard stats
-        const statsRes = await fetch(`${apiUrl}/support/admin/dashboard`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const statsRes = await authFetch(`${apiUrl}/support/admin/dashboard`);
         
+        // authFetch auto-redirects to login on 401, so just return
+        if (statsRes.status === 401) return;
         if (!statsRes.ok) throw new Error("Failed to fetch stats");
         const statsData = await statsRes.json();
         setStats(statsData);
 
         // Fetch recent tickets
-        const ticketsRes = await fetch(
-          `${apiUrl}/support/admin/tickets?limit=5`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        const ticketsRes = await authFetch(`${apiUrl}/support/admin/tickets?limit=5`);
         
         if (ticketsRes.ok) {
           const ticketsData = await ticketsRes.json();
@@ -182,7 +179,7 @@ export default function AdminDashboard() {
     }
 
     fetchData();
-  }, [token]);
+  }, [token, authFetch]);
 
   if (isLoading) {
     return (
