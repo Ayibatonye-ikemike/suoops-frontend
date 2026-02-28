@@ -237,9 +237,9 @@ function MiniBarChart({ data, color = "bg-emerald-500", label = "" }: {
   return (
     <div>
       {label && <p className="text-xs font-medium text-slate-500 mb-2">{label}</p>}
-      <div className="flex items-end gap-1 h-16">
+      <div className="flex gap-1 h-16">
         {data.map((d) => (
-          <div key={d.month} className="flex-1 flex flex-col items-center gap-1">
+          <div key={d.month} className="flex-1 flex flex-col items-center justify-end">
             <div
               className={`w-full rounded-t ${color} transition-all`}
               style={{ height: `${Math.max((d.value / max) * 100, 4)}%` }}
