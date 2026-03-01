@@ -30,9 +30,9 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
     );
   }
 
-  const currentPlan = (user?.plan?.toUpperCase() || "FREE") as PlanTier;
-  // Map legacy "STARTER" from backend to "FREE" 
-  const normalizedPlan = (currentPlan === "STARTER" ? "FREE" : currentPlan) as PlanTier;
+  const rawPlan = user?.plan?.toUpperCase() || "FREE";
+  // Map legacy "STARTER" from backend to "FREE"
+  const normalizedPlan = (rawPlan === "STARTER" ? "FREE" : rawPlan) as PlanTier;
   const planDetails = getPlan(normalizedPlan);
   const displayName = getPlanDisplayName(normalizedPlan);
   const invoiceBalance = user?.invoice_balance ?? 0;
