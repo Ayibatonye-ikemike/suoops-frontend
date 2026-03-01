@@ -129,26 +129,6 @@ export async function initializeInvoicePackPurchase(
 }
 
 // ============================================
-// Switch to STARTER (no payment required)
-// ============================================
-
-export interface SwitchToStarterResponse {
-  status: string;
-  message: string;
-  old_plan: string;
-  new_plan: string;
-}
-
-/**
- * Switch to STARTER plan (no payment required).
- * STARTER has no monthly subscription - users pay per invoice pack.
- */
-export async function switchToStarter(): Promise<SwitchToStarterResponse> {
-  const response = await apiClient.post("/subscriptions/switch-to-starter");
-  return response.data;
-}
-
-// ============================================
 // Subscription Status & Cancellation
 // ============================================
 

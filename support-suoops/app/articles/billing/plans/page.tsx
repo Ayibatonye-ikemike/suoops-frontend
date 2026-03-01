@@ -30,7 +30,7 @@ export default function PlansArticle() {
             Understanding Subscription Plans
           </h1>
           <p className="mt-3 text-lg text-slate-600">
-            Choose the right plan for your needs. Start free, pay as you go.
+            Start with <strong>5 free invoices</strong> — no credit card needed. Pay only as you grow.
           </p>
         </div>
 
@@ -40,15 +40,16 @@ export default function PlansArticle() {
           <div className="rounded-xl border border-slate-200 p-6">
             <div className="flex items-center gap-2 mb-3">
               <Zap className="h-5 w-5 text-slate-600" />
-              <h3 className="font-bold text-slate-900">Free</h3>
+              <h3 className="font-bold text-slate-900">Starter (Free)</h3>
             </div>
             <div className="mb-4">
               <span className="text-3xl font-bold text-slate-900">₦0</span>
+              <span className="text-slate-500 ml-2">+ buy packs as needed</span>
             </div>
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>5 free invoices to start</span>
+                <span><strong>5 free invoices</strong> to start</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
@@ -60,11 +61,11 @@ export default function PlansArticle() {
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>PDF generation</span>
+                <span>PDF generation & QR verification</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>QR verification</span>
+                <span>Tax reports & automation</span>
               </li>
             </ul>
           </div>
@@ -132,10 +133,10 @@ export default function PlansArticle() {
 
           <h2>How to Get Started</h2>
           <ol>
-            <li>Sign up for a <strong>Free account</strong> (5 free invoices included)</li>
+            <li>Sign up for a <strong>free Starter account</strong> (5 free invoices included — no credit card needed)</li>
             <li>When you need more, either:
               <ul>
-                <li>Buy invoice packs (50 for ₦1,250) - pay as you go</li>
+                <li>Buy invoice packs (50 for ₦1,250) — pay as you go, never expires</li>
                 <li>Upgrade to Pro for monthly subscription with 50 invoices included</li>
               </ul>
             </li>
@@ -147,10 +148,11 @@ export default function PlansArticle() {
           <div className="not-prose">
             <div className="space-y-4 mb-8">
               <div className="rounded-lg border border-slate-200 p-4">
-                <h4 className="font-semibold text-slate-900 mb-2">Free / Starter (Pay-as-you-go)</h4>
+                <h4 className="font-semibold text-slate-900 mb-2">Starter (Free — Pay-as-you-go)</h4>
                 <p className="text-sm text-slate-600">
                   Best for individuals, freelancers, and small traders just getting started. 
-                  Pay only for invoices you need without any monthly commitment.
+                  Get 5 free invoices, then pay only for what you need. No monthly commitment.
+                  Includes tax reports and automation.
                 </p>
               </div>
               <div className="rounded-lg border-2 border-emerald-200 bg-emerald-50/50 p-4">
@@ -183,7 +185,7 @@ export default function PlansArticle() {
           <h3>Can I cancel anytime?</h3>
           <p>
             Yes! Cancel from Settings → Subscription. You&apos;ll keep access until the end of your 
-            billing period, then revert to the Free plan. Your invoice balance is preserved.
+            billing period, then revert to the Starter (free) plan. Your invoice balance is preserved.
           </p>
 
           <h3>What happens to my invoice balance if I downgrade?</h3>

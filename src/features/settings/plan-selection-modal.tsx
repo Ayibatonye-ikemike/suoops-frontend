@@ -3,7 +3,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { useState } from "react";
-import { initializeSubscription, switchToStarter } from "@/api/subscription";
+import { initializeSubscription } from "@/api/subscription";
 import { PAID_PLANS, type Plan } from "../../constants/pricing";
 
 interface PlanModalProps {
@@ -35,22 +35,6 @@ export function PlanSelectionModal({
     },
   });
 
-  const starterMutation = useMutation({
-    mutationFn: switchToStarter,
-    onSuccess: () => {
-      alert("Switched to STARTER plan! You can now access tax features.");
-      window.location.reload();
-    },
-    onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? error.response?.data?.detail || error.message
-        : error instanceof Error
-        ? error.message
-        : null;
-      alert(message || "Failed to switch plan. Please try again.");
-    },
-  });
-
   if (!isOpen) return null;
 
   const handleUpgrade = () => {
@@ -58,17 +42,10 @@ export function PlanSelectionModal({
       alert("Please select a plan");
       return;
     }
-    
-    // STARTER uses a different endpoint (no payment required)
-    if (selectedPlan === "STARTER") {
-      starterMutation.mutate();
-    } else {
-      initializeMutation.mutate(selectedPlan);
-    }
+    initializeMutation.mutate(selectedPlan);
   };
 
-  const isPending = initializeMutation.isPending || starterMutation.isPending;
-  const showStarter = currentPlan === "FREE"; // Only show STARTER option for FREE users
+  const isPending = initializeMutation.isPending;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-8 sm:px-6">
@@ -96,50 +73,11 @@ export function PlanSelectionModal({
 
         {/* Modal header */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold sm:text-3xl">Choose Your Plan</h2>
+          <h2 className="text-2xl font-bold sm:text-3xl">Upgrade to Pro</h2>
           <p className="mt-2 text-brand-textMuted">
-            {showStarter 
-              ? "Switch to Starter (free, pay-per-invoice) or upgrade to Pro for premium features"
-              : "Upgrade to Pro for custom branding, inventory, and team management"
-            }
+            Unlock custom branding, inventory, team management, and more
           </p>
         </div>
-
-        {/* STARTER card for FREE users */}
-        {showStarter && (
-          <div className="mb-6">
-            <button
-              type="button"
-              onClick={() => setSelectedPlan("STARTER")}
-              className={`w-full rounded-xl border-2 p-6 text-left transition-all ${
-                selectedPlan === "STARTER"
-                  ? "border-brand-jade bg-brand-jade/5 shadow-lg"
-                  : "border-brand-border bg-white hover:border-brand-jade/50 hover:shadow-md"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-3xl mb-2">🚀</div>
-                  <h3 className="text-xl font-bold">Starter</h3>
-                  <div className="text-2xl font-bold text-brand-jade mt-2">No Monthly Fee</div>
-                  <p className="text-sm text-brand-textMuted mt-1">
-                    Pay ₦1,250 per 50 invoices • Unlock tax reports & automation
-                  </p>
-                </div>
-                {selectedPlan === "STARTER" && (
-                  <svg className="h-8 w-8 text-brand-jade" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                )}
-              </div>
-            </button>
-            <div className="my-6 flex items-center">
-              <div className="flex-1 border-t border-brand-border"></div>
-              <span className="px-4 text-sm text-brand-textMuted">or subscribe monthly</span>
-              <div className="flex-1 border-t border-brand-border"></div>
-            </div>
-          </div>
-        )}
 
         {/* Plan grid */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
@@ -246,8 +184,6 @@ export function PlanSelectionModal({
           >
             {isPending
               ? "Processing..."
-              : selectedPlan === "STARTER"
-              ? "Switch to Starter (Free)"
               : "Continue to Payment"}
           </button>
         </div>

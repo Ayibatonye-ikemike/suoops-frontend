@@ -10,12 +10,30 @@ export function Pricing() {
             Simple pricing that grows with you
           </h2>
           <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-            No invoices sent? No pressure. Only pay as your business grows.
+            Start with <strong>5 free invoices</strong> — no credit card needed. Only pay as your business grows.
           </p>
         </div>
 
+        {/* Free invoices callout */}
+        <div className="mt-8 max-w-2xl mx-auto">
+          <div className="rounded-2xl bg-gradient-to-r from-brand-evergreen to-brand-jade p-6 text-center shadow-lg">
+            <div className="text-4xl mb-2">🎉</div>
+            <h3 className="text-xl font-bold text-white">Try SuoOps Free — 5 Invoices On Us!</h3>
+            <p className="mt-2 text-green-100">
+              Sign up and get <strong className="text-brand-chartreuse">5 free invoices</strong> to test everything out. 
+              No commitment, no credit card required.
+            </p>
+            <Link
+              href="/register"
+              className="mt-4 inline-flex items-center justify-center rounded-lg bg-brand-chartreuse px-6 py-3 text-base font-semibold text-brand-evergreen shadow-lg transition-all hover:bg-white hover:scale-105"
+            >
+              Get Your 5 Free Invoices →
+            </Link>
+          </div>
+        </div>
+
         <div className="mt-12 grid gap-6 sm:grid-cols-2 max-w-4xl mx-auto">
-          {LANDING_PLANS.filter(plan => plan.id !== "FREE").map((plan: Plan) => (
+          {LANDING_PLANS.map((plan: Plan) => (
             <PricingCard key={plan.id} plan={plan} />
           ))}
         </div>
@@ -109,7 +127,12 @@ function PricingCard({ plan }: { plan: Plan }) {
           MOST POPULAR
         </div>
       )}
-      <h3 className="text-lg font-bold text-brand-evergreen">{plan.name}</h3>
+      {isFree && (
+        <div className="mb-3 inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+          5 FREE INVOICES
+        </div>
+      )}
+      <h3 className="text-lg font-bold text-brand-evergreen">{plan.displayName}</h3>
       <div className="mt-3">
         <span className="text-3xl font-bold text-brand-evergreen">{plan.priceDisplay}</span>
         {plan.hasMonthlySubscription && <span className="text-slate-500">/mo</span>}
@@ -118,7 +141,7 @@ function PricingCard({ plan }: { plan: Plan }) {
         {plan.invoicesDisplay}
       </p>
       {isFree && (
-        <p className="mt-1 text-xs text-slate-500">No monthly commitment</p>
+        <p className="mt-1 text-xs text-slate-500">No credit card required • Buy more anytime</p>
       )}
       <ul className="mt-6 space-y-3 text-sm text-slate-600">
         {plan.features.map((feature, i) => (

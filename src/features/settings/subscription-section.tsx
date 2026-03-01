@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PlanSelectionModal } from "./plan-selection-modal";
 import { SubscriptionManagement } from "./subscription-management";
-import { type PlanTier, getPlan, INVOICE_PACK_PRICE, INVOICE_PACK_SIZE } from "../../constants/pricing";
+import { type PlanTier, getPlan, getPlanDisplayName, INVOICE_PACK_PRICE, INVOICE_PACK_SIZE } from "../../constants/pricing";
 
 interface SubscriptionSectionProps {
   user?: {
@@ -31,7 +31,10 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
   }
 
   const currentPlan = (user?.plan?.toUpperCase() || "FREE") as PlanTier;
-  const planDetails = getPlan(currentPlan);
+  // Map legacy "STARTER" from backend to "FREE" 
+  const normalizedPlan = (currentPlan === "STARTER" ? "FREE" : currentPlan) as PlanTier;
+  const planDetails = getPlan(normalizedPlan);
+  const displayName = getPlanDisplayName(normalizedPlan);
   const invoiceBalance = user?.invoice_balance ?? 0;
 
   // Format subscription dates
@@ -39,7 +42,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
     ? new Date(user.subscription_expires_at)
     : null;
   // Only PRO has monthly subscriptions
-  const hasMonthlySubscription = currentPlan === "PRO";
+  const hasMonthlySubscription = normalizedPlan === "PRO";
   const isExpiringSoon =
     subscriptionExpiresAt &&
     subscriptionExpiresAt.getTime() - Date.now() < 7 * 24 * 60 * 60 * 1000;
@@ -75,17 +78,16 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
             <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-4">
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-background text-2xl">
-                  {currentPlan === "FREE" && "🆓"}
-                  {currentPlan === "STARTER" && "🚀"}
-                  {currentPlan === "PRO" && "⭐"}
+                  {normalizedPlan === "FREE" && "🚀"}
+                  {normalizedPlan === "PRO" && "⭐"}
                 </div>
                 <div>
                   <div className="inline-flex items-center gap-2 rounded-full bg-brand-jade px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white">
                     Current Plan
-                    {planDetails.name !== "Free" && (
+                    {displayName !== "Starter" && (
                       <span className="opacity-70">•</span>
                     )}
-                    <span>{planDetails.name}</span>
+                    <span>{displayName}</span>
                   </div>
                   <p className="mt-2 text-2xl font-semibold leading-tight text-brand-text">
                     {planDetails.priceDisplay}
@@ -191,7 +193,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
           </div>
         </div>
 
-        {currentPlan !== "PRO" && (
+        {normalizedPlan !== "PRO" && (
             <div className="mt-8 rounded-2xl border border-brand-border bg-brand-background p-5">
               <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
@@ -199,8 +201,8 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                     Need more headroom?
                   </p>
                   <p className="text-sm text-brand-textMuted">
-                    Upgrade to unlock tax automation (Starter), or custom branding,
-                    inventory, and team management (Pro).
+                    Upgrade to Pro for custom branding,
+                    inventory, team management, and voice invoices.
                   </p>
                 </div>
                 <Button
@@ -231,7 +233,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
         <PlanSelectionModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          currentPlan={currentPlan}
+          currentPlan={normalizedPlan}
         />
       </div>
     </div>

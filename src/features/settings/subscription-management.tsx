@@ -131,7 +131,7 @@ export function SubscriptionManagement({ onStatusChange }: SubscriptionManagemen
                 <p className="text-sm text-red-800 mb-3">
                   Are you sure? You&apos;ll keep your Pro features until{" "}
                   <strong>{formatDate(status.expires_at)}</strong>, then your
-                  account will switch to Starter (no monthly fee, pay per invoice).
+                  account will switch to Free (no monthly fee, buy invoice packs as needed).
                 </p>
                 <div className="flex gap-3">
                   <Button

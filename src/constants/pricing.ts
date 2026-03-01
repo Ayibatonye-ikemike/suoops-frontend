@@ -3,18 +3,18 @@
  * Single source of truth for all subscription tiers
  * 
  * BILLING MODEL (Small & Medium Business Focus):
- * - FREE: 5 free invoices to start, basic features
- * - STARTER: No monthly fee, buy invoice packs (50 = ₦1,250)
- * - PRO: ₦3,250/month = 100 invoices included + ALL premium features
+ * - FREE (displayed as "Starter"): 5 free invoices to start, buy packs (50 = ₦1,250)
+ * - PRO: ₦3,250/month = 50 invoices included + ALL premium features
  * - All plans can buy additional packs (50 invoices = ₦1,250)
  * 
+ * Note: STARTER plan removed from backend. Frontend shows "Starter" as UX label for FREE.
  * Note: BUSINESS plan removed - we focus on businesses under ₦100M annual revenue.
  * PRO now includes voice invoices.
  * 
  * IMPORTANT: Keep in sync with backend app/models/models.py SubscriptionPlan
  */
 
-export type PlanTier = "FREE" | "STARTER" | "PRO";
+export type PlanTier = "FREE" | "PRO";
 
 export interface PlanFeature {
   text: string;
@@ -24,6 +24,7 @@ export interface PlanFeature {
 export interface Plan {
   id: PlanTier;
   name: string;
+  displayName: string;  // What users see (e.g., "Starter" for FREE)
   price: number;
   priceDisplay: string;
   invoicesIncluded: number;
@@ -42,46 +43,34 @@ export const INVOICE_PACK_PRICE = 1250;
 /**
  * Complete plan definitions
  * Backend contract: SubscriptionPlan in app/models/models.py
+ * 
+ * Note: FREE plan is displayed as "Starter" to users for better UX.
+ * Users get 5 free invoices and can buy packs without any plan change.
  */
 export const PLANS: Record<PlanTier, Plan> = {
   FREE: {
     id: "FREE",
     name: "Free",
+    displayName: "Starter",  // Shown to users as "Starter" for UX
     price: 0,
     priceDisplay: "₦0",
     invoicesIncluded: 5,
     invoicesDisplay: "5 free invoices to start",
     hasMonthlySubscription: false,
-    description: "Get started for free",
+    icon: "🚀",
+    description: "Get started free — 5 invoices on us",
     features: [
-      "5 free invoices to start",
+      "5 free invoices to try it out",
       "Buy more: 50 for ₦1,250",
       "WhatsApp & Email delivery",
-      "PDF generation",
-      "QR verification",
-    ],
-  },
-  STARTER: {
-    id: "STARTER",
-    name: "Starter",
-    price: 1250,
-    priceDisplay: "₦1,250 per 50 invoices",
-    invoicesIncluded: 0,
-    invoicesDisplay: "Buy invoice packs",
-    hasMonthlySubscription: false,
-    popular: false,
-    icon: "🚀",
-    description: "Pay as you go invoicing",
-    features: [
-      "No monthly fee",
-      "50 invoices for ₦1,250",
-      "WhatsApp & Email delivery",
       "PDF generation & QR verification",
+      "Tax reports & automation",
     ],
   },
   PRO: {
     id: "PRO",
     name: "Pro",
+    displayName: "Pro",
     price: 3250,
     priceDisplay: "₦3,250",
     invoicesIncluded: 50,
@@ -107,8 +96,7 @@ export const PLANS: Record<PlanTier, Plan> = {
 };
 
 /**
- * Plans available for paid upgrade selection (excludes FREE and STARTER)
- * STARTER has no monthly subscription - users just buy invoice packs
+ * Plans available for paid upgrade selection (PRO only)
  */
 export const PAID_PLANS: Plan[] = [
   PLANS.PRO,
@@ -119,18 +107,16 @@ export const PAID_PLANS: Plan[] = [
  */
 export const ALL_PLANS: Plan[] = [
   PLANS.FREE,
-  PLANS.STARTER,
   PLANS.PRO,
 ];
 
 /**
  * Landing page pricing display
- * Shows FREE and PRO plans only
- * Users start FREE and can buy packs or upgrade to PRO for monthly subscription
+ * Shows Starter (FREE) and Pro plans
+ * Users start with 5 free invoices and can buy packs or upgrade to PRO
  */
 export const LANDING_PLANS: Plan[] = [
   PLANS.FREE,
-  PLANS.STARTER,
   PLANS.PRO,
 ];
 
@@ -138,7 +124,7 @@ export const LANDING_PLANS: Plan[] = [
  * Feature availability by plan tier
  */
 export const FEATURE_GATES = {
-  TAX_REPORTS: ["PRO"] as PlanTier[],
+  TAX_REPORTS: ["FREE", "PRO"] as PlanTier[],
   CUSTOM_BRANDING: ["PRO"] as PlanTier[],
   INVENTORY: ["PRO"] as PlanTier[],
   TEAM_MANAGEMENT: ["PRO"] as PlanTier[],
@@ -167,9 +153,12 @@ export function hasPlanFeature(planId: PlanTier, feature: keyof typeof FEATURE_G
 
 /**
  * Get plan by ID with type safety
+ * Handles legacy "STARTER" values by mapping to FREE
  */
-export function getPlan(planId: PlanTier): Plan {
-  return PLANS[planId];
+export function getPlan(planId: string): Plan {
+  // Map legacy STARTER to FREE
+  const normalizedId = planId.toUpperCase() === "STARTER" ? "FREE" : planId.toUpperCase();
+  return PLANS[normalizedId as PlanTier] || PLANS.FREE;
 }
 
 /**
@@ -177,4 +166,12 @@ export function getPlan(planId: PlanTier): Plan {
  */
 export function formatPrice(price: number): string {
   return `₦${price.toLocaleString()}`;
+}
+
+/**
+ * Get display name for a plan (maps FREE -> "Starter" for UX)
+ */
+export function getPlanDisplayName(planId: string): string {
+  const plan = getPlan(planId);
+  return plan.displayName;
 }

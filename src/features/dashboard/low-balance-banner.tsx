@@ -46,7 +46,7 @@ export function LowBalanceBanner() {
   const plan = user?.plan?.toUpperCase() || "FREE";
   const isLowBalance = invoiceBalance <= 2 && invoiceBalance > 0;
   const isZeroBalance = invoiceBalance === 0;
-  const isFreeOrStarter = plan === "FREE" || plan === "STARTER";
+  const isFreeOrStarter = plan === "FREE" || plan === "STARTER";  // STARTER is legacy, treat same as FREE
 
   // Don't show if:
   // - Still loading

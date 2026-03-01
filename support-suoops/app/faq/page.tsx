@@ -26,7 +26,7 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: "Is there a free plan?",
-        answer: "Yes! New users get 5 free invoices to start. After that, you can purchase invoice packs (50 invoices for ₦1,250) or subscribe to a monthly plan for additional features."
+        answer: "Yes! New users get 5 free invoices to start — no credit card required. After that, you can purchase invoice packs (50 invoices for ₦1,250) whenever you need more. No monthly commitment necessary."
       },
       {
         question: "How do I set up my business profile?",
@@ -70,11 +70,11 @@ const faqCategories: FAQCategory[] = [
     faqs: [
       {
         question: "How does billing work?",
-        answer: "New users get 5 free invoices. After that, you can either buy invoice packs (50 for ₦1,250) or subscribe monthly. Invoice packs never expire - use them anytime."
+        answer: "New users get 5 free invoices — no strings attached! After that, you can buy invoice packs (50 for ₦1,250) whenever you need more. Packs never expire. For premium features like custom branding and team management, upgrade to Pro (₦3,250/month)."
       },
       {
         question: "What are the subscription plans?",
-        answer: "We offer: Free (5 invoices to start), Starter (pay-as-you-go invoicing), and Pro (₦3,250/month with all premium features including tax reports, voice invoices, inventory & team access)."
+        answer: "SuoOps has two simple tiers: Starter (free — 5 invoices to start, buy packs as needed, includes tax reports) and Pro (₦3,250/month with all premium features including 50 invoices/month, custom branding, inventory, team management, and voice invoices)."
       },
       {
         question: "Who should use the Pro plan?",
@@ -86,7 +86,7 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: "Can I cancel my subscription?",
-        answer: "Yes, you can cancel anytime from Settings → Subscription. You keep access until the end of your billing period, then revert to the free tier."
+        answer: "Yes, you can cancel anytime from Settings → Subscription. You keep access until the end of your billing period, then revert to the Starter (free) tier. Your invoice balance and data are preserved."
       },
       {
         question: "What happens to my invoices if I downgrade?",
