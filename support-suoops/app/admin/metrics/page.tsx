@@ -21,6 +21,7 @@ import {
   Clock,
   UserX,
   Activity,
+  ShoppingCart,
 } from "lucide-react";
 import { useAdminAuth } from "../layout";
 
@@ -41,6 +42,17 @@ interface PaidUserInfo {
   referred_by_id: number | null;
 }
 
+interface PackBuyerInfo {
+  id: number;
+  name: string;
+  email: string | null;
+  phone: string;
+  business_name: string | null;
+  invoice_balance: number;
+  total_packs_bought: number;
+  last_purchase_date: string | null;
+}
+
 interface PlatformMetrics {
   total_invoices: number;
   paid_invoices: number;
@@ -53,11 +65,11 @@ interface PlatformMetrics {
   invoices_this_month: number;
   active_subscriptions: {
     free?: number;
-    starter?: number;
     pro?: number;
   };
   total_customers: number;
   paid_users: PaidUserInfo[];
+  pack_buyers: PackBuyerInfo[];
 }
 
 interface MonthlyDataPoint {
@@ -319,14 +331,11 @@ export default function MetricsPage() {
 
   const totalSubscribers = metrics
     ? ((metrics.active_subscriptions.free || 0) +
-        (metrics.active_subscriptions.starter || 0) +
         (metrics.active_subscriptions.pro || 0))
     : 0;
     
-  const paidCount = metrics
-    ? ((metrics.active_subscriptions.starter || 0) +
-        (metrics.active_subscriptions.pro || 0))
-    : 0;
+  const proCount = metrics?.active_subscriptions.pro || 0;
+  const packBuyerCount = metrics?.pack_buyers?.length || 0;
     
   const referredPaidUsers = metrics?.paid_users?.filter(u => u.was_referred) || [];
   const directPaidUsers = metrics?.paid_users?.filter(u => !u.was_referred) || [];
@@ -504,14 +513,14 @@ export default function MetricsPage() {
           </div>
           <div className="space-y-5">
             <ProgressBar
-              label="Free Users"
+              label="Free / Starter Users"
               value={metrics?.active_subscriptions.free || 0}
               total={totalSubscribers || 1}
               color="bg-slate-400"
             />
             <ProgressBar
-              label="Starter Plan"
-              value={metrics?.active_subscriptions.starter || 0}
+              label="Invoice Pack Buyers"
+              value={packBuyerCount}
               total={totalSubscribers || 1}
               color="bg-blue-500"
             />
@@ -523,16 +532,20 @@ export default function MetricsPage() {
             />
           </div>
 
-          <div className="mt-6 pt-6 border-t border-slate-100 grid grid-cols-2 gap-4">
+          <div className="mt-6 pt-6 border-t border-slate-100 grid grid-cols-3 gap-4">
             <div className="text-center p-4 rounded-lg bg-slate-50">
-              <p className="text-sm text-slate-500">Paying Users</p>
-              <p className="text-2xl font-bold text-emerald-600">{paidCount}</p>
+              <p className="text-sm text-slate-500">Pro Users</p>
+              <p className="text-2xl font-bold text-purple-600">{proCount}</p>
             </div>
             <div className="text-center p-4 rounded-lg bg-slate-50">
-              <p className="text-sm text-slate-500">Conversion Rate</p>
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-sm text-slate-500">Pack Buyers</p>
+              <p className="text-2xl font-bold text-blue-600">{packBuyerCount}</p>
+            </div>
+            <div className="text-center p-4 rounded-lg bg-slate-50">
+              <p className="text-sm text-slate-500">Pro Conversion</p>
+              <p className="text-2xl font-bold text-emerald-600">
                 {totalSubscribers > 0
-                  ? ((paidCount / totalSubscribers) * 100).toFixed(1)
+                  ? ((proCount / totalSubscribers) * 100).toFixed(1)
                   : 0}%
               </p>
             </div>
@@ -554,13 +567,67 @@ export default function MetricsPage() {
         </div>
       </div>
 
+      {/* Invoice Pack Buyers Table */}
+      {metrics?.pack_buyers && metrics.pack_buyers.length > 0 && (
+        <div className="rounded-xl border border-slate-200 bg-white">
+          <div className="border-b border-slate-100 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-slate-900">Invoice Pack Buyers</h3>
+                <p className="text-sm text-slate-500">Free users who purchased invoice packs</p>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <ShoppingCart className="h-4 w-4 text-blue-500" />
+                <span className="text-slate-600">Total: <strong className="text-blue-700">{packBuyerCount}</strong></span>
+              </div>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-slate-100 text-left text-sm text-slate-500">
+                  <th className="px-6 py-3 font-medium">User</th>
+                  <th className="px-6 py-3 font-medium">Packs Bought</th>
+                  <th className="px-6 py-3 font-medium">Balance</th>
+                  <th className="px-6 py-3 font-medium">Last Purchase</th>
+                </tr>
+              </thead>
+              <tbody>
+                {metrics.pack_buyers.map((buyer) => (
+                  <tr key={buyer.id} className="border-b border-slate-50 hover:bg-slate-50">
+                    <td className="px-6 py-4">
+                      <div className="font-medium text-slate-900">{buyer.name}</div>
+                      <div className="text-sm text-slate-500">{buyer.business_name || buyer.phone}</div>
+                      {buyer.email && <div className="text-xs text-slate-400">{buyer.email}</div>}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-700">
+                        {buyer.total_packs_bought} pack{buyer.total_packs_bought !== 1 ? "s" : ""}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-sm font-medium text-emerald-600">{buyer.invoice_balance} invoices</span>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-slate-600">
+                      {buyer.last_purchase_date
+                        ? new Date(buyer.last_purchase_date).toLocaleDateString()
+                        : "-"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
       {/* Paid Users Table */}
       <div className="rounded-xl border border-slate-200 bg-white">
         <div className="border-b border-slate-100 px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-slate-900">Paid Subscribers</h3>
-              <p className="text-sm text-slate-500">Starter and Pro plan users</p>
+              <h3 className="text-lg font-semibold text-slate-900">Pro Subscribers</h3>
+              <p className="text-sm text-slate-500">Pro plan users with active subscriptions</p>
             </div>
             <div className="flex gap-4 text-sm">
               <div className="flex items-center gap-2">
