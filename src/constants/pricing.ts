@@ -64,7 +64,6 @@ export const PLANS: Record<PlanTier, Plan> = {
       "Buy more: 50 for ₦1,250",
       "WhatsApp & Email delivery",
       "PDF generation & QR verification",
-      "Tax reports & automation",
     ],
   },
   PRO: {
@@ -124,7 +123,7 @@ export const LANDING_PLANS: Plan[] = [
  * Feature availability by plan tier
  */
 export const FEATURE_GATES = {
-  TAX_REPORTS: ["FREE", "PRO"] as PlanTier[],
+  TAX_REPORTS: ["PRO"] as PlanTier[],
   CUSTOM_BRANDING: ["PRO"] as PlanTier[],
   INVENTORY: ["PRO"] as PlanTier[],
   TEAM_MANAGEMENT: ["PRO"] as PlanTier[],

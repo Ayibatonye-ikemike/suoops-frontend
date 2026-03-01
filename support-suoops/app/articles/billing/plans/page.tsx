@@ -63,10 +63,6 @@ export default function PlansArticle() {
                 <Check className="h-4 w-4 text-emerald-500" />
                 <span>PDF generation & QR verification</span>
               </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-emerald-500" />
-                <span>Tax reports & automation</span>
-              </li>
             </ul>
           </div>
 
@@ -152,7 +148,6 @@ export default function PlansArticle() {
                 <p className="text-sm text-slate-600">
                   Best for individuals, freelancers, and small traders just getting started. 
                   Get 5 free invoices, then pay only for what you need. No monthly commitment.
-                  Includes tax reports and automation.
                 </p>
               </div>
               <div className="rounded-lg border-2 border-emerald-200 bg-emerald-50/50 p-4">

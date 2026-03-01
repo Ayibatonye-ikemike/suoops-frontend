@@ -74,7 +74,7 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: "What are the subscription plans?",
-        answer: "SuoOps has two simple tiers: Starter (free — 5 invoices to start, buy packs as needed, includes tax reports) and Pro (₦3,250/month with all premium features including 50 invoices/month, custom branding, inventory, team management, and voice invoices)."
+        answer: "SuoOps has two simple tiers: Starter (free — 5 invoices to start, buy packs as needed) and Pro (₦3,250/month with all premium features including 50 invoices/month, tax reports, custom branding, inventory, team management, and voice invoices)."
       },
       {
         question: "Who should use the Pro plan?",
