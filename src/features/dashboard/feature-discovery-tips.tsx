@@ -40,13 +40,6 @@ const TIPS: FeatureTip[] = [
     action: { label: "Open Expenses", href: "/dashboard/expenses" },
   },
   {
-    id: "voice-invoice",
-    icon: "🎙️",
-    title: "Create invoices with your voice",
-    description:
-      'Send a voice note to the WhatsApp bot saying "Invoice Joy fifty thousand for design" — it works like magic.',
-  },
-  {
     id: "tax-report",
     icon: "🏛️",
     title: "Download tax reports (Pro)",

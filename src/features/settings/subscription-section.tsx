@@ -202,7 +202,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                   </p>
                   <p className="text-sm text-brand-textMuted">
                     Upgrade to Pro for custom branding,
-                    inventory, team management, and voice invoices.
+                    inventory, analytics, and tax reports.
                   </p>
                 </div>
                 <Button
