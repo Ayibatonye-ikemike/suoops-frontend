@@ -161,7 +161,7 @@ export function WelcomeGuide() {
 
         {/* Footer hint */}
         <p className="mt-4 text-center text-xs text-brand-textMuted">
-          You have <strong>{invoiceBalance} free invoices</strong> — no credit card needed to start
+          You have <strong>{invoiceBalance} invoice{invoiceBalance === 1 ? '' : 's'}</strong> ready to use
         </p>
       </div>
     </>

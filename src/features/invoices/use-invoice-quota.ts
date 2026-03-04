@@ -4,11 +4,12 @@ import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/api/client";
 
 export interface InvoiceQuota {
-  current_count: number;
-  limit: number | null;
+  invoice_balance: number;
   current_plan: string;
   can_create: boolean;
-  upgrade_url: string | null;
+  pack_price: number;
+  pack_size: number;
+  purchase_url: string | null;
 }
 
 async function fetchInvoiceQuota(): Promise<InvoiceQuota> {

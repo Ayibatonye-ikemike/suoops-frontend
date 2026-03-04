@@ -4,8 +4,7 @@ interface InvoiceFormMessagesProps {
   invoiceType: "revenue" | "expense";
   quota:
     | {
-        current_count: number;
-        limit: number | null;
+        invoice_balance: number;
         current_plan: string;
         can_create: boolean;
       }
@@ -31,10 +30,9 @@ export function InvoiceFormMessages({
   return (
     <>
       {/* Quota Display */}
-      {invoiceType === "revenue" && quota && quota.limit !== null && (
+      {invoiceType === "revenue" && quota && (
         <p className="text-xs text-brand-textMuted">
-          {quota.current_count}/{quota.limit} invoices used this month • Plan:{" "}
-          {quota.current_plan}
+          {quota.invoice_balance} invoice{quota.invoice_balance === 1 ? '' : 's'} remaining • Plan: {quota.current_plan}
         </p>
       )}
 
