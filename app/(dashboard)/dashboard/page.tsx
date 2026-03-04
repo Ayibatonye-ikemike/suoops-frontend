@@ -9,6 +9,7 @@ import { LowBalanceBanner } from "@/features/dashboard/low-balance-banner";
 import { CashPositionCard } from "@/features/dashboard/cash-position-card";
 import { ProfessionalismScoreCard } from "@/features/dashboard/professionalism-score-card";
 import { WelcomeGuide } from "@/features/dashboard/welcome-guide";
+import { FeatureDiscoveryTips } from "@/features/dashboard/feature-discovery-tips";
 
 // Wrap InvoiceListWithDetail in its own Suspense for useSearchParams
 function InvoiceListWrapper() {
@@ -44,6 +45,9 @@ export default function DashboardPage() {
 
         {/* Low Balance Banner for users running low on invoices */}
         <LowBalanceBanner />
+
+        {/* Feature discovery tips for existing users */}
+        <FeatureDiscoveryTips />
 
         <div className="space-y-4 sm:space-y-6">
           {/* Cash-First Position Cards — the numbers that matter most */}

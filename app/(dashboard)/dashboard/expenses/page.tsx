@@ -268,7 +268,25 @@ export default function ExpensesPage() {
               ))}
             </div>
           ) : (
-            <p className="text-center text-gray-500 py-8">No expenses for this period</p>
+            <div className="py-10 text-center">
+              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50">
+                <span className="text-2xl">💸</span>
+              </div>
+              <h3 className="text-base font-semibold text-gray-800">No expenses for this period</h3>
+              <p className="mt-2 text-sm text-gray-500 max-w-md mx-auto">
+                Track your spending to see real profit &amp; get accurate tax reports.
+              </p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2 max-w-md mx-auto text-left">
+                <div className="rounded-lg border border-emerald-100 bg-emerald-50/50 p-3">
+                  <p className="text-xs font-semibold text-emerald-800 mb-1">📱 Via WhatsApp</p>
+                  <p className="text-xs text-emerald-700 font-mono">&quot;Expense: ₦5,000 for transport&quot;</p>
+                </div>
+                <div className="rounded-lg border border-blue-100 bg-blue-50/50 p-3">
+                  <p className="text-xs font-semibold text-blue-800 mb-1">📝 Via Dashboard</p>
+                  <p className="text-xs text-blue-700">Tap &quot;Add Expense&quot; above to log one</p>
+                </div>
+              </div>
+            </div>
           )}
         </CardContent>
       </Card>
