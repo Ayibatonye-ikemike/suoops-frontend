@@ -390,10 +390,16 @@ export default function UsersPage() {
                           className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
                             selectedUser.phone_verified
                               ? "bg-green-100 text-green-700"
-                              : "bg-yellow-100 text-yellow-700"
+                              : selectedUser.phone
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-slate-100 text-slate-500"
                           }`}
                         >
-                          {selectedUser.phone_verified ? "Verified" : "Unverified"}
+                          {selectedUser.phone_verified
+                            ? "Verified"
+                            : selectedUser.phone
+                            ? "Unverified"
+                            : "No Phone"}
                         </span>
                       </div>
                     </div>
