@@ -8,6 +8,7 @@ import { WhatsAppSetupBanner } from "@/features/dashboard/whatsapp-setup-banner"
 import { LowBalanceBanner } from "@/features/dashboard/low-balance-banner";
 import { CashPositionCard } from "@/features/dashboard/cash-position-card";
 import { ProfessionalismScoreCard } from "@/features/dashboard/professionalism-score-card";
+import { WelcomeGuide } from "@/features/dashboard/welcome-guide";
 
 // Wrap InvoiceListWithDetail in its own Suspense for useSearchParams
 function InvoiceListWrapper() {
@@ -34,6 +35,9 @@ export default function DashboardPage() {
             Your money status at a glance
           </p>
         </div>
+
+        {/* Welcome Guide for first-time users */}
+        <WelcomeGuide />
 
         {/* WhatsApp Setup Banner for new users */}
         <WhatsAppSetupBanner />

@@ -315,16 +315,19 @@ export function InvoiceList() {
           </button>
         </div>
       ) : (
-        <div className="rounded-xl border border-dashed border-brand-border bg-brand-background p-8 text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-brand-primary/10">
-            <svg className="h-6 w-6 text-brand-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="rounded-xl border-2 border-dashed border-brand-jade/30 bg-gradient-to-b from-emerald-50/50 to-white p-8 text-center">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-brand-jade/10">
+            <svg className="h-6 w-6 text-brand-jade" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
           <h3 className="text-lg font-semibold text-brand-text">No invoices yet</h3>
           <p className="mt-2 text-sm text-brand-textMuted max-w-sm mx-auto">
-            Create your first invoice using the form above, or send a WhatsApp message like &quot;Invoice John 50000&quot; to get started.
+            Create your first invoice using the form above, or text our WhatsApp bot:
           </p>
+          <div className="mt-3 inline-block rounded-lg bg-emerald-50 border border-emerald-100 px-4 py-2">
+            <p className="text-sm text-emerald-800 font-mono">&quot;Invoice John 50000 for design&quot;</p>
+          </div>
         </div>
       )}
 

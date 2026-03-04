@@ -11,12 +11,13 @@ import { hasPlanFeature, type PlanTier } from "@/constants/pricing";
 type CurrentUser = components["schemas"]["UserOut"];
 
 const allNavItems = [
-  { href: "/dashboard", label: "Invoices", icon: "📄", gate: null },
-  { href: "/dashboard/analytics", label: "Insights", icon: "📊", gate: "CASH_DASHBOARD" as const },
-  { href: "/dashboard/inventory", label: "Inventory", icon: "📦", gate: "INVENTORY" as const },
-  { href: "/dashboard/tax", label: "Tax", icon: "💼", gate: "TAX_REPORTS" as const },
-  { href: "/dashboard/referrals", label: "Referrals", icon: "🎁", gate: null },
-  { href: "/dashboard/settings", label: "Settings", icon: "⚙️", gate: null },
+  { href: "/dashboard", label: "Invoices", icon: "📄", gate: null, tip: "Create & track payments" },
+  { href: "/dashboard/analytics", label: "Insights", icon: "📊", gate: "CASH_DASHBOARD" as const, tip: "Revenue analytics" },
+  { href: "/dashboard/inventory", label: "Inventory", icon: "📦", gate: "INVENTORY" as const, tip: "Manage products & stock" },
+  { href: "/dashboard/expenses", label: "Expenses", icon: "💸", gate: null, tip: "Track your spending" },
+  { href: "/dashboard/tax", label: "Tax", icon: "💼", gate: "TAX_REPORTS" as const, tip: "Generate tax reports" },
+  { href: "/dashboard/referrals", label: "Referrals", icon: "🎁", gate: null, tip: "Earn free invoices" },
+  { href: "/dashboard/settings", label: "Settings", icon: "⚙️", gate: null, tip: "Business profile & account" },
 ];
 
 export function DashboardNav() {
@@ -61,7 +62,8 @@ export function DashboardNav() {
                   key={item.href}
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
-                  className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold uppercase tracking-wide transition sm:px-4 sm:text-sm ${
+                  title={item.tip}
+                  className={`group relative flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold uppercase tracking-wide transition sm:px-4 sm:text-sm ${
                     isActive
                       ? "bg-brand-jade text-white shadow-md"
                       : "text-white/80 hover:bg-brand-teal hover:text-white"
@@ -69,6 +71,10 @@ export function DashboardNav() {
                 >
                   <span aria-hidden="true">{item.icon}</span>
                   <span>{item.label}</span>
+                  {/* Tooltip */}
+                  <span className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-brand-text px-2.5 py-1 text-[10px] font-normal normal-case tracking-normal text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                    {item.tip}
+                  </span>
                 </Link>
               );
             })}

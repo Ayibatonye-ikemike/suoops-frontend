@@ -237,9 +237,17 @@ export function InvoiceListWithDetail() {
               </button>
             </div>
           ) : (
-            <div className="rounded-lg border border-dashed border-brand-border bg-brand-background p-6 text-center text-sm text-brand-textMuted">
-              <p className="font-medium text-brand-text">No invoices yet</p>
-              <p className="text-xs mt-1">Your business gets paid when invoices go out. Send your first invoice.</p>
+            <div className="rounded-xl border-2 border-dashed border-brand-jade/30 bg-gradient-to-b from-emerald-50/50 to-white p-6 text-center">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-brand-jade/10">
+                <svg className="h-6 w-6 text-brand-jade" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <p className="font-semibold text-brand-text">No invoices yet</p>
+              <p className="mt-1 text-xs text-brand-textMuted">Use the form on the left, or text our WhatsApp bot:</p>
+              <div className="mt-2 inline-block rounded-lg bg-emerald-50 border border-emerald-100 px-3 py-1.5">
+                <p className="text-xs text-emerald-800 font-mono">&quot;Invoice John 50k for design&quot;</p>
+              </div>
             </div>
           )}
         </div>
