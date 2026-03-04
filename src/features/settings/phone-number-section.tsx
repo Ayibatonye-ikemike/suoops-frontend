@@ -44,11 +44,13 @@ function normalizePhone(input: string): string {
   return `+${trimmed}`;
 }
 
-type VerificationStep = "connect" | "input" | "otp" | "verified";
+type VerificationStep = "connect" | "input" | "otp" | "verified" | "pending";
 
 interface PhoneNumberSectionProps {
-  /** Current user phone number (if any) */
+  /** Current user phone number (if verified) */
   currentPhone?: string | null;
+  /** Phone number on file but not yet verified */
+  pendingPhone?: string | null;
   /** Callback after successful verification */
   onPhoneVerified?: (phone: string) => void;
 }
@@ -58,18 +60,20 @@ interface PhoneNumberSectionProps {
  *
  * Displays current phone status and handles add/verify/remove flow:
  * 1. No phone → Show input field + "Send OTP" button
- * 2. OTP sent → Show 6-digit input + verify button
- * 3. Verified → Show phone number + "Remove" button
+ * 2. Pending phone (unverified) → Show phone + "Verify" button
+ * 3. OTP sent → Show 6-digit input + verify button
+ * 4. Verified → Show phone number + "Remove" button
  */
 export function PhoneNumberSection({
   currentPhone,
+  pendingPhone,
   onPhoneVerified,
 }: PhoneNumberSectionProps) {
   // Component state
   const [step, setStep] = useState<VerificationStep>(
-    currentPhone ? "verified" : "connect" // Start with opt-in step to open 24-hour WhatsApp window
+    currentPhone ? "verified" : pendingPhone ? "pending" : "connect"
   );
-  const [phone, setPhone] = useState(currentPhone || "");
+  const [phone, setPhone] = useState(currentPhone || pendingPhone || "");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -80,8 +84,11 @@ export function PhoneNumberSection({
     if (currentPhone) {
       setStep("verified");
       setPhone(currentPhone);
+    } else if (pendingPhone) {
+      setStep("pending");
+      setPhone(pendingPhone);
     }
-  }, [currentPhone]);
+  }, [currentPhone, pendingPhone]);
 
   /**
    * Handle phone number input and request OTP
@@ -190,6 +197,99 @@ export function PhoneNumberSection({
     setError(null);
     setSuccess(null);
   }, []);
+
+  // Render pending (unverified phone on file) state
+  if (step === "pending") {
+    const botNumber = "2348106865807";
+    const whatsappOptInLink = `https://wa.me/${botNumber}?text=Hi`;
+
+    const handleSendOTP = async () => {
+      setError(null);
+      setSuccess(null);
+      setLoading(true);
+      try {
+        await requestPhoneOTP({ phone });
+        setStep("otp");
+        setOtp("");
+        setSuccess("OTP sent to WhatsApp!");
+      } catch (err) {
+        const message =
+          (err as { response?: { data?: { detail?: string } } })?.response?.data
+            ?.detail || "Failed to send OTP. Try again.";
+        setError(message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    return (
+      <div className="space-y-4">
+        {error && (
+          <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600">
+            {error}
+          </div>
+        )}
+        {success && (
+          <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+            {success}
+          </div>
+        )}
+
+        {/* Pending phone display */}
+        <div className="rounded-xl border-2 border-amber-300 bg-amber-50 p-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">
+                Phone Number (Unverified)
+              </p>
+              <p className="mt-1 text-lg font-semibold text-brand-text">
+                {phone}
+              </p>
+              <p className="mt-1 text-xs text-amber-600">
+                Verify to create invoices via WhatsApp
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 sm:items-end">
+              <Button
+                type="button"
+                onClick={handleSendOTP}
+                disabled={loading}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              >
+                {loading ? "Sending OTP..." : "Verify Now"}
+              </Button>
+              <button
+                type="button"
+                onClick={() => {
+                  setStep("input");
+                  setPhone("");
+                  setError(null);
+                }}
+                className="text-xs text-brand-textMuted hover:text-brand-text underline"
+              >
+                Use a different number
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick step reminder */}
+        <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3">
+          <p className="text-sm text-emerald-800">
+            <strong>Important:</strong> Before verifying, message our WhatsApp bot first so we can send you the OTP.{" "}
+            <a
+              href={whatsappOptInLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold underline hover:text-emerald-900"
+            >
+              Send &ldquo;Hi&rdquo; to our bot →
+            </a>
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   // Render verified state
   if (step === "verified") {
