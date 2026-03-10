@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { getProfessionalismScore } from "@/api/analytics";
 import { apiClient } from "@/api/client";
@@ -11,6 +12,14 @@ const CHECK_LABELS: Record<string, string> = {
   has_bank_details: "Bank details & payment info",
   uses_due_dates: "Due dates on invoices",
   sends_receipts: "Receipts on payment",
+};
+
+const CHECK_LINKS: Record<string, string> = {
+  has_business_name: "/dashboard/settings#profile",
+  has_logo: "/dashboard/settings#logo",
+  has_bank_details: "/dashboard/settings#bank-details",
+  uses_due_dates: "/dashboard/invoices",
+  sends_receipts: "/dashboard/invoices",
 };
 
 export function ProfessionalismScoreCard() {
@@ -117,18 +126,35 @@ export function ProfessionalismScoreCard() {
           <p className={`text-xs font-medium ${levelColor}`}>{data.level}</p>
 
           <ul className="mt-2 space-y-1">
-            {Object.entries(data.checks).map(([key, passed]) => (
-              <li key={key} className="flex items-center gap-1.5 text-xs">
-                <span>{passed ? "✅" : "⬜"}</span>
-                <span
-                  className={
-                    passed ? "text-brand-muted" : "text-brand-dark font-medium"
-                  }
-                >
-                  {CHECK_LABELS[key] || key}
-                </span>
-              </li>
-            ))}
+            {Object.entries(data.checks).map(([key, passed]) => {
+              const label = CHECK_LABELS[key] || key;
+              const link = CHECK_LINKS[key];
+
+              if (passed) {
+                return (
+                  <li key={key} className="flex items-center gap-1.5 text-xs">
+                    <span>✅</span>
+                    <span className="text-brand-muted">{label}</span>
+                  </li>
+                );
+              }
+
+              return (
+                <li key={key} className="flex items-center gap-1.5 text-xs">
+                  <span>⬜</span>
+                  {link ? (
+                    <Link
+                      href={link}
+                      className="text-brand-dark font-medium underline decoration-brand-accent/40 underline-offset-2 hover:text-brand-accent transition-colors"
+                    >
+                      {label} →
+                    </Link>
+                  ) : (
+                    <span className="text-brand-dark font-medium">{label}</span>
+                  )}
+                </li>
+              );
+            })}
           </ul>
 
           {data.tips.length > 0 && (

@@ -131,7 +131,7 @@ export default function SettingsPage() {
         </div>
 
         {/* ─── Profile ─── */}
-        <Card className="mb-6 sm:mb-8">
+        <Card id="profile" className="mb-6 sm:mb-8 scroll-mt-20">
           <CardHeader className="border-b border-brand-border/60 px-4 sm:px-6">
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
@@ -163,7 +163,7 @@ export default function SettingsPage() {
         </Card>
 
         {/* ─── Business Logo ─── */}
-        <Card className="mb-6 sm:mb-8">
+        <Card id="logo" className="mb-6 sm:mb-8 scroll-mt-20">
           <CardHeader className="border-b border-brand-border/60 px-4 sm:px-6">
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-100 text-purple-600">
@@ -185,7 +185,7 @@ export default function SettingsPage() {
         </Card>
 
         {/* ─── Bank Details ─── */}
-        <Card className="mb-6 sm:mb-8">
+        <Card id="bank-details" className="mb-6 sm:mb-8 scroll-mt-20">
           <CardHeader className="border-b border-brand-border/60 px-4 sm:px-6">
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-100 text-teal-600">
