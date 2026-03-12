@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import type { PublicTestimonial } from "@/api/public";
 import { getPublicTestimonials } from "@/api/public";
 
@@ -21,6 +20,11 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 function TestimonialCard({ t }: { t: PublicTestimonial }) {
+  const [imgError, setImgError] = useState(false);
+  const initial = (t.user_name || "U")[0].toUpperCase();
+
+  const showAvatar = !t.logo_url || imgError;
+
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md">
       <StarRating rating={t.rating} />
@@ -28,18 +32,19 @@ function TestimonialCard({ t }: { t: PublicTestimonial }) {
         &ldquo;{t.text}&rdquo;
       </p>
       <div className="mt-4 flex items-center gap-3">
-        {t.logo_url ? (
-          <Image
-            src={t.logo_url}
+        {showAvatar ? (
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-jade/10 text-sm font-bold text-brand-jade">
+            {initial}
+          </div>
+        ) : (
+          <img
+            src={t.logo_url!}
             alt={t.business_name || t.user_name}
             width={36}
             height={36}
             className="h-9 w-9 rounded-full object-cover"
+            onError={() => setImgError(true)}
           />
-        ) : (
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-jade/10 text-sm font-bold text-brand-jade">
-            {(t.user_name || "U")[0].toUpperCase()}
-          </div>
         )}
         <div>
           <p className="text-sm font-semibold text-slate-900">{t.user_name}</p>

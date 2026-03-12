@@ -1,25 +1,29 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import type { TopUser } from "@/api/public";
 import { getPublicTopUsers } from "@/api/public";
 
 function UserCard({ user }: { user: TopUser }) {
+  const [imgError, setImgError] = useState(false);
+  const initial = user.business_name[0].toUpperCase();
+  const showAvatar = !user.logo_url || imgError;
+
   return (
     <div className="flex flex-col items-center rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm p-6 text-center transition hover:bg-white/10">
-      {user.logo_url ? (
-        <Image
-          src={user.logo_url}
+      {showAvatar ? (
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-jade/20 text-xl font-bold text-brand-citrus ring-2 ring-brand-citrus/50">
+          {initial}
+        </div>
+      ) : (
+        <img
+          src={user.logo_url!}
           alt={user.business_name}
           width={64}
           height={64}
           className="h-16 w-16 rounded-full object-cover ring-2 ring-brand-citrus/50"
+          onError={() => setImgError(true)}
         />
-      ) : (
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-jade/20 text-xl font-bold text-brand-citrus ring-2 ring-brand-citrus/50">
-          {user.business_name[0].toUpperCase()}
-        </div>
       )}
       <h3 className="mt-3 text-sm font-semibold text-white">
         {user.business_name}
