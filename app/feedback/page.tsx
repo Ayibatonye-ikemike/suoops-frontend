@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { getConfig } from "@/lib/config";
@@ -8,6 +8,20 @@ import { getConfig } from "@/lib/config";
 const { apiBaseUrl } = getConfig();
 
 export default function FeedbackPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-jade border-t-transparent" />
+        </div>
+      }
+    >
+      <FeedbackForm />
+    </Suspense>
+  );
+}
+
+function FeedbackForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
