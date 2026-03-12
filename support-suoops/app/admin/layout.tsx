@@ -16,6 +16,7 @@ import {
   BarChart3,
   Briefcase,
   Zap,
+  MessageSquare,
 } from "lucide-react";
 
 // Simple auth context for admin
@@ -182,6 +183,7 @@ const navItems = [
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/businesses", label: "Businesses", icon: Briefcase },
   { href: "/admin/referrals", label: "Referrals", icon: Gift },
+  { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquare },
   { href: "/admin/metrics", label: "Metrics", icon: BarChart3 },
   { href: "/admin/tasks", label: "Tasks", icon: Zap },
   { href: "/admin/settings", label: "Settings", icon: Settings },

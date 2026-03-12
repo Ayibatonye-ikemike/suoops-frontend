@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Hero } from "@/components/landing/hero";
 import { Features } from "@/components/landing/features";
 import { Pricing } from "@/components/landing/pricing";
+import { Testimonials } from "@/components/landing/testimonials";
+import { TopUsersShowcase } from "@/components/landing/top-users-showcase";
 import {
   Navigation,
   CTASection,
@@ -27,6 +29,8 @@ export default function HomePage() {
       <Navigation />
       <Hero onWatchDemo={() => setShowVideoModal(true)} />
       <Features />
+      <Testimonials />
+      <TopUsersShowcase />
       <Pricing />
       <CTASection />
       <SupportEscalation />
