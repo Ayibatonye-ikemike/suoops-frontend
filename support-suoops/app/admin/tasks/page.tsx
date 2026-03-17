@@ -18,7 +18,7 @@ import {
 function useAdminAuth() {
   const [token, setToken] = useState<string | null>(null);
   useEffect(() => {
-    setToken(localStorage.getItem("admin_token"));
+    setToken(sessionStorage.getItem("admin_token"));
   }, []);
   return { token };
 }

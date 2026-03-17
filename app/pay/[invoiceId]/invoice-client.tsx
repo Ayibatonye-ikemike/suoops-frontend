@@ -129,8 +129,8 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
           setIsPolling(false);
           return;
         }
-      } catch {
-        /* ignore */
+      } catch (err) {
+        console.warn("[poll] status fetch failed:", err);
       }
       delay = Math.min(delay * 1.5, 30_000);
       timer = setTimeout(poll, delay);

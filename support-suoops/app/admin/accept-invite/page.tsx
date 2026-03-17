@@ -51,9 +51,10 @@ function AcceptInviteForm() {
 
       const data = await response.json();
       
-      // Store token and redirect
-      localStorage.setItem("admin_token", data.access_token);
-      localStorage.setItem("admin_user", JSON.stringify(data.user));
+      // Store token and redirect — use sessionStorage (cleared on tab close)
+      // instead of localStorage to limit XSS exposure window
+      sessionStorage.setItem("admin_token", data.access_token);
+      sessionStorage.setItem("admin_user", JSON.stringify(data.user));
       
       setSuccess(true);
       setTimeout(() => {

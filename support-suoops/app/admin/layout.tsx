@@ -55,10 +55,10 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const hasValidated = useRef(false);
 
-  // Restore session from localStorage on mount
+  // Restore session from sessionStorage on mount
   useEffect(() => {
-    const storedToken = localStorage.getItem("admin_token");
-    const storedUser = localStorage.getItem("admin_user");
+    const storedToken = sessionStorage.getItem("admin_token");
+    const storedUser = sessionStorage.getItem("admin_user");
     if (storedToken && storedUser) {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
@@ -77,8 +77,8 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
     })
       .then((res) => {
         if (res.status === 401 || res.status === 403) {
-          localStorage.removeItem("admin_token");
-          localStorage.removeItem("admin_user");
+          sessionStorage.removeItem("admin_token");
+          sessionStorage.removeItem("admin_user");
           setToken(null);
           setUser(null);
         }
@@ -90,8 +90,8 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
 
   // Pick up new tokens stored by accept-invite page
   useEffect(() => {
-    const storedToken = localStorage.getItem("admin_token");
-    const storedUser = localStorage.getItem("admin_user");
+    const storedToken = sessionStorage.getItem("admin_token");
+    const storedUser = sessionStorage.getItem("admin_user");
     if (storedToken && storedUser && storedToken !== token) {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
@@ -126,8 +126,8 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
         is_super_admin: userData.is_super_admin || false,
       });
 
-      localStorage.setItem("admin_token", data.access_token);
-      localStorage.setItem("admin_user", JSON.stringify({
+      sessionStorage.setItem("admin_token", data.access_token);
+      sessionStorage.setItem("admin_user", JSON.stringify({
         id: userData.id,
         name: userData.name,
         email: userData.email,
@@ -144,14 +144,14 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   const logout = useCallback(() => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem("admin_token");
-    localStorage.removeItem("admin_user");
+    sessionStorage.removeItem("admin_token");
+    sessionStorage.removeItem("admin_user");
     router.push("/admin/login");
   }, [router]);
 
   // Stable wrapper around fetch that auto-logs out on 401
   const authFetch = useCallback(async (url: string, options?: RequestInit): Promise<Response> => {
-    const currentToken = localStorage.getItem("admin_token");
+    const currentToken = sessionStorage.getItem("admin_token");
     const res = await fetch(url, {
       ...options,
       headers: {
@@ -160,8 +160,8 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
       },
     });
     if (res.status === 401) {
-      localStorage.removeItem("admin_token");
-      localStorage.removeItem("admin_user");
+      sessionStorage.removeItem("admin_token");
+      sessionStorage.removeItem("admin_user");
       setUser(null);
       setToken(null);
       router.push("/admin/login");
