@@ -1,8 +1,8 @@
 /**
- * Phone Verification API Client
- * 
- * Handles phone number addition and verification for user accounts.
- * Uses WhatsApp OTP for verification.
+ * Phone Linking API Client
+ *
+ * Handles phone number addition for WhatsApp bot access.
+ * Phone is auto-verified on save — no OTP needed.
  */
 
 import { apiClient } from "@/api/client";
@@ -15,15 +15,7 @@ export interface AddPhoneRequest {
 }
 
 /**
- * Request to verify phone with OTP
- */
-export interface VerifyPhoneRequest {
-  phone: string;
-  otp: string;
-}
-
-/**
- * Response after successful phone verification
+ * Response after saving phone number
  */
 export interface PhoneVerificationResponse {
   detail: string;
@@ -31,33 +23,29 @@ export interface PhoneVerificationResponse {
 }
 
 /**
- * Request OTP to be sent to phone number via WhatsApp
- * 
- * @param request - Phone number to verify
- * @returns Promise with success message
+ * Save phone number to account (auto-verified)
+ *
+ * @param request - Phone number to link
+ * @returns Promise with save result
  */
-export async function requestPhoneOTP(request: AddPhoneRequest): Promise<{ detail: string }> {
-  const response = await apiClient.post<{ detail: string }>("/users/me/phone/request", request);
-  return response.data;
-}
-
-/**
- * Verify phone number with OTP code
- * 
- * @param request - Phone number and OTP code
- * @returns Promise with verification result
- */
-export async function verifyPhoneOTP(request: VerifyPhoneRequest): Promise<PhoneVerificationResponse> {
-  const response = await apiClient.post<PhoneVerificationResponse>("/users/me/phone/verify", request);
+export async function savePhone(request: AddPhoneRequest): Promise<PhoneVerificationResponse> {
+  const response = await apiClient.post<PhoneVerificationResponse>("/users/me/phone", request);
   return response.data;
 }
 
 /**
  * Remove phone number from account
- * 
+ *
  * @returns Promise with success message
  */
 export async function removePhone(): Promise<{ detail: string }> {
   const response = await apiClient.delete<{ detail: string }>("/users/me/phone");
   return response.data;
+}
+
+// Legacy exports for backward compatibility
+export const requestPhoneOTP = savePhone;
+export async function verifyPhoneOTP(_request: { phone: string; otp: string }): Promise<PhoneVerificationResponse> {
+  // No-op: phone is auto-verified on save now
+  return { detail: "Phone verified", phone: _request.phone };
 }
