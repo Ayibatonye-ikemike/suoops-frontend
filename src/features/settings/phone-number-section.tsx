@@ -57,8 +57,8 @@ export function PhoneNumberSection({
       setStep("verified");
       setPhone(currentPhone);
     } else if (pendingPhone) {
-      // Previously unverified phones are now auto-verified
-      setStep("verified");
+      // Phone saved but not yet verified via bot
+      setStep("input");
       setPhone(pendingPhone);
     }
   }, [currentPhone, pendingPhone]);
@@ -246,7 +246,8 @@ export function PhoneNumberSection({
             className="w-full rounded-lg border border-brand-border bg-white px-3 py-3 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 disabled:cursor-not-allowed disabled:bg-brand-background"
           />
           <p className="text-xs text-brand-textMuted">
-            Enter the number you use on WhatsApp.
+            Enter the number you use on WhatsApp. You&apos;ll activate it by
+            sending a message to our bot.
           </p>
         </div>
         <Button type="submit" disabled={loading} className="w-full">
