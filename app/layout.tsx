@@ -37,21 +37,12 @@ export const metadata: Metadata = {
     title: "SuoOps — Invoice Customers & Get Paid from WhatsApp",
     description:
       "Create invoices, track payments, manage inventory, and stay tax-aware — straight from WhatsApp. Built for freelancers and small businesses in Nigeria.",
-    images: [
-      {
-        url: "/icon.png",
-        width: 512,
-        height: 512,
-        alt: "SuoOps — Invoicing for Nigerian Businesses",
-      },
-    ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "SuoOps — Invoice & Get Paid from WhatsApp",
     description:
       "Professional invoicing for Nigerian businesses. WhatsApp-first, tax-aware, mobile-friendly.",
-    images: ["/icon.png"],
   },
 };
 
