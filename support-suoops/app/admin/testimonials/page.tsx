@@ -9,6 +9,7 @@ import {
   AlertCircle,
   Filter,
   Pin,
+  Send,
 } from "lucide-react";
 import { useAdminAuth } from "../layout";
 
@@ -33,6 +34,8 @@ export default function TestimonialsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<StatusFilter>("all");
+  const [isSending, setIsSending] = useState(false);
+  const [sendMessage, setSendMessage] = useState("");
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
 
@@ -99,6 +102,25 @@ export default function TestimonialsPage() {
   const pendingCount = testimonials.filter((t) => !t.approved).length;
   const approvedCount = testimonials.filter((t) => t.approved).length;
 
+  async function sendRequests() {
+    if (!token || !confirm("Send feedback request emails to all eligible users?")) return;
+    setIsSending(true);
+    setSendMessage("");
+    try {
+      const res = await fetch(`${apiUrl}/admin/testimonials/send-requests`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Failed to send requests");
+      const data = await res.json();
+      setSendMessage(data.message || "Feedback emails queued!");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to send requests");
+    } finally {
+      setIsSending(false);
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -108,10 +130,18 @@ export default function TestimonialsPage() {
         </p>
       </div>
 
-      {/* Stats + Filter */}
+      {/* Send Requests + Stats + Filter */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4 text-sm">
-          <span className="text-slate-500">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={sendRequests}
+            disabled={isSending}
+            className="flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition disabled:opacity-50"
+          >
+            <Send className="h-4 w-4" />
+            {isSending ? "Sending..." : "Send Requests"}
+          </button>
+          <span className="text-sm text-slate-500">
             {pendingCount} pending · {approvedCount} approved
           </span>
         </div>
@@ -132,6 +162,13 @@ export default function TestimonialsPage() {
           ))}
         </div>
       </div>
+
+      {sendMessage && (
+        <div className="flex items-center gap-2 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">
+          <Check className="h-4 w-4" />
+          {sendMessage}
+        </div>
+      )}
 
       {error && (
         <div className="flex items-center gap-2 rounded-lg bg-red-50 p-3 text-sm text-red-700">
