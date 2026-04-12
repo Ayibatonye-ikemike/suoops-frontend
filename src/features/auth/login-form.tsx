@@ -7,15 +7,34 @@ import { useCallback, useMemo, useState } from "react";
 import { requestLoginOTP, verifyLoginOTP, resendOTP } from "./auth-api";
 import { useAuthStore } from "./auth-store";
 import { OTPInput } from "./otp-input";
+import { MessageCircle } from "lucide-react";
 
-type Step = "email" | "otp";
+type Step = "identifier" | "otp";
+
+/**
+ * Normalize a Nigerian phone number to E.164 format (+234...).
+ */
+function normalizePhone(raw: string): string {
+  const digits = raw.replace(/[\s\-()]/g, "");
+  if (digits.startsWith("+")) return digits;
+  if (digits.startsWith("0") && digits.length === 11) return "+234" + digits.slice(1);
+  if (digits.startsWith("234") && digits.length === 13) return "+" + digits;
+  if (digits.length === 10 && !digits.startsWith("0")) return "+234" + digits;
+  return "+" + digits;
+}
+
+function isPhoneInput(value: string): boolean {
+  const trimmed = value.trim();
+  return /^[+\d][\d\s\-()]{6,}$/.test(trimmed) && !trimmed.includes("@");
+}
 
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const setTokens = useAuthStore((state) => state.setTokens);
-  const [step, setStep] = useState<Step>("email");
-  const [email, setEmail] = useState("");
+  const [step, setStep] = useState<Step>("identifier");
+  const [identifier, setIdentifier] = useState("");
+  const [identifierType, setIdentifierType] = useState<"phone" | "email">("phone");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,17 +62,27 @@ export function LoginForm() {
   const handleRequestOTP = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      if (!email.trim()) {
-        setError("Enter your registered email address.");
+      if (!identifier.trim()) {
+        setError("Enter your WhatsApp number or email address.");
         return;
       }
       setLoading(true);
       setError(null);
-      const normalizedEmail = email.trim().toLowerCase();
+
+      const isPhone = isPhoneInput(identifier);
+      setIdentifierType(isPhone ? "phone" : "email");
+
       try {
-        await requestLoginOTP({ email: normalizedEmail });
+        if (isPhone) {
+          const phone = normalizePhone(identifier.trim());
+          await requestLoginOTP({ phone });
+          setIdentifier(phone);
+        } else {
+          const normalizedEmail = identifier.trim().toLowerCase();
+          await requestLoginOTP({ email: normalizedEmail });
+          setIdentifier(normalizedEmail);
+        }
         setStep("otp");
-        setEmail(normalizedEmail);
         setOtp("");
         startCountdown();
       } catch (requestError: unknown) {
@@ -61,9 +90,8 @@ export function LoginForm() {
         const response = (requestError as { response?: { data?: { detail?: string }; status?: number } }).response;
         const message = response?.data?.detail;
         
-        // Provide specific guidance based on error type
         if (response?.status === 404 || message?.toLowerCase().includes("not found")) {
-          setError("No account found with this email. Please check the address or sign up for a new account.");
+          setError("No account found. Please check your details or sign up for a new account.");
         } else if (message?.toLowerCase().includes("too many")) {
           setError("Too many login attempts. Please wait a few minutes before trying again.");
         } else if (!navigator.onLine) {
@@ -75,20 +103,21 @@ export function LoginForm() {
         setLoading(false);
       }
     },
-    [email, startCountdown]
+    [identifier, startCountdown]
   );
 
   const handleVerifyOTP = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       if (otp.length !== 6) {
-        setError("Enter the 6-digit code sent to your email.");
+        setError(identifierType === "phone" ? "Enter the 6-digit code sent to your WhatsApp." : "Enter the 6-digit code sent to your email.");
         return;
       }
       setLoading(true);
       setError(null);
       try {
-        const tokens = await verifyLoginOTP({ email, otp });
+        const payload = identifierType === "phone" ? { phone: identifier, otp } : { email: identifier, otp };
+        const tokens = await verifyLoginOTP(payload);
         setTokens({ accessToken: tokens.access_token, accessExpiresAt: tokens.access_expires_at });
         router.replace(nextRoute);
       } catch (verifyError: unknown) {
@@ -111,7 +140,7 @@ export function LoginForm() {
         setLoading(false);
       }
     },
-    [nextRoute, otp, email, router, setTokens]
+    [nextRoute, otp, identifier, identifierType, router, setTokens]
   );
 
   const handleResend = useCallback(async () => {
@@ -121,7 +150,8 @@ export function LoginForm() {
     setLoading(true);
     setError(null);
     try {
-      await resendOTP({ email, purpose: "login" });
+      const payload = identifierType === "phone" ? { phone: identifier, purpose: "login" as const } : { email: identifier, purpose: "login" as const };
+      await resendOTP(payload);
       setOtp("");
       startCountdown();
     } catch (resendError: unknown) {
@@ -134,7 +164,7 @@ export function LoginForm() {
     } finally {
       setLoading(false);
     }
-  }, [canResend, email, startCountdown]);
+  }, [canResend, identifier, identifierType, startCountdown]);
 
   const handleGoogleSignIn = useCallback(() => {
     // Provide callback URL with optional next param so backend returns it and callback page can route properly.
@@ -151,7 +181,7 @@ export function LoginForm() {
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-semibold text-slate-900">Enter the code</h1>
           <p className="text-sm text-slate-500">
-            We sent a 6-digit OTP to <span className="font-semibold text-slate-700">{email}</span>
+            We sent a 6-digit OTP to <span className="font-semibold text-slate-700">{identifier}</span>{identifierType === "phone" ? " on WhatsApp" : ""}
           </p>
         </div>
         {error ? (
@@ -179,13 +209,13 @@ export function LoginForm() {
           <button
             type="button"
             onClick={() => {
-              setStep("email");
+              setStep("identifier");
               setOtp("");
               setError(null);
             }}
             className="text-sm text-slate-500 hover:text-slate-700"
           >
-            Use a different email
+            Use a different number or email
           </button>
         </div>
       </form>
@@ -196,7 +226,7 @@ export function LoginForm() {
     <form className="flex w-full max-w-md flex-col gap-6 rounded-2xl bg-white p-10 shadow-xl" onSubmit={handleRequestOTP}>
       <div className="space-y-2 text-center">
         <h1 className="text-2xl font-semibold text-slate-900">Sign in</h1>
-        <p className="text-sm text-slate-500">Enter your email to receive a one-time code.</p>
+        <p className="text-sm text-slate-500">Enter your WhatsApp number or email to receive a one-time code.</p>
       </div>
       {error ? (
         <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-600" role="alert">
@@ -236,17 +266,20 @@ export function LoginForm() {
           <div className="w-full border-t border-slate-200"></div>
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="bg-white px-2 text-slate-500">Or continue with email</span>
+          <span className="bg-white px-2 text-slate-500">Or continue with phone or email</span>
         </div>
       </div>
 
       <label className="flex flex-col gap-2 text-left text-sm font-semibold text-slate-700">
-        Email address
+        <span className="flex items-center gap-2">
+          <MessageCircle className="w-4 h-4 text-[#25D366]" />
+          WhatsApp number or email
+        </span>
         <input
-          type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="you@example.com"
+          type="text"
+          value={identifier}
+          onChange={(event) => setIdentifier(event.target.value)}
+          placeholder="08012345678 or you@example.com"
           required
           className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
         />

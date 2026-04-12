@@ -14,9 +14,27 @@ import { useAuthStore } from "./auth-store";
 import { OTPInput } from "./otp-input";
 import axios from "axios";
 import { getConfig } from "@/lib/config";
-import { Gift, CheckCircle2 } from "lucide-react";
+import { Gift, CheckCircle2, MessageCircle } from "lucide-react";
 
 type Step = "details" | "otp";
+
+/**
+ * Normalize a Nigerian phone number to E.164 format (+234...).
+ * Accepts: 08012345678, +2348012345678, 2348012345678, 8012345678
+ */
+function normalizePhone(raw: string): string {
+  const digits = raw.replace(/[\s\-()]/g, "");
+  if (digits.startsWith("+")) return digits;
+  if (digits.startsWith("0") && digits.length === 11) return "+234" + digits.slice(1);
+  if (digits.startsWith("234") && digits.length === 13) return "+" + digits;
+  if (digits.length === 10 && !digits.startsWith("0")) return "+234" + digits;
+  return "+" + digits;
+}
+
+function isValidNigerianPhone(phone: string): boolean {
+  const normalized = normalizePhone(phone);
+  return /^\+234[789]\d{9}$/.test(normalized);
+}
 
 export function RegisterForm() {
   const router = useRouter();
@@ -96,10 +114,31 @@ export function RegisterForm() {
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       const form = new FormData(event.currentTarget);
+      const rawPhone = String(form.get("phone") ?? "").trim();
+      const emailValue = String(form.get("email") ?? "").trim().toLowerCase();
+
+      if (!rawPhone) {
+        setError("Please enter your WhatsApp phone number.");
+        return;
+      }
+
+      if (!isValidNigerianPhone(rawPhone)) {
+        setError("Please enter a valid Nigerian phone number (e.g. 08012345678).");
+        return;
+      }
+
+      const phone = normalizePhone(rawPhone);
+
       const payload: SignupStartPayload = {
         name: String(form.get("name") ?? "").trim(),
-        email: String(form.get("email") ?? "").trim().toLowerCase(),
+        phone,
       };
+
+      // Email is optional — include if provided
+      if (emailValue) {
+        payload.email = emailValue;
+      }
+
       const businessName = String(form.get("business-name") ?? "").trim();
       if (businessName) {
         payload.business_name = businessName;
@@ -115,8 +154,8 @@ export function RegisterForm() {
         }
         payload.referral_code = referralCode.toUpperCase();
       }
-      if (!payload.name || !payload.email) {
-        setError("Please provide your name and email address.");
+      if (!payload.name) {
+        setError("Please provide your name.");
         return;
       }
       setLoading(true);
@@ -134,7 +173,7 @@ export function RegisterForm() {
         
         // Provide specific guidance based on error type
         if (message?.toLowerCase().includes("already") || response?.status === 409) {
-          setError("This email is already registered. Please log in instead.");
+          setError("This phone number is already registered. Please log in instead.");
         } else if (message?.toLowerCase().includes("too many")) {
           setError("Too many attempts. Please wait a few minutes before trying again.");
         } else if (!navigator.onLine) {
@@ -158,13 +197,13 @@ export function RegisterForm() {
         return;
       }
       if (otp.length !== 6) {
-        setError("Enter the 6-digit code sent to your email.");
+        setError("Enter the 6-digit code sent to your WhatsApp.");
         return;
       }
       setLoading(true);
       setError(null);
       try {
-        const token = await verifySignupOTP({ email: formValues.email, otp });
+        const token = await verifySignupOTP({ phone: formValues.phone, otp });
         setTokens({ accessToken: token.access_token, accessExpiresAt: token.access_expires_at });
         router.replace("/dashboard");
       } catch (verifyError: unknown) {
@@ -197,7 +236,7 @@ export function RegisterForm() {
     try {
       setLoading(true);
       setError(null);
-      await resendOTP({ email: formValues.email, purpose: "signup" });
+      await resendOTP({ phone: formValues.phone, purpose: "signup" });
       setOtp("");
       startResendCountdown();
     } catch (resendError: unknown) {
@@ -216,9 +255,9 @@ export function RegisterForm() {
     return (
       <form className="flex w-full max-w-md flex-col gap-6 rounded-2xl bg-white p-10 shadow-xl" onSubmit={handleVerifyOTP}>
         <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold text-slate-900">Verify your email</h1>
+          <h1 className="text-2xl font-semibold text-slate-900">Verify your WhatsApp</h1>
           <p className="text-sm text-slate-500">
-            Enter the verification code sent to <span className="font-semibold text-slate-700">{formValues?.email}</span>
+            Enter the verification code sent to <span className="font-semibold text-slate-700">{formValues?.phone}</span> on WhatsApp
           </p>
         </div>
         {error ? (
@@ -252,7 +291,7 @@ export function RegisterForm() {
             }}
             className="text-sm text-slate-500 hover:text-slate-700"
           >
-            Use a different email
+            Use a different number
           </button>
         </div>
       </form>
@@ -263,7 +302,7 @@ export function RegisterForm() {
     <form className="flex w-full max-w-md flex-col gap-6 rounded-2xl bg-white p-10 shadow-xl" onSubmit={handleRequestOTP}>
       <div className="space-y-2 text-center">
         <h1 className="text-2xl font-semibold text-slate-900">Create account</h1>
-        <p className="text-sm text-slate-500">We will send an OTP to your email to verify your account.</p>
+        <p className="text-sm text-slate-500">Sign up with your WhatsApp number to start invoicing in seconds.</p>
       </div>
       {error ? (
         <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-600" role="alert">
@@ -280,12 +319,27 @@ export function RegisterForm() {
         />
       </label>
       <label className="flex flex-col gap-2 text-left text-sm font-semibold text-slate-700">
-        Email address
+        <span className="flex items-center gap-2">
+          <MessageCircle className="w-4 h-4 text-[#25D366]" />
+          WhatsApp number
+        </span>
+        <input
+          name="phone"
+          type="tel"
+          placeholder="08012345678"
+          required
+          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+        />
+        <span className="text-xs font-normal text-slate-400">
+          We&apos;ll send your OTP here and connect you to the invoice bot
+        </span>
+      </label>
+      <label className="flex flex-col gap-2 text-left text-sm font-semibold text-slate-700">
+        Email address <span className="text-xs font-normal text-slate-400">Optional</span>
         <input
           name="email"
           type="email"
           placeholder="you@example.com"
-          required
           className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
         />
       </label>
@@ -346,7 +400,7 @@ export function RegisterForm() {
         disabled={loading}
         className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-70"
       >
-        {loading ? "Sending code..." : "Send verification code"}
+        {loading ? "Sending code..." : "Send WhatsApp verification code"}
       </button>
       <p className="text-center text-sm text-slate-600">
         Already have an account?{" "}
