@@ -57,7 +57,7 @@ export function WelcomeGuide() {
   const [showDashboardForm, setShowDashboardForm] = useState(false);
 
   useEffect(() => {
-    setShowDashboardForm(localStorage.getItem("show-dashboard-form") === "true");
+    setShowDashboardForm(sessionStorage.getItem("show-dashboard-form") === "true");
   }, []);
 
   const { data: user, isLoading } = useQuery<UserData>({
@@ -296,7 +296,7 @@ export function WelcomeGuide() {
         <button
           onClick={() => {
             setShowDashboardForm(true);
-            localStorage.setItem("show-dashboard-form", "true");
+            sessionStorage.setItem("show-dashboard-form", "true");
           }}
           className="relative flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs font-medium text-brand-textMuted transition hover:bg-slate-50 hover:text-brand-text"
         >
@@ -307,7 +307,7 @@ export function WelcomeGuide() {
         <button
           onClick={() => {
             setShowDashboardForm(false);
-            localStorage.removeItem("show-dashboard-form");
+            sessionStorage.removeItem("show-dashboard-form");
           }}
           className="relative flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs font-medium text-brand-textMuted transition hover:bg-slate-50 hover:text-brand-text"
         >
@@ -333,7 +333,7 @@ export function useShowDashboardForm() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    setShow(localStorage.getItem("show-dashboard-form") === "true");
+    setShow(sessionStorage.getItem("show-dashboard-form") === "true");
   }, []);
 
   return show;
