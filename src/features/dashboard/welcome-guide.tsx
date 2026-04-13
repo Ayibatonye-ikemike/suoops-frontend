@@ -173,6 +173,7 @@ export function WelcomeGuide() {
 
       {/* Setup checklist — only show if incomplete steps remain */}
       {!allDone && (
+        <div className="relative space-y-2 mb-5">
         {steps.map((step) => {
           const isNext = firstIncomplete?.id === step.id;
           return (
@@ -221,7 +222,7 @@ export function WelcomeGuide() {
             </div>
           );
         })}
-      </div>
+        </div>
       )}
 
       {/* WhatsApp CTA — always show for all users */}
