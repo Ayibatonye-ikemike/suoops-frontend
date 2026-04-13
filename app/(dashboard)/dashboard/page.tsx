@@ -8,7 +8,7 @@ import { WhatsAppSetupBanner } from "@/features/dashboard/whatsapp-setup-banner"
 import { LowBalanceBanner } from "@/features/dashboard/low-balance-banner";
 import { CashPositionCard } from "@/features/dashboard/cash-position-card";
 import { ProfessionalismScoreCard } from "@/features/dashboard/professionalism-score-card";
-import { WelcomeGuide } from "@/features/dashboard/welcome-guide";
+import { WelcomeGuide, useShowDashboardForm } from "@/features/dashboard/welcome-guide";
 import { FeatureDiscoveryTips } from "@/features/dashboard/feature-discovery-tips";
 
 // Wrap InvoiceListWithDetail in its own Suspense for useSearchParams
@@ -25,6 +25,8 @@ function InvoiceListWrapper() {
 }
 
 export default function DashboardPage() {
+  const showForm = useShowDashboardForm();
+
   return (
     <main className="min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
@@ -55,15 +57,17 @@ export default function DashboardPage() {
 
           {/* 3-Column Grid */}
           <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-12">
-            {/* Create Invoice - Left side (6 columns) */}
-            <div className="lg:col-span-6">
-              <div className="rounded-lg border border-brand-border bg-white p-4 shadow-card sm:p-6">
-                <InvoiceCreateForm />
+            {/* Create Invoice - Left side (6 columns) — hidden until onboarding done */}
+            {showForm && (
+              <div className="lg:col-span-6">
+                <div className="rounded-lg border border-brand-border bg-white p-4 shadow-card sm:p-6">
+                  <InvoiceCreateForm />
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* Invoice Status - Middle (3 columns) */}
-            <div className="lg:col-span-3">
+            {/* Invoice Status - Middle (3 columns, or wider when form hidden) */}
+            <div className={showForm ? "lg:col-span-3" : "lg:col-span-6"}>
               <div className="space-y-4">
                 <Suspense
                   fallback={
@@ -78,8 +82,8 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Invoice List - Right side (3 columns) */}
-            <div className="lg:col-span-3">
+            {/* Invoice List - Right side (3 columns, or wider when form hidden) */}
+            <div className={showForm ? "lg:col-span-3" : "lg:col-span-6"}>
               <InvoiceListWrapper />
             </div>
           </div>
