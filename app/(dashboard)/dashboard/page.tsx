@@ -9,6 +9,7 @@ import { LowBalanceBanner } from "@/features/dashboard/low-balance-banner";
 import { CashPositionCard } from "@/features/dashboard/cash-position-card";
 import { ProfessionalismScoreCard } from "@/features/dashboard/professionalism-score-card";
 import { WelcomeGuide, useShowDashboardForm } from "@/features/dashboard/welcome-guide";
+import { SalesFunnelBanner } from "@/features/dashboard/sales-funnel-banner";
 import { FeatureDiscoveryTips } from "@/features/dashboard/feature-discovery-tips";
 
 // Wrap InvoiceListWithDetail in its own Suspense for useSearchParams
@@ -41,6 +42,9 @@ export default function DashboardPage() {
 
         {/* Welcome Guide for first-time users */}
         <WelcomeGuide />
+
+        {/* Sales funnel: plan selector, create invoice prompt, upgrade CTA */}
+        <SalesFunnelBanner />
 
         {/* WhatsApp Setup Banner for new users */}
         <WhatsAppSetupBanner />
