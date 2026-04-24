@@ -78,7 +78,7 @@ export default function PurchaseInvoicePackPage() {
                   : "border-slate-200 bg-white hover:border-slate-300"
               }`}
             >
-              {p.popular && (
+              {("popular" in p) && (
                 <span className="absolute -top-2 right-2 rounded-full bg-amber-400 px-2 py-0.5 text-[9px] font-bold text-white uppercase">
                   Best value
                 </span>
