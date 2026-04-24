@@ -13,11 +13,15 @@ import {
   Image,
   ChevronDown,
   ChevronUp,
+  Crown,
+  ShoppingCart,
+  Zap,
 } from "lucide-react";
 import Link from "next/link";
 import { apiClient } from "@/api/client";
 
 const ONBOARDING_COMPLETE_KEY = "onboarding-complete";
+const PLAN_CHOSEN_KEY = "plan-chosen";
 const BOT_NUMBER = "2348106865807";
 const WHATSAPP_LINK = `https://wa.me/${BOT_NUMBER}?text=Hi`;
 
@@ -55,9 +59,12 @@ interface SetupStep {
  */
 export function WelcomeGuide() {
   const [showDashboardForm, setShowDashboardForm] = useState(false);
+  const [planChosen, setPlanChosen] = useState(true); // default true to prevent flash
 
   useEffect(() => {
     setShowDashboardForm(sessionStorage.getItem("show-dashboard-form") === "true");
+    // Plan choice persists in localStorage so it survives sessions
+    setPlanChosen(localStorage.getItem(PLAN_CHOSEN_KEY) === "true");
   }, []);
 
   const { data: user, isLoading } = useQuery<UserData>({
@@ -131,6 +138,102 @@ export function WelcomeGuide() {
   const firstName = user?.name?.split(" ")[0] || "there";
   const progressPercent = Math.round((completedCount / steps.length) * 100);
   const firstIncomplete = steps.find((s) => !s.done);
+
+  const plan = ((user as Record<string, unknown>)?.plan as string || "free").toLowerCase();
+  const isPro = plan === "pro";
+
+  // Auto-mark plan as chosen if user is already Pro
+  if (isPro && !planChosen) {
+    localStorage.setItem(PLAN_CHOSEN_KEY, "true");
+    setPlanChosen(true);
+  }
+
+  // ── STEP 0: Plan Selection (blocks everything until chosen) ──
+  if (!planChosen && !isPro) {
+    return (
+      <div className="mb-6 rounded-2xl border-2 border-brand-jade/30 bg-gradient-to-br from-white via-emerald-50/50 to-green-50/50 p-5 sm:p-6 shadow-md relative overflow-hidden">
+        <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-brand-jade/5" />
+
+        <div className="relative mb-5">
+          <div className="flex items-center gap-2 mb-1">
+            <Sparkles className="h-5 w-5 text-brand-jade" />
+            <h2 className="text-lg sm:text-xl font-bold text-brand-text">
+              Welcome, {firstName}! Choose your plan
+            </h2>
+          </div>
+          <p className="text-sm text-brand-textMuted">
+            Pick how you want to use SuoOps. You can change anytime.
+          </p>
+        </div>
+
+        <div className="relative grid gap-4 sm:grid-cols-2 mb-5">
+          {/* Starter (Free) */}
+          <div className="rounded-xl border-2 border-slate-200 bg-white p-5 hover:border-brand-jade/50 transition">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">🚀</span>
+              <div>
+                <h3 className="text-base font-bold text-brand-text">Starter</h3>
+                <p className="text-xs text-brand-textMuted">Free forever</p>
+              </div>
+            </div>
+            <ul className="space-y-2 text-xs text-slate-600 mb-4">
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> 5 free invoices to start</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> Buy more: 50 for ₦1,250</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> WhatsApp & Email delivery</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> PDF & QR verification</li>
+            </ul>
+            <button
+              onClick={() => {
+                localStorage.setItem(PLAN_CHOSEN_KEY, "true");
+                setPlanChosen(true);
+              }}
+              className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-brand-jade bg-white px-4 py-2.5 text-sm font-semibold text-brand-jade transition hover:bg-emerald-50"
+            >
+              Continue with Starter
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
+
+          {/* Pro */}
+          <div className="rounded-xl border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-orange-50 p-5 relative">
+            <div className="absolute -top-1 right-3 rounded-b-lg bg-amber-400 px-2.5 py-1 text-[10px] font-bold text-white uppercase tracking-wide">
+              Recommended
+            </div>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">⭐</span>
+              <div>
+                <h3 className="text-base font-bold text-brand-text">Pro</h3>
+                <p className="text-xs text-amber-700 font-semibold">₦3,250/month</p>
+              </div>
+            </div>
+            <ul className="space-y-2 text-xs text-slate-600 mb-4">
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-amber-500 shrink-0" /> 50 invoices/month included</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-amber-500 shrink-0" /> Tax reports (PIT + CIT)</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-amber-500 shrink-0" /> Daily WhatsApp summary</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-amber-500 shrink-0" /> Customer insights & alerts</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-amber-500 shrink-0" /> Team management (3 members)</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-amber-500 shrink-0" /> Priority support</li>
+            </ul>
+            <Link
+              href="/dashboard/settings/subscription"
+              onClick={() => {
+                localStorage.setItem(PLAN_CHOSEN_KEY, "true");
+              }}
+              className="flex w-full items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-amber-500"
+            >
+              <Crown className="h-4 w-4" />
+              Upgrade to Pro
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+
+        <p className="text-center text-xs text-brand-textMuted">
+          All plans include WhatsApp invoicing, PDF generation, and QR verification.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="mb-6 rounded-2xl border-2 border-brand-jade/30 bg-gradient-to-br from-white via-emerald-50/50 to-green-50/50 p-5 sm:p-6 shadow-md relative overflow-hidden">
@@ -328,12 +431,15 @@ export function WelcomeGuide() {
  * Hook to check if the dashboard invoice form should be shown.
  * Hidden by default — shown only when user explicitly clicks
  * "I want to create an invoice from the dashboard instead."
+ * Also hidden if plan hasn't been chosen yet.
  */
 export function useShowDashboardForm() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    setShow(sessionStorage.getItem("show-dashboard-form") === "true");
+    const planChosen = localStorage.getItem(PLAN_CHOSEN_KEY) === "true";
+    const formToggled = sessionStorage.getItem("show-dashboard-form") === "true";
+    setShow(planChosen && formToggled);
   }, []);
 
   return show;
