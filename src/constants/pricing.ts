@@ -40,6 +40,15 @@ export interface Plan {
 export const INVOICE_PACK_SIZE = 50;
 export const INVOICE_PACK_PRICE = 1250;
 
+// Small pack option
+export const INVOICE_SMALL_PACK_SIZE = 25;
+export const INVOICE_SMALL_PACK_PRICE = 625;
+
+export const PACK_OPTIONS = [
+  { id: "small", size: INVOICE_SMALL_PACK_SIZE, price: INVOICE_SMALL_PACK_PRICE, label: "Starter Pack" },
+  { id: "standard", size: INVOICE_PACK_SIZE, price: INVOICE_PACK_PRICE, label: "Value Pack", popular: true },
+] as const;
+
 /**
  * Complete plan definitions
  * Backend contract: SubscriptionPlan in app/models/models.py

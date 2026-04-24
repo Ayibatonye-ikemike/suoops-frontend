@@ -1,20 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { initializeInvoicePackPurchase } from "@/api/subscription";
 import { apiClient } from "@/api/client";
-import { INVOICE_PACK_PRICE, INVOICE_PACK_SIZE } from "@/constants/pricing";
+import { PACK_OPTIONS } from "@/constants/pricing";
 
 export default function PurchaseInvoicePackPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialPack = searchParams?.get("pack") || "standard";
+  const [selectedPack, setSelectedPack] = useState(initialPack);
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch current user to show invoice balance
   const { data: user } = useQuery({
     queryKey: ["currentUser"],
     queryFn: async () => {
@@ -24,22 +26,21 @@ export default function PurchaseInvoicePackPage() {
   });
 
   const invoiceBalance = user?.invoice_balance ?? 0;
-  const totalPrice = INVOICE_PACK_PRICE * quantity;
-  const totalInvoices = INVOICE_PACK_SIZE * quantity;
+  const pack = PACK_OPTIONS.find((p) => p.id === selectedPack) || PACK_OPTIONS[1];
+  const totalPrice = pack.price * quantity;
+  const totalInvoices = pack.size * quantity;
 
   const handlePurchase = async () => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await initializeInvoicePackPurchase(quantity);
-      
-      // Redirect to Paystack checkout
+      const response = await initializeInvoicePackPurchase(quantity, selectedPack);
       window.location.href = response.authorization_url;
     } catch (err) {
       const error = err as { response?: { data?: { detail?: string } } };
       setError(
-        error.response?.data?.detail || 
+        error.response?.data?.detail ||
         "Failed to initialize payment. Please try again."
       );
       setIsLoading(false);
@@ -49,155 +50,116 @@ export default function PurchaseInvoicePackPage() {
   return (
     <div className="min-h-screen bg-brand-background px-4 py-10">
       <div className="mx-auto max-w-lg">
-        {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-brand-text">
-            Buy Invoice Pack
-          </h1>
-          <p className="mt-2 text-brand-textMuted">
-            Purchase additional invoices for your account
-          </p>
+          <h1 className="text-3xl font-bold text-brand-text">Buy Invoice Pack</h1>
+          <p className="mt-2 text-brand-textMuted">Choose a pack and start invoicing</p>
         </div>
 
-        {/* Current Balance Card */}
+        {/* Current Balance */}
         <div className="mb-6 rounded-2xl border border-brand-border bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-brand-textMuted">
-                Current Invoice Balance
-              </p>
-              <p className="text-2xl font-bold text-brand-primary">
-                {invoiceBalance} invoices
-              </p>
+              <p className="text-sm font-medium text-brand-textMuted">Current Balance</p>
+              <p className="text-2xl font-bold text-brand-primary">{invoiceBalance} invoices</p>
             </div>
             <div className="text-4xl">📊</div>
           </div>
         </div>
 
-        {/* Pack Selection Card */}
+        {/* Pack Selection */}
+        <div className="mb-6 grid grid-cols-2 gap-3">
+          {PACK_OPTIONS.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => setSelectedPack(p.id)}
+              className={`relative rounded-xl border-2 p-4 text-left transition ${
+                selectedPack === p.id
+                  ? "border-brand-jade bg-emerald-50 shadow-sm"
+                  : "border-slate-200 bg-white hover:border-slate-300"
+              }`}
+            >
+              {p.popular && (
+                <span className="absolute -top-2 right-2 rounded-full bg-amber-400 px-2 py-0.5 text-[9px] font-bold text-white uppercase">
+                  Best value
+                </span>
+              )}
+              <p className="text-lg font-bold text-brand-text">{p.size}</p>
+              <p className="text-xs text-brand-textMuted">invoices</p>
+              <p className="mt-2 text-base font-bold text-brand-jade">₦{p.price.toLocaleString()}</p>
+              <p className="text-[10px] text-brand-textMuted">₦{(p.price / p.size).toFixed(0)}/invoice</p>
+            </button>
+          ))}
+        </div>
+
+        {/* Quantity + Summary */}
         <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-sm">
           <h2 className="mb-4 text-lg font-semibold text-brand-text">
-            Select Pack Quantity
+            {pack.label} — {pack.size} invoices
           </h2>
-
-          {/* Pack Info */}
-          <div className="mb-6 rounded-xl bg-brand-background p-4">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-brand-textMuted">Pack size</span>
-              <span className="font-medium text-brand-text">
-                {INVOICE_PACK_SIZE} invoices
-              </span>
-            </div>
-            <div className="mt-2 flex items-center justify-between text-sm">
-              <span className="text-brand-textMuted">Price per pack</span>
-              <span className="font-medium text-brand-text">
-                ₦{INVOICE_PACK_PRICE.toLocaleString()}
-              </span>
-            </div>
-          </div>
 
           {/* Quantity Selector */}
           <div className="mb-6">
-            <label className="mb-2 block text-sm font-medium text-brand-text">
-              Number of packs
-            </label>
+            <label className="mb-2 block text-sm font-medium text-brand-text">Packs</label>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 disabled={quantity <= 1}
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-brand-border bg-white text-lg font-medium text-brand-text transition-colors hover:bg-brand-background disabled:opacity-50"
-              >
-                −
-              </button>
-              <span className="w-16 text-center text-xl font-bold text-brand-text">
-                {quantity}
-              </span>
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-brand-border bg-white text-lg font-medium transition-colors hover:bg-brand-background disabled:opacity-50"
+              >−</button>
+              <span className="w-16 text-center text-xl font-bold text-brand-text">{quantity}</span>
               <button
                 onClick={() => setQuantity(Math.min(10, quantity + 1))}
                 disabled={quantity >= 10}
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-brand-border bg-white text-lg font-medium text-brand-text transition-colors hover:bg-brand-background disabled:opacity-50"
-              >
-                +
-              </button>
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-brand-border bg-white text-lg font-medium transition-colors hover:bg-brand-background disabled:opacity-50"
+              >+</button>
             </div>
-            <p className="mt-2 text-xs text-brand-textMuted">
-              Maximum 10 packs per purchase
-            </p>
           </div>
 
-          {/* Order Summary */}
+          {/* Summary */}
           <div className="mb-6 rounded-xl border border-brand-border bg-brand-background p-4">
-            <h3 className="mb-3 text-sm font-semibold text-brand-text">
-              Order Summary
-            </h3>
             <div className="space-y-2 text-sm">
-              <div className="flex items-center justify-between">
-                <span className="text-brand-textMuted">
-                  {quantity} pack{quantity > 1 ? "s" : ""} × ₦{INVOICE_PACK_PRICE.toLocaleString()}
-                </span>
-                <span className="font-medium text-brand-text">
-                  ₦{totalPrice.toLocaleString()}
-                </span>
+              <div className="flex justify-between">
+                <span className="text-brand-textMuted">{quantity} × ₦{pack.price.toLocaleString()}</span>
+                <span className="font-medium">₦{totalPrice.toLocaleString()}</span>
               </div>
-              <div className="flex items-center justify-between border-t border-brand-border pt-2">
-                <span className="font-medium text-brand-text">
-                  Total invoices to add
-                </span>
-                <span className="font-bold text-brand-primary">
-                  +{totalInvoices}
-                </span>
+              <div className="flex justify-between border-t border-brand-border pt-2">
+                <span className="font-medium">Invoices to add</span>
+                <span className="font-bold text-brand-primary">+{totalInvoices}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-brand-textMuted">
-                  New balance after purchase
-                </span>
-                <span className="font-medium text-brand-jade">
-                  {invoiceBalance + totalInvoices} invoices
-                </span>
+              <div className="flex justify-between">
+                <span className="text-brand-textMuted">New balance</span>
+                <span className="font-medium text-brand-jade">{invoiceBalance + totalInvoices}</span>
               </div>
             </div>
           </div>
 
-          {/* Error Message */}
           {error && (
-            <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600">
-              {error}
-            </div>
+            <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</div>
           )}
 
-          {/* Purchase Button */}
           <Button
             onClick={handlePurchase}
             disabled={isLoading}
             className="w-full bg-brand-primary py-3 text-white hover:bg-brand-primary/90"
             size="lg"
           >
-            {isLoading ? (
-              <>
-                <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
-                Processing...
-              </>
-            ) : (
-              `Pay ₦${totalPrice.toLocaleString()}`
-            )}
+            {isLoading ? "Processing..." : `Pay ₦${totalPrice.toLocaleString()}`}
           </Button>
 
-          {/* Security Note */}
           <p className="mt-4 text-center text-xs text-brand-textMuted">
             🔒 Secure payment powered by Paystack
           </p>
         </div>
 
-        {/* Back Button */}
         <div className="mt-6 text-center">
-          <button
-            onClick={() => router.back()}
-            className="text-sm text-brand-textMuted hover:text-brand-text"
-          >
-            ← Back to Settings
+          <button onClick={() => router.back()} className="text-sm text-brand-textMuted hover:text-brand-text">
+            ← Back
           </button>
         </div>
       </div>
+    </div>
+  );
+}
     </div>
   );
 }

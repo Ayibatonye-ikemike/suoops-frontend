@@ -166,7 +166,7 @@ export function WelcomeGuide() {
           </p>
         </div>
 
-        <div className="relative grid gap-4 sm:grid-cols-2 mb-5">
+        <div className="relative grid gap-4 sm:grid-cols-3 mb-5">
           {/* Starter (Free) */}
           <div className="rounded-xl border-2 border-slate-200 bg-white p-5 hover:border-brand-jade/50 transition">
             <div className="flex items-center gap-2 mb-3">
@@ -178,7 +178,6 @@ export function WelcomeGuide() {
             </div>
             <ul className="space-y-2 text-xs text-slate-600 mb-4">
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> 5 free invoices to start</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> Buy more: 50 for ₦1,250</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> WhatsApp & Email delivery</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> PDF & QR verification</li>
             </ul>
@@ -189,15 +188,41 @@ export function WelcomeGuide() {
               }}
               className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-brand-jade bg-white px-4 py-2.5 text-sm font-semibold text-brand-jade transition hover:bg-emerald-50"
             >
-              Continue with Starter
+              Continue Free
               <ArrowRight className="h-4 w-4" />
             </button>
+          </div>
+
+          {/* Invoice Pack */}
+          <div className="rounded-xl border-2 border-blue-200 bg-blue-50/50 p-5 hover:border-blue-400 transition">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-2xl">📦</span>
+              <div>
+                <h3 className="text-base font-bold text-brand-text">Invoice Pack</h3>
+                <p className="text-xs text-blue-600 font-semibold">From ₦625</p>
+              </div>
+            </div>
+            <ul className="space-y-2 text-xs text-slate-600 mb-4">
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-blue-500 shrink-0" /> 25 invoices — ₦625</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-blue-500 shrink-0" /> 50 invoices — ₦1,250</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-blue-500 shrink-0" /> Never expires</li>
+            </ul>
+            <Link
+              href="/dashboard/billing/purchase"
+              onClick={() => {
+                localStorage.setItem(PLAN_CHOSEN_KEY, "true");
+              }}
+              className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-600"
+            >
+              <ShoppingCart className="h-4 w-4" />
+              Buy Pack
+            </Link>
           </div>
 
           {/* Pro */}
           <div className="rounded-xl border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-orange-50 p-5 relative">
             <div className="absolute -top-1 right-3 rounded-b-lg bg-amber-400 px-2.5 py-1 text-[10px] font-bold text-white uppercase tracking-wide">
-              Recommended
+              Best Value
             </div>
             <div className="flex items-center gap-2 mb-3">
               <span className="text-2xl">⭐</span>

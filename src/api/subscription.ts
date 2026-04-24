@@ -117,13 +117,15 @@ export interface InvoicePackPurchaseResponse {
 
 /**
  * Initialize Paystack payment for invoice pack purchase.
- * @param quantity Number of packs to purchase (default 1). Each pack = 50 invoices = ₦1,250
+ * @param quantity Number of packs to purchase (default 1)
+ * @param pack_type "standard" (50 for ₦1,250) or "small" (25 for ₦625)
  */
 export async function initializeInvoicePackPurchase(
-  quantity: number = 1
+  quantity: number = 1,
+  pack_type: string = "standard"
 ): Promise<InvoicePackPurchaseResponse> {
   const response = await apiClient.post("/invoices/purchase-pack", null, {
-    params: { quantity },
+    params: { quantity, pack_type },
   });
   return response.data;
 }
