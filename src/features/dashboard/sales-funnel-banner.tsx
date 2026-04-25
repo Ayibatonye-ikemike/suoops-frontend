@@ -56,8 +56,8 @@ export function SalesFunnelBanner() {
 
   const plan = (user?.plan || "free").toLowerCase();
   const isPro = plan === "pro";
-  const balance = user?.invoice_balance ?? 5;
-  const hasInvoices = (user?.invoices_this_month ?? 0) > 0 || balance < 5;
+  const balance = user?.invoice_balance ?? 2;
+  const hasInvoices = (user?.invoices_this_month ?? 0) > 0 || balance < 2;
   const hasPhone = Boolean(user?.phone_verified);
   const firstName = user?.name?.split(" ")[0] || "there";
 
@@ -198,7 +198,7 @@ export function SalesFunnelBanner() {
             <span className="ml-auto rounded-full bg-brand-jade/10 px-2 py-0.5 text-[10px] font-bold text-brand-jade uppercase">Current</span>
           </div>
           <ul className="space-y-1.5 text-xs text-slate-600 mb-3">
-            <li>✓ 5 invoices to start</li>
+            <li>✓ 2 invoices to start</li>
             <li>✓ Buy more: 50 for ₦1,250</li>
             <li>✓ WhatsApp & Email delivery</li>
             <li>✓ PDF & QR verification</li>

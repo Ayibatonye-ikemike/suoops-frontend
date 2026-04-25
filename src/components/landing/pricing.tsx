@@ -10,7 +10,7 @@ export function Pricing() {
             Simple pricing that grows with you
           </h2>
           <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
-            Start with <strong>5 free invoices</strong> — no credit card needed. Only pay as your business grows.
+            Start with <strong>2 free invoices</strong> — no credit card needed. Only pay as your business grows.
           </p>
         </div>
 
@@ -18,16 +18,16 @@ export function Pricing() {
         <div className="mt-8 max-w-2xl mx-auto">
           <div className="rounded-2xl bg-gradient-to-r from-brand-evergreen to-brand-jade p-6 text-center shadow-lg">
             <div className="text-4xl mb-2">🎉</div>
-            <h3 className="text-xl font-bold text-white">Try SuoOps Free — 5 Invoices On Us!</h3>
+            <h3 className="text-xl font-bold text-white">Try SuoOps Free — 2 Invoices On Us!</h3>
             <p className="mt-2 text-green-100">
-              Sign up and get <strong className="text-brand-chartreuse">5 free invoices</strong> to test everything out. 
+              Sign up and get <strong className="text-brand-chartreuse">2 free invoices</strong> to test everything out. 
               No commitment, no credit card required.
             </p>
             <Link
               href="/register"
               className="mt-4 inline-flex items-center justify-center rounded-lg bg-brand-chartreuse px-6 py-3 text-base font-semibold text-brand-evergreen shadow-lg transition-all hover:bg-white hover:scale-105"
             >
-              Get Your 5 Free Invoices →
+              Get Your Free Invoices →
             </Link>
           </div>
         </div>
@@ -43,10 +43,17 @@ export function Pricing() {
           <div className="rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 p-8 border-2 border-brand-jade text-center">
             <h3 className="text-2xl font-bold text-brand-evergreen">📦 Need More Invoices?</h3>
             <p className="mt-2 text-lg text-slate-700">Sell more? Just add more invoices.</p>
-            <div className="mt-6 flex items-center justify-center gap-4 text-2xl font-bold text-brand-jade">
-              <span>50 invoices</span>
-              <span className="text-slate-400">→</span>
-              <span>₦1,250</span>
+            <div className="mt-6 flex items-center justify-center gap-6 flex-wrap">
+              <div className="text-center">
+                <span className="text-2xl font-bold text-blue-600">25 invoices</span>
+                <span className="text-slate-400 mx-2">→</span>
+                <span className="text-2xl font-bold text-blue-600">₦625</span>
+              </div>
+              <div className="text-center">
+                <span className="text-2xl font-bold text-brand-jade">50 invoices</span>
+                <span className="text-slate-400 mx-2">→</span>
+                <span className="text-2xl font-bold text-brand-jade">₦1,250</span>
+              </div>
             </div>
             <p className="mt-4 text-sm text-slate-600">
               💡 <strong>No forced upgrade.</strong> Buy invoice packs as you grow—scales with your success.
@@ -129,7 +136,7 @@ function PricingCard({ plan }: { plan: Plan }) {
       )}
       {isFree && (
         <div className="mb-3 inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
-          5 FREE INVOICES
+          2 FREE INVOICES
         </div>
       )}
       <h3 className="text-lg font-bold text-brand-evergreen">{plan.displayName}</h3>

@@ -30,7 +30,7 @@ export default function PlansArticle() {
             Understanding Subscription Plans
           </h1>
           <p className="mt-3 text-lg text-slate-600">
-            Start with <strong>5 free invoices</strong> — no credit card needed. Pay only as you grow.
+            Start with <strong>2 free invoices</strong> — no credit card needed. Pay only as you grow.
           </p>
         </div>
 
@@ -49,7 +49,7 @@ export default function PlansArticle() {
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span><strong>5 free invoices</strong> to start</span>
+                <span><strong>2 free invoices</strong> to start</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
@@ -129,7 +129,7 @@ export default function PlansArticle() {
 
           <h2>How to Get Started</h2>
           <ol>
-            <li>Sign up for a <strong>free Starter account</strong> (5 free invoices included — no credit card needed)</li>
+            <li>Sign up for a <strong>free Starter account</strong> (2 free invoices included — no credit card needed)</li>
             <li>When you need more, either:
               <ul>
                 <li>Buy invoice packs (50 for ₦1,250) — pay as you go, never expires</li>

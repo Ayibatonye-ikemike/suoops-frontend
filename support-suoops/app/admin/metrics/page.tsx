@@ -99,6 +99,8 @@ interface GrowthMetrics {
   avg_invoices_per_user: number;
   power_users: number;
   zero_invoice_users: number;
+  whatsapp_users: number;
+  email_only_users: number;
   expired_subscriptions: number;
   expiring_soon: number;
 }
@@ -897,6 +899,39 @@ export default function MetricsPage() {
                       <span className="text-2xl font-bold text-blue-700">
                         {growth.avg_days_to_payment ?? "—"}
                       </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Channel Segmentation */}
+                <div className="rounded-xl border border-slate-200 bg-white p-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <Users className="h-5 w-5 text-slate-500" />
+                    <div>
+                      <h3 className="text-lg font-semibold text-slate-900">User Channels</h3>
+                      <p className="text-xs text-slate-500">WhatsApp vs email-only users</p>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 rounded-lg bg-green-50 border border-green-100">
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="h-5 w-5 text-green-500" />
+                        <div>
+                          <p className="text-sm font-medium text-green-800">WhatsApp Users</p>
+                          <p className="text-xs text-green-600">Phone verified, connected to bot</p>
+                        </div>
+                      </div>
+                      <span className="text-2xl font-bold text-green-700">{growth.whatsapp_users ?? 0}</span>
+                    </div>
+                    <div className="flex items-center justify-between p-4 rounded-lg bg-amber-50 border border-amber-100">
+                      <div className="flex items-center gap-3">
+                        <AlertTriangle className="h-5 w-5 text-amber-500" />
+                        <div>
+                          <p className="text-sm font-medium text-amber-800">Email-Only Users</p>
+                          <p className="text-xs text-amber-600">No WhatsApp — limited engagement</p>
+                        </div>
+                      </div>
+                      <span className="text-2xl font-bold text-amber-700">{growth.email_only_users ?? 0}</span>
                     </div>
                   </div>
                 </div>

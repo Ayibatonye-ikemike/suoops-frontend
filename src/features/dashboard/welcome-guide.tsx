@@ -76,8 +76,8 @@ export function WelcomeGuide() {
     staleTime: 60000,
   });
 
-  const invoiceBalance = user?.invoice_balance ?? 5;
-  const hasInvoices = (user?.invoices_this_month ?? 0) > 0 || invoiceBalance < 5;
+  const invoiceBalance = user?.invoice_balance ?? 2;
+  const hasInvoices = (user?.invoices_this_month ?? 0) > 0 || invoiceBalance < 2;
 
   // Build setup steps
   const hasPhone = Boolean(user?.phone_verified && user?.phone);
@@ -131,9 +131,8 @@ export function WelcomeGuide() {
     }
   }, [allDone, isLoading]);
 
-  // Don't show if loading or user chose dashboard form
+  // Don't show if loading
   if (isLoading) return null;
-  if (showDashboardForm) return null;
 
   const firstName = user?.name?.split(" ")[0] || "there";
   const progressPercent = Math.round((completedCount / steps.length) * 100);
@@ -148,7 +147,8 @@ export function WelcomeGuide() {
     setPlanChosen(true);
   }
 
-  // ── STEP 0: Plan Selection (blocks everything until chosen) ──
+  // ── STEP 0: Plan Selection (blocks EVERYTHING until chosen) ──
+  // Cannot be skipped by showDashboardForm — must pick a plan first
   if (!planChosen && !isPro) {
     return (
       <div className="mb-6 rounded-2xl border-2 border-brand-jade/30 bg-gradient-to-br from-white via-emerald-50/50 to-green-50/50 p-5 sm:p-6 shadow-md relative overflow-hidden">
@@ -177,7 +177,7 @@ export function WelcomeGuide() {
               </div>
             </div>
             <ul className="space-y-2 text-xs text-slate-600 mb-4">
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> 5 free invoices to start</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> 2 free invoices</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> WhatsApp & Email delivery</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> PDF & QR verification</li>
             </ul>
@@ -259,6 +259,9 @@ export function WelcomeGuide() {
       </div>
     );
   }
+
+  // After plan is chosen, allow hiding the setup checklist via dashboard form toggle
+  if (showDashboardForm) return null;
 
   return (
     <div className="mb-6 rounded-2xl border-2 border-brand-jade/30 bg-gradient-to-br from-white via-emerald-50/50 to-green-50/50 p-5 sm:p-6 shadow-md relative overflow-hidden">

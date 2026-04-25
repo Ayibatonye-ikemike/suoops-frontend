@@ -73,7 +73,7 @@ export default function TermsPage() {
             <h2 className="text-2xl font-bold text-slate-900">4. Subscription Plans</h2>
             <p className="mt-4">We offer the following subscription tiers:</p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
-              <li><strong>Free Plan:</strong> ₦0 - 5 free invoices to start</li>
+              <li><strong>Free Plan:</strong> ₦0 - 2 free invoices to start</li>
               <li><strong>Starter Plan:</strong> No monthly fee - Buy invoice packs (₦1,250 per 50) + Tax reports & automation</li>
               <li><strong>Pro Plan:</strong> ₦3,250/month - 50 invoices included + Custom logo branding + Priority support</li>
             </ul>

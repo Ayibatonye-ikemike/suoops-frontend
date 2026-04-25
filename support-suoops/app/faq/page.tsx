@@ -26,7 +26,7 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: "Is there a free plan?",
-        answer: "Yes! New users get 5 free invoices to start — no credit card required. After that, you can purchase invoice packs (50 invoices for ₦1,250) whenever you need more. No monthly commitment necessary."
+        answer: "Yes! New users get 2 free invoices to start — no credit card required. After that, you can purchase invoice packs (25 invoices for ₦625 or 50 invoices for ₦1,250) whenever you need more. No monthly commitment necessary."
       },
       {
         question: "How do I set up my business profile?",
@@ -70,11 +70,11 @@ const faqCategories: FAQCategory[] = [
     faqs: [
       {
         question: "How does billing work?",
-        answer: "New users get 5 free invoices — no strings attached! After that, you can buy invoice packs (50 for ₦1,250) whenever you need more. Packs never expire. For premium features like custom branding and team management, upgrade to Pro (₦3,250/month)."
+        answer: "New users get 2 free invoices — no strings attached! After that, you can buy invoice packs (25 for ₦625 or 50 for ₦1,250) whenever you need more. Packs never expire. For premium features like custom branding and team management, upgrade to Pro (₦3,250/month)."
       },
       {
         question: "What are the subscription plans?",
-        answer: "SuoOps has two simple tiers: Starter (free — 5 invoices to start, buy packs as needed) and Pro (₦3,250/month with all premium features including 50 invoices/month, tax reports, custom branding, inventory, team management, and voice invoices)."
+        answer: "SuoOps has two simple tiers: Starter (free — 2 invoices to start, buy packs as needed) and Pro (₦3,250/month with all premium features including 50 invoices/month, tax reports, custom branding, inventory, team management, and voice invoices)."
       },
       {
         question: "Who should use the Pro plan?",

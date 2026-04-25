@@ -3,7 +3,7 @@
  * Single source of truth for all subscription tiers
  * 
  * BILLING MODEL (Small & Medium Business Focus):
- * - FREE (displayed as "Starter"): 5 free invoices to start, buy packs (50 = ₦1,250)
+ * - FREE (displayed as "Starter"): 2 free invoices to start, buy packs (50 = ₦1,250)
  * - PRO: ₦3,250/month = 50 invoices included + ALL premium features
  * - All plans can buy additional packs (50 invoices = ₦1,250)
  * 
@@ -54,7 +54,7 @@ export const PACK_OPTIONS = [
  * Backend contract: SubscriptionPlan in app/models/models.py
  * 
  * Note: FREE plan is displayed as "Starter" to users for better UX.
- * Users get 5 free invoices and can buy packs without any plan change.
+ * Users get 2 free invoices and can buy packs without any plan change.
  */
 export const PLANS: Record<PlanTier, Plan> = {
   FREE: {
@@ -63,13 +63,13 @@ export const PLANS: Record<PlanTier, Plan> = {
     displayName: "Starter",  // Shown to users as "Starter" for UX
     price: 0,
     priceDisplay: "₦0",
-    invoicesIncluded: 5,
-    invoicesDisplay: "5 invoices to start",
+    invoicesIncluded: 2,
+    invoicesDisplay: "2 invoices to start",
     hasMonthlySubscription: false,
     icon: "🚀",
-    description: "Get started free — 5 invoices on us",
+    description: "Get started free — 2 invoices on us",
     features: [
-      "5 invoices included to get started",
+      "2 invoices included to get started",
       "Buy more: 50 for ₦1,250",
       "WhatsApp & Email delivery",
       "PDF generation & QR verification",
@@ -121,7 +121,7 @@ export const ALL_PLANS: Plan[] = [
 /**
  * Landing page pricing display
  * Shows Starter (FREE) and Pro plans
- * Users start with 5 free invoices and can buy packs or upgrade to PRO
+ * Users start with 2 free invoices and can buy packs or upgrade to PRO
  */
 export const LANDING_PLANS: Plan[] = [
   PLANS.FREE,
