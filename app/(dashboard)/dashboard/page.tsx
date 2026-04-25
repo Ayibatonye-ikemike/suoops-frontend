@@ -10,6 +10,7 @@ import { CashPositionCard } from "@/features/dashboard/cash-position-card";
 import { ProfessionalismScoreCard } from "@/features/dashboard/professionalism-score-card";
 import { WelcomeGuide, useShowDashboardForm } from "@/features/dashboard/welcome-guide";
 import { SalesFunnelBanner } from "@/features/dashboard/sales-funnel-banner";
+import { PhoneRequiredGate } from "@/features/dashboard/phone-required-gate";
 import { FeatureDiscoveryTips } from "@/features/dashboard/feature-discovery-tips";
 
 // Wrap InvoiceListWithDetail in its own Suspense for useSearchParams
@@ -29,6 +30,7 @@ export default function DashboardPage() {
   const showForm = useShowDashboardForm();
 
   return (
+    <PhoneRequiredGate>
     <main className="min-h-screen">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
         <div className="mb-6 sm:mb-8">
@@ -94,5 +96,6 @@ export default function DashboardPage() {
         </div>
       </div>
     </main>
+    </PhoneRequiredGate>
   );
 }
