@@ -236,8 +236,8 @@ export function RegisterForm() {
         setTokens({ accessToken: token.access_token, accessExpiresAt: token.access_expires_at });
 
         // Fire Google Ads conversion event on successful signup
-        if (typeof window !== "undefined" && typeof window.gtag === "function") {
-          window.gtag("event", "conversion", {
+        if (typeof window !== "undefined" && typeof (window as /* eslint-disable-next-line @typescript-eslint/no-explicit-any */ any).gtag === "function") {
+          (window as /* eslint-disable-next-line @typescript-eslint/no-explicit-any */ any).gtag("event", "conversion", {
             send_to: "AW-17976378572/AascCOePmqMcEMyJ5_tC",
           });
         }
