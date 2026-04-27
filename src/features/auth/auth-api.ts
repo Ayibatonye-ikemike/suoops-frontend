@@ -16,7 +16,7 @@ export type TokenPayload = {
 export type MessagePayload = { detail: string };
 
 export type SignupStartPayload = {
-  phone?: string | null;
+  phone: string;
   email?: string | null;
   name: string;
   business_name?: string | null;
@@ -25,8 +25,7 @@ export type SignupStartPayload = {
 };
 
 export type SignupVerifyPayload = {
-  phone?: string | null;
-  email?: string | null;
+  phone: string;
   otp: string;
 };
 
