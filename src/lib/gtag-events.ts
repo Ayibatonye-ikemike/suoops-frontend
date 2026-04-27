@@ -10,7 +10,7 @@ type GtagFn = (...args: unknown[]) => void;
 
 function getGtag(): GtagFn | null {
   if (typeof window === "undefined") return null;
-  const g = (window as Record<string, unknown>).gtag;
+  const g = (window as unknown as Record<string, unknown>).gtag;
   return typeof g === "function" ? (g as GtagFn) : null;
 }
 
