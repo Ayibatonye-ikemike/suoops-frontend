@@ -21,6 +21,7 @@ export type SignupStartPayload = {
   name: string;
   business_name?: string | null;
   referral_code?: string | null;
+  signup_source?: string | null;
 };
 
 export type SignupVerifyPayload = {

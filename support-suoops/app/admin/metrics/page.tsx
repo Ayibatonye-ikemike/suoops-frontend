@@ -303,6 +303,7 @@ interface ZeroInvoiceUser {
   has_logo: boolean;
   days_since_signup: number;
   login_count_bucket: string;
+  signup_source: string | null;
 }
 
 interface ZeroInvoiceDiagnostic {
@@ -323,6 +324,8 @@ interface ZeroInvoiceDiagnostic {
   signed_up_15_30_days: ZeroInvoiceCohort;
   signed_up_over_30_days: ZeroInvoiceCohort;
   weekly_signup_vs_activation: { week: string; signups: number; activated: number; activation_rate: number }[];
+  source_breakdown: ZeroInvoiceCohort[];
+  source_activation_rates: { source: string; signups: number; activated: number; activation_rate: number }[];
   recent_zero_invoice_users: ZeroInvoiceUser[];
 }
 
@@ -1209,6 +1212,85 @@ export default function MetricsPage() {
                 </div>
               </div>
 
+              {/* Source Attribution */}
+              <div className="grid gap-6 lg:grid-cols-2">
+                {/* Source Breakdown (zero-invoice users) */}
+                <div className="rounded-xl border border-slate-200 bg-white p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Target className="h-5 w-5 text-slate-500" />
+                    <div>
+                      <h3 className="font-semibold text-slate-900">Source Breakdown</h3>
+                      <p className="text-xs text-slate-500">Where zero-invoice users came from</p>
+                    </div>
+                  </div>
+                  {diagnostic.source_breakdown.length > 0 ? (
+                    <div className="space-y-3">
+                      {diagnostic.source_breakdown.map((s) => (
+                        <div key={s.label} className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <div className="flex justify-between text-sm mb-1">
+                              <span className="text-slate-700 font-medium">{s.label}</span>
+                              <span className="font-semibold text-slate-900">{s.count} ({s.pct}%)</span>
+                            </div>
+                            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-indigo-400 rounded-full transition-all"
+                                style={{ width: `${s.pct}%` }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-slate-400 text-center py-4">
+                      No source data yet — tracking starts with new signups
+                    </p>
+                  )}
+                </div>
+
+                {/* Source Activation Rates (all users) */}
+                <div className="rounded-xl border border-slate-200 bg-white p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <BarChart3 className="h-5 w-5 text-slate-500" />
+                    <div>
+                      <h3 className="font-semibold text-slate-900">Activation by Source</h3>
+                      <p className="text-xs text-slate-500">Which channels produce active users?</p>
+                    </div>
+                  </div>
+                  {diagnostic.source_activation_rates.length > 0 ? (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-slate-200">
+                            <th className="text-left py-2 pr-3 font-medium text-slate-600">Source</th>
+                            <th className="text-right py-2 px-3 font-medium text-slate-600">Signups</th>
+                            <th className="text-right py-2 px-3 font-medium text-slate-600">Activated</th>
+                            <th className="text-right py-2 pl-3 font-medium text-slate-600">Rate</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {diagnostic.source_activation_rates.map((r) => (
+                            <tr key={r.source} className="border-b border-slate-50">
+                              <td className="py-2 pr-3 font-medium text-slate-700">{r.source}</td>
+                              <td className="py-2 px-3 text-right text-slate-900">{r.signups}</td>
+                              <td className="py-2 px-3 text-right text-emerald-700">{r.activated}</td>
+                              <td className={`py-2 pl-3 text-right font-bold ${r.activation_rate >= 40 ? "text-emerald-700" : r.activation_rate >= 20 ? "text-amber-700" : "text-red-700"}`}>
+                                {r.activation_rate}%
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-slate-400 text-center py-4">
+                      No source data yet — tracking starts with new signups
+                    </p>
+                  )}
+                </div>
+              </div>
+
               {/* Weekly Signup vs Activation Trend */}
               <div className="rounded-xl border border-slate-200 bg-white p-6">
                 <div className="flex items-center gap-3 mb-4">
@@ -1267,6 +1349,7 @@ export default function MetricsPage() {
                     <thead>
                       <tr className="border-b border-slate-200">
                         <th className="text-left py-2 pr-3 font-medium text-slate-600">User</th>
+                        <th className="text-left py-2 px-3 font-medium text-slate-600">Source</th>
                         <th className="text-left py-2 px-3 font-medium text-slate-600">Channel</th>
                         <th className="text-left py-2 px-3 font-medium text-slate-600">Logins</th>
                         <th className="text-left py-2 px-3 font-medium text-slate-600">Profile</th>
@@ -1279,6 +1362,11 @@ export default function MetricsPage() {
                           <td className="py-2 pr-3">
                             <p className="font-medium text-slate-900">{u.name || "—"}</p>
                             <p className="text-xs text-slate-500">{u.phone || u.email || `ID ${u.id}`}</p>
+                          </td>
+                          <td className="py-2 px-3">
+                            <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700">
+                              {u.signup_source || "—"}
+                            </span>
                           </td>
                           <td className="py-2 px-3">
                             {u.phone_verified ? (

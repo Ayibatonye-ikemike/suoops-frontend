@@ -64,6 +64,33 @@ export function RegisterForm() {
     }
   }, [searchParams]);
 
+  // Derive signup source from URL parameters
+  const signupSource = useMemo(() => {
+    // Priority: explicit ?source= > utm_source > utm_medium > referral > organic
+    const source = searchParams.get("source");
+    if (source) return source;
+
+    const utmSource = searchParams.get("utm_source");
+    const utmMedium = searchParams.get("utm_medium");
+
+    if (utmSource === "google" || utmSource === "google_ads") return "google_ads";
+    if (utmSource === "instagram" || utmSource === "ig") return "instagram";
+    if (utmSource === "whatsapp" || utmSource === "wa") return "whatsapp_ad";
+    if (utmSource === "facebook" || utmSource === "fb") return "facebook";
+    if (utmSource === "twitter" || utmSource === "x") return "twitter";
+    if (utmSource === "tiktok") return "tiktok";
+    if (utmSource) return `social_${utmSource}`;
+
+    if (utmMedium === "cpc" || utmMedium === "ppc") return "google_ads";
+    if (utmMedium === "social") return "social_media";
+
+    if (searchParams.get("ref")) return "referral";
+    if (searchParams.get("gclid")) return "google_ads";
+    if (searchParams.get("fbclid")) return "facebook";
+
+    return "organic";
+  }, [searchParams]);
+
   const validateReferralCode = async (code: string) => {
     if (!code || code.length < 6) {
       setReferralValid(null);
@@ -154,6 +181,8 @@ export function RegisterForm() {
         }
         payload.referral_code = referralCode.toUpperCase();
       }
+      // Attach attribution source
+      payload.signup_source = signupSource;
       if (!payload.name) {
         setError("Please provide your name.");
         return;
