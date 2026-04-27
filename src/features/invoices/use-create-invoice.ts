@@ -5,6 +5,7 @@ import { parseFeatureGateError, type FeatureGateParsed } from "@/lib/feature-gat
 
 import { apiClient } from "@/api/client";
 import type { components } from "@/api/types";
+import { trackInvoiceCreated } from "@/lib/gtag-events";
 
 import { type Invoice } from "./use-invoices";
 
@@ -45,6 +46,7 @@ export function useCreateInvoice() {
   return useMutation({
     mutationFn: createInvoice,
     onSuccess: () => {
+      trackInvoiceCreated();
       void queryClient.invalidateQueries({ queryKey: ["invoices"] });
       void queryClient.invalidateQueries({ queryKey: ["invoice-quota"] });
     },

@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { INVOICE_PACK_SIZE } from "@/constants/pricing";
+import { trackPurchaseConversion } from "@/lib/gtag-events";
 
 export default function BillingSuccessPage() {
   const searchParams = useSearchParams();
@@ -28,6 +29,7 @@ export default function BillingSuccessPage() {
     const timer = setTimeout(() => {
       // Invalidate user data to refresh invoice balance
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      trackPurchaseConversion();
       setStatus("success");
     }, 2000);
 

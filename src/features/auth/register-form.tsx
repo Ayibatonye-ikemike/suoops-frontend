@@ -15,6 +15,7 @@ import { OTPInput } from "./otp-input";
 import axios from "axios";
 import { getConfig } from "@/lib/config";
 import { Gift, CheckCircle2, MessageCircle } from "lucide-react";
+import { trackSignupConversion } from "@/lib/gtag-events";
 
 type Step = "details" | "otp";
 
@@ -236,11 +237,7 @@ export function RegisterForm() {
         setTokens({ accessToken: token.access_token, accessExpiresAt: token.access_expires_at });
 
         // Fire Google Ads conversion event on successful signup
-        if (typeof window !== "undefined" && typeof (window as /* eslint-disable-next-line @typescript-eslint/no-explicit-any */ any).gtag === "function") {
-          (window as /* eslint-disable-next-line @typescript-eslint/no-explicit-any */ any).gtag("event", "conversion", {
-            send_to: "AW-17976378572/AascCOePmqMcEMyJ5_tC",
-          });
-        }
+        trackSignupConversion();
 
         router.replace("/dashboard");
       } catch (verifyError: unknown) {
