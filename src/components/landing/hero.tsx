@@ -2,12 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRegisterHref } from "@/hooks/use-tracking-params";
 
 interface HeroProps {
   onWatchDemo: () => void;
 }
 
 export function Hero({ onWatchDemo }: HeroProps) {
+  const registerHref = useRegisterHref();
   return (
     <section className="relative overflow-hidden bg-brand-evergreen px-4 py-16 sm:py-24 text-white">
       <div className="mx-auto max-w-7xl">
@@ -27,7 +29,7 @@ export function Hero({ onWatchDemo }: HeroProps) {
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <Link
-                href="/register"
+                href={registerHref}
                 className="inline-flex items-center justify-center rounded-lg bg-brand-jade px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:scale-105 hover:bg-brand-teal"
               >
                 Start invoicing on WhatsApp

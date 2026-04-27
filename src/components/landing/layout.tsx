@@ -1,7 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
 import { MobileMenu } from "./mobile-menu";
+import { useRegisterHref } from "@/hooks/use-tracking-params";
 
 export function Navigation() {
   return (
@@ -58,6 +61,7 @@ export function Navigation() {
 // PreLaunchBanner removed - product is now live
 
 export function CTASection() {
+  const registerHref = useRegisterHref();
   return (
     <section className="relative bg-brand-evergreen px-4 py-20 sm:px-6 lg:px-8 text-white">
       <div className="mx-auto max-w-3xl text-center">
@@ -68,7 +72,7 @@ export function CTASection() {
           Start creating professional invoices in seconds via WhatsApp or dashboard.
         </p>
         <Link
-          href="/register"
+          href={registerHref}
           className="mt-8 inline-flex items-center justify-center rounded-lg bg-brand-jade px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:scale-105 hover:bg-brand-teal"
         >
           Get Started Free

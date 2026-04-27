@@ -1,7 +1,11 @@
+"use client";
+
 import Link from "next/link";
 import { LANDING_PLANS, type Plan } from "../../constants/pricing";
+import { useRegisterHref } from "@/hooks/use-tracking-params";
 
 export function Pricing() {
+  const registerHref = useRegisterHref();
   return (
     <section id="pricing" className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
@@ -24,7 +28,7 @@ export function Pricing() {
               No commitment, no credit card required.
             </p>
             <Link
-              href="/register"
+              href={registerHref}
               className="mt-4 inline-flex items-center justify-center rounded-lg bg-brand-chartreuse px-6 py-3 text-base font-semibold text-brand-evergreen shadow-lg transition-all hover:bg-white hover:scale-105"
             >
               Get Your Free Invoices →
@@ -93,7 +97,7 @@ export function Pricing() {
               No limits! The more you refer, the more you earn. Paid directly to your bank account.
             </p>
             <Link
-              href="/register"
+              href={registerHref}
               className="mt-6 inline-flex items-center justify-center rounded-lg bg-brand-chartreuse px-6 py-3 text-base font-semibold text-brand-evergreen shadow-lg transition-all hover:bg-white hover:scale-105"
             >
               Start Earning Today →
@@ -107,7 +111,7 @@ export function Pricing() {
 
         <div className="mt-8 text-center">
           <Link
-            href="/register"
+            href={registerHref}
             className="inline-flex items-center justify-center rounded-lg bg-brand-jade px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:bg-brand-teal hover:scale-105"
           >
             Start invoicing on WhatsApp
