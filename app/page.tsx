@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { Hero } from "@/components/landing/hero";
 import { Features } from "@/components/landing/features";
 import { Pricing } from "@/components/landing/pricing";
@@ -27,12 +27,18 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-brand-evergreen">
       <Navigation />
-      <Hero onWatchDemo={() => setShowVideoModal(true)} />
+      <Suspense>
+        <Hero onWatchDemo={() => setShowVideoModal(true)} />
+      </Suspense>
       <Features />
       <Testimonials />
       <TopUsersShowcase />
-      <Pricing />
-      <CTASection />
+      <Suspense>
+        <Pricing />
+      </Suspense>
+      <Suspense>
+        <CTASection />
+      </Suspense>
       <SupportEscalation />
       <Footer />
       <VideoModal isOpen={showVideoModal} onClose={() => setShowVideoModal(false)} />
