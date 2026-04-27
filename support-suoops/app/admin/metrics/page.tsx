@@ -22,6 +22,11 @@ import {
   UserX,
   Activity,
   ShoppingCart,
+  Search,
+  Phone,
+  Mail,
+  Building2,
+  Landmark,
 } from "lucide-react";
 import { useAdminAuth } from "../layout";
 
@@ -275,7 +280,51 @@ function MiniBarChart({ data, color = "bg-emerald-500", label = "" }: {
 
 // ─── Tabs ────────────────────────────────────────────────────────
 
-type Tab = "overview" | "growth";
+type Tab = "overview" | "growth" | "diagnostic";
+
+// ─── Zero-Invoice Diagnostic Types ───────────────────────────────
+
+interface ZeroInvoiceCohort {
+  label: string;
+  count: number;
+  pct: number;
+}
+
+interface ZeroInvoiceUser {
+  id: number;
+  name: string | null;
+  phone: string | null;
+  email: string | null;
+  phone_verified: boolean;
+  created_at: string;
+  last_login: string | null;
+  has_business_name: boolean;
+  has_bank_details: boolean;
+  has_logo: boolean;
+  days_since_signup: number;
+  login_count_bucket: string;
+}
+
+interface ZeroInvoiceDiagnostic {
+  total_zero_invoice: number;
+  total_signups: number;
+  drop_off_rate: number;
+  never_logged_back: ZeroInvoiceCohort;
+  logged_in_once: ZeroInvoiceCohort;
+  logged_in_multiple: ZeroInvoiceCohort;
+  whatsapp_verified: ZeroInvoiceCohort;
+  email_only: ZeroInvoiceCohort;
+  has_business_name: ZeroInvoiceCohort;
+  has_bank_details: ZeroInvoiceCohort;
+  signed_up_today: ZeroInvoiceCohort;
+  signed_up_1_3_days: ZeroInvoiceCohort;
+  signed_up_4_7_days: ZeroInvoiceCohort;
+  signed_up_8_14_days: ZeroInvoiceCohort;
+  signed_up_15_30_days: ZeroInvoiceCohort;
+  signed_up_over_30_days: ZeroInvoiceCohort;
+  weekly_signup_vs_activation: { week: string; signups: number; activated: number; activation_rate: number }[];
+  recent_zero_invoice_users: ZeroInvoiceUser[];
+}
 
 // ─── Page ────────────────────────────────────────────────────────
 
@@ -283,6 +332,8 @@ export default function MetricsPage() {
   const { token } = useAdminAuth();
   const [metrics, setMetrics] = useState<PlatformMetrics | null>(null);
   const [growth, setGrowth] = useState<GrowthMetrics | null>(null);
+  const [diagnostic, setDiagnostic] = useState<ZeroInvoiceDiagnostic | null>(null);
+  const [diagnosticLoading, setDiagnosticLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState<Tab>("overview");
@@ -313,6 +364,24 @@ export default function MetricsPage() {
 
     fetchAll();
   }, [token]);
+
+  // Fetch diagnostic data when tab is activated
+  useEffect(() => {
+    async function fetchDiagnostic() {
+      if (!token || activeTab !== "diagnostic" || diagnostic) return;
+      setDiagnosticLoading(true);
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
+        const res = await fetch(`${apiUrl}/admin/metrics/zero-invoice-diagnostic`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) setDiagnostic(await res.json());
+      } catch { /* ignore */ } finally {
+        setDiagnosticLoading(false);
+      }
+    }
+    fetchDiagnostic();
+  }, [token, activeTab, diagnostic]);
 
   if (isLoading) {
     return (
@@ -374,6 +443,22 @@ export default function MetricsPage() {
           {growth && (growth.expired_subscriptions > 0 || growth.expiring_soon > 0) && (
             <span className="ml-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700">
               {growth.expired_subscriptions + growth.expiring_soon}
+            </span>
+          )}
+        </button>
+        <button
+          onClick={() => setActiveTab("diagnostic")}
+          className={`pb-3 px-1 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
+            activeTab === "diagnostic"
+              ? "border-red-600 text-red-600"
+              : "border-transparent text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          <Search className="h-4 w-4" />
+          Drop-off Diagnostic
+          {growth && growth.zero_invoice_users > 0 && (
+            <span className="ml-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700">
+              {growth.zero_invoice_users}
             </span>
           )}
         </button>
@@ -981,6 +1066,273 @@ export default function MetricsPage() {
               <TrendingUp className="h-12 w-12 text-slate-300 mx-auto mb-4" />
               <p className="text-lg font-medium text-slate-600">Growth analytics loading...</p>
               <p className="text-sm text-slate-400 mt-1">This data requires the latest backend update.</p>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* ── Diagnostic Tab ── */}
+      {activeTab === "diagnostic" && (
+        <>
+          {diagnosticLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-red-600 border-t-transparent" />
+            </div>
+          ) : diagnostic ? (
+            <div className="space-y-6">
+              {/* Top-level stats */}
+              <div className="grid gap-4 sm:grid-cols-3">
+                <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center">
+                  <p className="text-sm font-medium text-red-700">Zero-Invoice Users</p>
+                  <p className="text-3xl font-bold text-red-800 mt-1">{diagnostic.total_zero_invoice}</p>
+                  <p className="text-xs text-red-600 mt-1">of {diagnostic.total_signups} signups</p>
+                </div>
+                <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center">
+                  <p className="text-sm font-medium text-red-700">Drop-off Rate</p>
+                  <p className="text-3xl font-bold text-red-800 mt-1">{diagnostic.drop_off_rate}%</p>
+                  <p className="text-xs text-red-600 mt-1">signed up → never created</p>
+                </div>
+                <div className="rounded-xl border border-amber-200 bg-amber-50 p-6 text-center">
+                  <p className="text-sm font-medium text-amber-700">Recoverable</p>
+                  <p className="text-3xl font-bold text-amber-800 mt-1">
+                    {diagnostic.logged_in_once.count + diagnostic.logged_in_multiple.count}
+                  </p>
+                  <p className="text-xs text-amber-600 mt-1">came back but didn&apos;t create</p>
+                </div>
+              </div>
+
+              <div className="grid gap-6 lg:grid-cols-2">
+                {/* Engagement Buckets */}
+                <div className="rounded-xl border border-slate-200 bg-white p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Activity className="h-5 w-5 text-slate-500" />
+                    <div>
+                      <h3 className="font-semibold text-slate-900">Engagement After Signup</h3>
+                      <p className="text-xs text-slate-500">Did they ever come back?</p>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    {[diagnostic.never_logged_back, diagnostic.logged_in_once, diagnostic.logged_in_multiple].map((c) => (
+                      <div key={c.label} className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex justify-between text-sm mb-1">
+                            <span className="text-slate-700">{c.label}</span>
+                            <span className="font-semibold text-slate-900">{c.count} ({c.pct}%)</span>
+                          </div>
+                          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-red-400 rounded-full transition-all"
+                              style={{ width: `${c.pct}%` }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Channel Breakdown */}
+                <div className="rounded-xl border border-slate-200 bg-white p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Phone className="h-5 w-5 text-slate-500" />
+                    <div>
+                      <h3 className="font-semibold text-slate-900">Channel Breakdown</h3>
+                      <p className="text-xs text-slate-500">WhatsApp vs email-only among zero-invoice</p>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-green-50">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-600" />
+                        <span className="text-sm text-green-800">WhatsApp verified</span>
+                      </div>
+                      <span className="font-bold text-green-700">{diagnostic.whatsapp_verified.count} ({diagnostic.whatsapp_verified.pct}%)</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-amber-50">
+                      <div className="flex items-center gap-2">
+                        <Mail className="h-4 w-4 text-amber-600" />
+                        <span className="text-sm text-amber-800">Email only</span>
+                      </div>
+                      <span className="font-bold text-amber-700">{diagnostic.email_only.count} ({diagnostic.email_only.pct}%)</span>
+                    </div>
+                  </div>
+
+                  <hr className="my-4 border-slate-200" />
+
+                  <div className="flex items-center gap-3 mb-3">
+                    <Building2 className="h-5 w-5 text-slate-500" />
+                    <h4 className="font-medium text-slate-800 text-sm">Profile Completeness</h4>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-blue-50">
+                      <div className="flex items-center gap-2">
+                        <Building2 className="h-4 w-4 text-blue-600" />
+                        <span className="text-sm text-blue-800">Set business name</span>
+                      </div>
+                      <span className="font-bold text-blue-700">{diagnostic.has_business_name.count} ({diagnostic.has_business_name.pct}%)</span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-purple-50">
+                      <div className="flex items-center gap-2">
+                        <Landmark className="h-4 w-4 text-purple-600" />
+                        <span className="text-sm text-purple-800">Added bank details</span>
+                      </div>
+                      <span className="font-bold text-purple-700">{diagnostic.has_bank_details.count} ({diagnostic.has_bank_details.pct}%)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Signup Age Distribution */}
+              <div className="rounded-xl border border-slate-200 bg-white p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <Calendar className="h-5 w-5 text-slate-500" />
+                  <div>
+                    <h3 className="font-semibold text-slate-900">Signup Age Distribution</h3>
+                    <p className="text-xs text-slate-500">How long ago did these users sign up?</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                  {[
+                    { ...diagnostic.signed_up_today, color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
+                    { ...diagnostic.signed_up_1_3_days, color: "bg-blue-100 text-blue-700 border-blue-200" },
+                    { ...diagnostic.signed_up_4_7_days, color: "bg-amber-100 text-amber-700 border-amber-200" },
+                    { ...diagnostic.signed_up_8_14_days, color: "bg-orange-100 text-orange-700 border-orange-200" },
+                    { ...diagnostic.signed_up_15_30_days, color: "bg-red-100 text-red-700 border-red-200" },
+                    { ...diagnostic.signed_up_over_30_days, color: "bg-slate-100 text-slate-700 border-slate-200" },
+                  ].map((b) => (
+                    <div key={b.label} className={`rounded-lg border p-4 text-center ${b.color}`}>
+                      <p className="text-2xl font-bold">{b.count}</p>
+                      <p className="text-xs font-medium mt-1">{b.label}</p>
+                      <p className="text-xs opacity-75">{b.pct}%</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Weekly Signup vs Activation Trend */}
+              <div className="rounded-xl border border-slate-200 bg-white p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <TrendingDown className="h-5 w-5 text-red-500" />
+                  <div>
+                    <h3 className="font-semibold text-slate-900">Weekly Signup → Activation</h3>
+                    <p className="text-xs text-slate-500">Are new signups converting? (last 8 weeks)</p>
+                  </div>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-slate-200">
+                        <th className="text-left py-2 pr-4 font-medium text-slate-600">Week of</th>
+                        <th className="text-right py-2 px-4 font-medium text-slate-600">Signups</th>
+                        <th className="text-right py-2 px-4 font-medium text-slate-600">Activated</th>
+                        <th className="text-right py-2 px-4 font-medium text-slate-600">Rate</th>
+                        <th className="py-2 pl-4 font-medium text-slate-600 w-32"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {diagnostic.weekly_signup_vs_activation.map((w) => (
+                        <tr key={w.week} className="border-b border-slate-100">
+                          <td className="py-2 pr-4 text-slate-700">{w.week}</td>
+                          <td className="py-2 px-4 text-right font-medium text-slate-900">{w.signups}</td>
+                          <td className="py-2 px-4 text-right font-medium text-emerald-700">{w.activated}</td>
+                          <td className={`py-2 px-4 text-right font-bold ${w.activation_rate >= 40 ? "text-emerald-700" : w.activation_rate >= 20 ? "text-amber-700" : "text-red-700"}`}>
+                            {w.activation_rate}%
+                          </td>
+                          <td className="py-2 pl-4">
+                            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                              <div
+                                className={`h-full rounded-full ${w.activation_rate >= 40 ? "bg-emerald-500" : w.activation_rate >= 20 ? "bg-amber-500" : "bg-red-500"}`}
+                                style={{ width: `${Math.min(w.activation_rate, 100)}%` }}
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Recent Zero-Invoice Users */}
+              <div className="rounded-xl border border-slate-200 bg-white p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <UserX className="h-5 w-5 text-red-500" />
+                  <div>
+                    <h3 className="font-semibold text-slate-900">Recent Zero-Invoice Users</h3>
+                    <p className="text-xs text-slate-500">Most recent signups who never created an invoice</p>
+                  </div>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-slate-200">
+                        <th className="text-left py-2 pr-3 font-medium text-slate-600">User</th>
+                        <th className="text-left py-2 px-3 font-medium text-slate-600">Channel</th>
+                        <th className="text-left py-2 px-3 font-medium text-slate-600">Logins</th>
+                        <th className="text-left py-2 px-3 font-medium text-slate-600">Profile</th>
+                        <th className="text-right py-2 pl-3 font-medium text-slate-600">Age</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {diagnostic.recent_zero_invoice_users.map((u) => (
+                        <tr key={u.id} className="border-b border-slate-50 hover:bg-slate-50">
+                          <td className="py-2 pr-3">
+                            <p className="font-medium text-slate-900">{u.name || "—"}</p>
+                            <p className="text-xs text-slate-500">{u.phone || u.email || `ID ${u.id}`}</p>
+                          </td>
+                          <td className="py-2 px-3">
+                            {u.phone_verified ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700">
+                                <Phone className="h-3 w-3" /> WhatsApp
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-700">
+                                <Mail className="h-3 w-3" /> Email
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-2 px-3">
+                            <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${
+                              u.login_count_bucket === "never"
+                                ? "bg-red-100 text-red-700"
+                                : u.login_count_bucket === "once"
+                                ? "bg-amber-100 text-amber-700"
+                                : "bg-blue-100 text-blue-700"
+                            }`}>
+                              {u.login_count_bucket === "never" ? "Never returned" : u.login_count_bucket === "once" ? "Came back once" : "Multiple visits"}
+                            </span>
+                          </td>
+                          <td className="py-2 px-3">
+                            <div className="flex gap-1">
+                              {u.has_business_name && (
+                                <span title="Business name" className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-blue-50 text-blue-600">
+                                  <Building2 className="h-3 w-3" />
+                                </span>
+                              )}
+                              {u.has_bank_details && (
+                                <span title="Bank details" className="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-purple-50 text-purple-600">
+                                  <Landmark className="h-3 w-3" />
+                                </span>
+                              )}
+                              {!u.has_business_name && !u.has_bank_details && (
+                                <span className="text-xs text-slate-400">Empty</span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="py-2 pl-3 text-right text-xs text-slate-600">
+                            {u.days_since_signup}d ago
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-lg bg-slate-50 border border-slate-200 p-12 text-center">
+              <Search className="h-12 w-12 text-slate-300 mx-auto mb-4" />
+              <p className="text-lg font-medium text-slate-600">Diagnostic data loading...</p>
             </div>
           )}
         </>
