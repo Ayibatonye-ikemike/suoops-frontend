@@ -234,6 +234,14 @@ export function RegisterForm() {
       try {
         const token = await verifySignupOTP({ phone: formValues.phone, otp });
         setTokens({ accessToken: token.access_token, accessExpiresAt: token.access_expires_at });
+
+        // Fire Google Ads conversion event on successful signup
+        if (typeof window !== "undefined" && typeof window.gtag === "function") {
+          window.gtag("event", "conversion", {
+            send_to: "AW-17976378572/AascCOePmqMcEMyJ5_tC",
+          });
+        }
+
         router.replace("/dashboard");
       } catch (verifyError: unknown) {
         console.error(verifyError);
