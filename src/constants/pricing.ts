@@ -70,6 +70,7 @@ export const PLANS: Record<PlanTier, Plan> = {
     description: "Get started free — 2 invoices on us",
     features: [
       "2 invoices included to get started",
+      "Buy more: 25 for ₦625",
       "Buy more: 50 for ₦1,250",
       "WhatsApp & Email delivery",
       "PDF generation & QR verification",
