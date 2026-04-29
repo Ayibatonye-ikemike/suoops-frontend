@@ -73,9 +73,10 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
           role: "admin",
           is_super_admin: data.is_super_admin || false,
         });
-        // Keep a marker so pages know we're authenticated
-        // Actual auth is via httpOnly cookie — token is not needed for new authFetch calls
-        setToken("authenticated");
+        // /me returns a fresh access_token so pages using Bearer header still work after refresh
+        if (data.access_token) {
+          setToken(data.access_token);
+        }
       })
       .catch(() => {
         setUser(null);
