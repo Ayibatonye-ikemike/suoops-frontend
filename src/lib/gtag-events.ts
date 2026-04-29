@@ -23,17 +23,16 @@ export function trackSignupConversion() {
 
 /** First invoice created (or any invoice — useful as a micro-conversion). */
 export function trackInvoiceCreated() {
-  getGtag()?.("event", "invoice_created", {
-    send_to: "AW-17976378572",
+  getGtag()?.("event", "conversion", {
+    send_to: "AW-17976378572/dHCMCPWWz6QcEMyJ5_tC",
   });
 }
 
 /** Subscription or invoice pack purchase completed (Paystack success). */
 export function trackPurchaseConversion(value?: number, currency = "NGN") {
-  getGtag()?.("event", "purchase", {
-    send_to: "AW-17976378572",
-    value,
+  getGtag()?.("event", "conversion", {
+    send_to: "AW-17976378572/HlVhCP_LtqQcEMyJ5_tC",
+    value: value ?? 1.0,
     currency,
-    transaction_id: undefined, // filled by Google from the page URL reference param
   });
 }
