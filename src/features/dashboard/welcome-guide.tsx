@@ -177,7 +177,7 @@ export function WelcomeGuide() {
               </div>
             </div>
             <ul className="space-y-2 text-xs text-slate-600 mb-4">
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> 2 free invoices</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> 25 invoices — ₦625</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> WhatsApp & Email delivery</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> PDF & QR verification</li>
             </ul>
