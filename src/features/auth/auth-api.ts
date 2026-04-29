@@ -27,6 +27,9 @@ export type SignupStartPayload = {
 export type SignupVerifyPayload = {
   phone: string;
   otp: string;
+  bank_name: string;
+  account_number: string;
+  account_name: string;
 };
 
 export type LoginRequestPayload = { 

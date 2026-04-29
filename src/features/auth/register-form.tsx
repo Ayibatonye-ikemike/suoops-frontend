@@ -14,10 +14,11 @@ import { useAuthStore } from "./auth-store";
 import { OTPInput } from "./otp-input";
 import axios from "axios";
 import { getConfig } from "@/lib/config";
-import { Gift, CheckCircle2, MessageCircle } from "lucide-react";
+import { Gift, CheckCircle2, MessageCircle, Building2, CreditCard } from "lucide-react";
 import { trackSignupConversion } from "@/lib/gtag-events";
+import { NIGERIAN_BANKS } from "@/features/settings/bank-details-form.constants";
 
-type Step = "details" | "otp";
+type Step = "details" | "otp" | "bank";
 
 /**
  * Normalize a Nigerian phone number to E.164 format (+234...).
@@ -47,7 +48,11 @@ export function RegisterForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resendTimer, setResendTimer] = useState(0);
-  
+
+  // Bank details state
+  const [bankName, setBankName] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [accountName, setAccountName] = useState("");
   // Referral code state
   const [referralCode, setReferralCode] = useState("");
   const [referralValid, setReferralValid] = useState<boolean | null>(null);
@@ -232,10 +237,43 @@ export function RegisterForm() {
         setError("Enter the 6-digit code sent to your WhatsApp.");
         return;
       }
+      // OTP looks valid — move to bank details step
+      setError(null);
+      setStep("bank");
+    },
+    [formValues, otp]
+  );
+
+  const handleCompleteSignup = useCallback(
+    async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      if (!formValues) {
+        setError("Session expired. Please restart signup.");
+        setStep("details");
+        return;
+      }
+      if (!bankName) {
+        setError("Please select your bank.");
+        return;
+      }
+      if (!accountNumber || accountNumber.length !== 10) {
+        setError("Please enter a valid 10-digit account number.");
+        return;
+      }
+      if (!accountName.trim()) {
+        setError("Please enter the account name.");
+        return;
+      }
       setLoading(true);
       setError(null);
       try {
-        const token = await verifySignupOTP({ phone: formValues.phone, otp });
+        const token = await verifySignupOTP({
+          phone: formValues.phone,
+          otp,
+          bank_name: bankName,
+          account_number: accountNumber,
+          account_name: accountName.trim(),
+        });
         setTokens({ accessToken: token.access_token, accessExpiresAt: token.access_expires_at });
 
         // Fire Google Ads conversion event on successful signup
@@ -244,25 +282,25 @@ export function RegisterForm() {
         router.replace("/dashboard");
       } catch (verifyError: unknown) {
         console.error(verifyError);
-        setOtp("");
         const response = (verifyError as { response?: { data?: { detail?: string }; status?: number } }).response;
         const message = response?.data?.detail;
         
-        // Provide specific guidance based on error type
         if (message?.toLowerCase().includes("expired")) {
-          setError("This code has expired. Please request a new one.");
+          setError("OTP expired. Please go back and request a new one.");
+          setOtp("");
+          setStep("otp");
         } else if (message?.toLowerCase().includes("invalid") || response?.status === 401) {
-          setError("Invalid code. Please check and try again, or request a new code.");
-        } else if (message?.toLowerCase().includes("too many")) {
-          setError("Too many failed attempts. Please wait a few minutes and try again.");
+          setError("Invalid OTP. Please go back and try again.");
+          setOtp("");
+          setStep("otp");
         } else {
-          setError(message || "Verification failed. Please try again.");
+          setError(message || "Signup failed. Please try again.");
         }
       } finally {
         setLoading(false);
       }
     },
-    [formValues, otp, router, setTokens]
+    [formValues, otp, bankName, accountNumber, accountName, router, setTokens]
   );
 
   const handleResend = useCallback(async () => {
@@ -330,6 +368,81 @@ export function RegisterForm() {
             Use a different number
           </button>
         </div>
+      </form>
+    );
+  }
+
+  if (step === "bank") {
+    return (
+      <form className="flex w-full max-w-md flex-col gap-6 rounded-2xl bg-white p-10 shadow-xl" onSubmit={handleCompleteSignup}>
+        <div className="space-y-2 text-center">
+          <div className="mx-auto mb-1 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+            <CreditCard className="h-6 w-6 text-green-600" />
+          </div>
+          <h1 className="text-2xl font-semibold text-slate-900">Add your bank details</h1>
+          <p className="text-sm text-slate-500">
+            Your customers need to know where to pay. This is shown on your invoices.
+          </p>
+        </div>
+        {error ? (
+          <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-600" role="alert">
+            {error}
+          </p>
+        ) : null}
+        <label className="flex flex-col gap-1.5 text-left text-sm font-semibold text-slate-700">
+          <span className="flex items-center gap-2">
+            <Building2 className="h-4 w-4 text-slate-400" />
+            Bank name
+          </span>
+          <select
+            value={bankName}
+            onChange={(e) => setBankName(e.target.value)}
+            required
+            className="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-base font-normal text-slate-900 outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+          >
+            <option value="">Select your bank</option>
+            {NIGERIAN_BANKS.map((bank) => (
+              <option key={bank} value={bank}>{bank}</option>
+            ))}
+          </select>
+        </label>
+        <label className="flex flex-col gap-1.5 text-left text-sm font-semibold text-slate-700">
+          Account number
+          <input
+            type="text"
+            inputMode="numeric"
+            maxLength={10}
+            value={accountNumber}
+            onChange={(e) => setAccountNumber(e.target.value.replace(/\D/g, ""))}
+            placeholder="0123456789"
+            required
+            className="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-base font-normal text-slate-900 outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+          />
+        </label>
+        <label className="flex flex-col gap-1.5 text-left text-sm font-semibold text-slate-700">
+          Account name
+          <input
+            type="text"
+            value={accountName}
+            onChange={(e) => setAccountName(e.target.value)}
+            placeholder="John Doe / Trendy Hair Empire"
+            required
+            className="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-base font-normal text-slate-900 outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+          />
+          <span className="text-xs font-normal text-slate-400">
+            The name on your bank account — customers will see this on invoices
+          </span>
+        </label>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full rounded-lg bg-green-600 px-4 py-3 text-base font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          {loading ? "Creating account..." : "Complete Registration"}
+        </button>
+        <p className="text-center text-xs text-slate-400">
+          You can update bank details anytime in Settings
+        </p>
       </form>
     );
   }
