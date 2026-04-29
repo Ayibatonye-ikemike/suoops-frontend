@@ -157,19 +157,21 @@ export function RegisterForm() {
 
       const phone = normalizePhone(rawPhone);
 
+      const businessName = String(form.get("business-name") ?? "").trim();
+      if (!businessName) {
+        setError("Please enter your business or brand name.");
+        return;
+      }
+
       const payload: SignupStartPayload = {
         name: String(form.get("name") ?? "").trim(),
         phone,
+        business_name: businessName,
       };
 
       // Email is optional — include if provided
       if (emailValue) {
         payload.email = emailValue;
-      }
-
-      const businessName = String(form.get("business-name") ?? "").trim();
-      if (businessName) {
-        payload.business_name = businessName;
       }
       // Include referral code if it looks valid (length >= 6)
       // Backend will do final validation - this ensures code is sent even if
@@ -344,13 +346,16 @@ export function RegisterForm() {
         </p>
       ) : null}
       <label className="flex flex-col gap-2 text-left text-sm font-semibold text-slate-700">
-        Full name
+        Business name
         <input
-          name="name"
-          placeholder="Jane Doe"
+          name="business-name"
+          placeholder="e.g. Trendy Hair Empire"
           required
           className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
         />
+        <span className="text-xs font-normal text-slate-400">
+          Your brand or shop name — shown on invoices to your customers
+        </span>
       </label>
       <label className="flex flex-col gap-2 text-left text-sm font-semibold text-slate-700">
         <span className="flex items-center gap-2">
@@ -369,19 +374,20 @@ export function RegisterForm() {
         </span>
       </label>
       <label className="flex flex-col gap-2 text-left text-sm font-semibold text-slate-700">
+        Your name
+        <input
+          name="name"
+          placeholder="Jane Doe"
+          required
+          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+        />
+      </label>
+      <label className="flex flex-col gap-2 text-left text-sm font-semibold text-slate-700">
         Email address <span className="text-xs font-normal text-slate-400">Optional</span>
         <input
           name="email"
           type="email"
           placeholder="you@example.com"
-          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
-        />
-      </label>
-      <label className="flex flex-col gap-2 text-left text-sm font-semibold text-slate-700">
-        Business name <span className="text-xs font-normal text-slate-400">Optional</span>
-        <input
-          name="business-name"
-          placeholder="Acme Studios"
           className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
         />
       </label>
