@@ -73,7 +73,9 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
           role: "admin",
           is_super_admin: data.is_super_admin || false,
         });
-        setToken("cookie"); // Token is in httpOnly cookie, just mark as authenticated
+        // Keep a marker so pages know we're authenticated
+        // Actual auth is via httpOnly cookie — token is not needed for new authFetch calls
+        setToken("authenticated");
       })
       .catch(() => {
         setUser(null);
@@ -99,7 +101,8 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
       const data = await response.json();
       const userData = data.user;
 
-      setToken("cookie");
+      // Store JWT in memory for pages that still use Authorization header
+      setToken(data.access_token);
       setUser({
         id: userData.id,
         name: userData.name,

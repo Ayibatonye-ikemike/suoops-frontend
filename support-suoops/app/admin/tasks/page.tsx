@@ -14,14 +14,8 @@ import {
   Loader2,
 } from "lucide-react";
 
-// Admin auth hook
-function useAdminAuth() {
-  const [token, setToken] = useState<string | null>(null);
-  useEffect(() => {
-    setToken(sessionStorage.getItem("admin_token"));
-  }, []);
-  return { token };
-}
+// Admin auth hook — use shared context from layout
+import { useAdminAuth } from "../layout";
 
 interface ScheduleEntry {
   name: string;
