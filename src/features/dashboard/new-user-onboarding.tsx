@@ -135,14 +135,27 @@ export function NewUserOnboarding({ children }: { children: React.ReactNode }) {
           </div>
 
           {/* Invoice Packs */}
-          <div className="rounded-2xl bg-white/10 backdrop-blur p-6 text-white text-center mb-8">
-            <div className="flex items-center justify-center gap-2 mb-2">
+          <div className="rounded-2xl bg-white/10 backdrop-blur p-6 text-white mb-8">
+            <div className="flex items-center justify-center gap-2 mb-3">
               <ShoppingCart className="h-5 w-5" />
-              <h3 className="text-lg font-bold">Need more invoices?</h3>
+              <h3 className="text-lg font-bold">Need more invoices? Buy packs anytime</h3>
             </div>
-            <p className="text-sm text-white/80">
-              Buy invoice packs anytime — {INVOICE_PACK_SIZE} invoices for ₦{INVOICE_PACK_PRICE.toLocaleString()}. No subscription needed.
-            </p>
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <div className="rounded-xl bg-white/10 p-4 text-center">
+                <p className="text-2xl font-bold text-brand-chartreuse">25</p>
+                <p className="text-sm text-white/80">invoices</p>
+                <p className="mt-2 text-lg font-bold">₦625</p>
+                <p className="text-xs text-white/60">₦25/invoice</p>
+              </div>
+              <div className="rounded-xl bg-white/10 p-4 text-center border border-brand-chartreuse/50">
+                <div className="text-xs font-bold text-brand-chartreuse mb-1">BEST VALUE</div>
+                <p className="text-2xl font-bold text-brand-chartreuse">50</p>
+                <p className="text-sm text-white/80">invoices</p>
+                <p className="mt-2 text-lg font-bold">₦1,250</p>
+                <p className="text-xs text-white/60">₦25/invoice</p>
+              </div>
+            </div>
+            <p className="text-center text-xs text-white/60 mt-3">No subscription needed — buy as you grow</p>
           </div>
 
           {/* CTA */}
