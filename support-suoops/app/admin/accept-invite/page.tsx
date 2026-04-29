@@ -41,6 +41,7 @@ function AcceptInviteForm() {
       const response = await fetch(`${apiUrl}/admin/auth/accept-invite`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ token, password }),
       });
 
@@ -49,12 +50,7 @@ function AcceptInviteForm() {
         throw new Error(data.detail || "Failed to accept invitation");
       }
 
-      const data = await response.json();
-      
-      // Store token and redirect — use sessionStorage (cleared on tab close)
-      // instead of localStorage to limit XSS exposure window
-      sessionStorage.setItem("admin_token", data.access_token);
-      sessionStorage.setItem("admin_user", JSON.stringify(data.user));
+      // Token is set as httpOnly cookie by the backend — no need to store anything
       
       setSuccess(true);
       setTimeout(() => {

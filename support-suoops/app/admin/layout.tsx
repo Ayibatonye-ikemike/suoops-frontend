@@ -55,49 +55,32 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const hasValidated = useRef(false);
 
-  // Restore session from sessionStorage on mount
+  // Validate session on mount using httpOnly cookie
   useEffect(() => {
-    const storedToken = sessionStorage.getItem("admin_token");
-    const storedUser = sessionStorage.getItem("admin_user");
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
-    }
-    setIsLoading(false);
-  }, []);
-
-  // Validate token once after it's restored
-  useEffect(() => {
-    if (!token || hasValidated.current) return;
-    hasValidated.current = true;
-
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
     fetch(`${apiUrl}/admin/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     })
       .then((res) => {
-        if (res.status === 401 || res.status === 403) {
-          sessionStorage.removeItem("admin_token");
-          sessionStorage.removeItem("admin_user");
-          setToken(null);
-          setUser(null);
-        }
+        if (res.ok) return res.json();
+        throw new Error("Not authenticated");
+      })
+      .then((data) => {
+        setUser({
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          role: "admin",
+          is_super_admin: data.is_super_admin || false,
+        });
+        setToken("cookie"); // Token is in httpOnly cookie, just mark as authenticated
       })
       .catch(() => {
-        // Network error — keep existing session
-      });
-  }, [token]);
-
-  // Pick up new tokens stored by accept-invite page
-  useEffect(() => {
-    const storedToken = sessionStorage.getItem("admin_token");
-    const storedUser = sessionStorage.getItem("admin_user");
-    if (storedToken && storedUser && storedToken !== token) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
-      hasValidated.current = false; // re-validate new token
-    }
-  }, [pathname, token]);
+        setUser(null);
+        setToken(null);
+      })
+      .finally(() => setIsLoading(false));
+  }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
@@ -105,6 +88,7 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
       const response = await fetch(`${apiUrl}/admin/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
 
@@ -113,11 +97,9 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       const data = await response.json();
-      
-      // Admin auth endpoint returns user info directly
       const userData = data.user;
 
-      setToken(data.access_token);
+      setToken("cookie");
       setUser({
         id: userData.id,
         name: userData.name,
@@ -126,15 +108,6 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
         is_super_admin: userData.is_super_admin || false,
       });
 
-      sessionStorage.setItem("admin_token", data.access_token);
-      sessionStorage.setItem("admin_user", JSON.stringify({
-        id: userData.id,
-        name: userData.name,
-        email: userData.email,
-        role: userData.role,
-        is_super_admin: userData.is_super_admin || false,
-      }));
-
       return true;
     } catch {
       return false;
@@ -142,26 +115,26 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = useCallback(() => {
-    setUser(null);
-    setToken(null);
-    sessionStorage.removeItem("admin_token");
-    sessionStorage.removeItem("admin_user");
-    router.push("/admin/login");
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
+    fetch(`${apiUrl}/admin/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    }).finally(() => {
+      setUser(null);
+      setToken(null);
+      router.push("/admin/login");
+    });
   }, [router]);
 
-  // Stable wrapper around fetch that auto-logs out on 401
   const authFetch = useCallback(async (url: string, options?: RequestInit): Promise<Response> => {
-    const currentToken = sessionStorage.getItem("admin_token");
     const res = await fetch(url, {
       ...options,
+      credentials: "include",
       headers: {
         ...options?.headers,
-        Authorization: `Bearer ${currentToken}`,
       },
     });
     if (res.status === 401) {
-      sessionStorage.removeItem("admin_token");
-      sessionStorage.removeItem("admin_user");
       setUser(null);
       setToken(null);
       router.push("/admin/login");
