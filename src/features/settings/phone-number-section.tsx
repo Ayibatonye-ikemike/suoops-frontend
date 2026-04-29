@@ -8,7 +8,7 @@
 "use client";
 
 import { useCallback, useState, useEffect } from "react";
-import { savePhone, removePhone } from "./phone-api";
+import { savePhone } from "./phone-api";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -98,28 +98,6 @@ export function PhoneNumberSection({
     [onPhoneVerified],
   );
 
-  const handleRemovePhone = useCallback(async () => {
-    if (!confirm("Remove phone number from your account?")) return;
-
-    setLoading(true);
-    setError(null);
-    setSuccess(null);
-
-    try {
-      await removePhone();
-      setPhone("");
-      setStep("input");
-      setSuccess("Phone number removed");
-    } catch (err) {
-      const message =
-        (err as { response?: { data?: { detail?: string } } })?.response?.data
-          ?.detail || "Failed to remove phone number";
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   // ── Verified state ────────────────────────────────────────────────
   if (step === "verified") {
     const botNumber = "2348106865807";
@@ -164,17 +142,13 @@ export function PhoneNumberSection({
             >
               Change Number
             </Button>
-            <Button
-              type="button"
-              variant="danger"
-              size="sm"
-              onClick={handleRemovePhone}
-              disabled={loading}
-            >
-              {loading ? "Removing" : "Remove"}
-            </Button>
           </div>
         </div>
+
+        <p className="text-xs text-brand-textMuted">
+          A phone number is required on every account so we can deliver invoices via WhatsApp.
+          You can change it anytime, but it can&apos;t be removed.
+        </p>
 
         {/* WhatsApp Bot Link */}
         <a
