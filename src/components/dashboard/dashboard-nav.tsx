@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import { ChevronDown, LogOut, Settings as SettingsIcon, User as UserIcon } from "lucide-react";
 import { useLogout } from "@/features/auth/use-auth-session";
 import { apiClient } from "@/api/client";
 import { components } from "@/api/types.generated";
@@ -23,6 +25,8 @@ const allNavItems = [
 export function DashboardNav() {
   const pathname = usePathname();
   const logout = useLogout();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const { data: user } = useQuery<CurrentUser>({
     queryKey: ["currentUser"],
@@ -32,6 +36,32 @@ export function DashboardNav() {
     },
     staleTime: 5 * 60 * 1000,
   });
+
+  // Close menu on outside click or Escape
+  useEffect(() => {
+    if (!menuOpen) return;
+    function onClick(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setMenuOpen(false);
+    }
+    document.addEventListener("mousedown", onClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen]);
+
+  // Close menu when route changes
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  const initial = (user?.name || user?.email || "U").trim().charAt(0).toUpperCase();
 
   const currentPlan = (user?.plan?.toUpperCase() || "FREE") as PlanTier;
 
@@ -80,12 +110,62 @@ export function DashboardNav() {
             })}
           </div>
         </div>
-        <button
-          onClick={logout}
-          className="w-full rounded-lg border border-white/30 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-white transition hover:bg-brand-jade hover:border-brand-jade sm:w-auto sm:text-sm"
-        >
-          Logout
-        </button>
+        <div className="relative self-end sm:self-auto" ref={menuRef}>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-haspopup="menu"
+            aria-expanded={menuOpen}
+            className="flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-2.5 py-1.5 text-sm font-semibold text-white transition hover:bg-white/10"
+          >
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-jade text-xs font-bold uppercase">
+              {initial}
+            </span>
+            <span className="hidden max-w-[140px] truncate sm:inline">{user?.name || "Account"}</span>
+            <ChevronDown className={`h-4 w-4 transition-transform ${menuOpen ? "rotate-180" : ""}`} />
+          </button>
+          {menuOpen && (
+            <div
+              role="menu"
+              className="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl"
+            >
+              <div className="border-b border-slate-100 px-4 py-3">
+                <p className="truncate text-sm font-semibold text-slate-900">{user?.name || "Your account"}</p>
+                {user?.email && (
+                  <p className="truncate text-xs text-slate-500">{user.email}</p>
+                )}
+              </div>
+              <Link
+                href="/dashboard/settings"
+                role="menuitem"
+                className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50"
+              >
+                <UserIcon className="h-4 w-4 text-slate-500" />
+                Profile
+              </Link>
+              <Link
+                href="/dashboard/settings"
+                role="menuitem"
+                className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50"
+              >
+                <SettingsIcon className="h-4 w-4 text-slate-500" />
+                Settings
+              </Link>
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  setMenuOpen(false);
+                  logout();
+                }}
+                className="flex w-full items-center gap-2 border-t border-slate-100 px-4 py-2.5 text-left text-sm font-medium text-rose-600 hover:bg-rose-50"
+              >
+                <LogOut className="h-4 w-4" />
+                Log out
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );

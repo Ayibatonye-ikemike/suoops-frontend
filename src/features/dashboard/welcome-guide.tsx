@@ -180,6 +180,7 @@ export function WelcomeGuide() {
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> 25 invoices — ₦625</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> WhatsApp & Email delivery</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> PDF & QR verification</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> Buy more: 25 for ₦625</li>
             </ul>
             <button
               onClick={() => {
