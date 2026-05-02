@@ -1,14 +1,26 @@
 "use client";
 
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { MessageCircle, ArrowRight, Crown, ShoppingCart, Check } from "lucide-react";
 import Link from "next/link";
 import { apiClient } from "@/api/client";
-import { PLANS, PACK_OPTIONS, INVOICE_PACK_PRICE, INVOICE_PACK_SIZE } from "@/constants/pricing";
+import { PLANS } from "@/constants/pricing";
 
 const BOT_NUMBER = "2348106865807";
 const WHATSAPP_LINK = `https://wa.me/${BOT_NUMBER}?text=Hi`;
+
+/**
+ * Mark onboarding + plan-selection as complete so the user is not bounced
+ * back to any plan-selection modal after they click through pricing.
+ */
+function markOnboardingComplete() {
+  try {
+    localStorage.setItem("onboarding-complete", "true");
+    localStorage.setItem("plan-chosen", "true");
+  } catch {
+    // localStorage may be unavailable (private mode, etc.) — non-fatal.
+  }
+}
 
 interface UserData {
   name?: string;
@@ -31,8 +43,6 @@ interface InvoiceQuota {
  * Returns null (renders children/dashboard) if user has 1+ invoices.
  */
 export function NewUserOnboarding({ children }: { children: React.ReactNode }) {
-  const [seenPricing, setSeenPricing] = useState(false);
-
   const { data: user } = useQuery<UserData>({
     queryKey: ["currentUser"],
     queryFn: async () => (await apiClient.get<UserData>("/users/me")).data,
@@ -54,9 +64,10 @@ export function NewUserOnboarding({ children }: { children: React.ReactNode }) {
   const firstName = user?.name?.split(" ")[0] || "there";
   const bizName = user?.business_name || "your business";
 
-  // Step 1: Pricing page
-  if (!seenPricing) {
-    return (
+  // Single onboarding screen: pricing overview where every card is clickable.
+  // The user picks how they want to start (stay free, upgrade, buy a pack,
+  // or use WhatsApp) and we route them straight to the right destination.
+  return (
       <main className="min-h-screen bg-gradient-to-b from-brand-evergreen to-brand-teal">
         <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
           <div className="text-center text-white mb-8">
@@ -88,10 +99,18 @@ export function NewUserOnboarding({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          {/* Plans */}
+          {/* Plans — clickable cards */}
           <div className="grid gap-4 sm:grid-cols-2 mb-6">
-            {/* Free / Starter */}
-            <div className="rounded-2xl bg-white p-6 shadow-lg">
+            {/* Free / Starter — stay on free, go straight to dashboard */}
+            <Link
+              href="/dashboard"
+              onClick={(e) => {
+                e.preventDefault();
+                markOnboardingComplete();
+                window.location.href = "/dashboard";
+              }}
+              className="group block rounded-2xl bg-white p-6 shadow-lg transition hover:-translate-y-1 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-brand-chartreuse"
+            >
               <div className="mb-3 inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
                 YOUR CURRENT PLAN
               </div>
@@ -106,10 +125,17 @@ export function NewUserOnboarding({ children }: { children: React.ReactNode }) {
                   </li>
                 ))}
               </ul>
-            </div>
+              <div className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-brand-jade group-hover:gap-2 transition-all">
+                Continue Free <ArrowRight className="h-4 w-4" />
+              </div>
+            </Link>
 
-            {/* Pro */}
-            <div className="rounded-2xl bg-white p-6 shadow-lg border-2 border-brand-jade">
+            {/* Pro — go to subscription upgrade */}
+            <Link
+              href="/dashboard/settings/subscription"
+              onClick={() => markOnboardingComplete()}
+              className="group block rounded-2xl bg-white p-6 shadow-lg border-2 border-brand-jade transition hover:-translate-y-1 hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-brand-jade"
+            >
               <div className="mb-3 inline-block rounded-full bg-brand-jade/10 px-3 py-1 text-xs font-semibold text-brand-jade">
                 RECOMMENDED
               </div>
@@ -131,111 +157,77 @@ export function NewUserOnboarding({ children }: { children: React.ReactNode }) {
                 ))}
                 <li className="text-xs text-slate-400">+ {PLANS.PRO.features.length - 6} more features</li>
               </ul>
-            </div>
+              <div className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-brand-jade group-hover:gap-2 transition-all">
+                Upgrade to Pro <ArrowRight className="h-4 w-4" />
+              </div>
+            </Link>
           </div>
 
-          {/* Invoice Packs */}
+          {/* Invoice Packs — clickable */}
           <div className="rounded-2xl bg-white/10 backdrop-blur p-6 text-white mb-8">
             <div className="flex items-center justify-center gap-2 mb-3">
               <ShoppingCart className="h-5 w-5" />
               <h3 className="text-lg font-bold">Need more invoices? Buy packs anytime</h3>
             </div>
             <div className="grid grid-cols-2 gap-4 mt-4">
-              <div className="rounded-xl bg-white/10 p-4 text-center">
+              <Link
+                href="/dashboard/billing/purchase?pack=small"
+                onClick={() => markOnboardingComplete()}
+                className="rounded-xl bg-white/10 p-4 text-center transition hover:bg-white/20 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-brand-chartreuse"
+              >
                 <p className="text-2xl font-bold text-brand-chartreuse">25</p>
                 <p className="text-sm text-white/80">invoices</p>
                 <p className="mt-2 text-lg font-bold">₦625</p>
                 <p className="text-xs text-white/60">₦25/invoice</p>
-              </div>
-              <div className="rounded-xl bg-white/10 p-4 text-center border border-brand-chartreuse/50">
+                <p className="mt-2 text-xs font-semibold text-brand-chartreuse">Buy now →</p>
+              </Link>
+              <Link
+                href="/dashboard/billing/purchase?pack=standard"
+                onClick={() => markOnboardingComplete()}
+                className="rounded-xl bg-white/10 p-4 text-center border border-brand-chartreuse/50 transition hover:bg-white/20 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-brand-chartreuse"
+              >
                 <div className="text-xs font-bold text-brand-chartreuse mb-1">BEST VALUE</div>
                 <p className="text-2xl font-bold text-brand-chartreuse">50</p>
                 <p className="text-sm text-white/80">invoices</p>
                 <p className="mt-2 text-lg font-bold">₦1,250</p>
                 <p className="text-xs text-white/60">₦25/invoice</p>
-              </div>
+                <p className="mt-2 text-xs font-semibold text-brand-chartreuse">Buy now →</p>
+              </Link>
             </div>
             <p className="text-center text-xs text-white/60 mt-3">No subscription needed — buy as you grow</p>
           </div>
 
-          {/* CTA */}
-          <div className="text-center">
-            <button
-              onClick={() => setSeenPricing(true)}
-              className="inline-flex items-center gap-2 rounded-xl bg-brand-chartreuse px-8 py-4 text-lg font-bold text-brand-evergreen shadow-lg transition-all hover:scale-105 hover:bg-white"
-            >
-              Got it — let&apos;s create my first invoice
-              <ArrowRight className="h-5 w-5" />
-            </button>
-            <p className="mt-3 text-sm text-white/60">
-              You have {quota?.invoice_balance ?? 2} free invoices to start
+          {/* Quick-start CTAs */}
+          <div className="rounded-2xl bg-white/10 backdrop-blur p-6 text-white text-center">
+            <p className="text-sm text-white/80 mb-4">
+              You have {quota?.invoice_balance ?? 2} free invoices to start. Pick how you want to send your first one:
             </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <a
+                href={WHATSAPP_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => markOnboardingComplete()}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-6 py-3 text-base font-bold text-white shadow-lg transition hover:bg-[#20bd5a]"
+              >
+                <MessageCircle className="h-5 w-5" />
+                Invoice via WhatsApp
+              </a>
+              <Link
+                href="/dashboard"
+                onClick={(e) => {
+                  e.preventDefault();
+                  markOnboardingComplete();
+                  window.location.href = "/dashboard";
+                }}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-chartreuse px-6 py-3 text-base font-bold text-brand-evergreen shadow-lg transition hover:bg-white"
+              >
+                Go to Dashboard
+                <ArrowRight className="h-5 w-5" />
+              </Link>
+            </div>
           </div>
         </div>
       </main>
-    );
-  }
-
-  // Step 2: Create first invoice CTA
-  return (
-    <main className="min-h-screen bg-gradient-to-b from-brand-evergreen to-brand-teal">
-      <div className="mx-auto max-w-lg px-4 py-10 sm:px-6">
-        <div className="text-center text-white mb-8">
-          <h1 className="text-3xl font-bold">Create your first invoice</h1>
-          <p className="mt-2 text-white/80">
-            Send a professional invoice to your customer in seconds
-          </p>
-        </div>
-
-        {/* WhatsApp CTA — primary */}
-        <div className="rounded-2xl bg-white p-8 shadow-xl text-center mb-6">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#25D366]/10">
-            <MessageCircle className="h-8 w-8 text-[#25D366]" />
-          </div>
-          <h2 className="text-xl font-bold text-slate-900">Invoice via WhatsApp</h2>
-          <p className="mt-2 text-sm text-slate-500">
-            Just text our bot what you sold — we&apos;ll create and send the invoice automatically.
-          </p>
-          <div className="mt-4 rounded-lg bg-slate-50 p-3 text-left">
-            <p className="text-xs font-semibold text-slate-400 mb-1">Example message:</p>
-            <p className="text-sm text-slate-700 italic">
-              &quot;Invoice Joy 08012345678, 5000 hair, 3000 nails&quot;
-            </p>
-          </div>
-          <a
-            href={WHATSAPP_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#25D366] px-6 py-3.5 text-base font-bold text-white transition hover:bg-[#20bd5a]"
-          >
-            <MessageCircle className="h-5 w-5" />
-            Open WhatsApp Bot
-          </a>
-        </div>
-
-        {/* Dashboard CTA — secondary */}
-        <div className="text-center">
-          <p className="text-sm text-white/70 mb-3">Or create from the dashboard</p>
-          <Link
-            href="/dashboard"
-            onClick={() => {
-              // Set localStorage flags so WelcomeGuide doesn't re-show the
-              // pricing/plan-selection screen. The user already saw pricing
-              // in step 1 of this onboarding, so picking "Use Dashboard
-              // Instead" implicitly means they're staying on the Free plan
-              // for now.
-              localStorage.setItem("onboarding-complete", "true");
-              localStorage.setItem("plan-chosen", "true");
-              // Force reload to show full dashboard
-              window.location.href = "/dashboard";
-            }}
-            className="inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
-          >
-            Use Dashboard Instead
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-      </div>
-    </main>
   );
 }
