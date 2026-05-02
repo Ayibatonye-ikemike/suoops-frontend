@@ -219,8 +219,13 @@ export function NewUserOnboarding({ children }: { children: React.ReactNode }) {
           <Link
             href="/dashboard"
             onClick={() => {
-              // Set localStorage flag so WelcomeGuide doesn't show
+              // Set localStorage flags so WelcomeGuide doesn't re-show the
+              // pricing/plan-selection screen. The user already saw pricing
+              // in step 1 of this onboarding, so picking "Use Dashboard
+              // Instead" implicitly means they're staying on the Free plan
+              // for now.
               localStorage.setItem("onboarding-complete", "true");
+              localStorage.setItem("plan-chosen", "true");
               // Force reload to show full dashboard
               window.location.href = "/dashboard";
             }}
