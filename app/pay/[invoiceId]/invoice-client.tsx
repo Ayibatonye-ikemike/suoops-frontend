@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { components } from "@/api/types";
 import { formatPaidAt } from "../../../src/utils/formatDate";
+import { printPdf } from "../../../src/utils/printPdf";
 
 type InvoicePublic = components["schemas"]["InvoicePublicOut"] & {
   pdf_url?: string | null;
@@ -487,7 +488,7 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
                   </div>
 
                   {(invoice.receipt_pdf_url || invoice.pdf_url) && (
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       {invoice.receipt_pdf_url && (
                         <a
                           href={invoice.receipt_pdf_url}
@@ -507,6 +508,20 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
                         >
                           🧾 View Invoice
                         </a>
+                      )}
+                      {(invoice.receipt_pdf_url || invoice.pdf_url) && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const url =
+                              invoice.receipt_pdf_url || invoice.pdf_url;
+                            if (url) printPdf(url);
+                          }}
+                          className="flex-1 rounded-lg border border-emerald-600 bg-emerald-600 py-3 text-center text-sm font-semibold text-white transition hover:bg-emerald-700"
+                          aria-label="Print receipt to a connected printer"
+                        >
+                          🖨 Print Receipt
+                        </button>
                       )}
                     </div>
                   )}

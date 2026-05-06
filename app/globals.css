@@ -89,3 +89,41 @@ p {
     animation: none;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/* Print styles — used when window.print() is invoked from a page that has  */
+/* no PDF available (printPdf() prints PDFs directly via a hidden iframe).  */
+/* Add `class="no-print"` to chrome (nav, sidebars, action buttons) that    */
+/* should be hidden on paper, and `class="print-only"` to elements that     */
+/* should appear only on paper.                                             */
+/* ─────────────────────────────────────────────────────────────────────── */
+@media print {
+  @page {
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .no-print,
+  .no-print * {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  /* Make sure shadows / dark backgrounds don't waste ink */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}
+
+.print-only {
+  display: none;
+}
