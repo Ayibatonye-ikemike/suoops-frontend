@@ -84,10 +84,10 @@ export function InvoiceDetailPanel({
     if (!printableUrl) return;
     try {
       printPdf(printableUrl);
-      toast.success("Opening printer…");
+      toast.success("Opening PDF — tap your browser's print button");
     } catch (err) {
       console.error("Print failed", err);
-      toast.error("Unable to initiate print");
+      toast.error("Unable to open PDF for printing");
     }
   }, [printableUrl]);
 
