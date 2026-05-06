@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 
 import { invoiceStatusHelpText, invoiceStatusLabels } from "./status-map";
 import { formatPaidAt } from "../../utils/formatDate";
-import { printPdf, printCurrentPage } from "../../utils/printPdf";
+import { printPdf } from "../../utils/printPdf";
 import { useInvoiceDetail, InvoiceDetail } from "./use-invoice-detail";
 import { buildInvoiceShareLink } from "@/lib/share-link";
 import { useUpdateInvoiceStatus } from "./use-update-invoice-status";
@@ -69,38 +69,27 @@ export function InvoiceDetailPanel({
   const shareLink = invoice?.invoice_id
     ? buildInvoiceShareLink(invoice.invoice_id)
     : "";
+  // Pick the right document to print: receipt PDF when paid, otherwise the
+  // invoice PDF. Returns null if neither is available so we can hide the button.
+  const printableUrl =
+    invoice?.status === "paid" && invoice?.receipt_pdf_url
+      ? invoice.receipt_pdf_url
+      : invoice?.pdf_url ?? null;
+  const printLabel =
+    invoice?.status === "paid" && invoice?.receipt_pdf_url
+      ? "Print Receipt"
+      : "Print Invoice";
+
   const handlePrint = useCallback(() => {
-    if (!invoice) return;
+    if (!printableUrl) return;
     try {
-      // Prefer the receipt PDF when the invoice is paid so the printer outputs
-      // a receipt; otherwise print the invoice PDF. Falls back to printing the
-      // current page (driven by @media print rules) when no PDF is available.
-      const url =
-        invoice.status === "paid" && invoice.receipt_pdf_url
-          ? invoice.receipt_pdf_url
-          : invoice.pdf_url;
-      if (url) {
-        printPdf(url);
-        toast.success("Opening printer…");
-        return;
-      }
-      printCurrentPage();
+      printPdf(printableUrl);
+      toast.success("Opening printer…");
     } catch (err) {
       console.error("Print failed", err);
       toast.error("Unable to initiate print");
     }
-  }, [invoice]);
-
-  const handlePrintReceipt = useCallback(() => {
-    if (!invoice?.receipt_pdf_url) return;
-    try {
-      printPdf(invoice.receipt_pdf_url);
-      toast.success("Opening printer…");
-    } catch (err) {
-      console.error("Print receipt failed", err);
-      toast.error("Unable to initiate print");
-    }
-  }, [invoice]);
+  }, [printableUrl]);
 
   const handleCopyLink = useCallback(async () => {
     if (
@@ -198,33 +187,25 @@ export function InvoiceDetailPanel({
               📄 PDF
             </a>
           )}
-          <button
-            type="button"
-            onClick={handlePrint}
-            aria-label="Print invoice"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-brand-jade bg-brand-jade px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-brand-jadeHover whitespace-nowrap"
-          >
-            🖨 Print
-          </button>
           {invoice.receipt_pdf_url && invoice.status === "paid" && (
-            <>
-              <a
-                href={invoice.receipt_pdf_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-600 bg-white px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-600 hover:text-white whitespace-nowrap"
-              >
-                ✅ Receipt
-              </a>
-              <button
-                type="button"
-                onClick={handlePrintReceipt}
-                aria-label="Print receipt"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-600 bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-700 whitespace-nowrap"
-              >
-                🖨 Print Receipt
-              </button>
-            </>
+            <a
+              href={invoice.receipt_pdf_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-600 bg-white px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-600 hover:text-white whitespace-nowrap"
+            >
+              ✅ Receipt
+            </a>
+          )}
+          {printableUrl && (
+            <button
+              type="button"
+              onClick={handlePrint}
+              aria-label={printLabel}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-brand-jade bg-brand-jade px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-brand-jadeHover whitespace-nowrap"
+            >
+              🖨 {printLabel}
+            </button>
           )}
         </div>
       </header>
