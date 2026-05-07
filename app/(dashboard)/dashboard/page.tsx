@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { MessageCircle, Plus } from "lucide-react";
 
 import { apiClient } from "@/api/client";
 import { components } from "@/api/types.generated";
@@ -16,6 +16,7 @@ import { BankDetailsRequiredGate } from "@/features/dashboard/bank-details-requi
 import { NewUserOnboarding } from "@/features/dashboard/new-user-onboarding";
 import { DashboardNudges } from "@/features/dashboard/dashboard-nudges";
 import { useNewInvoiceDrawer } from "@/features/dashboard/new-invoice-provider";
+import { WhatsAppQuickCreate } from "@/features/dashboard/whatsapp-quick-create";
 
 type CurrentUser = components["schemas"]["UserOut"];
 
@@ -38,7 +39,7 @@ function DashboardHero() {
   });
   const firstName = (user?.name || user?.email || "there").split(/[\s@]/)[0];
   return (
-    <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
+    <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <p className="text-xs font-medium uppercase tracking-wider text-brand-mint/80">
           {greeting()}, {firstName}
@@ -50,14 +51,33 @@ function DashboardHero() {
           Track invoices, cash flow, and what to action next.
         </p>
       </div>
-      <button
-        type="button"
-        onClick={() => newInvoice.open()}
-        className="inline-flex items-center justify-center gap-2 self-start rounded-xl bg-brand-jade px-4 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-jadeHover sm:self-auto"
-      >
-        <Plus className="h-4 w-4" />
-        New invoice
-      </button>
+      <div className="flex flex-col items-stretch gap-2 sm:items-end">
+        <WhatsAppQuickCreate>
+          {({ onClick, href, target, rel }) => {
+            const cls =
+              "inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:bg-[#1ebe5a] sm:text-base";
+            return href ? (
+              <a href={href} target={target} rel={rel} className={cls}>
+                <MessageCircle className="h-5 w-5" />
+                Create on WhatsApp
+              </a>
+            ) : (
+              <button type="button" onClick={onClick} className={cls}>
+                <MessageCircle className="h-5 w-5" />
+                Create on WhatsApp
+              </button>
+            );
+          }}
+        </WhatsAppQuickCreate>
+        <button
+          type="button"
+          onClick={() => newInvoice.open()}
+          className="inline-flex items-center justify-center gap-1 self-start text-xs font-medium text-brand-mint underline-offset-2 transition hover:text-white hover:underline sm:self-end"
+        >
+          <Plus className="h-3.5 w-3.5" />
+          or use the web form
+        </button>
+      </div>
     </div>
   );
 }

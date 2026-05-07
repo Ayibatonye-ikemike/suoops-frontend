@@ -1,9 +1,11 @@
 "use client";
 
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { MessageCircle, ExternalLink } from "lucide-react";
 
 import { Drawer } from "@/components/ui/drawer";
 import { InvoiceCreateForm } from "@/features/invoices/invoice-create-form";
+import { WhatsAppQuickCreate } from "@/features/dashboard/whatsapp-quick-create";
 
 interface NewInvoiceContext {
   open: () => void;
@@ -19,6 +21,9 @@ const Ctx = createContext<NewInvoiceContext | null>(null);
  * drawer so the invoice-creation flow can be triggered from anywhere
  * (top nav button, mobile bottom-bar, "+" FAB, keyboard shortcut, etc.)
  * without each page embedding its own form.
+ *
+ * The drawer leads with a WhatsApp shortcut — that's our headline
+ * value prop — and the web form acts as the fallback.
  */
 export function NewInvoiceProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -42,6 +47,53 @@ export function NewInvoiceProvider({ children }: { children: React.ReactNode }) 
         title="Create invoice"
         description="Send a new invoice to your customer in seconds."
       >
+        <WhatsAppQuickCreate>
+          {({ onClick, href, target, rel }) => {
+            const inner = (
+              <>
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#25D366] text-white">
+                  <MessageCircle className="h-5 w-5" />
+                </span>
+                <span className="flex-1 min-w-0">
+                  <span className="block text-sm font-semibold text-emerald-900">
+                    Even faster — create on WhatsApp
+                  </span>
+                  <span className="mt-0.5 block text-xs text-emerald-700">
+                    Text our bot &ldquo;Invoice John 50k for design&rdquo; — done in seconds.
+                  </span>
+                </span>
+                <ExternalLink className="h-4 w-4 shrink-0 text-emerald-600" />
+              </>
+            );
+            const cls =
+              "mb-5 flex items-center gap-3 rounded-xl border border-emerald-300 bg-emerald-50 p-3 transition hover:border-emerald-400 hover:bg-emerald-100 group w-full text-left";
+            return href ? (
+              <a
+                href={href}
+                target={target}
+                rel={rel}
+                onClick={() => setOpen(false)}
+                className={cls}
+              >
+                {inner}
+              </a>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  onClick();
+                  setOpen(false);
+                }}
+                className={cls}
+              >
+                {inner}
+              </button>
+            );
+          }}
+        </WhatsAppQuickCreate>
+        <p className="mb-3 text-xs font-medium uppercase tracking-wider text-slate-500">
+          Or use the web form
+        </p>
         <InvoiceCreateForm />
       </Drawer>
     </Ctx.Provider>

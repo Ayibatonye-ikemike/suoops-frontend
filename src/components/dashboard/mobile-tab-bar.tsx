@@ -10,6 +10,7 @@ import {
   Gift,
   Landmark,
   Menu as MenuIcon,
+  MessageCircle,
   Package,
   Plus,
   Receipt,
@@ -21,6 +22,7 @@ import { apiClient } from "@/api/client";
 import { components } from "@/api/types.generated";
 import { hasPlanFeature, type PlanTier } from "@/constants/pricing";
 import { useNewInvoiceDrawer } from "@/features/dashboard/new-invoice-provider";
+import { WhatsAppQuickCreate } from "@/features/dashboard/whatsapp-quick-create";
 
 type CurrentUser = components["schemas"]["UserOut"];
 
@@ -56,6 +58,7 @@ export function MobileTabBar() {
   const pathname = usePathname();
   const newInvoice = useNewInvoiceDrawer();
   const [moreOpen, setMoreOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
 
   const { data: user } = useQuery<CurrentUser>({
     queryKey: ["currentUser"],
@@ -113,7 +116,7 @@ export function MobileTabBar() {
           <li>
             <button
               type="button"
-              onClick={() => newInvoice.open()}
+              onClick={() => setCreateOpen(true)}
               aria-label="Create invoice"
               className="-mt-6 mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand-jade text-white shadow-lg ring-4 ring-white transition active:scale-95"
             >
@@ -205,6 +208,97 @@ export function MobileTabBar() {
           </div>
         </div>
       )}
+
+      {/* Create-invoice chooser sheet — WhatsApp first, web form second */}
+      {createOpen && (
+        <div className="fixed inset-0 z-40 md:hidden" role="dialog" aria-modal="true">
+          <button
+            type="button"
+            aria-label="Close create menu"
+            onClick={() => setCreateOpen(false)}
+            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+          />
+          <div className="absolute inset-x-0 bottom-0 rounded-t-2xl bg-white p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] shadow-2xl">
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-sm font-semibold text-slate-900">Create invoice</p>
+              <button
+                type="button"
+                onClick={() => setCreateOpen(false)}
+                aria-label="Close"
+                className="rounded-lg p-1 text-slate-500 hover:bg-slate-100"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="space-y-2">
+              <WhatsAppQuickCreate>
+                {({ onClick, href, target, rel }) => {
+                  const inner = (
+                    <>
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#25D366] text-white">
+                        <MessageCircle className="h-5 w-5" />
+                      </span>
+                      <span className="flex-1">
+                        <span className="block text-sm font-semibold text-slate-900">
+                          Create on WhatsApp
+                        </span>
+                        <span className="mt-0.5 block text-xs text-slate-500">
+                          Recommended — text the bot, done in seconds
+                        </span>
+                      </span>
+                    </>
+                  );
+                  const cls =
+                    "flex w-full items-center gap-3 rounded-xl border-2 border-emerald-300 bg-emerald-50 p-3 text-left transition active:bg-emerald-100";
+                  return href ? (
+                    <a
+                      href={href}
+                      target={target}
+                      rel={rel}
+                      onClick={() => setCreateOpen(false)}
+                      className={cls}
+                    >
+                      {inner}
+                    </a>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClick();
+                        setCreateOpen(false);
+                      }}
+                      className={cls}
+                    >
+                      {inner}
+                    </button>
+                  );
+                }}
+              </WhatsAppQuickCreate>
+              <button
+                type="button"
+                onClick={() => {
+                  setCreateOpen(false);
+                  newInvoice.open();
+                }}
+                className="flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 text-left transition active:bg-slate-50"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+                  <Plus className="h-5 w-5" />
+                </span>
+                <span className="flex-1">
+                  <span className="block text-sm font-semibold text-slate-900">
+                    Use the web form
+                  </span>
+                  <span className="mt-0.5 block text-xs text-slate-500">
+                    Fill in customer details by hand
+                  </span>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
+

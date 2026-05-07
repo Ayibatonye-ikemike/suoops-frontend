@@ -11,6 +11,7 @@ import {
   Gift,
   Landmark,
   LogOut,
+  MessageCircle,
   Package,
   Plus,
   Receipt,
@@ -23,6 +24,7 @@ import { apiClient } from "@/api/client";
 import { components } from "@/api/types.generated";
 import { hasPlanFeature, type PlanTier } from "@/constants/pricing";
 import { useNewInvoiceDrawer } from "@/features/dashboard/new-invoice-provider";
+import { WhatsAppQuickCreate } from "@/features/dashboard/whatsapp-quick-create";
 
 type CurrentUser = components["schemas"]["UserOut"];
 
@@ -151,26 +153,56 @@ export function DashboardNav() {
           </div>
         </div>
 
-        {/* Right cluster: New Invoice + profile */}
+        {/* Right cluster: WhatsApp primary CTA + web fallback + profile */}
         <div className="flex items-center gap-2">
+          <WhatsAppQuickCreate>
+            {({ onClick, href, target, rel }) => {
+              const cls =
+                "hidden items-center gap-1.5 rounded-lg bg-[#25D366] px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1ebe5a] sm:inline-flex";
+              return href ? (
+                <a href={href} target={target} rel={rel} className={cls} title="Create on WhatsApp">
+                  <MessageCircle className="h-4 w-4" />
+                  <span>Create on WhatsApp</span>
+                </a>
+              ) : (
+                <button type="button" onClick={onClick} className={cls} title="Create on WhatsApp">
+                  <MessageCircle className="h-4 w-4" />
+                  <span>Create on WhatsApp</span>
+                </button>
+              );
+            }}
+          </WhatsAppQuickCreate>
           <button
             type="button"
             onClick={() => newInvoice.open()}
-            className="hidden items-center gap-1.5 rounded-lg bg-brand-jade px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-jadeHover sm:inline-flex"
-            title="Create invoice (⌘N)"
+            className="hidden items-center gap-1 rounded-lg border border-white/20 bg-white/5 px-2.5 py-2 text-xs font-semibold text-white/80 transition hover:bg-white/10 hover:text-white sm:inline-flex"
+            title="Create with web form (⌘N)"
+            aria-label="Create with web form"
           >
             <Plus className="h-4 w-4" />
-            <span>New invoice</span>
+            <span>Web</span>
           </button>
-          {/* Mobile: icon-only "+" — full button lives in the bottom bar */}
-          <button
-            type="button"
-            onClick={() => newInvoice.open()}
-            aria-label="Create invoice"
-            className="inline-flex items-center justify-center rounded-lg bg-brand-jade p-2 text-white shadow-sm transition hover:bg-brand-jadeHover sm:hidden"
-          >
-            <Plus className="h-5 w-5" />
-          </button>
+          {/* Mobile: icon-only WhatsApp; the bottom bar's "+" handles the chooser */}
+          <WhatsAppQuickCreate>
+            {({ onClick, href, target, rel }) => {
+              const cls =
+                "inline-flex items-center justify-center rounded-lg bg-[#25D366] p-2 text-white shadow-sm transition hover:bg-[#1ebe5a] sm:hidden";
+              return href ? (
+                <a href={href} target={target} rel={rel} aria-label="Create on WhatsApp" className={cls}>
+                  <MessageCircle className="h-5 w-5" />
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  onClick={onClick}
+                  aria-label="Create on WhatsApp"
+                  className={cls}
+                >
+                  <MessageCircle className="h-5 w-5" />
+                </button>
+              );
+            }}
+          </WhatsAppQuickCreate>
 
           <div className="relative" ref={menuRef}>
             <button
