@@ -22,6 +22,8 @@ import { apiClient } from "@/api/client";
 
 const ONBOARDING_COMPLETE_KEY = "onboarding-complete";
 const PLAN_CHOSEN_KEY = "plan-chosen";
+const LOGO_TIP_DISMISSED_KEY = "logo-tip-dismissed-at";
+const LOGO_TIP_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 const BOT_NUMBER = "2348106865807";
 const WHATSAPP_LINK = `https://wa.me/${BOT_NUMBER}?text=Hi`;
 
@@ -60,11 +62,20 @@ interface SetupStep {
 export function WelcomeGuide() {
   const [showDashboardForm, setShowDashboardForm] = useState(false);
   const [planChosen, setPlanChosen] = useState(true); // default true to prevent flash
+  const [logoTipDismissed, setLogoTipDismissed] = useState(true); // default hidden to prevent flash
 
   useEffect(() => {
     setShowDashboardForm(sessionStorage.getItem("show-dashboard-form") === "true");
     // Plan choice persists in localStorage so it survives sessions
     setPlanChosen(localStorage.getItem(PLAN_CHOSEN_KEY) === "true");
+    // Logo tip: dismissable but reappears after a 7-day cooldown so we
+    // keep nudging users to add a logo without being annoying.
+    const dismissedAt = Number(
+      localStorage.getItem(LOGO_TIP_DISMISSED_KEY) || 0,
+    );
+    setLogoTipDismissed(
+      Boolean(dismissedAt) && Date.now() - dismissedAt < LOGO_TIP_COOLDOWN_MS,
+    );
   }, []);
 
   const { data: user, isLoading } = useQuery<UserData>({
@@ -124,15 +135,70 @@ export function WelcomeGuide() {
   const allDone = completedCount === steps.length;
   const setupReady = hasPhone && hasBusinessName && hasBankDetails;
 
-  // Auto-complete: mark onboarding done if all steps finished
+  // Auto-complete: mark onboarding done if all REQUIRED steps finished.
+  // Logo upload is optional and shouldn't keep the welcome card visible
+  // once the user can actually invoice + get paid.
   useEffect(() => {
-    if (!isLoading && allDone) {
+    if (!isLoading && (allDone || setupReady)) {
       localStorage.setItem(ONBOARDING_COMPLETE_KEY, "true");
     }
-  }, [allDone, isLoading]);
+  }, [allDone, setupReady, isLoading]);
 
   // Don't show if loading
   if (isLoading) return null;
+
+  // Once required setup is done, replace the giant welcome card with a
+  // compact, dismissable nudge for the optional logo step. The tip
+  // re-surfaces after a 7-day cooldown until the user actually uploads
+  // a logo, so we keep encouraging the more-professional invoice look
+  // without dominating the dashboard.
+  if (setupReady) {
+    if (hasLogo || logoTipDismissed) return null;
+    return (
+      <div className="mb-4 flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50/70 px-4 py-3 text-sm text-brand-text shadow-sm">
+        <span
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700"
+          aria-hidden
+        >
+          {/* eslint-disable-next-line jsx-a11y/alt-text */}
+          <Image className="h-4 w-4" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="font-semibold leading-tight">Add your business logo</p>
+          <p className="text-xs text-brand-textMuted">
+            Invoices look more professional with a logo on top.
+          </p>
+        </div>
+        <Link
+          href="/dashboard/settings#logo"
+          className="shrink-0 rounded-lg bg-brand-jade px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-600"
+        >
+          Upload
+        </Link>
+        <button
+          type="button"
+          onClick={() => {
+            localStorage.setItem(
+              LOGO_TIP_DISMISSED_KEY,
+              String(Date.now()),
+            );
+            setLogoTipDismissed(true);
+          }}
+          aria-label="Dismiss logo reminder"
+          className="shrink-0 rounded-md p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            className="h-4 w-4"
+          >
+            <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+          </svg>
+        </button>
+      </div>
+    );
+  }
 
   const firstName = user?.name?.split(" ")[0] || "there";
   const progressPercent = Math.round((completedCount / steps.length) * 100);
