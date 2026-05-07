@@ -12,9 +12,11 @@ type CurrentUser = components["schemas"]["UserOut"];
 
 // SuoOps WhatsApp bot
 export const SUOOPS_BOT_NUMBER = "2348106865807";
-export const SUOOPS_BOT_LINK = `https://wa.me/${SUOOPS_BOT_NUMBER}?text=${encodeURIComponent(
-  "Hi, I want to create an invoice",
-)}`;
+// Pre-fill just "Hi" — the bot recognises greetings and replies with a
+// friendly welcome + the invoice format. Anything longer (e.g. "I want
+// to create an invoice") is parsed as a malformed invoice attempt and
+// returns a red "couldn't find an amount" error, which is bad UX.
+export const SUOOPS_BOT_LINK = `https://wa.me/${SUOOPS_BOT_NUMBER}?text=${encodeURIComponent("Hi")}`;
 
 interface Props {
   className?: string;
