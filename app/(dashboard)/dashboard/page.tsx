@@ -15,6 +15,7 @@ import { PhoneRequiredGate } from "@/features/dashboard/phone-required-gate";
 import { BankDetailsRequiredGate } from "@/features/dashboard/bank-details-required-gate";
 import { NewUserOnboarding } from "@/features/dashboard/new-user-onboarding";
 import { DashboardNudges } from "@/features/dashboard/dashboard-nudges";
+import { ReferralBanner } from "@/features/dashboard/referral-banner";
 import { useNewInvoiceDrawer } from "@/features/dashboard/new-invoice-provider";
 import { WhatsAppQuickCreate } from "@/features/dashboard/whatsapp-quick-create";
 
@@ -109,6 +110,9 @@ export default function DashboardPage() {
 
               {/* Single contextual nudge — replaces stacked banners */}
               <DashboardNudges />
+
+              {/* Referral earnings — always visible to non-Pro-referrers, free + Pro */}
+              <ReferralBanner />
 
               <div className="space-y-4 sm:space-y-6">
                 {/* Cash-First Position Cards — the numbers that matter most */}

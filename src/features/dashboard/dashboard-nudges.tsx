@@ -8,7 +8,6 @@ import { isDismissed } from "@/lib/dismissals";
 
 import { FeatureDiscoveryTips } from "./feature-discovery-tips";
 import { LowBalanceBanner } from "./low-balance-banner";
-import { ReferralBanner } from "./referral-banner";
 import { SalesFunnelBanner } from "./sales-funnel-banner";
 import { WhatsAppSetupBanner } from "./whatsapp-setup-banner";
 
@@ -31,8 +30,11 @@ interface UserData {
  *   1. WhatsApp setup       — unblocks bot-based invoicing
  *   2. Low balance          — unblocks dashboard-based invoicing
  *   3. Sales funnel         — first-invoice activation prompt
- *   4. Referral nudge       — passive earn opportunity
- *   5. Feature tip          — exploration nudge for established users
+ *   4. Feature tip          — exploration nudge for established users
+ *
+ * The referral banner is rendered separately on the dashboard so every
+ * user (free + Pro) always sees the earn-cash opportunity, not just
+ * those past the activation funnel.
  */
 export function DashboardNudges() {
   const [hydrated, setHydrated] = useState(false);
@@ -77,11 +79,6 @@ export function DashboardNudges() {
     return <SalesFunnelBanner />;
   }
 
-  // 4. Referral nudge — surface code until first paid signup lands
-  if (!isDismissed("referral-banner-dismissed", 14)) {
-    return <ReferralBanner />;
-  }
-
-  // 5. Feature tip — last priority, exploratory
+  // 4. Feature tip — last priority, exploratory
   return <FeatureDiscoveryTips />;
 }
