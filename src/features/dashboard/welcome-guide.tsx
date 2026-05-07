@@ -22,6 +22,8 @@ import { apiClient } from "@/api/client";
 
 const ONBOARDING_COMPLETE_KEY = "onboarding-complete";
 const PLAN_CHOSEN_KEY = "plan-chosen";
+const PRICING_SNOOZED_KEY = "pricing-snoozed-at";
+const PRICING_SNOOZE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 const LOGO_TIP_DISMISSED_KEY = "logo-tip-dismissed-at";
 const LOGO_TIP_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 const BOT_NUMBER = "2348106865807";
@@ -63,6 +65,7 @@ export function WelcomeGuide() {
   const [showDashboardForm, setShowDashboardForm] = useState(false);
   const [planChosen, setPlanChosen] = useState(true); // default true to prevent flash
   const [logoTipDismissed, setLogoTipDismissed] = useState(true); // default hidden to prevent flash
+  const [pricingSnoozed, setPricingSnoozed] = useState(true); // default hidden to prevent flash
 
   useEffect(() => {
     setShowDashboardForm(sessionStorage.getItem("show-dashboard-form") === "true");
@@ -75,6 +78,14 @@ export function WelcomeGuide() {
     );
     setLogoTipDismissed(
       Boolean(dismissedAt) && Date.now() - dismissedAt < LOGO_TIP_COOLDOWN_MS,
+    );
+    // Pricing card snooze: dismissable for 7 days at a time. The card
+    // re-surfaces after the cooldown until the user upgrades to Pro.
+    const snoozedAt = Number(
+      localStorage.getItem(PRICING_SNOOZED_KEY) || 0,
+    );
+    setPricingSnoozed(
+      Boolean(snoozedAt) && Date.now() - snoozedAt < PRICING_SNOOZE_MS,
     );
   }, []);
 
@@ -147,6 +158,19 @@ export function WelcomeGuide() {
   // Don't show if loading
   if (isLoading) return null;
 
+  const firstName = user?.name?.split(" ")[0] || "there";
+  const progressPercent = Math.round((completedCount / steps.length) * 100);
+  const firstIncomplete = steps.find((s) => !s.done);
+
+  const plan = ((user as Record<string, unknown>)?.plan as string || "free").toLowerCase();
+  const isPro = plan === "pro";
+
+  // Auto-mark plan as chosen if user is already Pro
+  if (isPro && !planChosen) {
+    localStorage.setItem(PLAN_CHOSEN_KEY, "true");
+    setPlanChosen(true);
+  }
+
   // Once required setup is done, replace the giant welcome card with a
   // compact, dismissable nudge for the optional logo step. The tip
   // re-surfaces after a 7-day cooldown until the user actually uploads
@@ -200,35 +224,55 @@ export function WelcomeGuide() {
     );
   }
 
-  const firstName = user?.name?.split(" ")[0] || "there";
-  const progressPercent = Math.round((completedCount / steps.length) * 100);
-  const firstIncomplete = steps.find((s) => !s.done);
-
-  const plan = ((user as Record<string, unknown>)?.plan as string || "free").toLowerCase();
-  const isPro = plan === "pro";
-
-  // Auto-mark plan as chosen if user is already Pro
-  if (isPro && !planChosen) {
-    localStorage.setItem(PLAN_CHOSEN_KEY, "true");
-    setPlanChosen(true);
-  }
-
-  // ── STEP 0: Plan Selection (blocks EVERYTHING until chosen) ──
-  // Cannot be skipped by showDashboardForm — must pick a plan first
-  if (!planChosen && !isPro) {
+  // ── STEP 0: Plan Selection ──
+  // Shown to every non-Pro user until they upgrade. Snoozable for
+  // 7 days at a time so we keep surfacing pricing without nagging.
+  // (For brand-new users who haven't picked a plan yet, the snooze
+  // hasn't been set so it shows immediately on first dashboard load.)
+  if (!isPro && !pricingSnoozed) {
+    const snoozePricing = () => {
+      try {
+        localStorage.setItem(PRICING_SNOOZED_KEY, String(Date.now()));
+        localStorage.setItem(PLAN_CHOSEN_KEY, "true");
+      } catch {
+        // localStorage unavailable — best effort.
+      }
+      setPricingSnoozed(true);
+      setPlanChosen(true);
+    };
     return (
       <div className="mb-6 rounded-2xl border-2 border-brand-jade/30 bg-gradient-to-br from-white via-emerald-50/50 to-green-50/50 p-5 sm:p-6 shadow-md relative overflow-hidden">
         <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-brand-jade/5" />
+
+        <button
+          type="button"
+          onClick={snoozePricing}
+          aria-label="Hide pricing for now"
+          className="absolute right-3 top-3 z-10 rounded-md p-1.5 text-slate-400 transition hover:bg-white/60 hover:text-slate-600"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            className="h-4 w-4"
+          >
+            <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+          </svg>
+        </button>
 
         <div className="relative mb-5">
           <div className="flex items-center gap-2 mb-1">
             <Sparkles className="h-5 w-5 text-brand-jade" />
             <h2 className="text-lg sm:text-xl font-bold text-brand-text">
-              Welcome, {firstName}! Choose your plan
+              {planChosen
+                ? `Ready to grow, ${firstName}? Go Pro`
+                : `Welcome, ${firstName}! Choose your plan`}
             </h2>
           </div>
           <p className="text-sm text-brand-textMuted">
-            Pick how you want to use SuoOps. You can change anytime.
+            {planChosen
+              ? "Unlock tax reports, daily WhatsApp summaries, and more."
+              : "Pick how you want to use SuoOps. You can change anytime."}
           </p>
         </div>
 
@@ -249,10 +293,7 @@ export function WelcomeGuide() {
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> Buy more: 25 for ₦625</li>
             </ul>
             <button
-              onClick={() => {
-                localStorage.setItem(PLAN_CHOSEN_KEY, "true");
-                setPlanChosen(true);
-              }}
+              onClick={snoozePricing}
               className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-brand-jade bg-white px-4 py-2.5 text-sm font-semibold text-brand-jade transition hover:bg-emerald-50"
             >
               Continue Free
@@ -276,9 +317,7 @@ export function WelcomeGuide() {
             </ul>
             <Link
               href="/dashboard/billing/purchase"
-              onClick={() => {
-                localStorage.setItem(PLAN_CHOSEN_KEY, "true");
-              }}
+              onClick={snoozePricing}
               className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-600"
             >
               <ShoppingCart className="h-4 w-4" />
@@ -308,9 +347,7 @@ export function WelcomeGuide() {
             </ul>
             <Link
               href="/dashboard/settings/subscription"
-              onClick={() => {
-                localStorage.setItem(PLAN_CHOSEN_KEY, "true");
-              }}
+              onClick={snoozePricing}
               className="flex w-full items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-amber-500"
             >
               <Crown className="h-4 w-4" />
