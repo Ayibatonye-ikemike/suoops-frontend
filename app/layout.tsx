@@ -67,7 +67,32 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ReactQueryProvider>
           <AuthProvider>
             {children}
-            <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  borderRadius: "12px",
+                  background: "#0B3318",
+                  color: "#fff",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  boxShadow: "0 10px 30px rgba(11,51,24,0.25)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  padding: "12px 16px",
+                },
+                success: {
+                  iconTheme: { primary: "#14B56A", secondary: "#fff" },
+                },
+                error: {
+                  iconTheme: { primary: "#E11D48", secondary: "#fff" },
+                  style: {
+                    background: "#1f0b0b",
+                    border: "1px solid rgba(225,29,72,0.4)",
+                  },
+                },
+              }}
+            />
           </AuthProvider>
         </ReactQueryProvider>
       </body>

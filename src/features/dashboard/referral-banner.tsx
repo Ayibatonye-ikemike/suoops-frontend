@@ -7,6 +7,7 @@ import { toast } from "react-hot-toast";
 import { Copy, Gift, X, MessageCircle } from "lucide-react";
 
 import { apiClient } from "@/api/client";
+import { dismiss as dismissBanner, isDismissed } from "@/lib/dismissals";
 
 interface ReferralStats {
   referral_code: string;
@@ -26,7 +27,7 @@ export function ReferralBanner() {
   const [dismissed, setDismissed] = useState<boolean>(true);
 
   useEffect(() => {
-    setDismissed(localStorage.getItem(DISMISS_KEY) === "true");
+    setDismissed(isDismissed(DISMISS_KEY, 14));
   }, []);
 
   const { data: stats, isLoading } = useQuery<ReferralStats>({
@@ -60,7 +61,7 @@ export function ReferralBanner() {
   };
 
   const handleDismiss = () => {
-    localStorage.setItem(DISMISS_KEY, "true");
+    dismissBanner(DISMISS_KEY);
     setDismissed(true);
   };
 

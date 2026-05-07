@@ -7,10 +7,13 @@ import { components } from "@/api/types.generated";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 
+import { dismiss as dismissBanner, isDismissed } from "@/lib/dismissals";
+
 type CurrentUser = components["schemas"]["UserOut"];
 
 const DISMISSED_KEY = "low-balance-banner-dismissed";
-const DISMISS_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+// Re-surface after 1 day for low (>0) balance, never auto-redismiss for zero.
+const DISMISS_TTL_DAYS = 1;
 
 /**
  * Banner to prompt users with low invoice balance to purchase more.
@@ -23,13 +26,7 @@ export function LowBalanceBanner() {
 
   // Check localStorage on mount
   useEffect(() => {
-    const dismissedTime = localStorage.getItem(DISMISSED_KEY);
-    if (dismissedTime) {
-      const timeSinceDismiss = Date.now() - parseInt(dismissedTime, 10);
-      setDismissed(timeSinceDismiss < DISMISS_DURATION);
-    } else {
-      setDismissed(false);
-    }
+    setDismissed(isDismissed(DISMISSED_KEY, DISMISS_TTL_DAYS));
   }, []);
 
   // Fetch current user to check invoice balance
@@ -58,7 +55,7 @@ export function LowBalanceBanner() {
   }
 
   const handleDismiss = () => {
-    localStorage.setItem(DISMISSED_KEY, Date.now().toString());
+    dismissBanner(DISMISSED_KEY);
     setDismissed(true);
   };
 

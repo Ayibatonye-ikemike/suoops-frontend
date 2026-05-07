@@ -6,6 +6,7 @@ import { apiClient } from "@/api/client";
 import type { components } from "@/api/types";
 import { useState, useEffect } from "react";
 import { WhatsAppVerificationModal } from "@/features/settings/whatsapp-verification-modal";
+import { dismiss, isDismissed } from "@/lib/dismissals";
 
 type CurrentUser = components["schemas"]["UserOut"];
 
@@ -23,8 +24,7 @@ export function WhatsAppSetupBanner() {
 
   // Check localStorage on mount
   useEffect(() => {
-    const wasDismissed = localStorage.getItem(DISMISSED_KEY);
-    setDismissed(wasDismissed === "true");
+    setDismissed(isDismissed(DISMISSED_KEY));
   }, []);
 
   // Fetch current user to check if phone is verified
@@ -48,7 +48,7 @@ export function WhatsAppSetupBanner() {
   }
 
   const handleDismiss = () => {
-    localStorage.setItem(DISMISSED_KEY, "true");
+    dismiss(DISMISSED_KEY);
     setDismissed(true);
   };
 
