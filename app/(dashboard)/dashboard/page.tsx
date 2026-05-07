@@ -14,6 +14,7 @@ import { PhoneRequiredGate } from "@/features/dashboard/phone-required-gate";
 import { BankDetailsRequiredGate } from "@/features/dashboard/bank-details-required-gate";
 import { NewUserOnboarding } from "@/features/dashboard/new-user-onboarding";
 import { FeatureDiscoveryTips } from "@/features/dashboard/feature-discovery-tips";
+import { ReferralBanner } from "@/features/dashboard/referral-banner";
 
 // Wrap InvoiceListWithDetail in its own Suspense for useSearchParams
 function InvoiceListWrapper() {
@@ -57,6 +58,9 @@ export default function DashboardPage() {
 
         {/* Low Balance Banner for users running low on invoices */}
         <LowBalanceBanner />
+
+        {/* Referral nudge — keep code one tap away until first paid signup */}
+        <ReferralBanner />
 
         {/* Feature discovery tips for existing users */}
         <FeatureDiscoveryTips />

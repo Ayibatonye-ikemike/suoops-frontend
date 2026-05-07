@@ -147,7 +147,7 @@ export default function PlansArticle() {
                 <h4 className="font-semibold text-slate-900 mb-2">Starter (Free — Pay-as-you-go)</h4>
                 <p className="text-sm text-slate-600">
                   Best for individuals, freelancers, and small traders just getting started. 
-                  Get 5 free invoices, then pay only for what you need. No monthly commitment.
+                  Get 2 free invoices, then pay only for what you need. No monthly commitment.
                 </p>
               </div>
               <div className="rounded-lg border-2 border-emerald-200 bg-emerald-50/50 p-4">
