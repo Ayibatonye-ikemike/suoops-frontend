@@ -8,7 +8,9 @@ import {
   requestSignupOTP,
   verifySignupOTP,
   resendOTP,
+  getOTPDeliveryStatus,
   type SignupStartPayload,
+  type OTPDeliveryStatus,
 } from "./auth-api";
 import { useAuthStore } from "./auth-store";
 import { OTPInput } from "./otp-input";
@@ -48,6 +50,7 @@ export function RegisterForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resendTimer, setResendTimer] = useState(0);
+  const [deliveryFailure, setDeliveryFailure] = useState<OTPDeliveryStatus | null>(null);
 
   // Bank details state
   const [bankName, setBankName] = useState("");
@@ -200,6 +203,7 @@ export function RegisterForm() {
       try {
         await requestSignupOTP(payload);
         setFormValues(payload);
+        setDeliveryFailure(null);
         setStep("otp");
         setOtp("");
         startResendCountdown();
@@ -216,7 +220,10 @@ export function RegisterForm() {
         } else if (!navigator.onLine) {
           setError("You appear to be offline. Please check your internet connection.");
         } else {
-          setError(message || "Unable to send verification code. Please check your details and try again.");
+          setError(
+            message ||
+              "We couldn't send your verification code. Make sure the number is an active WhatsApp account on this device, then try again."
+          );
         }
       } finally {
         setLoading(false);
@@ -310,6 +317,7 @@ export function RegisterForm() {
     try {
       setLoading(true);
       setError(null);
+      setDeliveryFailure(null);
       await resendOTP({ phone: formValues.phone, purpose: "signup" });
       setOtp("");
       startResendCountdown();
@@ -325,6 +333,46 @@ export function RegisterForm() {
     }
   }, [canResend, formValues, startResendCountdown]);
 
+  // Poll the backend for asynchronous WhatsApp delivery-status updates so
+  // that if Meta later reports the OTP message as undeliverable (e.g. the
+  // number is not on WhatsApp, the recipient is in a restricted region, or
+  // the business account has a payment issue) we can surface that to the
+  // user instead of leaving them stuck on the OTP screen.
+  useEffect(() => {
+    if (step !== "otp" || !formValues?.phone) {
+      return;
+    }
+    let cancelled = false;
+    let attempts = 0;
+    const maxAttempts = 8; // ~32s of polling
+    const tick = async () => {
+      if (cancelled) return;
+      attempts += 1;
+      try {
+        const status = await getOTPDeliveryStatus({
+          purpose: "signup",
+          phone: formValues.phone,
+        });
+        if (cancelled) return;
+        if (status.state === "failed") {
+          setDeliveryFailure(status);
+          return; // stop polling
+        }
+      } catch (pollError) {
+        // Non-fatal — keep polling.
+        console.debug("OTP status poll failed", pollError);
+      }
+      if (!cancelled && attempts < maxAttempts) {
+        timer = setTimeout(tick, 4000);
+      }
+    };
+    let timer = setTimeout(tick, 4000);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [step, formValues?.phone]);
+
   if (step === "otp") {
     return (
       <form className="flex w-full max-w-md flex-col gap-6 rounded-2xl bg-white p-10 shadow-xl" onSubmit={handleVerifyOTP}>
@@ -338,6 +386,22 @@ export function RegisterForm() {
           <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-600" role="alert">
             {error}
           </p>
+        ) : null}
+        {deliveryFailure ? (
+          <div
+            className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800"
+            role="alert"
+          >
+            <p className="font-semibold">We couldn&apos;t deliver your code on WhatsApp.</p>
+            <p className="mt-1">
+              {deliveryFailure.title
+                ? `Reason: ${deliveryFailure.title}. `
+                : ""}
+              Please confirm <span className="font-semibold">{formValues?.phone}</span> is an
+              active WhatsApp account, then tap Resend. If it still fails, try a
+              different WhatsApp number.
+            </p>
+          </div>
         ) : null}
         <div className="flex flex-col items-center gap-4">
           <OTPInput value={otp} onChange={setOtp} disabled={loading} hasError={Boolean(error)} />

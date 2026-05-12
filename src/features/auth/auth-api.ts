@@ -91,6 +91,28 @@ export async function resendOTP(payload: OTPResendPayload): Promise<MessagePaylo
   return data;
 }
 
+export type OTPDeliveryStatus = {
+  state: "pending" | "failed" | "none";
+  code?: string | null;
+  title?: string | null;
+  detail?: string | null;
+};
+
+export async function getOTPDeliveryStatus(params: {
+  purpose: "signup" | "login";
+  phone?: string | null;
+  email?: string | null;
+}): Promise<OTPDeliveryStatus> {
+  const query = new URLSearchParams({ purpose: params.purpose });
+  if (params.phone) query.set("phone", params.phone);
+  if (params.email) query.set("email", params.email);
+  const { data } = await axios.get<OTPDeliveryStatus>(
+    `${apiBaseUrl}/auth/otp/status?${query.toString()}`,
+    { withCredentials: true },
+  );
+  return data;
+}
+
 export async function refreshSession(): Promise<TokenPayload> {
   const { data } = await axios.post<TokenPayload>(`${apiBaseUrl}/auth/refresh`, {}, {
     headers: jsonHeaders,

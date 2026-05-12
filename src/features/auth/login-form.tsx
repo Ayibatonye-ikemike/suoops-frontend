@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { requestLoginOTP, verifyLoginOTP, resendOTP } from "./auth-api";
+import { requestLoginOTP, verifyLoginOTP, resendOTP, getOTPDeliveryStatus, type OTPDeliveryStatus } from "./auth-api";
 import { useAuthStore } from "./auth-store";
 import { OTPInput } from "./otp-input";
 import { MessageCircle } from "lucide-react";
@@ -39,6 +39,7 @@ export function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resendTimer, setResendTimer] = useState(0);
+  const [deliveryFailure, setDeliveryFailure] = useState<OTPDeliveryStatus | null>(null);
 
   const canResend = useMemo(() => resendTimer === 0, [resendTimer]);
 
@@ -82,6 +83,7 @@ export function LoginForm() {
           await requestLoginOTP({ email: normalizedEmail });
           setIdentifier(normalizedEmail);
         }
+        setDeliveryFailure(null);
         setStep("otp");
         setOtp("");
         startCountdown();
@@ -97,7 +99,10 @@ export function LoginForm() {
         } else if (!navigator.onLine) {
           setError("You appear to be offline. Please check your internet connection.");
         } else {
-          setError(message || "Unable to send verification code. Please try again.");
+          setError(
+            message ||
+              "We couldn't send your verification code. Make sure the WhatsApp number you used to sign up is active on this device, then try again."
+          );
         }
       } finally {
         setLoading(false);
@@ -149,6 +154,7 @@ export function LoginForm() {
     }
     setLoading(true);
     setError(null);
+    setDeliveryFailure(null);
     try {
       const payload = identifierType === "phone" ? { phone: identifier, purpose: "login" as const } : { email: identifier, purpose: "login" as const };
       await resendOTP(payload);
@@ -165,6 +171,41 @@ export function LoginForm() {
       setLoading(false);
     }
   }, [canResend, identifier, identifierType, startCountdown]);
+
+  // Poll for asynchronous WhatsApp delivery-status updates (failed delivery
+  // is reported via Meta webhook well after the synchronous send returned
+  // "accepted"). Email OTPs deliver synchronously so we only poll for phone.
+  useEffect(() => {
+    if (step !== "otp" || identifierType !== "phone" || !identifier) {
+      return;
+    }
+    let cancelled = false;
+    let attempts = 0;
+    const maxAttempts = 8; // ~32s
+    let timer: ReturnType<typeof setTimeout>;
+    const tick = async () => {
+      if (cancelled) return;
+      attempts += 1;
+      try {
+        const status = await getOTPDeliveryStatus({ purpose: "login", phone: identifier });
+        if (cancelled) return;
+        if (status.state === "failed") {
+          setDeliveryFailure(status);
+          return;
+        }
+      } catch (pollError) {
+        console.debug("OTP status poll failed", pollError);
+      }
+      if (!cancelled && attempts < maxAttempts) {
+        timer = setTimeout(tick, 4000);
+      }
+    };
+    timer = setTimeout(tick, 4000);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [step, identifierType, identifier]);
 
   const handleGoogleSignIn = useCallback(() => {
     // Provide callback URL with optional next param so backend returns it and callback page can route properly.
@@ -188,6 +229,19 @@ export function LoginForm() {
           <p className="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-600" role="alert">
             {error}
           </p>
+        ) : null}
+        {deliveryFailure ? (
+          <div
+            className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800"
+            role="alert"
+          >
+            <p className="font-semibold">We couldn&apos;t deliver your code on WhatsApp.</p>
+            <p className="mt-1">
+              {deliveryFailure.title ? `Reason: ${deliveryFailure.title}. ` : ""}
+              Please confirm <span className="font-semibold">{identifier}</span> is an active
+              WhatsApp account on this device, then tap Resend.
+            </p>
+          </div>
         ) : null}
         <div className="flex flex-col items-center gap-4">
           <OTPInput value={otp} onChange={setOtp} disabled={loading} hasError={Boolean(error)} />
