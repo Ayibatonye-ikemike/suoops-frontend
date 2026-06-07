@@ -5,11 +5,9 @@ import { Hero } from "@/components/landing/hero";
 import { Features } from "@/components/landing/features";
 import { Pricing } from "@/components/landing/pricing";
 import { Testimonials } from "@/components/landing/testimonials";
-import { TopUsersShowcase } from "@/components/landing/top-users-showcase";
 import {
   Navigation,
   CTASection,
-  SupportEscalation,
   Footer,
   VideoModal,
 } from "@/components/landing/layout";
@@ -32,14 +30,12 @@ export default function HomePage() {
       </Suspense>
       <Features />
       <Testimonials />
-      <TopUsersShowcase />
       <Suspense>
         <Pricing />
       </Suspense>
       <Suspense>
         <CTASection />
       </Suspense>
-      <SupportEscalation />
       <Footer />
       <VideoModal isOpen={showVideoModal} onClose={() => setShowVideoModal(false)} />
     </div>

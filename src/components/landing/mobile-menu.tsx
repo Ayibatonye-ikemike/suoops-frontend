@@ -75,7 +75,9 @@ export function MobileMenu() {
                 Pricing
               </a>
               <a
-                href="#support"
+                href="https://support.suoops.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={close}
                 className="rounded-lg px-4 py-3 text-base font-medium text-white/90 hover:bg-white/10 transition-colors"
               >

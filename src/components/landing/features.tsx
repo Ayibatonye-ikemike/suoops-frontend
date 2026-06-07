@@ -2,7 +2,7 @@ export function Features() {
   return (
     <>
       {/* Problem Section */}
-      <section className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
+      <section className="bg-white px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-brand-evergreen sm:text-4xl">
@@ -29,61 +29,33 @@ export function Features() {
         </div>
       </section>
 
-      {/* Core Value Proposition */}
-      <section className="bg-white px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-brand-evergreen sm:text-4xl">
-              Built for WhatsApp-first businesses
-            </h2>
-          </div>
-
-          <div className="mt-12 grid gap-8 md:grid-cols-3">
-            <ValueCard
-              icon="💬"
-              title="Create invoices by texting"
-              description="Send a message like:"
-              codeExample="Invoice John ₦50k for design"
-              footer="Suoops turns it into a professional, payment-ready invoice instantly."
-            />
-            <ValueCard
-              icon="🏦"
-              title="Works with any Nigerian bank"
-              description="Add your existing bank account once. Invoices include clear transfer instructions—no forced bank lock-in."
-            />
-            <ValueCard
-              icon="📊"
-              title="Know where your money stands"
-              description="See who has paid, who hasn't, what stock is low, and whether you're tax-safe—all in one dashboard."
-            />
-          </div>
-        </div>
-      </section>
-
       {/* How It Works */}
       <section id="features" className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-brand-evergreen sm:text-4xl">
-              How it works
+              Built for WhatsApp-first businesses
             </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
+              Text an invoice, send it instantly, and know exactly where your money stands.
+            </p>
           </div>
 
           <div className="mt-16 grid gap-8 sm:grid-cols-3">
             <StepCard
               number={1}
-              title="Create an invoice"
-              description="From WhatsApp or the dashboard. Add line items, customers, or products."
+              title="Create by texting"
+              description='Message "Invoice John ₦50k for design" — or use the dashboard. We turn it into a payment-ready invoice instantly.'
             />
             <StepCard
               number={2}
               title="Send instantly"
-              description="Send invoices directly on WhatsApp or download a PDF."
+              description="Send on WhatsApp or download a PDF, with clear transfer details for any Nigerian bank."
             />
             <StepCard
               number={3}
               title="Get paid & track"
-              description="Get notified when customers pay. Track pending invoices and follow up easily."
+              description="Get notified when customers pay. See who's paid, what stock is low, and if you're tax-safe."
             />
           </div>
         </div>
@@ -104,6 +76,7 @@ export function Features() {
               features={[
                 "Create and send invoices in seconds",
                 "Track paid, pending, and overdue invoices",
+                "Works with any Nigerian bank — no forced lock-in",
                 "Custom branding with your logo",
                 "Team access for small teams"
               ]}
@@ -164,30 +137,6 @@ function ProblemItem({ text }: { text: string }) {
     <li className="flex items-start gap-3 p-4 bg-white rounded-lg border-l-4 border-red-500">
       <span className="font-medium text-slate-700">{text}</span>
     </li>
-  );
-}
-
-interface ValueCardProps {
-  icon: string;
-  title: string;
-  description: string;
-  codeExample?: string;
-  footer?: string;
-}
-
-function ValueCard({ icon, title, description, codeExample, footer }: ValueCardProps) {
-  return (
-    <div className="p-6 bg-white border-2 border-slate-200 rounded-xl hover:border-brand-jade transition-all hover:shadow-lg">
-      <div className="text-4xl mb-4">{icon}</div>
-      <h3 className="text-xl font-bold text-brand-evergreen mb-3">{title}</h3>
-      <p className="text-slate-600 mb-3">{description}</p>
-      {codeExample && (
-        <div className="bg-slate-900 text-green-400 p-3 rounded-lg font-mono text-sm my-3">
-          &quot;{codeExample}&quot;
-        </div>
-      )}
-      {footer && <p className="text-slate-600 mt-3">{footer}</p>}
-    </div>
   );
 }
 
