@@ -36,3 +36,6 @@ if (dsn) {
     sendDefaultPii: false,
   });
 }
+
+// Instrument client-side navigations for tracing (App Router)
+export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;

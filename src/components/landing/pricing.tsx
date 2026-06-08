@@ -24,8 +24,7 @@ export function Pricing() {
             <div className="text-4xl mb-2">🎉</div>
             <h3 className="text-xl font-bold text-white">Try SuoOps Free — 2 Invoices On Us!</h3>
             <p className="mt-2 text-green-100">
-              Sign up and get <strong className="text-brand-chartreuse">2 free invoices</strong> to test everything out. 
-              No commitment, no credit card required.
+              Sign up and get <strong className="text-brand-chartreuse">2 free invoices</strong> to test everything out — no commitment.
             </p>
             <Link
               href={registerHref}

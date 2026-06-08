@@ -51,10 +51,12 @@ describe("OAuthCallbackPage", () => {
     global.__TEST_PARAMS__ = undefined;
   });
 
-  it("shows loading spinner initially", () => {
+  it("shows loading spinner initially", async () => {
     global.__TEST_PARAMS__ = "code=abc&state=xyz";
     render(<OAuthCallbackPage />);
     expect(screen.getByRole("status")).toBeInTheDocument();
+    // Flush the pending async OAuth exchange so state updates are wrapped in act()
+    await waitFor(() => expect(screen.queryByRole("status")).not.toBeInTheDocument());
   });
 
   it("renders error when provider error present", async () => {

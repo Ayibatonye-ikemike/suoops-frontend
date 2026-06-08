@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import type { PublicTestimonial } from "@/api/public";
 import { getPublicTestimonials } from "@/api/public";
@@ -37,7 +38,8 @@ function TestimonialCard({ t }: { t: PublicTestimonial }) {
             {initial}
           </div>
         ) : (
-          <img
+          <Image
+            unoptimized
             src={t.logo_url!}
             alt={t.business_name || t.user_name}
             width={36}
