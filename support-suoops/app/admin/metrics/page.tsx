@@ -826,7 +826,7 @@ export default function MetricsPage() {
         <>
           {/* ═══ GROWTH ANALYTICS TAB ═══ */}
 
-          {growth ? (
+          {activeTab === "growth" && (growth ? (
             <div className="space-y-6">
               {/* Revenue Health */}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -1070,7 +1070,7 @@ export default function MetricsPage() {
               <p className="text-lg font-medium text-slate-600">Growth analytics loading...</p>
               <p className="text-sm text-slate-400 mt-1">This data requires the latest backend update.</p>
             </div>
-          )}
+          ))}
         </>
       )}
 
