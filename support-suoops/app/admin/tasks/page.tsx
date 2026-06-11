@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Zap,
   Play,
   RefreshCw,
   CheckCircle2,
-  AlertCircle,
   Clock,
   Mail,
   Wifi,
@@ -66,7 +65,7 @@ export default function TasksPage() {
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
 
-  async function fetchSchedule() {
+  const fetchSchedule = useCallback(async () => {
     if (!token) return;
     setLoading(true);
     setError("");
@@ -82,7 +81,7 @@ export default function TasksPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [token, apiUrl]);
 
   async function triggerTask(taskKey: string) {
     if (!token) return;
@@ -105,7 +104,7 @@ export default function TasksPage() {
 
   useEffect(() => {
     fetchSchedule();
-  }, [token]);
+  }, [fetchSchedule]);
 
   if (loading) {
     return (

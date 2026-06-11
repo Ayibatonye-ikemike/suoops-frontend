@@ -6,12 +6,9 @@ import {
   Search, 
   FileText, 
   CreditCard, 
-  Users, 
   MessageSquare, 
   Settings, 
-  HelpCircle,
   ChevronRight,
-  BookOpen,
   Zap,
   Shield
 } from "lucide-react";
@@ -108,7 +105,7 @@ export default function SupportHomePage() {
             Start with what matters most
           </h2>
           <p className="text-center text-slate-600 mb-10 max-w-2xl mx-auto">
-            You don't need accounting knowledge. You don't need to change banks. Just send your first invoice.
+            You don&apos;t need accounting knowledge. You don&apos;t need to change banks. Just send your first invoice.
           </p>
           
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -175,7 +172,7 @@ export default function SupportHomePage() {
               Still have questions?
             </h2>
             <p className="mt-2 text-slate-400">
-              We're here to help. Most users create their first invoice on WhatsApp without ever reading docs—but if you need us, we're ready.
+              We&apos;re here to help. Most users create their first invoice on WhatsApp without ever reading docs—but if you need us, we&apos;re ready.
             </p>
             <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link

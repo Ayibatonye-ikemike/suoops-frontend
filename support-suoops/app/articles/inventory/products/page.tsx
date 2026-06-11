@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, Package, Clock, Image, DollarSign, Tag } from "lucide-react";
+import { ChevronRight, Package, Clock, Image as ImageIcon, DollarSign, Tag } from "lucide-react";
 
 export default function ProductsArticle() {
   return (
@@ -117,7 +117,7 @@ export default function ProductsArticle() {
 
             <div className="rounded-lg bg-slate-50 border border-slate-200 p-4">
               <div className="flex items-start gap-3">
-                <Image className="h-5 w-5 text-slate-600 mt-0.5" />
+                <ImageIcon className="h-5 w-5 text-slate-600 mt-0.5" />
                 <div>
                   <p className="text-sm font-semibold text-slate-900 mb-1">Product Image (Optional)</p>
                   <p className="text-xs text-slate-600">

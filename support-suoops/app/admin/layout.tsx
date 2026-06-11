@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef, createContext, useContext } from "react";
+import { useEffect, useState, useCallback, createContext, useContext } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -52,8 +52,6 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-  const pathname = usePathname();
-  const hasValidated = useRef(false);
 
   // Validate session on mount using httpOnly cookie
   useEffect(() => {

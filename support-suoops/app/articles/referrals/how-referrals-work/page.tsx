@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, Gift, Clock, Users, Copy, CheckCircle, Wallet, FileText } from "lucide-react";
+import { ChevronRight, Gift, Clock, Copy, CheckCircle, Wallet, FileText } from "lucide-react";
 
 export default function HowReferralsWorkArticle() {
   return (

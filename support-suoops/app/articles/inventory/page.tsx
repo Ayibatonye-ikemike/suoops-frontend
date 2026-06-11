@@ -44,7 +44,7 @@ export default function InventoryPage() {
             </div>
           </div>
           <p className="text-slate-600 mt-4">
-            Suoops helps you manage your product inventory so you always know what's in stock. 
+            Suoops helps you manage your product inventory so you always know what&apos;s in stock. 
             Set up alerts to get notified before you run out.
           </p>
         </div>

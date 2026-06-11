@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, CreditCard, Clock, Check, Zap, Building2, Package } from "lucide-react";
+import { ChevronRight, CreditCard, Clock, Check, Zap, Building2 } from "lucide-react";
 
 export default function PlansArticle() {
   return (
