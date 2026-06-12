@@ -6,10 +6,13 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
  * Gate the /admin pages by client IP.
  *
  * Before any admin page renders, we ask the backend whether the visitor's IP is
- * on the admin allowlist. If it isn't, we rewrite to /admin/blocked so the panel
- * (including the login screen) is never shown. The backend API independently
- * enforces the same allowlist on every request, so this is defence in depth — if
- * the verdict call fails we fail open here and let the API do the blocking.
+ * on the admin allowlist. If it isn't, we rewrite to /admin/blocked which renders
+ * the standard 404 page — so a disallowed visitor sees a plain "Not Found" and
+ * gets no hint that an admin panel or an IP allowlist exists. The verdict fetch
+ * runs server-side here (never in the browser), so it never appears in the
+ * browser console or network tab. The backend API independently enforces the
+ * same allowlist (also returning 404) as defence in depth — if the verdict call
+ * fails we fail open here and let the API do the blocking.
  */
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
