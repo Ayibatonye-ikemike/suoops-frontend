@@ -11,6 +11,7 @@ import {
   Trash2,
   Copy,
   CheckCircle,
+  KeyRound,
 } from "lucide-react";
 import { useAdminAuth } from "../layout";
 
@@ -51,6 +52,14 @@ export default function SettingsPage() {
   const [isInviting, setIsInviting] = useState(false);
   const [inviteSuccess, setInviteSuccess] = useState<string | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
+
+  // Change password form
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
 
   useEffect(() => {
     async function fetchAdmins() {
@@ -167,6 +176,61 @@ export default function SettingsPage() {
       setError(err instanceof Error ? err.message : "Failed to remove admin");
     } finally {
       setIsDeleting(false);
+    }
+  }
+
+  async function handleChangePassword(e: React.FormEvent) {
+    e.preventDefault();
+    if (!token) return;
+
+    setPasswordError("");
+    setPasswordSuccess(false);
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError("New password and confirmation do not match");
+      return;
+    }
+    if (newPassword.length < 12) {
+      setPasswordError("New password must be at least 12 characters");
+      return;
+    }
+    if (!/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword)) {
+      setPasswordError("Password must contain both uppercase and lowercase letters");
+      return;
+    }
+    if (!/[0-9]/.test(newPassword)) {
+      setPasswordError("Password must contain at least one digit");
+      return;
+    }
+
+    setIsChangingPassword(true);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
+      const res = await fetch(`${apiUrl}/admin/auth/change-password`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          current_password: currentPassword,
+          new_password: newPassword,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.detail || "Failed to change password");
+      }
+
+      setPasswordSuccess(true);
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err) {
+      setPasswordError(err instanceof Error ? err.message : "Failed to change password");
+    } finally {
+      setIsChangingPassword(false);
     }
   }
 
@@ -303,6 +367,82 @@ export default function SettingsPage() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Change Password */}
+      <div className="rounded-xl border border-slate-200 bg-white">
+        <div className="flex items-center gap-2 px-6 py-4 border-b border-slate-100">
+          <KeyRound className="h-5 w-5 text-slate-500" />
+          <h2 className="font-semibold text-slate-900">Change Password</h2>
+        </div>
+        <form onSubmit={handleChangePassword} className="p-6 space-y-4 max-w-md">
+          {passwordSuccess && (
+            <div className="flex items-center gap-2 p-3 bg-green-50 rounded-lg text-green-700">
+              <Check className="h-4 w-4 shrink-0" />
+              <p className="text-sm">Password changed successfully.</p>
+            </div>
+          )}
+          {passwordError && (
+            <div className="flex items-center gap-2 p-3 bg-red-50 rounded-lg text-red-700">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              <p className="text-sm">{passwordError}</p>
+            </div>
+          )}
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Current password
+            </label>
+            <input
+              type="password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              New password
+            </label>
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+              autoComplete="new-password"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+            />
+            <p className="mt-1 text-xs text-slate-500">
+              At least 12 characters, with upper &amp; lower case letters and a digit.
+            </p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Confirm new password
+            </label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              autoComplete="new-password"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={isChangingPassword}
+            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm font-medium disabled:opacity-60"
+          >
+            {isChangingPassword ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <KeyRound className="h-4 w-4" />
+            )}
+            {isChangingPassword ? "Changing\u2026" : "Change Password"}
+          </button>
+        </form>
       </div>
 
       {/* Invite Form Modal */}
