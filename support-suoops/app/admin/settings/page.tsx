@@ -11,7 +11,8 @@ import {
   Trash2,
   Copy,
   CheckCircle,
-  KeyRound,
+  History,
+  Globe,
 } from "lucide-react";
 import { useAdminAuth } from "../layout";
 
@@ -26,6 +27,18 @@ interface AdminMember {
   can_view_analytics: boolean;
   can_invite_admins: boolean;
   last_login: string | null;
+  created_at: string;
+}
+
+interface AuditEntry {
+  id: number;
+  admin_id: number | null;
+  email: string | null;
+  ip: string | null;
+  user_agent: string | null;
+  status: string;
+  event: string;
+  reason: string | null;
   created_at: string;
 }
 
@@ -53,13 +66,10 @@ export default function SettingsPage() {
   const [inviteSuccess, setInviteSuccess] = useState<string | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
 
-  // Change password form
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
-  const [passwordError, setPasswordError] = useState("");
-  const [passwordSuccess, setPasswordSuccess] = useState(false);
+  // Login activity (super admins only)
+  const [auditLog, setAuditLog] = useState<AuditEntry[]>([]);
+  const [auditLoading, setAuditLoading] = useState(false);
+  const [auditError, setAuditError] = useState("");
 
   useEffect(() => {
     async function fetchAdmins() {
@@ -83,6 +93,28 @@ export default function SettingsPage() {
 
     fetchAdmins();
   }, [token]);
+
+  useEffect(() => {
+    async function fetchAuditLog() {
+      if (!token || !user?.is_super_admin) return;
+      setAuditLoading(true);
+      setAuditError("");
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
+        const res = await fetch(`${apiUrl}/admin/auth/login-audit?limit=50`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Failed to load login activity");
+        setAuditLog(await res.json());
+      } catch (err) {
+        setAuditError(err instanceof Error ? err.message : "Failed to load login activity");
+      } finally {
+        setAuditLoading(false);
+      }
+    }
+
+    fetchAuditLog();
+  }, [token, user?.is_super_admin]);
 
   async function handleInvite(e: React.FormEvent) {
     e.preventDefault();
@@ -176,61 +208,6 @@ export default function SettingsPage() {
       setError(err instanceof Error ? err.message : "Failed to remove admin");
     } finally {
       setIsDeleting(false);
-    }
-  }
-
-  async function handleChangePassword(e: React.FormEvent) {
-    e.preventDefault();
-    if (!token) return;
-
-    setPasswordError("");
-    setPasswordSuccess(false);
-
-    if (newPassword !== confirmPassword) {
-      setPasswordError("New password and confirmation do not match");
-      return;
-    }
-    if (newPassword.length < 12) {
-      setPasswordError("New password must be at least 12 characters");
-      return;
-    }
-    if (!/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword)) {
-      setPasswordError("Password must contain both uppercase and lowercase letters");
-      return;
-    }
-    if (!/[0-9]/.test(newPassword)) {
-      setPasswordError("Password must contain at least one digit");
-      return;
-    }
-
-    setIsChangingPassword(true);
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
-      const res = await fetch(`${apiUrl}/admin/auth/change-password`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          current_password: currentPassword,
-          new_password: newPassword,
-        }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.detail || "Failed to change password");
-      }
-
-      setPasswordSuccess(true);
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-    } catch (err) {
-      setPasswordError(err instanceof Error ? err.message : "Failed to change password");
-    } finally {
-      setIsChangingPassword(false);
     }
   }
 
@@ -369,81 +346,89 @@ export default function SettingsPage() {
         )}
       </div>
 
-      {/* Change Password */}
-      <div className="rounded-xl border border-slate-200 bg-white">
-        <div className="flex items-center gap-2 px-6 py-4 border-b border-slate-100">
-          <KeyRound className="h-5 w-5 text-slate-500" />
-          <h2 className="font-semibold text-slate-900">Change Password</h2>
-        </div>
-        <form onSubmit={handleChangePassword} className="p-6 space-y-4 max-w-md">
-          {passwordSuccess && (
-            <div className="flex items-center gap-2 p-3 bg-green-50 rounded-lg text-green-700">
-              <Check className="h-4 w-4 shrink-0" />
-              <p className="text-sm">Password changed successfully.</p>
-            </div>
-          )}
-          {passwordError && (
-            <div className="flex items-center gap-2 p-3 bg-red-50 rounded-lg text-red-700">
-              <AlertCircle className="h-4 w-4 shrink-0" />
-              <p className="text-sm">{passwordError}</p>
-            </div>
-          )}
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Current password
-            </label>
-            <input
-              type="password"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              required
-              autoComplete="current-password"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-            />
+      {/* Login Activity */}
+      {user?.is_super_admin && (
+        <div className="rounded-xl border border-slate-200 bg-white">
+          <div className="flex items-center gap-2 px-6 py-4 border-b border-slate-100">
+            <History className="h-5 w-5 text-slate-500" />
+            <h2 className="font-semibold text-slate-900">Login Activity</h2>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              New password
-            </label>
-            <input
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              required
-              autoComplete="new-password"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-            />
-            <p className="mt-1 text-xs text-slate-500">
-              At least 12 characters, with upper &amp; lower case letters and a digit.
+          <div className="p-6">
+            <p className="text-sm text-slate-500 mb-4">
+              Recent admin sign-ins and login-code requests. Watch for activity from IP addresses you
+              don&apos;t recognise.
             </p>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Confirm new password
-            </label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              autoComplete="new-password"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={isChangingPassword}
-            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm font-medium disabled:opacity-60"
-          >
-            {isChangingPassword ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <KeyRound className="h-4 w-4" />
+            {auditError && (
+              <div className="mb-4 flex items-center gap-2 p-3 bg-red-50 rounded-lg text-red-700">
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                <p className="text-sm">{auditError}</p>
+              </div>
             )}
-            {isChangingPassword ? "Changing\u2026" : "Change Password"}
-          </button>
-        </form>
-      </div>
+            {auditLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin text-slate-400" />
+              </div>
+            ) : auditLog.length === 0 ? (
+              <p className="text-sm text-slate-500">No activity recorded yet.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-left text-xs uppercase tracking-wide text-slate-400 border-b border-slate-100">
+                      <th className="py-2 pr-4 font-medium">When</th>
+                      <th className="py-2 pr-4 font-medium">Event</th>
+                      <th className="py-2 pr-4 font-medium">Email</th>
+                      <th className="py-2 pr-4 font-medium">IP address</th>
+                      <th className="py-2 pr-4 font-medium">Result</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {auditLog.map((entry) => {
+                      const eventLabel =
+                        entry.event === "login"
+                          ? "Sign in"
+                          : entry.event === "otp_requested"
+                          ? "Code requested"
+                          : entry.event === "invite_accepted"
+                          ? "Invite accepted"
+                          : entry.event;
+                      const isFailure = entry.status !== "success";
+                      return (
+                        <tr key={entry.id} className={isFailure ? "bg-red-50/40" : undefined}>
+                          <td className="py-2 pr-4 whitespace-nowrap text-slate-600">
+                            {new Date(entry.created_at).toLocaleString()}
+                          </td>
+                          <td className="py-2 pr-4 text-slate-700">{eventLabel}</td>
+                          <td className="py-2 pr-4 text-slate-600">{entry.email || "—"}</td>
+                          <td className="py-2 pr-4 text-slate-600">
+                            <span className="inline-flex items-center gap-1">
+                              <Globe className="h-3.5 w-3.5 text-slate-400" />
+                              {entry.ip || "—"}
+                            </span>
+                          </td>
+                          <td className="py-2 pr-4">
+                            {isFailure ? (
+                              <span className="inline-flex items-center gap-1 text-red-600">
+                                <AlertCircle className="h-3.5 w-3.5" />
+                                {entry.reason || "failed"}
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 text-emerald-600">
+                                <Check className="h-3.5 w-3.5" />
+                                success
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Invite Form Modal */}
       {showInviteForm && (

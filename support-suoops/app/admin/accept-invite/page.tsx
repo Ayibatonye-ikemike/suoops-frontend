@@ -2,11 +2,9 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Lock, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { ShieldCheck, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 
 function AcceptInviteForm() {
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -23,17 +21,6 @@ function AcceptInviteForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
     setIsLoading(true);
 
     try {
@@ -42,7 +29,7 @@ function AcceptInviteForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ token, password }),
+        body: JSON.stringify({ token }),
       });
 
       if (!response.ok) {
@@ -92,7 +79,7 @@ function AcceptInviteForm() {
             S
           </div>
           <h1 className="text-2xl font-bold text-white">Welcome to SuoOps Admin</h1>
-          <p className="text-slate-400 mt-1">Set up your admin account</p>
+          <p className="text-slate-400 mt-1">Activate your admin account</p>
         </div>
 
         {/* Form */}
@@ -113,44 +100,11 @@ function AcceptInviteForm() {
             </p>
           ) : (
             <>
-              <div className="space-y-5">
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-slate-700 mb-2"
-                  >
-                    Create Password
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={8}
-                    className="w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                    placeholder="Minimum 8 characters"
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="confirmPassword"
-                    className="block text-sm font-medium text-slate-700 mb-2"
-                  >
-                    Confirm Password
-                  </label>
-                  <input
-                    type="password"
-                    id="confirmPassword"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                    className="w-full rounded-lg border border-slate-300 px-4 py-3 text-slate-900 placeholder-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-                    placeholder="Re-enter password"
-                  />
-                </div>
-              </div>
+              <p className="text-sm text-slate-600">
+                Your account uses <span className="font-semibold">passwordless login</span>. There&apos;s no
+                password to set &mdash; just activate your account, then sign in any time with a one-time
+                code emailed to your @suoops.com address.
+              </p>
 
               <button
                 type="submit"
@@ -164,7 +118,7 @@ function AcceptInviteForm() {
                   </>
                 ) : (
                   <>
-                    <Lock className="h-4 w-4" />
+                    <ShieldCheck className="h-4 w-4" />
                     Activate Account
                   </>
                 )}

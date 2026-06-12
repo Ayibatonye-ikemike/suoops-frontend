@@ -31,7 +31,8 @@ interface AdminUser {
 interface AdminAuthContextType {
   user: AdminUser | null;
   token: string | null;
-  login: (email: string, password: string) => Promise<boolean>;
+  requestOtp: (email: string) => Promise<{ ok: boolean; message: string }>;
+  verifyOtp: (email: string, otp: string) => Promise<boolean>;
   logout: () => void;
   isLoading: boolean;
   authFetch: (url: string, options?: RequestInit) => Promise<Response>;
@@ -83,14 +84,33 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
       .finally(() => setIsLoading(false));
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const requestOtp = async (email: string): Promise<{ ok: boolean; message: string }> => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
-      const response = await fetch(`${apiUrl}/admin/auth/login`, {
+      const response = await fetch(`${apiUrl}/admin/auth/request-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        return { ok: false, message: data.detail || "Could not send a login code. Please try again." };
+      }
+      return { ok: true, message: data.message || "If that address is an admin, a code has been sent." };
+    } catch {
+      return { ok: false, message: "Network error. Please try again." };
+    }
+  };
+
+  const verifyOtp = async (email: string, otp: string): Promise<boolean> => {
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
+      const response = await fetch(`${apiUrl}/admin/auth/verify-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, otp }),
       });
 
       if (!response.ok) {
@@ -145,7 +165,7 @@ function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   }, [router]);
 
   return (
-    <AdminAuthContext.Provider value={{ user, token, login, logout, isLoading, authFetch }}>
+    <AdminAuthContext.Provider value={{ user, token, requestOtp, verifyOtp, logout, isLoading, authFetch }}>
       {children}
     </AdminAuthContext.Provider>
   );
