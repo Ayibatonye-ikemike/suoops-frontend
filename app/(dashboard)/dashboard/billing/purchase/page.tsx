@@ -206,7 +206,7 @@ export default function PurchaseInvoicePackPage() {
           </Button>
 
           <p className="mt-4 text-center text-xs text-brand-textMuted">
-            🔒 Secure payment powered by Paystack
+            🔒 Secure payment via Paystack · a small processing fee is added at checkout
           </p>
         </div>
 
