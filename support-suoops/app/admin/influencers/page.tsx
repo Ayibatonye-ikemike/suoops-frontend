@@ -80,6 +80,8 @@ export default function InfluencersPage() {
 
   // Form state
   const [form, setForm] = useState({
+    user_phone: "",
+    user_email: "",
     influencer_name: "",
     influencer_contact: "",
     custom_slug: "",
@@ -136,6 +138,10 @@ export default function InfluencersPage() {
       setError("Name and slug are required");
       return;
     }
+    if (!form.user_phone.trim() && !form.user_email.trim()) {
+      setError("Provide the influencer's phone or email so we can link their account");
+      return;
+    }
     try {
       const res = await authFetch(`${API}/admin/influencers`, {
         method: "POST",
@@ -143,6 +149,8 @@ export default function InfluencersPage() {
         body: JSON.stringify({
           ...form,
           custom_slug: form.custom_slug.toLowerCase().trim(),
+          user_phone: form.user_phone.trim() || null,
+          user_email: form.user_email.trim() || null,
         }),
       });
       if (!res.ok) {
@@ -152,6 +160,8 @@ export default function InfluencersPage() {
       }
       setShowCreate(false);
       setForm({
+        user_phone: "",
+        user_email: "",
         influencer_name: "",
         influencer_contact: "",
         custom_slug: "",
@@ -196,6 +206,8 @@ export default function InfluencersPage() {
 
   const startEdit = (inf: Influencer) => {
     setForm({
+      user_phone: "",
+      user_email: "",
       influencer_name: inf.influencer_name || "",
       influencer_contact: inf.influencer_contact || "",
       custom_slug: inf.custom_slug || "",
@@ -277,6 +289,8 @@ export default function InfluencersPage() {
             setEditId(null);
             setError("");
             setForm({
+              user_phone: "",
+              user_email: "",
               influencer_name: "",
               influencer_contact: "",
               custom_slug: "",
@@ -497,6 +511,45 @@ export default function InfluencersPage() {
             </div>
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* User lookup fields — only shown when creating */}
+            {!editId && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    User Phone *
+                  </label>
+                  <input
+                    type="text"
+                    value={form.user_phone}
+                    onChange={(e) =>
+                      setForm({ ...form, user_phone: e.target.value })
+                    }
+                    placeholder="e.g. 08012345678 or +2348012345678"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  />
+                  <p className="text-xs text-slate-400 mt-1">
+                    The influencer must have an existing Suoops account
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Or User Email
+                  </label>
+                  <input
+                    type="email"
+                    value={form.user_email}
+                    onChange={(e) =>
+                      setForm({ ...form, user_email: e.target.value })
+                    }
+                    placeholder="e.g. coach@example.com"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  />
+                  <p className="text-xs text-slate-400 mt-1">
+                    Fallback if phone not provided
+                  </p>
+                </div>
+              </>
+            )}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
                 Influencer Name *
