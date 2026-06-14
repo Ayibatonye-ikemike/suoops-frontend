@@ -4,6 +4,9 @@ import Link from "next/link";
 import { LANDING_PLANS, type Plan } from "../../constants/pricing";
 import { useRegisterHref } from "@/hooks/use-tracking-params";
 
+const BILLING_URL = "/dashboard/billing/purchase";
+const PRO_PACK_URL = "/dashboard/billing/purchase?pack=pro_pack";
+
 export function Pricing() {
   const registerHref = useRegisterHref();
   return (
@@ -37,13 +40,19 @@ export function Pricing() {
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2 max-w-4xl mx-auto">
           {LANDING_PLANS.map((plan: Plan) => (
-            <PricingCard key={plan.id} plan={plan} />
+            <Link
+              key={plan.id}
+              href={plan.id === "FREE" ? registerHref : PRO_PACK_URL}
+              className="block"
+            >
+              <PricingCard plan={plan} />
+            </Link>
           ))}
         </div>
 
         {/* Invoice Packs */}
-        <div className="mt-12 max-w-3xl mx-auto">
-          <div className="rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 p-8 border-2 border-brand-jade text-center">
+        <Link href={BILLING_URL} className="mt-12 block max-w-3xl mx-auto">
+          <div className="rounded-2xl bg-gradient-to-br from-green-50 to-emerald-50 p-8 border-2 border-brand-jade text-center transition-all hover:shadow-lg hover:border-brand-jade/80">
             <h3 className="text-2xl font-bold text-brand-evergreen">📦 Need More Invoices?</h3>
             <p className="mt-2 text-lg text-slate-700">Sell more? Just add more invoices.</p>
             <div className="mt-6 flex items-center justify-center gap-6 flex-wrap">
@@ -62,14 +71,14 @@ export function Pricing() {
               💡 <strong>No forced upgrade.</strong> Buy invoice packs as you grow—scales with your success.
             </p>
           </div>
-        </div>
+        </Link>
 
         {/* Pro Features Subscription */}
-        <div className="mt-8 max-w-3xl mx-auto">
-          <div className="rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 p-8 border-2 border-brand-jade/40 text-center">
+        <Link href={BILLING_URL} className="mt-8 block max-w-3xl mx-auto">
+          <div className="rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 p-8 border-2 border-brand-jade/40 text-center transition-all hover:shadow-lg hover:border-brand-jade/60">
             <h3 className="text-2xl font-bold text-brand-evergreen">⭐ Want Pro Features Only?</h3>
             <p className="mt-2 text-lg text-slate-700">
-              Subscribe to <strong>Pro Features</strong> for <strong>₦1,500/month</strong> — all premium features, no invoices included.
+              Subscribe to the <strong>Pro Plan</strong> for <strong>₦1,500/month</strong> — all premium features, no invoices included.
             </p>
             <p className="mt-2 text-sm text-slate-500">
               Custom branding, tax reports, inventory, team management, daily WhatsApp summary & more.
@@ -79,7 +88,7 @@ export function Pricing() {
               A small payment-processing fee is added at checkout.
             </p>
           </div>
-        </div>
+        </Link>
 
         {/* Closing reassurance */}
         <p className="mt-12 text-center text-lg font-semibold text-slate-700">

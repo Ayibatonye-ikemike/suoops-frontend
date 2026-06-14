@@ -93,7 +93,7 @@ export const PLANS: Record<PlanTier, Plan> = {
   PRO: {
     id: "PRO",
     name: "Pro",
-    displayName: "Pro",
+    displayName: "Pro Pack",
     price: 2000,
     priceDisplay: "₦2,000",
     invoicesIncluded: 20,
