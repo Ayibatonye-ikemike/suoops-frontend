@@ -24,6 +24,7 @@ interface Influencer {
   commission_first: number;
   commission_recurring: number;
   commission_months: number;
+  commission_perpetual_pct: number;
   bonus_invoices: number;
   notes: string | null;
   is_active: boolean;
@@ -52,8 +53,9 @@ export default function InfluencersPage() {
     influencer_contact: "",
     custom_slug: "",
     commission_first: 500,
-    commission_recurring: 100,
-    commission_months: 5,
+    commission_recurring: 200,
+    commission_months: 2,
+    commission_perpetual_pct: 5,
     bonus_invoices: 3,
     notes: "",
   });
@@ -102,8 +104,9 @@ export default function InfluencersPage() {
         influencer_contact: "",
         custom_slug: "",
         commission_first: 500,
-        commission_recurring: 100,
-        commission_months: 5,
+        commission_recurring: 200,
+        commission_months: 2,
+        commission_perpetual_pct: 5,
         bonus_invoices: 3,
         notes: "",
       });
@@ -147,6 +150,7 @@ export default function InfluencersPage() {
       commission_first: inf.commission_first,
       commission_recurring: inf.commission_recurring,
       commission_months: inf.commission_months,
+      commission_perpetual_pct: inf.commission_perpetual_pct,
       bonus_invoices: inf.bonus_invoices,
       notes: inf.notes || "",
     });
@@ -202,8 +206,9 @@ export default function InfluencersPage() {
               influencer_contact: "",
               custom_slug: "",
               commission_first: 500,
-              commission_recurring: 100,
-              commission_months: 5,
+              commission_recurring: 200,
+              commission_months: 2,
+              commission_perpetual_pct: 5,
               bonus_invoices: 3,
               notes: "",
             });
@@ -398,7 +403,28 @@ export default function InfluencersPage() {
                 className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
               />
               <p className="text-xs text-slate-400 mt-1">
-                Months after first purchase (e.g. 5 = months 2–6)
+                Purchases after first (e.g. 2 = purchases 2–3)
+              </p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Perpetual Commission (%)
+              </label>
+              <input
+                type="number"
+                min={0}
+                max={25}
+                value={form.commission_perpetual_pct}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    commission_perpetual_pct: parseInt(e.target.value) || 0,
+                  })
+                }
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              />
+              <p className="text-xs text-slate-400 mt-1">
+                % on every purchase after recurring window (forever)
               </p>
             </div>
             <div>
@@ -414,18 +440,13 @@ export default function InfluencersPage() {
               />
             </div>
           </div>
-          {/* Commission preview */}
           <div className="mt-4 p-3 bg-slate-50 rounded-lg">
             <p className="text-sm text-slate-600">
               <strong>Commission structure:</strong> ₦
-              {form.commission_first.toLocaleString()} on first Pro purchase +
-              ₦{form.commission_recurring.toLocaleString()}/month for{" "}
-              {form.commission_months} months = max ₦
-              {(
-                form.commission_first +
-                form.commission_recurring * form.commission_months
-              ).toLocaleString()}{" "}
-              per referred user
+              {form.commission_first.toLocaleString()} on first purchase → ₦
+              {form.commission_recurring.toLocaleString()}/purchase for{" "}
+              {form.commission_months} purchases → then{" "}
+              {form.commission_perpetual_pct}% on every purchase forever
             </p>
           </div>
           <div className="flex gap-3 mt-4">
@@ -587,20 +608,22 @@ export default function InfluencersPage() {
         <h3 className="font-semibold text-slate-900 mb-2">
           Default Commission Structure
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-sm">
           <div>
-            <p className="text-slate-500">First Pro Purchase</p>
+            <p className="text-slate-500">First Purchase</p>
             <p className="font-medium text-slate-900">₦500 (25%)</p>
           </div>
           <div>
-            <p className="text-slate-500">Months 2–6</p>
-            <p className="font-medium text-slate-900">₦100/month (5%)</p>
+            <p className="text-slate-500">Purchases 2–3</p>
+            <p className="font-medium text-slate-900">₦200 each (10%)</p>
           </div>
           <div>
-            <p className="text-slate-500">Max per User</p>
-            <p className="font-medium text-slate-900">
-              ₦900 over 6 months (SuoOps retains 92.5%)
-            </p>
+            <p className="text-slate-500">Purchase 4+</p>
+            <p className="font-medium text-slate-900">5% forever</p>
+          </div>
+          <div>
+            <p className="text-slate-500">Applies to</p>
+            <p className="font-medium text-slate-900">Pro Packs + Invoice Packs</p>
           </div>
         </div>
       </div>
