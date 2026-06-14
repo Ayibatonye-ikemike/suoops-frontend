@@ -277,9 +277,47 @@ function MiniBarChart({ data, color = "bg-emerald-500", label = "" }: {
   );
 }
 
+// ─── Activity Analytics Types ────────────────────────────────────
+
+interface ChannelBreakdown {
+  whatsapp: number;
+  dashboard: number;
+  email: number;
+  other: number;
+}
+
+interface PeriodActivity {
+  total: number;
+  by_channel: ChannelBreakdown;
+}
+
+interface DailyPoint {
+  date: string;
+  total: number;
+  whatsapp: number;
+  dashboard: number;
+}
+
+interface ActivityAnalytics {
+  today: PeriodActivity;
+  yesterday: PeriodActivity;
+  this_week: PeriodActivity;
+  last_week: PeriodActivity;
+  this_month: PeriodActivity;
+  last_month: PeriodActivity;
+  this_year: PeriodActivity;
+  active_users_today: number;
+  active_users_this_week: number;
+  active_users_this_month: number;
+  daily_trend: DailyPoint[];
+  logins_today: number;
+  logins_this_week: number;
+  logins_this_month: number;
+}
+
 // ─── Tabs ────────────────────────────────────────────────────────
 
-type Tab = "overview" | "growth" | "diagnostic";
+type Tab = "overview" | "growth" | "activity" | "diagnostic";
 
 // ─── Zero-Invoice Diagnostic Types ───────────────────────────────
 
@@ -336,9 +374,14 @@ export default function MetricsPage() {
   const [growth, setGrowth] = useState<GrowthMetrics | null>(null);
   const [diagnostic, setDiagnostic] = useState<ZeroInvoiceDiagnostic | null>(null);
   const [diagnosticLoading, setDiagnosticLoading] = useState(false);
+  const [activityData, setActivityData] = useState<ActivityAnalytics | null>(null);
+  const [activityLoading, setActivityLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState<Tab>("overview");
+  const [packPage, setPackPage] = useState(1);
+  const [proPage, setProPage] = useState(1);
+  const PAGE_SIZE = 10;
 
   useEffect(() => {
     async function fetchAll() {
@@ -384,6 +427,24 @@ export default function MetricsPage() {
     }
     fetchDiagnostic();
   }, [token, activeTab, diagnostic]);
+
+  // Fetch activity data when tab is activated
+  useEffect(() => {
+    async function fetchActivity() {
+      if (!token || activeTab !== "activity" || activityData) return;
+      setActivityLoading(true);
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
+        const res = await fetch(`${apiUrl}/admin/metrics/activity`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) setActivityData(await res.json());
+      } catch { /* ignore */ } finally {
+        setActivityLoading(false);
+      }
+    }
+    fetchActivity();
+  }, [token, activeTab, activityData]);
 
   if (isLoading) {
     return (
@@ -446,6 +507,17 @@ export default function MetricsPage() {
           )}
         </button>
         <button
+          onClick={() => setActiveTab("activity")}
+          className={`pb-3 px-1 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
+            activeTab === "activity"
+              ? "border-blue-600 text-blue-600"
+              : "border-transparent text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          <Activity className="h-4 w-4" />
+          Activity Analytics
+        </button>
+        <button
           onClick={() => setActiveTab("diagnostic")}
           className={`pb-3 px-1 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
             activeTab === "diagnostic"
@@ -463,7 +535,7 @@ export default function MetricsPage() {
         </button>
       </div>
 
-      {activeTab === "overview" ? (
+      {activeTab === "overview" && (
         <>
           {/* ═══ OVERVIEW TAB ═══ */}
 
@@ -611,7 +683,7 @@ export default function MetricsPage() {
               color="bg-blue-500"
             />
             <ProgressBar
-              label="Pro Pack"
+              label="Pro Plan Subscribers"
               value={metrics?.active_subscriptions.pro || 0}
               total={totalSubscribers || 1}
               color="bg-purple-500"
@@ -654,7 +726,10 @@ export default function MetricsPage() {
       </div>
 
       {/* Invoice Pack Buyers Table */}
-      {metrics?.pack_buyers && metrics.pack_buyers.length > 0 && (
+      {metrics?.pack_buyers && metrics.pack_buyers.length > 0 && (() => {
+        const totalPackPages = Math.ceil(metrics.pack_buyers.length / PAGE_SIZE);
+        const pagedPackBuyers = metrics.pack_buyers.slice((packPage - 1) * PAGE_SIZE, packPage * PAGE_SIZE);
+        return (
         <div className="rounded-xl border border-slate-200 bg-white">
           <div className="border-b border-slate-100 px-6 py-4">
             <div className="flex items-center justify-between">
@@ -679,7 +754,7 @@ export default function MetricsPage() {
                 </tr>
               </thead>
               <tbody>
-                {metrics.pack_buyers.map((buyer) => (
+                {pagedPackBuyers.map((buyer) => (
                   <tr key={buyer.id} className="border-b border-slate-50 hover:bg-slate-50">
                     <td className="px-6 py-4">
                       <div className="font-medium text-slate-900">{buyer.name}</div>
@@ -704,16 +779,49 @@ export default function MetricsPage() {
               </tbody>
             </table>
           </div>
+          {totalPackPages > 1 && (
+            <div className="flex items-center justify-between border-t border-slate-100 px-6 py-3">
+              <span className="text-sm text-slate-500">
+                Page {packPage} of {totalPackPages}
+              </span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setPackPage((p) => Math.max(1, p - 1))}
+                  disabled={packPage <= 1}
+                  className="px-3 py-1.5 text-sm rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  Previous
+                </button>
+                <button
+                  onClick={() => setPackPage((p) => Math.min(totalPackPages, p + 1))}
+                  disabled={packPage >= totalPackPages}
+                  className="px-3 py-1.5 text-sm rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+        );
+      })()}
 
-      {/* Paid Users Table */}
+      {/* Pro Subscribers Table */}
+      {(() => {
+        const paidUsers = metrics?.paid_users || [];
+        const totalProPages = Math.ceil(paidUsers.length / PAGE_SIZE);
+        const pagedProUsers = paidUsers.slice((proPage - 1) * PAGE_SIZE, proPage * PAGE_SIZE);
+        return (
       <div className="rounded-xl border border-slate-200 bg-white">
         <div className="border-b border-slate-100 px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-semibold text-slate-900">Pro Subscribers</h3>
-              <p className="text-sm text-slate-500">Pro users (active Pro Pack / Pro Features subscription)</p>
+              <h3 className="text-lg font-semibold text-slate-900">Pro Plan Subscribers</h3>
+              <p className="text-sm text-slate-500">Users with active Pro Pack or Pro Plan subscription</p>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <Crown className="h-4 w-4 text-purple-500" />
+              <span className="text-slate-600">Total: <strong className="text-purple-700">{paidUsers.length}</strong></span>
             </div>
           </div>
         </div>
@@ -728,8 +836,8 @@ export default function MetricsPage() {
               </tr>
             </thead>
             <tbody>
-              {metrics?.paid_users && metrics.paid_users.length > 0 ? (
-                metrics.paid_users.map((user) => (
+              {pagedProUsers.length > 0 ? (
+                pagedProUsers.map((user) => (
                   <tr key={user.id} className={`border-b border-slate-50 hover:bg-slate-50 ${
                     isExpired(user.subscription_expires_at) ? "bg-red-50/50" :
                     isExpiringSoon(user.subscription_expires_at) ? "bg-amber-50/50" : ""
@@ -744,7 +852,7 @@ export default function MetricsPage() {
                         user.plan === "pro" ? "bg-purple-100 text-purple-700" :
                         "bg-blue-100 text-blue-700"
                       }`}>
-                        {user.plan.toUpperCase()}
+                        {user.plan === "pro" ? "PRO PLAN" : user.plan.toUpperCase()}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-slate-600">
@@ -787,13 +895,40 @@ export default function MetricsPage() {
             </tbody>
           </table>
         </div>
+        {totalProPages > 1 && (
+          <div className="flex items-center justify-between border-t border-slate-100 px-6 py-3">
+            <span className="text-sm text-slate-500">
+              Page {proPage} of {totalProPages}
+            </span>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setProPage((p) => Math.max(1, p - 1))}
+                disabled={proPage <= 1}
+                className="px-3 py-1.5 text-sm rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Previous
+              </button>
+              <button
+                onClick={() => setProPage((p) => Math.min(totalProPages, p + 1))}
+                disabled={proPage >= totalProPages}
+                className="px-3 py-1.5 text-sm rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
       </div>
+        );
+      })()}
         </>
-      ) : (
+      )}
+
+      {activeTab === "growth" && (
         <>
           {/* ═══ GROWTH ANALYTICS TAB ═══ */}
 
-          {activeTab === "growth" && (growth ? (
+          {growth ? (
             <div className="space-y-6">
               {/* Revenue Health */}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -1024,7 +1159,7 @@ export default function MetricsPage() {
                     <TrendingUp className="h-5 w-5 text-emerald-500" />
                     <div>
                       <h3 className="font-semibold text-slate-900">Pro Revenue Trend</h3>
-                      <p className="text-xs text-slate-500">Pro Pack &amp; Pro Features revenue received</p>
+                      <p className="text-xs text-slate-500">Pro Pack &amp; Pro Plan revenue received</p>
                     </div>
                   </div>
                   <MiniBarChart data={growth.mrr_trend} color="bg-emerald-500" />
@@ -1037,7 +1172,192 @@ export default function MetricsPage() {
               <p className="text-lg font-medium text-slate-600">Growth analytics loading...</p>
               <p className="text-sm text-slate-400 mt-1">This data requires the latest backend update.</p>
             </div>
-          ))}
+          )}
+        </>
+      )}
+
+      {/* ═══ ACTIVITY ANALYTICS TAB ═══ */}
+      {activeTab === "activity" && (
+        <>
+          {activityLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+            </div>
+          ) : activityData ? (
+            <div className="space-y-6">
+              {/* Period Summary Cards */}
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <StatCard
+                  title="Invoices Today"
+                  value={activityData.today.total}
+                  subtitle={`Yesterday: ${activityData.yesterday.total}`}
+                  icon={FileText}
+                  color="blue"
+                />
+                <StatCard
+                  title="Invoices This Week"
+                  value={activityData.this_week.total}
+                  subtitle={`Last week: ${activityData.last_week.total}`}
+                  icon={Calendar}
+                  color="emerald"
+                />
+                <StatCard
+                  title="Invoices This Month"
+                  value={activityData.this_month.total}
+                  subtitle={`Last month: ${activityData.last_month.total}`}
+                  icon={BarChart3}
+                  color="purple"
+                />
+                <StatCard
+                  title="Invoices This Year"
+                  value={activityData.this_year.total}
+                  icon={TrendingUp}
+                  color="orange"
+                />
+              </div>
+
+              {/* Active Users + Logins */}
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <StatCard
+                  title="Active Users Today"
+                  value={activityData.active_users_today}
+                  subtitle={`${activityData.logins_today} logins`}
+                  icon={Users}
+                  color="blue"
+                />
+                <StatCard
+                  title="Active Users This Week"
+                  value={activityData.active_users_this_week}
+                  subtitle={`${activityData.logins_this_week} logins`}
+                  icon={Users}
+                  color="emerald"
+                />
+                <StatCard
+                  title="Active Users This Month"
+                  value={activityData.active_users_this_month}
+                  subtitle={`${activityData.logins_this_month} logins`}
+                  icon={Users}
+                  color="purple"
+                />
+              </div>
+
+              {/* Channel Breakdown Table */}
+              <div className="rounded-xl border border-slate-200 bg-white p-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <Phone className="h-5 w-5 text-slate-500" />
+                  <div>
+                    <h3 className="text-lg font-semibold text-slate-900">Invoices by Channel</h3>
+                    <p className="text-xs text-slate-500">WhatsApp vs Dashboard vs Email breakdown</p>
+                  </div>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-slate-200">
+                        <th className="text-left py-2 pr-4 font-medium text-slate-600">Period</th>
+                        <th className="text-right py-2 px-4 font-medium text-slate-600">Total</th>
+                        <th className="text-right py-2 px-4 font-medium text-green-600">WhatsApp</th>
+                        <th className="text-right py-2 px-4 font-medium text-blue-600">Dashboard</th>
+                        <th className="text-right py-2 px-4 font-medium text-amber-600">Email</th>
+                        <th className="text-right py-2 pl-4 font-medium text-slate-500">Other</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {([
+                        { label: "Today", data: activityData.today },
+                        { label: "Yesterday", data: activityData.yesterday },
+                        { label: "This Week", data: activityData.this_week },
+                        { label: "Last Week", data: activityData.last_week },
+                        { label: "This Month", data: activityData.this_month },
+                        { label: "Last Month", data: activityData.last_month },
+                        { label: "This Year", data: activityData.this_year },
+                      ] as const).map((row) => (
+                        <tr key={row.label} className="border-b border-slate-50 hover:bg-slate-50">
+                          <td className="py-2.5 pr-4 font-medium text-slate-700">{row.label}</td>
+                          <td className="py-2.5 px-4 text-right font-bold text-slate-900">{row.data.total}</td>
+                          <td className="py-2.5 px-4 text-right">
+                            <span className="inline-flex items-center gap-1 text-green-700">
+                              {row.data.by_channel.whatsapp}
+                              {row.data.total > 0 && (
+                                <span className="text-xs text-green-500">
+                                  ({((row.data.by_channel.whatsapp / row.data.total) * 100).toFixed(0)}%)
+                                </span>
+                              )}
+                            </span>
+                          </td>
+                          <td className="py-2.5 px-4 text-right">
+                            <span className="inline-flex items-center gap-1 text-blue-700">
+                              {row.data.by_channel.dashboard}
+                              {row.data.total > 0 && (
+                                <span className="text-xs text-blue-500">
+                                  ({((row.data.by_channel.dashboard / row.data.total) * 100).toFixed(0)}%)
+                                </span>
+                              )}
+                            </span>
+                          </td>
+                          <td className="py-2.5 px-4 text-right text-amber-700">{row.data.by_channel.email}</td>
+                          <td className="py-2.5 pl-4 text-right text-slate-400">{row.data.by_channel.other}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Daily Trend (last 30 days) */}
+              {activityData.daily_trend.length > 0 && (
+                <div className="rounded-xl border border-slate-200 bg-white p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <BarChart3 className="h-5 w-5 text-blue-500" />
+                    <div>
+                      <h3 className="font-semibold text-slate-900">Daily Invoice Trend (30 days)</h3>
+                      <p className="text-xs text-slate-500">Invoices created per day by channel</p>
+                    </div>
+                  </div>
+                  {/* Stacked bar chart */}
+                  {(() => {
+                    const maxVal = Math.max(...activityData.daily_trend.map(d => d.total), 1);
+                    return (
+                      <div>
+                        <div className="flex gap-0.5 h-32 items-end">
+                          {activityData.daily_trend.map((d) => {
+                            const pctTotal = (d.total / maxVal) * 100;
+                            const pctWa = d.total > 0 ? (d.whatsapp / d.total) * pctTotal : 0;
+                            const pctDash = d.total > 0 ? (d.dashboard / d.total) * pctTotal : 0;
+                            const pctOther = pctTotal - pctWa - pctDash;
+                            return (
+                              <div
+                                key={d.date}
+                                className="flex-1 flex flex-col justify-end"
+                                title={`${d.date}: ${d.total} (WA: ${d.whatsapp}, Dash: ${d.dashboard})`}
+                              >
+                                <div className="w-full bg-green-500 rounded-t-sm" style={{ height: `${Math.max(pctWa, 0)}%` }} />
+                                <div className="w-full bg-blue-500" style={{ height: `${Math.max(pctDash, 0)}%` }} />
+                                {pctOther > 0 && (
+                                  <div className="w-full bg-slate-300" style={{ height: `${pctOther}%` }} />
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <div className="flex gap-4 mt-3 text-xs text-slate-500">
+                          <div className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-500" /> WhatsApp</div>
+                          <div className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-blue-500" /> Dashboard</div>
+                          <div className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-slate-300" /> Other</div>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="rounded-lg bg-slate-50 border border-slate-200 p-12 text-center">
+              <Activity className="h-12 w-12 text-slate-300 mx-auto mb-4" />
+              <p className="text-lg font-medium text-slate-600">Activity analytics loading...</p>
+              <p className="text-sm text-slate-400 mt-1">This data requires the latest backend update.</p>
+            </div>
+          )}
         </>
       )}
 
