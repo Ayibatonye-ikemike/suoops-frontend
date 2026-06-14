@@ -60,7 +60,7 @@ export default function OgImage() {
               marginTop: "8px",
             }}
           >
-            Professional invoicing, expense tracking & tax compliance for Nigerian businesses
+            Professional invoicing, expense tracking & tax compliance for SMEs
           </div>
           <div
             style={{

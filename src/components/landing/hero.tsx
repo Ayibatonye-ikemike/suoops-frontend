@@ -17,7 +17,7 @@ export function Hero({ onWatchDemo }: HeroProps) {
           {/* Left: Text Content */}
           <div className="flex flex-col justify-center">
             <h1 className="font-heading text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-              Tax-ready invoicing for Nigerian businesses —
+              Tax-ready invoicing for Small Scale Businesses (SMEs) —
               <br />
               <span className="text-brand-citrus">right from WhatsApp</span>
             </h1>

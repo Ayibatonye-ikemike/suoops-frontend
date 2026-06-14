@@ -11,11 +11,11 @@ const poppins = Poppins({ subsets: ["latin"], weight: ["600", "700"], display: "
 export const metadata: Metadata = {
   metadataBase: new URL("https://suoops.com"),
   title: {
-    default: "SuoOps — Invoice & Expense Management for Nigerian Businesses",
+    default: "SuoOps — Invoice & Expense Management for SMEs",
     template: "%s | SuoOps",
   },
   description:
-    "Create and send invoices via WhatsApp or dashboard. Professional invoicing, expense tracking, and tax compliance made simple for Nigerian businesses.",
+    "Create and send invoices via WhatsApp or dashboard. Professional invoicing, expense tracking, and tax compliance made simple for Small Scale Businesses (SMEs).",
   keywords: [
     "invoice",
     "Nigeria",
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "SuoOps — Invoice & Get Paid from WhatsApp",
     description:
-      "Professional invoicing for Nigerian businesses. WhatsApp-first, tax-aware, mobile-friendly.",
+      "Professional invoicing for Small Scale Businesses (SMEs). WhatsApp-first, tax-aware, mobile-friendly.",
   },
 };
 

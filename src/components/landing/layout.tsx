@@ -107,7 +107,7 @@ export function Footer() {
               <span className="text-lg font-bold text-brand-evergreen">SuoOps</span>
             </div>
             <p className="mt-4 text-sm text-slate-600">
-              The easiest way for Nigerian businesses to create invoices and get paid.
+              The easiest way for Small Scale Businesses (SMEs) to create invoices and get paid.
             </p>
             {/* Social media links */}
             <div className="mt-5 flex items-center gap-3">
