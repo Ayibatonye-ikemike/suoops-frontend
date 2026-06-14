@@ -282,8 +282,6 @@ function MiniBarChart({ data, color = "bg-emerald-500", label = "" }: {
 interface ChannelBreakdown {
   whatsapp: number;
   dashboard: number;
-  email: number;
-  other: number;
 }
 
 interface PeriodActivity {
@@ -1193,7 +1191,7 @@ export default function MetricsPage() {
                   <Phone className="h-5 w-5 text-slate-500" />
                   <div>
                     <h3 className="text-lg font-semibold text-slate-900">Invoices by Channel</h3>
-                    <p className="text-xs text-slate-500">WhatsApp vs Dashboard vs Email breakdown</p>
+                    <p className="text-xs text-slate-500">WhatsApp vs Web Dashboard breakdown</p>
                   </div>
                 </div>
                 <div className="overflow-x-auto">
@@ -1204,8 +1202,6 @@ export default function MetricsPage() {
                         <th className="text-right py-2 px-4 font-medium text-slate-600">Total</th>
                         <th className="text-right py-2 px-4 font-medium text-green-600">WhatsApp</th>
                         <th className="text-right py-2 px-4 font-medium text-blue-600">Dashboard</th>
-                        <th className="text-right py-2 px-4 font-medium text-amber-600">Email</th>
-                        <th className="text-right py-2 pl-4 font-medium text-slate-500">Other</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1241,8 +1237,6 @@ export default function MetricsPage() {
                               )}
                             </span>
                           </td>
-                          <td className="py-2.5 px-4 text-right text-amber-700">{row.data.by_channel.email}</td>
-                          <td className="py-2.5 pl-4 text-right text-slate-400">{row.data.by_channel.other}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -1270,7 +1264,6 @@ export default function MetricsPage() {
                             const pctTotal = (d.total / maxVal) * 100;
                             const pctWa = d.total > 0 ? (d.whatsapp / d.total) * pctTotal : 0;
                             const pctDash = d.total > 0 ? (d.dashboard / d.total) * pctTotal : 0;
-                            const pctOther = pctTotal - pctWa - pctDash;
                             return (
                               <div
                                 key={d.date}
@@ -1279,9 +1272,6 @@ export default function MetricsPage() {
                               >
                                 <div className="w-full bg-green-500 rounded-t-sm" style={{ height: `${Math.max(pctWa, 0)}%` }} />
                                 <div className="w-full bg-blue-500" style={{ height: `${Math.max(pctDash, 0)}%` }} />
-                                {pctOther > 0 && (
-                                  <div className="w-full bg-slate-300" style={{ height: `${pctOther}%` }} />
-                                )}
                               </div>
                             );
                           })}
@@ -1289,7 +1279,6 @@ export default function MetricsPage() {
                         <div className="flex gap-4 mt-3 text-xs text-slate-500">
                           <div className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-500" /> WhatsApp</div>
                           <div className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-blue-500" /> Dashboard</div>
-                          <div className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-slate-300" /> Other</div>
                         </div>
                       </div>
                     );
