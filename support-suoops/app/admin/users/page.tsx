@@ -418,9 +418,9 @@ export default function UsersPage() {
                 <div className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium text-slate-900">PRO Features Override</p>
+                      <p className="font-medium text-slate-900">Pro Plan Override</p>
                       <p className="text-sm text-slate-500 mt-1">
-                        Grant access to all PRO features (inventory, branding, voice, daily summary)
+                        Grant access to all Pro Plan features (inventory, branding, voice, daily summary)
                         <strong> without</strong> changing their plan or adding invoice packs.
                       </p>
                     </div>

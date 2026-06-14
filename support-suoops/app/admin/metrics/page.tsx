@@ -539,26 +539,6 @@ export default function MetricsPage() {
         <>
           {/* ═══ OVERVIEW TAB ═══ */}
 
-          {/* Subscription Health Alerts */}
-          {growth && (growth.expired_subscriptions > 0 || growth.expiring_soon > 0) && (
-            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 flex items-start gap-3">
-              <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
-              <div className="text-sm">
-                <p className="font-medium text-amber-800">Subscription Health Alert</p>
-                <p className="text-amber-700 mt-1">
-                  {growth.expired_subscriptions > 0 && (
-                    <span className="font-semibold text-red-600">{growth.expired_subscriptions} expired</span>
-                  )}
-                  {growth.expired_subscriptions > 0 && growth.expiring_soon > 0 && " · "}
-                  {growth.expiring_soon > 0 && (
-                    <span className="font-semibold text-amber-700">{growth.expiring_soon} expiring within 7 days</span>
-                  )}
-                  {" — check the Paid Subscribers table below for details."}
-                </p>
-              </div>
-            </div>
-          )}
-
           {/* Overview Stats */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard
@@ -618,28 +598,6 @@ export default function MetricsPage() {
               color="bg-slate-400"
             />
           </div>
-
-          {/* Collection Rate */}
-          {growth && (
-            <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Target className="h-4 w-4 text-blue-500" />
-                <span className="text-sm text-slate-600">Collection Rate</span>
-              </div>
-              <span className={`text-lg font-bold ${growth.collection_rate >= 50 ? "text-emerald-600" : growth.collection_rate >= 30 ? "text-amber-600" : "text-red-600"}`}>
-                {growth.collection_rate}%
-              </span>
-            </div>
-          )}
-          {growth?.avg_days_to_payment && (
-            <div className="mt-2 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-slate-400" />
-                <span className="text-sm text-slate-600">Avg. Days to Payment</span>
-              </div>
-              <span className="text-sm font-semibold text-slate-700">{growth.avg_days_to_payment} days</span>
-            </div>
-          )}
 
           <div className="mt-6 pt-6 border-t border-slate-100">
             <div className="flex items-center gap-3 mb-4">
@@ -709,19 +667,7 @@ export default function MetricsPage() {
             </div>
           </div>
 
-          {/* MRR Preview */}
-          {growth && (
-            <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-2 gap-4">
-              <div className="text-center p-3 rounded-lg bg-emerald-50">
-                <p className="text-xs text-emerald-600">Pro Revenue (30d)</p>
-                <p className="text-lg font-bold text-emerald-700">₦{growth.mrr.toLocaleString()}</p>
-              </div>
-              <div className="text-center p-3 rounded-lg bg-purple-50">
-                <p className="text-xs text-purple-600">Annualized run-rate</p>
-                <p className="text-lg font-bold text-purple-700">₦{growth.arr.toLocaleString()}</p>
-              </div>
-            </div>
-          )}
+
         </div>
       </div>
 
@@ -817,7 +763,7 @@ export default function MetricsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-semibold text-slate-900">Pro Plan Subscribers</h3>
-              <p className="text-sm text-slate-500">Users with active Pro Pack or Pro Plan subscription</p>
+              <p className="text-sm text-slate-500">Users with an active Pro Plan subscription</p>
             </div>
             <div className="flex items-center gap-2 text-sm">
               <Crown className="h-4 w-4 text-purple-500" />
@@ -968,7 +914,7 @@ export default function MetricsPage() {
                 <div className="rounded-lg border border-red-200 bg-red-50 p-4 flex items-start gap-3">
                   <AlertTriangle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium text-red-800">Subscription Health Warning</p>
+                    <p className="text-sm font-medium text-red-800">Subscription Health Alert</p>
                     <div className="mt-2 flex gap-6 text-sm">
                       {growth.expired_subscriptions > 0 && (
                         <div className="flex items-center gap-2">
