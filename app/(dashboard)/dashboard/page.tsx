@@ -11,6 +11,7 @@ import { InvoiceStatusCard } from "@/features/invoices/invoice-status-card";
 import { CashPositionCard } from "@/features/dashboard/cash-position-card";
 import { ProfessionalismScoreCard } from "@/features/dashboard/professionalism-score-card";
 import { WelcomeGuide } from "@/features/dashboard/welcome-guide";
+import { ProWelcomeModal } from "@/features/dashboard/pro-welcome-modal";
 import { PhoneRequiredGate } from "@/features/dashboard/phone-required-gate";
 import { BankDetailsRequiredGate } from "@/features/dashboard/bank-details-required-gate";
 import { NewUserOnboarding } from "@/features/dashboard/new-user-onboarding";
@@ -106,6 +107,9 @@ export default function DashboardPage() {
 
               {/* Welcome Guide for first-time users */}
               <WelcomeGuide />
+
+              {/* One-time Pro feature tour for new Pro users */}
+              <ProWelcomeModal />
 
               {/* Single contextual nudge — replaces stacked banners */}
               <DashboardNudges />

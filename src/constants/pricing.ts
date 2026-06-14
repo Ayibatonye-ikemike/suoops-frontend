@@ -6,10 +6,10 @@
  * - FREE (displayed as "Starter"): 2 free invoices to start, buy packs.
  * - Invoice packs (invoices only, never expire): 25 = ₦625, 50 = ₦1,250.
  * - Pro Pack: 20 invoices + 30 days of Pro features for ₦2,000 (one-time).
- * - Pro Features pass: 30 days of Pro features only for ₦1,500 (one-time).
+ * - Pro Features: ₦1,500/month recurring subscription (features only, auto-renews).
  *
- * Pro features are time-limited (lapse after 30 days); purchased invoices are
- * permanent. There is no recurring ₦3,250/mo subscription — "Pro" is prepaid.
+ * Pro Pack features are time-limited (lapse after 30 days, no auto-renew);
+ * purchased invoices are permanent. Pro Features is a recurring monthly plan.
  *
  * Note: STARTER plan removed from backend. Frontend shows "Starter" as UX label for FREE.
  *
@@ -53,14 +53,14 @@ export const PRO_FEATURES_DAYS = 30;
 export const PRO_PACK_SIZE = 20;
 export const PRO_PACK_PRICE = 2000;
 
-// Pro Features pass: 30 days of Pro features only (no invoices)
+// Pro Features: recurring monthly subscription (₦1,500/mo, features only, no
+// invoices). Sold via /subscriptions/initialize?plan=PRO_FEATURES — NOT a pack.
 export const PRO_FEATURES_PRICE = 1500;
 
 export const PACK_OPTIONS = [
   { id: "small", size: INVOICE_SMALL_PACK_SIZE, price: INVOICE_SMALL_PACK_PRICE, label: "Starter Pack", proDays: 0 },
   { id: "standard", size: INVOICE_PACK_SIZE, price: INVOICE_PACK_PRICE, label: "Value Pack", proDays: 0 },
   { id: "pro_pack", size: PRO_PACK_SIZE, price: PRO_PACK_PRICE, label: "Pro Pack", proDays: PRO_FEATURES_DAYS, pro: true, popular: true },
-  { id: "pro_features", size: 0, price: PRO_FEATURES_PRICE, label: "Pro Features", proDays: PRO_FEATURES_DAYS, pro: true },
 ] as const;
 
 /**

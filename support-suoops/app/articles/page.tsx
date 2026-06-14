@@ -2,7 +2,6 @@ import Link from "next/link";
 import { 
   FileText, 
   CreditCard, 
-  Users, 
   MessageSquare, 
   Shield,
   Zap,
@@ -41,16 +40,6 @@ const categories = [
     color: "bg-purple-500",
     articles: [
       { slug: "plans", title: "Understanding subscription plans" },
-    ],
-  },
-  {
-    slug: "referrals",
-    title: "Referrals",
-    description: "Learn how to earn rewards by referring others to SuoOps",
-    icon: Users,
-    color: "bg-orange-500",
-    articles: [
-      { slug: "how-referrals-work", title: "How referral rewards work" },
     ],
   },
   {

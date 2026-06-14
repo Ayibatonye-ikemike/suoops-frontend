@@ -4,9 +4,9 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { initializeInvoicePackPurchase } from "@/api/subscription";
+import { initializeInvoicePackPurchase, initializeSubscription } from "@/api/subscription";
 import { apiClient } from "@/api/client";
-import { PACK_OPTIONS } from "@/constants/pricing";
+import { PACK_OPTIONS, PRO_FEATURES_PRICE } from "@/constants/pricing";
 
 export default function PurchaseInvoicePackPage() {
   const router = useRouter();
@@ -15,6 +15,7 @@ export default function PurchaseInvoicePackPage() {
   const [selectedPack, setSelectedPack] = useState(initialPack);
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubscribing, setIsSubscribing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const { data: user } = useQuery({
@@ -49,13 +50,30 @@ export default function PurchaseInvoicePackPage() {
     }
   };
 
+  const handleSubscribeProFeatures = async () => {
+    setIsSubscribing(true);
+    setError(null);
+    try {
+      const response = await initializeSubscription("PRO_FEATURES");
+      window.location.href = response.authorization_url;
+    } catch (err) {
+      const error = err as { response?: { data?: { detail?: string } } };
+      setError(
+        error.response?.data?.detail ||
+        "Failed to start subscription. Please try again."
+      );
+      setIsSubscribing(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-brand-background px-4 py-10">
       <div className="mx-auto max-w-lg">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-brand-text">Buy Invoices &amp; Pro</h1>
           <p className="mt-2 text-brand-textMuted">
-            Invoices never expire. Pro features last 30 days — no auto-renew.
+            Invoices never expire. The Pro Pack adds 30 days of Pro — or subscribe to
+            Pro Features for auto-renewing monthly access.
           </p>
         </div>
 
@@ -190,6 +208,35 @@ export default function PurchaseInvoicePackPage() {
           <p className="mt-4 text-center text-xs text-brand-textMuted">
             🔒 Secure payment powered by Paystack
           </p>
+        </div>
+
+        {/* Recurring Pro Features subscription */}
+        <div className="mt-6 rounded-2xl border-2 border-brand-jade/40 bg-emerald-50/40 p-6 shadow-sm">
+          <div className="mb-2 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-brand-text">Pro Features — Monthly</h2>
+            <span className="rounded-full bg-brand-jade/10 px-2 py-0.5 text-[10px] font-bold uppercase text-brand-jade">
+              Auto-renew
+            </span>
+          </div>
+          <p className="text-sm text-brand-textMuted">
+            All Pro features (custom branding, tax reports, inventory, team, voice) — no
+            invoices included. Renews automatically every month until you cancel.
+          </p>
+          <p className="mt-3 text-2xl font-bold text-brand-jade">
+            ₦{PRO_FEATURES_PRICE.toLocaleString()}
+            <span className="text-sm font-medium text-brand-textMuted">/month</span>
+          </p>
+          <p className="mt-1 text-xs text-brand-textMuted">
+            + a small payment-processing fee. Cancel anytime from Settings.
+          </p>
+          <Button
+            onClick={handleSubscribeProFeatures}
+            disabled={isSubscribing}
+            className="mt-4 w-full border-2 border-brand-jade bg-white py-3 text-brand-jade hover:bg-brand-jade hover:text-white"
+            size="lg"
+          >
+            {isSubscribing ? "Processing..." : `Subscribe — ₦${PRO_FEATURES_PRICE.toLocaleString()}/mo`}
+          </Button>
         </div>
 
         <div className="mt-6 text-center">

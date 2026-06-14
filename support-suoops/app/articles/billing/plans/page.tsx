@@ -66,7 +66,7 @@ export default function PlansArticle() {
             </ul>
           </div>
 
-          {/* Pro Plan */}
+          {/* Pro Pack */}
           <div className="rounded-xl border-2 border-emerald-500 p-6 relative">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2">
               <span className="bg-emerald-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
@@ -75,7 +75,7 @@ export default function PlansArticle() {
             </div>
             <div className="flex items-center gap-2 mb-3">
               <Building2 className="h-5 w-5 text-emerald-600" />
-              <h3 className="font-bold text-slate-900">Pro</h3>
+              <h3 className="font-bold text-slate-900">Pro Pack</h3>
             </div>
             <div className="mb-4">
               <span className="text-3xl font-bold text-slate-900">₦2,000</span>
@@ -164,7 +164,7 @@ export default function PlansArticle() {
           <h2>How to Upgrade</h2>
           <ol>
             <li>Go to <strong>Dashboard → Settings → Subscription</strong></li>
-            <li>Click <strong>Upgrade</strong> on the Pro plan</li>
+            <li>Click <strong>Upgrade</strong> and choose the Pro Pack (one-time) or subscribe to Pro Features (monthly)</li>
             <li>Complete payment via Paystack</li>
             <li>Your new plan activates immediately</li>
           </ol>
@@ -173,8 +173,10 @@ export default function PlansArticle() {
           
           <h3>When am I charged?</h3>
           <p>
-            Pro subscription is billed monthly on the same date you first subscribed. 
-            Invoice packs are one-time purchases with no recurring charges.
+            Invoice packs and the Pro Pack (₦2,000) are one-time purchases &mdash; no
+            recurring charges, and invoices you buy never expire. Pro Features is a
+            recurring subscription: ₦1,500/month (plus a small payment-processing fee)
+            charged automatically until you cancel, keeping your Pro features active.
           </p>
 
           <h3>Can I cancel anytime?</h3>

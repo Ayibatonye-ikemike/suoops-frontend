@@ -63,7 +63,6 @@ export default function DeleteAccountArticle() {
             <li>Inventory and product data</li>
             <li>Bank account details</li>
             <li>Business logo and branding</li>
-            <li>Referral codes and rewards</li>
             <li>All subscription and payment history</li>
           </ul>
 

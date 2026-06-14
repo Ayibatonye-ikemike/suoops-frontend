@@ -700,7 +700,6 @@ export default function UsersPage() {
               <ul className="mt-2 text-sm text-red-600 list-disc list-inside space-y-1">
                 <li>All invoices and customers</li>
                 <li>Business profile and logo</li>
-                <li>Referral data and commissions</li>
                 <li>All associated data</li>
               </ul>
             </div>

@@ -44,11 +44,11 @@ const faqCategories: FAQCategory[] = [
     faqs: [
       {
         question: "Can I add my logo to invoices?",
-        answer: "Yes! Upload your business logo in Settings. It will appear on all your PDF invoices. Custom branding (colors, fonts) is available on the Pro plan."
+        answer: "Yes! Upload your business logo in Settings. It will appear on all your PDF invoices. Custom branding (colors, fonts) is available with the Pro Pack or Pro Features pass."
       },
       {
         question: "How do I add VAT/Tax to invoices?",
-        answer: "Tax features are available on the Pro plan. When creating an invoice, you can enable tax calculation and the system will automatically compute VAT and development levy."
+        answer: "Tax features are available with the Pro Pack or Pro Features pass. When creating an invoice, you can enable tax calculation and the system will automatically compute VAT and development levy."
       },
       {
         question: "How do invoices get sent to customers?",
@@ -70,15 +70,15 @@ const faqCategories: FAQCategory[] = [
     faqs: [
       {
         question: "How does billing work?",
-        answer: "New users get 2 free invoices — no strings attached! After that, you can buy invoice packs (25 for ₦625 or 50 for ₦1,250) whenever you need more. Packs never expire. For premium features like custom branding and team management, get the Pro Pack (₦2,000) — 20 invoices + 30 days of Pro features, or the Pro Features pass (₦1,500) for 30 days of premium features only."
+        answer: "New users get 2 free invoices — no strings attached! After that, you can buy invoice packs (25 for ₦625 or 50 for ₦1,250) whenever you need more. Packs never expire. For premium features like custom branding and team management, get the Pro Pack (₦2,000, one-time) — 20 invoices + 30 days of Pro features — or subscribe to Pro Features for ₦1,500/month (recurring, premium features only)."
       },
       {
         question: "What are the subscription plans?",
-        answer: "SuoOps is fully prepaid — no monthly subscriptions. Start free with 2 invoices, then buy invoice packs as needed (25 for ₦625 or 50 for ₦1,250, never expire). For premium features, buy the Pro Pack (₦2,000) — 20 invoices + 30 days of Pro features — or the Pro Features pass (₦1,500) for 30 days of premium features only (tax reports, custom branding, inventory, team management, and voice invoices)."
+        answer: "Start free with 2 invoices, then buy invoice packs as needed (25 for ₦625 or 50 for ₦1,250, never expire) — these are one-time. For premium features, either buy the Pro Pack (₦2,000, one-time) — 20 invoices + 30 days of Pro features — or subscribe to Pro Features for ₦1,500/month (recurring, auto-renews) for premium features only (tax reports, custom branding, inventory, team management, and voice invoices)."
       },
       {
-        question: "Who should use the Pro plan?",
-        answer: "The Pro Pack (₦2,000, one-time) is perfect for growing small and medium businesses that need premium features. It includes 20 invoices plus 30 days of premium features — custom branding, team management, and voice invoices. Need features only? The Pro Features pass is ₦1,500 for 30 days."
+        question: "Who should use the Pro Pack?",
+        answer: "The Pro Pack (₦2,000, one-time) is perfect for growing small and medium businesses that need premium features. It includes 20 invoices plus 30 days of premium features — custom branding, team management, and voice invoices. Need features only? Subscribe to Pro Features for ₦1,500/month (recurring, auto-renews until you cancel)."
       },
       {
         question: "How do I upgrade my plan?",

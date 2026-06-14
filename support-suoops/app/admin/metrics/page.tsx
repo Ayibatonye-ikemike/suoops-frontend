@@ -13,7 +13,6 @@ import {
   AlertTriangle,
   Calendar,
   BarChart3,
-  Gift,
   CheckCircle,
   Zap,
   Target,
@@ -410,9 +409,6 @@ export default function MetricsPage() {
     
   const proCount = metrics?.active_subscriptions.pro || 0;
   const packBuyerCount = metrics?.pack_buyers?.length || 0;
-    
-  const referredPaidUsers = metrics?.paid_users?.filter(u => u.was_referred) || [];
-  const directPaidUsers = metrics?.paid_users?.filter(u => !u.was_referred) || [];
 
   return (
     <div className="space-y-6">
@@ -615,7 +611,7 @@ export default function MetricsPage() {
               color="bg-blue-500"
             />
             <ProgressBar
-              label="Pro Plan"
+              label="Pro Pack"
               value={metrics?.active_subscriptions.pro || 0}
               total={totalSubscribers || 1}
               color="bg-purple-500"
@@ -645,11 +641,11 @@ export default function MetricsPage() {
           {growth && (
             <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-2 gap-4">
               <div className="text-center p-3 rounded-lg bg-emerald-50">
-                <p className="text-xs text-emerald-600">Monthly Recurring</p>
+                <p className="text-xs text-emerald-600">Pro Revenue (30d)</p>
                 <p className="text-lg font-bold text-emerald-700">₦{growth.mrr.toLocaleString()}</p>
               </div>
               <div className="text-center p-3 rounded-lg bg-purple-50">
-                <p className="text-xs text-purple-600">ARR</p>
+                <p className="text-xs text-purple-600">Annualized run-rate</p>
                 <p className="text-lg font-bold text-purple-700">₦{growth.arr.toLocaleString()}</p>
               </div>
             </div>
@@ -717,17 +713,7 @@ export default function MetricsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-semibold text-slate-900">Pro Subscribers</h3>
-              <p className="text-sm text-slate-500">Pro plan users with active subscriptions</p>
-            </div>
-            <div className="flex gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <Gift className="h-4 w-4 text-purple-500" />
-                <span className="text-slate-600">Referred: <strong className="text-purple-700">{referredPaidUsers.length}</strong></span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-emerald-500" />
-                <span className="text-slate-600">Direct: <strong className="text-emerald-700">{directPaidUsers.length}</strong></span>
-              </div>
+              <p className="text-sm text-slate-500">Pro users (active Pro Pack / Pro Features subscription)</p>
             </div>
           </div>
         </div>
@@ -737,7 +723,6 @@ export default function MetricsPage() {
               <tr className="border-b border-slate-100 text-left text-sm text-slate-500">
                 <th className="px-6 py-3 font-medium">User</th>
                 <th className="px-6 py-3 font-medium">Plan</th>
-                <th className="px-6 py-3 font-medium">Source</th>
                 <th className="px-6 py-3 font-medium">Subscribed</th>
                 <th className="px-6 py-3 font-medium">Expires</th>
               </tr>
@@ -761,24 +746,6 @@ export default function MetricsPage() {
                       }`}>
                         {user.plan.toUpperCase()}
                       </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      {user.was_referred ? (
-                        <div className="flex items-center gap-2">
-                          <Gift className="h-4 w-4 text-purple-500" />
-                          <div>
-                            <span className="text-purple-700 font-medium">Referral</span>
-                            {user.referred_by_name && (
-                              <div className="text-xs text-slate-500">by {user.referred_by_name}</div>
-                            )}
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="h-4 w-4 text-emerald-500" />
-                          <span className="text-emerald-700 font-medium">Direct</span>
-                        </div>
-                      )}
                     </td>
                     <td className="px-6 py-4 text-sm text-slate-600">
                       {user.subscription_started_at
@@ -812,7 +779,7 @@ export default function MetricsPage() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-slate-500">
+                  <td colSpan={4} className="px-6 py-8 text-center text-slate-500">
                     No paid subscribers yet
                   </td>
                 </tr>
@@ -831,9 +798,9 @@ export default function MetricsPage() {
               {/* Revenue Health */}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <StatCard
-                  title="MRR"
+                  title="Pro Revenue (30d)"
                   value={`₦${growth.mrr.toLocaleString()}`}
-                  subtitle={`ARR: ₦${growth.arr.toLocaleString()}`}
+                  subtitle={`Annualized run-rate: ₦${growth.arr.toLocaleString()}`}
                   icon={DollarSign}
                   color="emerald"
                 />
@@ -1056,8 +1023,8 @@ export default function MetricsPage() {
                   <div className="flex items-center gap-3 mb-4">
                     <TrendingUp className="h-5 w-5 text-emerald-500" />
                     <div>
-                      <h3 className="font-semibold text-slate-900">Subscription Revenue Trend</h3>
-                      <p className="text-xs text-slate-500">Monthly subscription payments received</p>
+                      <h3 className="font-semibold text-slate-900">Pro Revenue Trend</h3>
+                      <p className="text-xs text-slate-500">Pro Pack &amp; Pro Features revenue received</p>
                     </div>
                   </div>
                   <MiniBarChart data={growth.mrr_trend} color="bg-emerald-500" />

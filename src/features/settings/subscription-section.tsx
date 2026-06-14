@@ -161,7 +161,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                       }`}
                     >
                       {isExpiringSoon
-                        ? `Expires on ${formatDate(subscriptionExpiresAt)} – buy a Pro Pack or Pro Features pass to keep your ${planDetails.name} features`
+                        ? `Expires on ${formatDate(subscriptionExpiresAt)} – buy a Pro Pack or subscribe to Pro Features to keep your ${planDetails.name} features`
                         : `Pro features active until ${formatDate(subscriptionExpiresAt)}`}
                     </p>
                   </div>
