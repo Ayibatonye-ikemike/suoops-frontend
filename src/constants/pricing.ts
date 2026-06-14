@@ -101,7 +101,7 @@ export const PLANS: Record<PlanTier, Plan> = {
     hasMonthlySubscription: false,
     popular: true,
     icon: "⭐",
-    description: "All premium features — pay once, no auto-renew",
+    description: "All premium features — pay once, no auto-renew. Or subscribe to Pro Features for ₦1,500/mo.",
     features: [
       "20 invoices included (never expire)",
       "30 days of all premium features",

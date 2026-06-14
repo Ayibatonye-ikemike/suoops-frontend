@@ -134,9 +134,10 @@ export default function PlansArticle() {
               <ul>
                 <li>Buy invoice packs (50 for ₦1,250) — pay as you go, never expires</li>
                 <li>Get the Pro Pack (₦2,000) — 20 invoices + 30 days of premium features, pay once</li>
+                <li>Subscribe to Pro Features (₦1,500/month) — premium features only, auto-renews monthly</li>
               </ul>
             </li>
-            <li>Complete payment via Paystack</li>
+            <li>Complete payment via Paystack (a small processing fee is added at checkout)</li>
             <li>Invoices are added to your balance immediately</li>
           </ol>
 
@@ -156,6 +157,14 @@ export default function PlansArticle() {
                   Best for growing small and medium businesses that need premium features like 
                   custom branding, team access, and voice invoices. Great value if 
                   you&apos;re regularly invoicing customers.
+                </p>
+              </div>
+              <div className="rounded-lg border border-brand-jade/40 bg-emerald-50/30 p-4">
+                <h4 className="font-semibold text-slate-900 mb-2">Pro Features (₦1,500/month — recurring)</h4>
+                <p className="text-sm text-slate-600">
+                  Want premium features without buying a pack? Subscribe for ₦1,500/month to unlock
+                  custom branding, tax reports, inventory, team management and more. Auto-renews
+                  monthly until you cancel. No invoices included &mdash; buy packs separately.
                 </p>
               </div>
             </div>

@@ -119,7 +119,7 @@ export function LowBalanceBanner() {
           
           {isZeroBalance && (
             <p className="mt-2 text-xs text-gray-500">
-              💡 Pro tip: the Pro Pack adds 20 invoices + 30 days of premium features for ₦2,000!
+              💡 Pro tip: the Pro Pack adds 20 invoices + 30 days of premium features for ₦2,000 (+ processing fee)!
             </p>
           )}
         </div>

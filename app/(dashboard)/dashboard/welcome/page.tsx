@@ -131,7 +131,7 @@ export default function WelcomeOnboardingPage() {
             </h3>
             <p className="mt-2">
               <span className="text-3xl font-bold text-slate-900">{PLANS.PRO.priceDisplay}</span>
-              <span className="text-slate-500">/month</span>
+              <span className="text-slate-500"> one-time</span>
             </p>
             <p className="text-sm text-emerald-600 font-medium mt-1">{PLANS.PRO.invoicesDisplay}</p>
             <ul className="mt-4 space-y-2">
@@ -180,7 +180,7 @@ export default function WelcomeOnboardingPage() {
               <p className="mt-2 text-xs font-semibold text-brand-chartreuse">Buy now →</p>
             </Link>
           </div>
-          <p className="text-center text-xs text-white/60 mt-3">No subscription needed — buy as you grow</p>
+          <p className="text-center text-xs text-white/60 mt-3">No subscription needed — buy as you grow. A small processing fee is added at checkout.</p>
         </div>
 
         {/* Quick-start CTAs */}
