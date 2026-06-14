@@ -15,6 +15,7 @@ import {
   Plus,
   Receipt,
   Settings as SettingsIcon,
+  TrendingUp,
   User as UserIcon,
 } from "lucide-react";
 
@@ -31,7 +32,7 @@ interface NavItem {
   href: string;
   label: string;
   Icon: typeof FileText;
-  gate: "CASH_DASHBOARD" | "INVENTORY" | "TAX_REPORTS" | null;
+  gate: "CASH_DASHBOARD" | "INVENTORY" | "TAX_REPORTS" | "INFLUENCER" | null;
 }
 
 const allNavItems: NavItem[] = [
@@ -40,6 +41,7 @@ const allNavItems: NavItem[] = [
   { href: "/dashboard/inventory", label: "Inventory", Icon: Package, gate: "INVENTORY" },
   { href: "/dashboard/expenses", label: "Expenses", Icon: Receipt, gate: null },
   { href: "/dashboard/tax", label: "Tax", Icon: Landmark, gate: "TAX_REPORTS" },
+  { href: "/dashboard/earnings", label: "Earnings", Icon: TrendingUp, gate: "INFLUENCER" },
   { href: "/dashboard/settings", label: "Settings", Icon: SettingsIcon, gate: null },
 ];
 
@@ -99,9 +101,10 @@ export function DashboardNav() {
   const initial = (user?.name || user?.email || "U").trim().charAt(0).toUpperCase();
   const currentPlan = (user?.plan?.toUpperCase() || "FREE") as PlanTier;
 
-  // Filter nav items based on plan
+  // Filter nav items based on plan and influencer status
   const navItems = allNavItems.filter((item) => {
     if (!item.gate) return true;
+    if (item.gate === "INFLUENCER") return user?.is_influencer === true;
     return hasPlanFeature(currentPlan, item.gate);
   });
 

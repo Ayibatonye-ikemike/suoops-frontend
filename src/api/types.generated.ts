@@ -4407,6 +4407,11 @@ export interface components {
             subscription_expires_at?: string | null;
             /** Subscription Started At */
             subscription_started_at?: string | null;
+            /**
+             * Is Influencer
+             * @default false
+             */
+            is_influencer: boolean;
         };
         /** UserStats */
         UserStats: {

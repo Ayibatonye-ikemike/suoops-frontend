@@ -12,6 +12,9 @@ import {
   Edit,
   Megaphone,
   ExternalLink,
+  Banknote,
+  AlertTriangle,
+  CheckCircle2,
 } from "lucide-react";
 import { useAdminAuth } from "../layout";
 
@@ -36,6 +39,27 @@ interface Influencer {
   signup_link: string;
 }
 
+interface PayoutUser {
+  user_id: number;
+  name: string;
+  email: string | null;
+  phone: string | null;
+  payout_bank_name: string | null;
+  payout_account_number: string | null;
+  payout_account_name: string | null;
+  paid_referrals: number;
+  commission_amount: number;
+  has_bank_details: boolean;
+}
+
+interface PayoutListResponse {
+  total_users: number;
+  total_amount: number;
+  users_with_bank: number;
+  users_without_bank: number;
+  payouts: PayoutUser[];
+}
+
 const API = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
 
 export default function InfluencersPage() {
@@ -46,6 +70,13 @@ export default function InfluencersPage() {
   const [editId, setEditId] = useState<number | null>(null);
   const [copiedId, setCopiedId] = useState<number | null>(null);
   const [error, setError] = useState("");
+  const [tab, setTab] = useState<"partnerships" | "payouts">("partnerships");
+  const [payouts, setPayouts] = useState<PayoutListResponse | null>(null);
+  const [payoutsLoading, setPayoutsLoading] = useState(false);
+  const [payoutMonth, setPayoutMonth] = useState(() => {
+    const now = new Date();
+    return { month: now.getMonth() + 1, year: now.getFullYear() };
+  });
 
   // Form state
   const [form, setForm] = useState({
@@ -74,9 +105,30 @@ export default function InfluencersPage() {
     }
   }, [authFetch]);
 
+  const fetchPayouts = useCallback(async () => {
+    setPayoutsLoading(true);
+    try {
+      const res = await authFetch(
+        `${API}/admin/referrals/payouts?month=${payoutMonth.month}&year=${payoutMonth.year}`
+      );
+      if (res.ok) {
+        const data = await res.json();
+        setPayouts(data);
+      }
+    } catch {
+      // silent
+    } finally {
+      setPayoutsLoading(false);
+    }
+  }, [authFetch, payoutMonth]);
+
   useEffect(() => {
     fetchInfluencers();
   }, [fetchInfluencers]);
+
+  useEffect(() => {
+    if (tab === "payouts") fetchPayouts();
+  }, [tab, fetchPayouts]);
 
   const handleCreate = async () => {
     setError("");
@@ -196,6 +248,29 @@ export default function InfluencersPage() {
             Manage affiliate partnerships and track performance
           </p>
         </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setTab("partnerships")}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              tab === "partnerships"
+                ? "bg-emerald-100 text-emerald-800"
+                : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
+            }`}
+          >
+            Partnerships
+          </button>
+          <button
+            onClick={() => setTab("payouts")}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
+              tab === "payouts"
+                ? "bg-amber-100 text-amber-800"
+                : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
+            }`}
+          >
+            <Banknote className="h-4 w-4" />
+            Payouts
+          </button>
+        </div>
         <button
           onClick={() => {
             setShowCreate(!showCreate);
@@ -220,6 +295,151 @@ export default function InfluencersPage() {
         </button>
       </div>
 
+      {/* Payouts Tab */}
+      {tab === "payouts" && (
+        <div className="space-y-4">
+          {/* Month Picker */}
+          <div className="flex items-center gap-3">
+            <select
+              value={payoutMonth.month}
+              onChange={(e) =>
+                setPayoutMonth((p) => ({ ...p, month: parseInt(e.target.value) }))
+              }
+              className="px-3 py-2 border border-slate-300 rounded-lg text-sm"
+            >
+              {[
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December",
+              ].map((m, i) => (
+                <option key={i} value={i + 1}>{m}</option>
+              ))}
+            </select>
+            <select
+              value={payoutMonth.year}
+              onChange={(e) =>
+                setPayoutMonth((p) => ({ ...p, year: parseInt(e.target.value) }))
+              }
+              className="px-3 py-2 border border-slate-300 rounded-lg text-sm"
+            >
+              {[2025, 2026, 2027].map((y) => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+            <button
+              onClick={fetchPayouts}
+              className="px-3 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm hover:bg-slate-200 transition-colors"
+            >
+              Refresh
+            </button>
+          </div>
+
+          {payoutsLoading ? (
+            <div className="animate-pulse space-y-4">
+              <div className="grid grid-cols-3 gap-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="h-24 bg-slate-100 rounded-xl" />
+                ))}
+              </div>
+              <div className="h-64 bg-slate-100 rounded-xl" />
+            </div>
+          ) : payouts ? (
+            <>
+              {/* Payout Summary */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="bg-white rounded-xl border border-slate-200 p-4">
+                  <p className="text-sm text-slate-500">Total to Pay</p>
+                  <p className="text-2xl font-bold text-amber-600 mt-1">
+                    ₦{payouts.total_amount.toLocaleString()}
+                  </p>
+                  <p className="text-xs text-slate-400">{payouts.total_users} users</p>
+                </div>
+                <div className="bg-white rounded-xl border border-slate-200 p-4">
+                  <div className="flex items-center gap-1.5 text-sm text-emerald-600">
+                    <CheckCircle2 className="h-4 w-4" />
+                    Bank Details Set
+                  </div>
+                  <p className="text-2xl font-bold text-slate-900 mt-1">{payouts.users_with_bank}</p>
+                </div>
+                <div className="bg-white rounded-xl border border-slate-200 p-4">
+                  <div className="flex items-center gap-1.5 text-sm text-red-500">
+                    <AlertTriangle className="h-4 w-4" />
+                    Missing Bank Details
+                  </div>
+                  <p className="text-2xl font-bold text-slate-900 mt-1">{payouts.users_without_bank}</p>
+                </div>
+              </div>
+
+              {/* Payouts Table */}
+              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-slate-200 bg-slate-50">
+                        <th className="text-left px-4 py-3 text-sm font-medium text-slate-600">Name</th>
+                        <th className="text-left px-4 py-3 text-sm font-medium text-slate-600">Contact</th>
+                        <th className="text-left px-4 py-3 text-sm font-medium text-slate-600">Bank</th>
+                        <th className="text-left px-4 py-3 text-sm font-medium text-slate-600">Account</th>
+                        <th className="text-center px-4 py-3 text-sm font-medium text-slate-600">Referrals</th>
+                        <th className="text-right px-4 py-3 text-sm font-medium text-slate-600">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {payouts.payouts.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="px-4 py-12 text-center text-slate-400">
+                            No payouts due for this period.
+                          </td>
+                        </tr>
+                      ) : (
+                        payouts.payouts.map((p) => (
+                          <tr key={p.user_id} className="border-b border-slate-100 hover:bg-slate-50">
+                            <td className="px-4 py-3">
+                              <p className="font-medium text-slate-900">{p.name}</p>
+                            </td>
+                            <td className="px-4 py-3">
+                              <p className="text-sm text-slate-600">{p.email || p.phone || "—"}</p>
+                            </td>
+                            <td className="px-4 py-3">
+                              {p.has_bank_details ? (
+                                <div>
+                                  <p className="text-sm font-medium text-slate-900">{p.payout_bank_name}</p>
+                                  <p className="text-xs text-slate-400">{p.payout_account_name}</p>
+                                </div>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 text-xs text-red-500 font-medium">
+                                  <AlertTriangle className="h-3 w-3" />
+                                  Not set
+                                </span>
+                              )}
+                            </td>
+                            <td className="px-4 py-3">
+                              {p.has_bank_details ? (
+                                <code className="text-sm bg-slate-100 px-2 py-1 rounded text-slate-800">
+                                  {p.payout_account_number}
+                                </code>
+                              ) : (
+                                <span className="text-sm text-slate-400">—</span>
+                              )}
+                            </td>
+                            <td className="px-4 py-3 text-center font-medium text-slate-900">
+                              {p.paid_referrals}
+                            </td>
+                            <td className="px-4 py-3 text-right font-bold text-amber-600">
+                              ₦{p.commission_amount.toLocaleString()}
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </>
+          ) : null}
+        </div>
+      )}
+
+      {tab === "partnerships" && <>
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white rounded-xl border border-slate-200 p-4">
@@ -627,6 +847,7 @@ export default function InfluencersPage() {
           </div>
         </div>
       </div>
+      </>}
     </div>
   );
 }

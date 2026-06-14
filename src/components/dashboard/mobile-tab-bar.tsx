@@ -14,6 +14,7 @@ import {
   Plus,
   Receipt,
   Settings as SettingsIcon,
+  TrendingUp,
   X,
 } from "lucide-react";
 
@@ -29,7 +30,7 @@ interface TabItem {
   href: string;
   label: string;
   Icon: typeof FileText;
-  gate: "CASH_DASHBOARD" | "INVENTORY" | "TAX_REPORTS" | null;
+  gate: "CASH_DASHBOARD" | "INVENTORY" | "TAX_REPORTS" | "INFLUENCER" | null;
 }
 
 const PRIMARY_TABS: TabItem[] = [
@@ -41,6 +42,7 @@ const PRIMARY_TABS: TabItem[] = [
 
 const MORE_TABS: TabItem[] = [
   { href: "/dashboard/inventory", label: "Inventory", Icon: Package, gate: "INVENTORY" },
+  { href: "/dashboard/earnings", label: "Earnings", Icon: TrendingUp, gate: "INFLUENCER" },
   { href: "/dashboard/settings", label: "Settings", Icon: SettingsIcon, gate: null },
 ];
 
@@ -70,11 +72,11 @@ export function MobileTabBar() {
   const currentPlan = (user?.plan?.toUpperCase() || "FREE") as PlanTier;
 
   const tabsToShow = PRIMARY_TABS.filter(
-    (t) => !t.gate || hasPlanFeature(currentPlan, t.gate),
+    (t) => !t.gate || (t.gate === "INFLUENCER" ? user?.is_influencer : hasPlanFeature(currentPlan, t.gate)),
   );
 
   const moreTabsToShow = MORE_TABS.filter(
-    (t) => !t.gate || hasPlanFeature(currentPlan, t.gate),
+    (t) => !t.gate || (t.gate === "INFLUENCER" ? user?.is_influencer : hasPlanFeature(currentPlan, t.gate)),
   );
 
   const isActive = (href: string) =>
