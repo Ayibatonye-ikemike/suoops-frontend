@@ -29,6 +29,8 @@ export default function PurchaseInvoicePackPage() {
   const pack = PACK_OPTIONS.find((p) => p.id === selectedPack) || PACK_OPTIONS[1];
   const totalPrice = pack.price * quantity;
   const totalInvoices = pack.size * quantity;
+  const totalProDays = pack.proDays * quantity;
+  const isProPack = pack.proDays > 0;
 
   const handlePurchase = async () => {
     setIsLoading(true);
@@ -51,8 +53,10 @@ export default function PurchaseInvoicePackPage() {
     <div className="min-h-screen bg-brand-background px-4 py-10">
       <div className="mx-auto max-w-lg">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-brand-text">Buy Invoice Pack</h1>
-          <p className="mt-2 text-brand-textMuted">Choose a pack and start invoicing</p>
+          <h1 className="text-3xl font-bold text-brand-text">Buy Invoices &amp; Pro</h1>
+          <p className="mt-2 text-brand-textMuted">
+            Invoices never expire. Pro features last 30 days — no auto-renew.
+          </p>
         </div>
 
         {/* Current Balance */}
@@ -68,38 +72,65 @@ export default function PurchaseInvoicePackPage() {
 
         {/* Pack Selection */}
         <div className="mb-6 grid grid-cols-2 gap-3">
-          {PACK_OPTIONS.map((p) => (
-            <button
-              key={p.id}
-              onClick={() => setSelectedPack(p.id)}
-              className={`relative rounded-xl border-2 p-4 text-left transition ${
-                selectedPack === p.id
-                  ? "border-brand-jade bg-emerald-50 shadow-sm"
-                  : "border-slate-200 bg-white hover:border-slate-300"
-              }`}
-            >
-              {("popular" in p) && (
-                <span className="absolute -top-2 right-2 rounded-full bg-amber-400 px-2 py-0.5 text-[9px] font-bold text-white uppercase">
-                  Best value
-                </span>
-              )}
-              <p className="text-lg font-bold text-brand-text">{p.size}</p>
-              <p className="text-xs text-brand-textMuted">invoices</p>
-              <p className="mt-2 text-base font-bold text-brand-jade">₦{p.price.toLocaleString()}</p>
-              <p className="text-[10px] text-brand-textMuted">₦{(p.price / p.size).toFixed(0)}/invoice</p>
-            </button>
-          ))}
+          {PACK_OPTIONS.map((p) => {
+            const isPro = p.proDays > 0;
+            return (
+              <button
+                key={p.id}
+                onClick={() => setSelectedPack(p.id)}
+                className={`relative rounded-xl border-2 p-4 text-left transition ${
+                  selectedPack === p.id
+                    ? "border-brand-jade bg-emerald-50 shadow-sm"
+                    : "border-slate-200 bg-white hover:border-slate-300"
+                }`}
+              >
+                {("popular" in p && p.popular) && (
+                  <span className="absolute -top-2 right-2 rounded-full bg-amber-400 px-2 py-0.5 text-[9px] font-bold text-white uppercase">
+                    Best value
+                  </span>
+                )}
+                {isPro && (
+                  <span className="mb-1 inline-block rounded-full bg-brand-jade/10 px-2 py-0.5 text-[9px] font-bold uppercase text-brand-jade">
+                    ⭐ Pro
+                  </span>
+                )}
+                {p.size > 0 ? (
+                  <>
+                    <p className="text-lg font-bold text-brand-text">{p.size}</p>
+                    <p className="text-xs text-brand-textMuted">
+                      invoices{isPro ? " + Pro" : ""}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-lg font-bold text-brand-text">{p.proDays}-day</p>
+                    <p className="text-xs text-brand-textMuted">Pro features</p>
+                  </>
+                )}
+                <p className="mt-2 text-base font-bold text-brand-jade">₦{p.price.toLocaleString()}</p>
+                {p.size > 0 ? (
+                  <p className="text-[10px] text-brand-textMuted">
+                    ₦{(p.price / p.size).toFixed(0)}/invoice{isPro ? " + features" : ""}
+                  </p>
+                ) : (
+                  <p className="text-[10px] text-brand-textMuted">features only</p>
+                )}
+              </button>
+            );
+          })}
         </div>
 
         {/* Quantity + Summary */}
         <div className="rounded-2xl border border-brand-border bg-white p-6 shadow-sm">
           <h2 className="mb-4 text-lg font-semibold text-brand-text">
-            {pack.label} — {pack.size} invoices
+            {pack.label}
+            {pack.size > 0 ? ` — ${pack.size} invoices` : ""}
+            {isProPack ? ` + ${pack.proDays}-day Pro` : ""}
           </h2>
 
           {/* Quantity Selector */}
           <div className="mb-6">
-            <label className="mb-2 block text-sm font-medium text-brand-text">Packs</label>
+            <label className="mb-2 block text-sm font-medium text-brand-text">Quantity</label>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -122,14 +153,24 @@ export default function PurchaseInvoicePackPage() {
                 <span className="text-brand-textMuted">{quantity} × ₦{pack.price.toLocaleString()}</span>
                 <span className="font-medium">₦{totalPrice.toLocaleString()}</span>
               </div>
-              <div className="flex justify-between border-t border-brand-border pt-2">
-                <span className="font-medium">Invoices to add</span>
-                <span className="font-bold text-brand-primary">+{totalInvoices}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-brand-textMuted">New balance</span>
-                <span className="font-medium text-brand-jade">{invoiceBalance + totalInvoices}</span>
-              </div>
+              {totalInvoices > 0 && (
+                <div className="flex justify-between border-t border-brand-border pt-2">
+                  <span className="font-medium">Invoices to add</span>
+                  <span className="font-bold text-brand-primary">+{totalInvoices}</span>
+                </div>
+              )}
+              {totalProDays > 0 && (
+                <div className="flex justify-between border-t border-brand-border pt-2">
+                  <span className="font-medium">Pro features</span>
+                  <span className="font-bold text-brand-jade">{totalProDays} days</span>
+                </div>
+              )}
+              {totalInvoices > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-brand-textMuted">New balance</span>
+                  <span className="font-medium text-brand-jade">{invoiceBalance + totalInvoices}</span>
+                </div>
+              )}
             </div>
           </div>
 

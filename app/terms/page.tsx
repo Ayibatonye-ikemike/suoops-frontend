@@ -75,7 +75,8 @@ export default function TermsPage() {
             <ul className="mt-4 list-disc space-y-2 pl-6">
               <li><strong>Free Plan:</strong> ₦0 - 2 free invoices to start</li>
               <li><strong>Starter Plan:</strong> No monthly fee - Buy invoice packs (₦1,250 per 50) + Tax reports & automation</li>
-              <li><strong>Pro Plan:</strong> ₦3,250/month - 50 invoices included + Custom logo branding + Priority support</li>
+              <li><strong>Pro Pack:</strong> ₦2,000 one-time - 20 invoices + 30 days of premium features (custom branding, tax reports, inventory, team & insights) + Priority support. No auto-renewal.</li>
+              <li><strong>Pro Features Pass:</strong> ₦1,500 one-time - 30 days of premium features only. No auto-renewal.</li>
             </ul>
             <p className="mt-4">
               <strong>Invoice Packs:</strong> All plans can purchase additional invoice packs at ₦1,250 per 50 invoices. Starter plan users buy packs as needed with no monthly subscription fee.

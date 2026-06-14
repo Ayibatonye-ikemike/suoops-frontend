@@ -70,15 +70,15 @@ const faqCategories: FAQCategory[] = [
     faqs: [
       {
         question: "How does billing work?",
-        answer: "New users get 2 free invoices — no strings attached! After that, you can buy invoice packs (25 for ₦625 or 50 for ₦1,250) whenever you need more. Packs never expire. For premium features like custom branding and team management, upgrade to Pro (₦3,250/month)."
+        answer: "New users get 2 free invoices — no strings attached! After that, you can buy invoice packs (25 for ₦625 or 50 for ₦1,250) whenever you need more. Packs never expire. For premium features like custom branding and team management, get the Pro Pack (₦2,000) — 20 invoices + 30 days of Pro features, or the Pro Features pass (₦1,500) for 30 days of premium features only."
       },
       {
         question: "What are the subscription plans?",
-        answer: "SuoOps has two simple tiers: Starter (free — 2 invoices to start, buy packs as needed) and Pro (₦3,250/month with all premium features including 50 invoices/month, tax reports, custom branding, inventory, team management, and voice invoices)."
+        answer: "SuoOps is fully prepaid — no monthly subscriptions. Start free with 2 invoices, then buy invoice packs as needed (25 for ₦625 or 50 for ₦1,250, never expire). For premium features, buy the Pro Pack (₦2,000) — 20 invoices + 30 days of Pro features — or the Pro Features pass (₦1,500) for 30 days of premium features only (tax reports, custom branding, inventory, team management, and voice invoices)."
       },
       {
         question: "Who should use the Pro plan?",
-        answer: "The Pro plan (₦3,250/month) is perfect for growing small and medium businesses that need premium features. It includes 50 invoices/month, custom branding, team management, and voice invoices."
+        answer: "The Pro Pack (₦2,000, one-time) is perfect for growing small and medium businesses that need premium features. It includes 20 invoices plus 30 days of premium features — custom branding, team management, and voice invoices. Need features only? The Pro Features pass is ₦1,500 for 30 days."
       },
       {
         question: "How do I upgrade my plan?",

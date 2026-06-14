@@ -155,11 +155,11 @@ export function SalesFunnelBanner() {
                 Buy 50 for ₦1,250
               </Link>
               <Link
-                href="/dashboard/settings/subscription"
+                href="/dashboard/billing/purchase?pack=pro_pack"
                 className="inline-flex items-center gap-2 rounded-lg border-2 border-amber-400 bg-amber-50 px-4 py-2.5 text-sm font-semibold text-amber-800 transition hover:bg-amber-100"
               >
                 <Crown className="h-4 w-4" />
-                Upgrade to Pro — ₦3,250/mo
+                Get Pro Pack — ₦2,000
               </Link>
             </div>
           </div>
@@ -220,10 +220,10 @@ export function SalesFunnelBanner() {
           <div className="flex items-center gap-2 mb-2">
             <span className="text-lg">⭐</span>
             <span className="text-sm font-bold text-slate-900">Pro</span>
-            <span className="ml-auto text-sm font-bold text-amber-700">₦3,250/mo</span>
+            <span className="ml-auto text-sm font-bold text-amber-700">₦2,000</span>
           </div>
           <ul className="space-y-1.5 text-xs text-slate-600 mb-3">
-            <li>✓ 50 invoices/month included</li>
+            <li>✓ 20 invoices + 30 days Pro</li>
             <li>✓ Tax reports (PIT + CIT)</li>
             <li>✓ Daily WhatsApp summary</li>
             <li>✓ Customer insights & alerts</li>
@@ -231,11 +231,11 @@ export function SalesFunnelBanner() {
             <li>✓ Priority support</li>
           </ul>
           <Link
-            href="/dashboard/settings/subscription"
+            href="/dashboard/billing/purchase?pack=pro_pack"
             className="flex w-full items-center justify-center gap-2 rounded-lg bg-amber-400 px-3 py-2 text-xs font-bold text-white transition hover:bg-amber-500"
           >
             <Crown className="h-3 w-3" />
-            Upgrade to Pro
+            Get Pro Pack
             <ArrowRight className="h-3 w-3" />
           </Link>
         </div>

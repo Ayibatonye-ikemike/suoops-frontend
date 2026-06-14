@@ -150,8 +150,8 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                       }`}
                     >
                       {isExpiringSoon
-                        ? "Subscription expiring soon"
-                        : "Subscription renews"}
+                        ? "Pro features expiring soon"
+                        : "Pro features active"}
                     </p>
                     <p
                       className={`text-xs ${
@@ -161,8 +161,8 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                       }`}
                     >
                       {isExpiringSoon
-                        ? `Expires on ${formatDate(subscriptionExpiresAt)} – renew to keep your ${planDetails.name} features`
-                        : `Next billing date: ${formatDate(subscriptionExpiresAt)}`}
+                        ? `Expires on ${formatDate(subscriptionExpiresAt)} – buy a Pro Pack or Pro Features pass to keep your ${planDetails.name} features`
+                        : `Pro features active until ${formatDate(subscriptionExpiresAt)}`}
                     </p>
                   </div>
                 </div>

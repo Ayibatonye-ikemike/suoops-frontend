@@ -97,7 +97,7 @@ export default function HowReferralsWorkArticle() {
                 <div>
                   <h4 className="font-semibold text-slate-900">They Subscribe to Pro</h4>
                   <p className="text-sm text-slate-600">
-                    Your friend signs up with your code and subscribes to Pro (₦3,250/month).
+                    Your friend signs up with your code and buys a Pro Pack (₦2,000).
                   </p>
                 </div>
               </div>
@@ -148,10 +148,10 @@ export default function HowReferralsWorkArticle() {
 
           <h3>What Counts as a Paid Referral?</h3>
           <p>
-            Only Pro plan subscriptions (₦3,250/month) earn you commission:
+            Only Pro Pack purchases (₦2,000) earn you commission:
           </p>
           <ul>
-            <li><CheckCircle className="inline h-4 w-4 text-emerald-600" /> <strong>Pro subscriber:</strong> You earn ₦488 cash commission</li>
+            <li><CheckCircle className="inline h-4 w-4 text-emerald-600" /> <strong>Pro Pack buyer:</strong> You earn ₦488 cash commission</li>
             <li className="text-slate-500"><strong>Free/Starter signups:</strong> No commission (focus on quality referrals)</li>
           </ul>
 

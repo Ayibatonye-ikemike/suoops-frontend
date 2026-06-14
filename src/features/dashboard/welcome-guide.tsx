@@ -334,11 +334,11 @@ export function WelcomeGuide() {
               <span className="text-2xl">⭐</span>
               <div>
                 <h3 className="text-base font-bold text-brand-text">Pro</h3>
-                <p className="text-xs text-amber-700 font-semibold">₦3,250/month</p>
+                <p className="text-xs text-amber-700 font-semibold">₦2,000 one-time</p>
               </div>
             </div>
             <ul className="space-y-2 text-xs text-slate-600 mb-4">
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-amber-500 shrink-0" /> 50 invoices/month included</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-amber-500 shrink-0" /> 20 invoices + 30 days Pro</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-amber-500 shrink-0" /> Tax reports (PIT + CIT)</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-amber-500 shrink-0" /> Daily WhatsApp summary</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-amber-500 shrink-0" /> Customer insights & alerts</li>
@@ -346,12 +346,12 @@ export function WelcomeGuide() {
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-amber-500 shrink-0" /> Priority support</li>
             </ul>
             <Link
-              href="/dashboard/settings/subscription"
+              href="/dashboard/billing/purchase?pack=pro_pack"
               onClick={snoozePricing}
               className="flex w-full items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-amber-500"
             >
               <Crown className="h-4 w-4" />
-              Upgrade to Pro
+              Get Pro Pack
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

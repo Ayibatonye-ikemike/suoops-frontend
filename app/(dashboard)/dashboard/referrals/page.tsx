@@ -252,7 +252,7 @@ export default function ReferralsPage() {
                   <div className="w-6 h-6 rounded-full bg-emerald-900/60 flex items-center justify-center text-emerald-400 text-xs font-bold shrink-0">
                     2
                   </div>
-                  <span>When your friend subscribes to Pro (₦3,250/month)</span>
+                  <span>When your friend buys a Pro Pack (₦2,000)</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 rounded-full bg-emerald-900/60 flex items-center justify-center text-emerald-400 text-xs font-bold shrink-0">

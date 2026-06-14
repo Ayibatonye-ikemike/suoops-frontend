@@ -1,9 +1,6 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
-import { isAxiosError } from "axios";
 import { useState } from "react";
-import { initializeSubscription } from "@/api/subscription";
 import { PAID_PLANS, type Plan } from "../../constants/pricing";
 
 interface PlanModalProps {
@@ -19,22 +16,6 @@ export function PlanSelectionModal({
 }: PlanModalProps) {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
 
-  const initializeMutation = useMutation({
-    mutationFn: initializeSubscription,
-    onSuccess: (data) => {
-      // Redirect to Paystack checkout
-      window.location.href = data.authorization_url;
-    },
-    onError: (error: unknown) => {
-      const message = isAxiosError(error)
-        ? error.response?.data?.detail || error.message
-        : error instanceof Error
-        ? error.message
-        : null;
-      alert(message || "Failed to initialize payment. Please try again.");
-    },
-  });
-
   if (!isOpen) return null;
 
   const handleUpgrade = () => {
@@ -42,10 +23,9 @@ export function PlanSelectionModal({
       alert("Please select a plan");
       return;
     }
-    initializeMutation.mutate(selectedPlan);
+    // Prepaid model: send to the Pro Pack checkout (no recurring subscription).
+    window.location.href = "/dashboard/billing/purchase?pack=pro_pack";
   };
-
-  const isPending = initializeMutation.isPending;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-8 sm:px-6">
@@ -179,12 +159,10 @@ export function PlanSelectionModal({
           </button>
           <button
             onClick={handleUpgrade}
-            disabled={!selectedPlan || isPending}
+            disabled={!selectedPlan}
             className="rounded-lg bg-brand-jade px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-jadeHover disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
           >
-            {isPending
-              ? "Processing..."
-              : "Continue to Payment"}
+            Continue to Payment
           </button>
         </div>
       </div>

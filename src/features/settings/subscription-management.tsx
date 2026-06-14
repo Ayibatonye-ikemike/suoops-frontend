@@ -110,11 +110,13 @@ export function SubscriptionManagement({ onStatusChange }: SubscriptionManagemen
           </span>
         </div>
 
-        {/* Monthly Cost */}
-        <div className="flex items-center justify-between border-t border-brand-border pt-4 mt-4">
-          <span className="text-sm text-brand-textMuted">Monthly Cost</span>
-          <span className="text-lg font-semibold text-brand-text">₦3,250</span>
-        </div>
+        {/* Cost (legacy recurring subscribers only; Pro is now prepaid) */}
+        {status.is_recurring && (
+          <div className="flex items-center justify-between border-t border-brand-border pt-4 mt-4">
+            <span className="text-sm text-brand-textMuted">Monthly Cost</span>
+            <span className="text-lg font-semibold text-brand-text">₦3,250</span>
+          </div>
+        )}
 
         {/* Cancel Subscription */}
         {status.is_recurring && (

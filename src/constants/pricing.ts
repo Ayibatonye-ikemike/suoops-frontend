@@ -1,17 +1,19 @@
 /**
  * Centralized pricing and plan configuration
  * Single source of truth for all subscription tiers
- * 
- * BILLING MODEL (Small & Medium Business Focus):
- * - FREE (displayed as "Starter"): 2 free invoices to start, buy packs (50 = ₦1,250)
- * - PRO: ₦3,250/month = 50 invoices included + ALL premium features
- * - All plans can buy additional packs (50 invoices = ₦1,250)
- * 
+ *
+ * BILLING MODEL (Small & Medium Business Focus — fully prepaid):
+ * - FREE (displayed as "Starter"): 2 free invoices to start, buy packs.
+ * - Invoice packs (invoices only, never expire): 25 = ₦625, 50 = ₦1,250.
+ * - Pro Pack: 20 invoices + 30 days of Pro features for ₦2,000 (one-time).
+ * - Pro Features pass: 30 days of Pro features only for ₦1,500 (one-time).
+ *
+ * Pro features are time-limited (lapse after 30 days); purchased invoices are
+ * permanent. There is no recurring ₦3,250/mo subscription — "Pro" is prepaid.
+ *
  * Note: STARTER plan removed from backend. Frontend shows "Starter" as UX label for FREE.
- * Note: BUSINESS plan removed - we focus on businesses under ₦100M annual revenue.
- * PRO now includes voice invoices.
- * 
- * IMPORTANT: Keep in sync with backend app/models/models.py SubscriptionPlan
+ *
+ * IMPORTANT: Keep in sync with backend app/utils/feature_gate.py PACK_OPTIONS
  */
 
 export type PlanTier = "FREE" | "PRO";
@@ -36,7 +38,7 @@ export interface Plan {
   hasMonthlySubscription?: boolean;
 }
 
-// Invoice pack pricing
+// Invoice pack pricing (invoices only, never expire)
 export const INVOICE_PACK_SIZE = 50;
 export const INVOICE_PACK_PRICE = 1250;
 
@@ -44,9 +46,21 @@ export const INVOICE_PACK_PRICE = 1250;
 export const INVOICE_SMALL_PACK_SIZE = 25;
 export const INVOICE_SMALL_PACK_PRICE = 625;
 
+// Pro packs (prepaid, one-time): grant time-limited Pro features.
+export const PRO_FEATURES_DAYS = 30;
+
+// Pro Pack: invoices + 30 days of Pro features
+export const PRO_PACK_SIZE = 20;
+export const PRO_PACK_PRICE = 2000;
+
+// Pro Features pass: 30 days of Pro features only (no invoices)
+export const PRO_FEATURES_PRICE = 1500;
+
 export const PACK_OPTIONS = [
-  { id: "small", size: INVOICE_SMALL_PACK_SIZE, price: INVOICE_SMALL_PACK_PRICE, label: "Starter Pack" },
-  { id: "standard", size: INVOICE_PACK_SIZE, price: INVOICE_PACK_PRICE, label: "Value Pack", popular: true },
+  { id: "small", size: INVOICE_SMALL_PACK_SIZE, price: INVOICE_SMALL_PACK_PRICE, label: "Starter Pack", proDays: 0 },
+  { id: "standard", size: INVOICE_PACK_SIZE, price: INVOICE_PACK_PRICE, label: "Value Pack", proDays: 0 },
+  { id: "pro_pack", size: PRO_PACK_SIZE, price: PRO_PACK_PRICE, label: "Pro Pack", proDays: PRO_FEATURES_DAYS, pro: true, popular: true },
+  { id: "pro_features", size: 0, price: PRO_FEATURES_PRICE, label: "Pro Features", proDays: PRO_FEATURES_DAYS, pro: true },
 ] as const;
 
 /**
@@ -80,16 +94,17 @@ export const PLANS: Record<PlanTier, Plan> = {
     id: "PRO",
     name: "Pro",
     displayName: "Pro",
-    price: 3250,
-    priceDisplay: "₦3,250",
-    invoicesIncluded: 50,
-    invoicesDisplay: "50 invoices included",
-    hasMonthlySubscription: true,
+    price: 2000,
+    priceDisplay: "₦2,000",
+    invoicesIncluded: 20,
+    invoicesDisplay: "20 invoices + 30 days Pro",
+    hasMonthlySubscription: false,
     popular: true,
     icon: "⭐",
-    description: "All premium features for your business",
+    description: "All premium features — pay once, no auto-renew",
     features: [
-      "50 invoices/month included",
+      "20 invoices included (never expire)",
+      "30 days of all premium features",
       "Tax reports (PIT + CIT)",
       "Custom logo branding",
       "Inventory management",
@@ -150,7 +165,7 @@ export const FEATURE_GATES = {
  */
 export const PRO_QUOTA = {
   VOICE_LIMIT: 15, // Voice invoices per month
-  INVOICES_INCLUDED: 50,
+  INVOICES_INCLUDED: 20,
 } as const;
 
 /**
