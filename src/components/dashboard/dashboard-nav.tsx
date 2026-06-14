@@ -8,7 +8,6 @@ import {
   BarChart3,
   ChevronDown,
   FileText,
-  Gift,
   Landmark,
   LogOut,
   MessageCircle,
@@ -41,7 +40,6 @@ const allNavItems: NavItem[] = [
   { href: "/dashboard/inventory", label: "Inventory", Icon: Package, gate: "INVENTORY" },
   { href: "/dashboard/expenses", label: "Expenses", Icon: Receipt, gate: null },
   { href: "/dashboard/tax", label: "Tax", Icon: Landmark, gate: "TAX_REPORTS" },
-  { href: "/dashboard/referrals", label: "Referrals", Icon: Gift, gate: null },
   { href: "/dashboard/settings", label: "Settings", Icon: SettingsIcon, gate: null },
 ];
 

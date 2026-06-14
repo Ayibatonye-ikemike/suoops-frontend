@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronDown, ChevronRight, HelpCircle, FileText, CreditCard, Users, MessageCircle, Shield } from "lucide-react";
+import { ChevronDown, ChevronRight, HelpCircle, FileText, CreditCard, MessageCircle, Shield } from "lucide-react";
 
 interface FAQItem {
   question: string;
@@ -91,28 +91,6 @@ const faqCategories: FAQCategory[] = [
       {
         question: "What happens to my invoices if I downgrade?",
         answer: "All your data is preserved. You just won't be able to create new invoices beyond your remaining balance until you purchase more or upgrade."
-      }
-    ]
-  },
-  {
-    title: "Referral Program",
-    icon: <Users className="h-5 w-5" />,
-    faqs: [
-      {
-        question: "How does the referral program work?",
-        answer: "Share your unique referral code with friends. When they sign up and make their first purchase, you earn rewards. There's no limit to how many people you can refer!"
-      },
-      {
-        question: "Where do I find my referral code?",
-        answer: "Your referral code is in your dashboard under the Referrals section. Click the copy button to share it easily."
-      },
-      {
-        question: "When do I receive my referral reward?",
-        answer: "Rewards are credited after your referral makes their first successful payment or purchase."
-      },
-      {
-        question: "Can I use multiple referral codes?",
-        answer: "No, you can only use one referral code when signing up. The code must be entered during registration."
       }
     ]
   },

@@ -17,12 +17,12 @@ export function Hero({ onWatchDemo }: HeroProps) {
           {/* Left: Text Content */}
           <div className="flex flex-col justify-center">
             <h1 className="font-heading text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-              Invoice customers and get paid —
+              Tax-ready invoicing for Nigerian businesses —
               <br />
-              <span className="text-brand-citrus">straight from WhatsApp</span>
+              <span className="text-brand-citrus">right from WhatsApp</span>
             </h1>
             <p className="mt-6 text-lg text-white/80 max-w-lg">
-              Create invoices, track payments, manage inventory, and stay tax-aware without switching banks or learning accounting software.
+              Send invoices, get paid, and stay on top of your PIT &amp; CIT — without switching banks or learning accounting software.
             </p>
             <p className="mt-4 text-sm text-white/60 max-w-lg">
               Built for freelancers and small businesses in Nigeria who already do business on WhatsApp.

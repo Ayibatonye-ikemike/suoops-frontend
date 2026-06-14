@@ -7,7 +7,6 @@ import { useQuery } from "@tanstack/react-query";
 import {
   BarChart3,
   FileText,
-  Gift,
   Landmark,
   Menu as MenuIcon,
   MessageCircle,
@@ -42,7 +41,6 @@ const PRIMARY_TABS: TabItem[] = [
 
 const MORE_TABS: TabItem[] = [
   { href: "/dashboard/inventory", label: "Inventory", Icon: Package, gate: "INVENTORY" },
-  { href: "/dashboard/referrals", label: "Referrals", Icon: Gift, gate: null },
   { href: "/dashboard/settings", label: "Settings", Icon: SettingsIcon, gate: null },
 ];
 

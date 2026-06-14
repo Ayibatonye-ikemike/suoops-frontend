@@ -48,14 +48,6 @@ const TIPS: FeatureTip[] = [
     action: { label: "Open Tax", href: "/dashboard/tax" },
   },
   {
-    id: "referrals",
-    icon: "🎁",
-    title: "Earn free invoices with referrals",
-    description:
-      "Share your code — earn ₦488 per Pro subscriber. Cash out anytime.",
-    action: { label: "Start Referring", href: "/dashboard/referrals" },
-  },
-  {
     id: "whatsapp-report",
     icon: "📊",
     title: "Get reports on WhatsApp",

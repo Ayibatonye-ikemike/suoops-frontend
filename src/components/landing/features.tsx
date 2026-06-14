@@ -1,34 +1,6 @@
 export function Features() {
   return (
     <>
-      {/* Problem Section */}
-      <section className="bg-white px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-brand-evergreen sm:text-4xl">
-              Invoicing shouldn&apos;t slow your business down
-            </h2>
-          </div>
-          <div className="mt-8 space-y-4">
-            <p className="text-lg text-slate-700">
-              Most small businesses already sell, negotiate, and follow up with customers on WhatsApp. 
-              But invoicing tools still force you into dashboards, emails, and accounting complexity.
-            </p>
-            <p className="font-semibold text-slate-900">That leads to:</p>
-            <ul className="space-y-3">
-              <ProblemItem text="Late payments" />
-              <ProblemItem text="Lost invoice records" />
-              <ProblemItem text="Unclear stock levels" />
-              <ProblemItem text="Confusion about taxes" />
-              <ProblemItem text="Too much time spent &quot;just admin&quot;" />
-            </ul>
-            <p className="mt-6 text-lg font-semibold text-brand-jade">
-              Suoops fixes this by bringing invoicing to where your business already runs.
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* How It Works */}
       <section id="features" className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
@@ -129,14 +101,6 @@ function StepCard({ number, title, description }: StepCardProps) {
       <h3 className="mt-4 text-lg font-bold text-brand-evergreen">{title}</h3>
       <p className="mt-2 text-sm text-slate-600">{description}</p>
     </div>
-  );
-}
-
-function ProblemItem({ text }: { text: string }) {
-  return (
-    <li className="flex items-start gap-3 p-4 bg-white rounded-lg border-l-4 border-red-500">
-      <span className="font-medium text-slate-700">{text}</span>
-    </li>
   );
 }
 
