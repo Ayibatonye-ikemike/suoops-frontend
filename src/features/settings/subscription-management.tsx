@@ -71,7 +71,7 @@ export function SubscriptionManagement({ onStatusChange }: SubscriptionManagemen
   return (
     <div className="rounded-lg border border-brand-border bg-white p-6 shadow-card">
       <h3 className="text-lg font-semibold text-brand-text mb-4">
-        Subscription Billing
+        Pro Plan — Subscription Billing
       </h3>
 
       <div className="space-y-4">
@@ -110,11 +110,11 @@ export function SubscriptionManagement({ onStatusChange }: SubscriptionManagemen
           </span>
         </div>
 
-        {/* Cost (legacy recurring subscribers only; Pro is now prepaid) */}
+        {/* Cost */}
         {status.is_recurring && (
           <div className="flex items-center justify-between border-t border-brand-border pt-4 mt-4">
             <span className="text-sm text-brand-textMuted">Monthly Cost</span>
-            <span className="text-lg font-semibold text-brand-text">₦3,250</span>
+            <span className="text-lg font-semibold text-brand-text">₦1,500</span>
           </div>
         )}
 

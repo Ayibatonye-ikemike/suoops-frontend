@@ -219,7 +219,7 @@ export function SalesFunnelBanner() {
           </div>
           <div className="flex items-center gap-2 mb-2">
             <span className="text-lg">⭐</span>
-            <span className="text-sm font-bold text-slate-900">Pro</span>
+            <span className="text-sm font-bold text-slate-900">Pro Pack</span>
             <span className="ml-auto text-sm font-bold text-amber-700">₦2,000</span>
           </div>
           <ul className="space-y-1.5 text-xs text-slate-600 mb-3">

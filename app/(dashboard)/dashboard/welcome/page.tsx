@@ -127,7 +127,7 @@ export default function WelcomeOnboardingPage() {
             </div>
             <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
               <Crown className="h-5 w-5 text-amber-500" />
-              {PLANS.PRO.displayName}
+              Pro Pack
             </h3>
             <p className="mt-2">
               <span className="text-3xl font-bold text-slate-900">{PLANS.PRO.priceDisplay}</span>

@@ -114,10 +114,13 @@ function PricingCard({ plan }: { plan: Plan }) {
           2 FREE INVOICES
         </div>
       )}
-      <h3 className="text-lg font-bold text-brand-evergreen">{plan.displayName}</h3>
+      <h3 className="text-lg font-bold text-brand-evergreen">
+        {plan.id === "PRO" ? "Pro Pack" : plan.displayName}
+      </h3>
       <div className="mt-3">
         <span className="text-3xl font-bold text-brand-evergreen">{plan.priceDisplay}</span>
         {plan.hasMonthlySubscription && <span className="text-slate-500">/mo</span>}
+        {!isFree && !plan.hasMonthlySubscription && <span className="text-slate-500 text-sm ml-1">one-time</span>}
       </div>
       <p className="mt-2 text-sm font-medium text-brand-jade">
         {plan.invoicesDisplay}

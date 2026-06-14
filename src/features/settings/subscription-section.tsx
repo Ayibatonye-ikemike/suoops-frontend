@@ -202,7 +202,8 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
                   </p>
                   <p className="text-sm text-brand-textMuted">
                     Upgrade to Pro for custom branding,
-                    inventory, analytics, and tax reports.
+                    inventory, analytics, and tax reports — buy the Pro Pack (₦2,000 one-time)
+                    or subscribe to the Pro Plan (₦1,500/mo).
                   </p>
                 </div>
                 <Button
