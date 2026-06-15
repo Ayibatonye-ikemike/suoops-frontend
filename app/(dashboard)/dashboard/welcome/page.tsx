@@ -1,8 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { MessageCircle, ArrowRight, FileText, Zap, Shield, Clock } from "lucide-react";
+import {
+  MessageCircle,
+  ArrowRight,
+  FileText,
+  Zap,
+  TrendingUp,
+  Bell,
+  BarChart3,
+  CheckCircle2,
+  Smartphone,
+} from "lucide-react";
 import Link from "next/link";
 import { apiClient } from "@/api/client";
 
@@ -27,17 +37,21 @@ function markOnboardingComplete() {
 }
 
 /**
- * Post-signup welcome screen — single purpose: get the user to create
- * their first invoice NOW, primarily via WhatsApp.
+ * Post-signup welcome screen.
  *
- * - Auto-opens WhatsApp 2 seconds after page load (mobile-friendly)
- * - One giant WhatsApp CTA dominates the screen
- * - Secondary "use the web" option for desktop users
- * - No pricing, no plans, no distractions
+ * Structure (top to bottom):
+ *   1. Hero + two equal CTAs above the fold (WhatsApp + Web)
+ *   2. How to create an invoice (step-by-step)
+ *   3. What SuoOps does for your business (benefits)
+ *   4. More commands you can use
+ *
+ * UX principles:
+ *   - NO auto-popups — user chooses when to act
+ *   - Both WhatsApp and Web paths are first-class
+ *   - CTAs visible without scrolling
+ *   - Educational content below as reference
  */
 export default function WelcomeOnboardingPage() {
-  const [waOpened, setWaOpened] = useState(false);
-
   const { data: user } = useQuery<UserData>({
     queryKey: ["currentUser"],
     queryFn: async () => (await apiClient.get<UserData>("/users/me")).data,
@@ -45,56 +59,22 @@ export default function WelcomeOnboardingPage() {
   });
 
   const firstName = user?.name?.split(" ")[0] || "there";
+  const bizName = user?.business_name || "your business";
   const whatsappLink = `https://wa.me/${BOT_NUMBER}?text=${encodeURIComponent(
     `Hi, I just signed up as ${firstName}. Help me create my first invoice!`
   )}`;
 
-  // Auto-open WhatsApp after a short delay (gives page time to render)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!waOpened) {
-        setWaOpened(true);
-        markOnboardingComplete();
-        window.open(whatsappLink, "_blank", "noopener,noreferrer");
-      }
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, [whatsappLink, waOpened]);
-
-  const handleWhatsAppClick = () => {
-    setWaOpened(true);
-    markOnboardingComplete();
-  };
-
   return (
-    <main className="min-h-screen bg-gradient-to-b from-brand-evergreen to-brand-teal flex items-center">
-      <div className="mx-auto max-w-lg w-full px-4 py-10 sm:px-6">
-        {/* Hero */}
-        <div className="text-center text-white mb-10">
-          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-brand-chartreuse/20 backdrop-blur">
-            <FileText className="h-10 w-10 text-brand-chartreuse" />
-          </div>
-          <h1 className="text-3xl font-bold sm:text-4xl">
-            Welcome, {firstName}! 🎉
-          </h1>
-          <p className="mt-3 text-xl text-white/90 font-medium">
-            Let&apos;s create your first invoice
-          </p>
-          <p className="mt-2 text-sm text-white/60">
-            It takes less than 30 seconds
-          </p>
-        </div>
+    <main className="min-h-screen bg-gradient-to-b from-brand-evergreen to-brand-teal">
+      <div className="mx-auto max-w-2xl w-full px-4 py-8 sm:px-6 sm:py-12">
 
-        {/* How it works — compact */}
-        <div className="mb-8 rounded-2xl bg-white/10 backdrop-blur p-5 text-white">
-          <p className="text-center text-sm font-semibold text-white/80 mb-4">Just type what you sold:</p>
-          <div className="rounded-xl bg-white/10 p-4 text-center">
-            <p className="font-mono text-lg text-brand-chartreuse">
-              &quot;Invoice Joy 08012345678 5000 for hair installation&quot;
-            </p>
-          </div>
-          <p className="text-center text-xs text-white/60 mt-3">
-            We&apos;ll generate a professional PDF invoice and send it to your customer instantly
+        {/* ── Above the fold: Hero + CTAs ── */}
+        <div className="text-center text-white mb-6">
+          <h1 className="text-2xl font-bold sm:text-3xl">
+            Welcome to SuoOps, {firstName}! 🎉
+          </h1>
+          <p className="mt-2 text-base text-white/80">
+            Send professional invoices and get paid faster — let&apos;s create your first one now
           </p>
         </div>
 
@@ -103,43 +83,130 @@ export default function WelcomeOnboardingPage() {
           href={whatsappLink}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={handleWhatsAppClick}
-          className="flex w-full items-center justify-center gap-3 rounded-2xl bg-[#25D366] px-8 py-5 text-xl font-bold text-white shadow-2xl transition hover:bg-[#20bd5a] hover:scale-[1.02] active:scale-[0.98] animate-pulse hover:animate-none"
+          onClick={() => markOnboardingComplete()}
+          className="flex w-full items-center justify-center gap-3 rounded-2xl bg-[#25D366] px-6 py-5 text-lg font-bold text-white shadow-lg transition hover:bg-[#20bd5a] hover:shadow-xl active:scale-[0.98]"
         >
-          <MessageCircle className="h-7 w-7" />
-          Generate Invoice on WhatsApp
+          <MessageCircle className="h-7 w-7 shrink-0" />
+          Create Your First Invoice
         </a>
         <p className="text-center text-xs text-white/50 mt-2">
-          Opens WhatsApp — your invoicing tool lives in your chat list
+          Opens WhatsApp — type what you sold, get a PDF
         </p>
 
         {/* Secondary CTA — Web dashboard */}
-        <div className="mt-6 text-center">
-          <Link
-            href="/dashboard"
-            onClick={() => markOnboardingComplete()}
-            className="inline-flex items-center gap-2 rounded-xl border border-white/30 px-6 py-3 text-sm font-medium text-white transition hover:bg-white/10"
-          >
-            Or use the web dashboard instead
-            <ArrowRight className="h-4 w-4" />
-          </Link>
+        <Link
+          href="/dashboard"
+          onClick={() => markOnboardingComplete()}
+          className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-white/30 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10 active:scale-[0.98]"
+        >
+          Use the Web Dashboard instead
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+
+        <p className="text-center text-xs text-white/50 mt-6">
+          You have <span className="font-semibold text-brand-chartreuse">2 free invoices</span> to start — no card required
+        </p>
+
+        {/* ── Below the fold: Education ── */}
+
+        {/* How to create an invoice */}
+        <div className="mb-6 rounded-2xl bg-white/10 backdrop-blur p-5 text-white">
+          <h2 className="text-base font-bold mb-4">How it works</h2>
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-chartreuse text-brand-evergreen text-xs font-bold">1</div>
+              <div>
+                <p className="text-sm font-semibold">Type what you sold</p>
+                <div className="mt-1.5 rounded-lg bg-white/10 px-3 py-2">
+                  <p className="font-mono text-sm text-brand-chartreuse">Invoice Joy 08012345678 5000 for hair installation</p>
+                </div>
+                <p className="text-xs text-white/50 mt-1">
+                  Format: <span className="text-white/70">Invoice [name] [phone] [amount] for [item]</span>
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-chartreuse text-brand-evergreen text-xs font-bold">2</div>
+              <div>
+                <p className="text-sm font-semibold">SuoOps creates a professional PDF</p>
+                <p className="text-xs text-white/60">With your business name, bank details, and a unique invoice number</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-chartreuse text-brand-evergreen text-xs font-bold">3</div>
+              <div>
+                <p className="text-sm font-semibold">Your customer receives it instantly</p>
+                <p className="text-xs text-white/60">Delivered via WhatsApp — they see your bank details and can pay right away</p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Value props — minimal */}
-        <div className="mt-10 grid grid-cols-3 gap-3 text-center text-white/70">
-          <div>
-            <Zap className="h-5 w-5 mx-auto mb-1 text-brand-chartreuse" />
-            <p className="text-xs font-medium">30-second invoices</p>
-          </div>
-          <div>
-            <Shield className="h-5 w-5 mx-auto mb-1 text-brand-chartreuse" />
-            <p className="text-xs font-medium">Professional PDFs</p>
-          </div>
-          <div>
-            <Clock className="h-5 w-5 mx-auto mb-1 text-brand-chartreuse" />
-            <p className="text-xs font-medium">Payment tracking</p>
+        {/* Benefits */}
+        <div className="mb-6 rounded-2xl bg-white/10 backdrop-blur p-5 text-white">
+          <h2 className="text-base font-bold mb-4">What SuoOps does for {bizName}</h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="flex items-start gap-3">
+              <Zap className="h-5 w-5 text-brand-chartreuse shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-semibold">30-second invoices</p>
+                <p className="text-xs text-white/60">No templates, no forms — just type what you sold</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <TrendingUp className="h-5 w-5 text-brand-chartreuse shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-semibold">Get paid faster</p>
+                <p className="text-xs text-white/60">Customers get your bank details on a professional invoice</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <Bell className="h-5 w-5 text-brand-chartreuse shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-semibold">Auto payment reminders</p>
+                <p className="text-xs text-white/60">SuoOps follows up so you don&apos;t have to</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <BarChart3 className="h-5 w-5 text-brand-chartreuse shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-semibold">Track your money</p>
+                <p className="text-xs text-white/60">Revenue, expenses, and who still owes you</p>
+              </div>
+            </div>
           </div>
         </div>
+
+        {/* More commands */}
+        <div className="mb-8 rounded-2xl bg-white/10 backdrop-blur p-5 text-white">
+          <h2 className="text-base font-bold mb-3">More things you can do</h2>
+          <div className="space-y-2">
+            <div className="flex items-center gap-3 rounded-lg bg-white/5 px-3 py-2">
+              <Smartphone className="h-4 w-4 text-brand-chartreuse shrink-0" />
+              <p className="text-xs"><span className="font-mono text-brand-chartreuse">&quot;Mark INV-001 as paid&quot;</span> <span className="text-white/50">— record a payment</span></p>
+            </div>
+            <div className="flex items-center gap-3 rounded-lg bg-white/5 px-3 py-2">
+              <Smartphone className="h-4 w-4 text-brand-chartreuse shrink-0" />
+              <p className="text-xs"><span className="font-mono text-brand-chartreuse">&quot;Show my unpaid invoices&quot;</span> <span className="text-white/50">— see who owes you</span></p>
+            </div>
+            <div className="flex items-center gap-3 rounded-lg bg-white/5 px-3 py-2">
+              <Smartphone className="h-4 w-4 text-brand-chartreuse shrink-0" />
+              <p className="text-xs"><span className="font-mono text-brand-chartreuse">&quot;How much did I make this month?&quot;</span> <span className="text-white/50">— business summary</span></p>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom CTA — repeat for users who scrolled */}
+        <a
+          href={whatsappLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => markOnboardingComplete()}
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-5 py-3.5 text-sm font-bold text-white transition hover:bg-[#20bd5a] active:scale-[0.98]"
+        >
+          <MessageCircle className="h-5 w-5" />
+          Create Your First Invoice
+        </a>
       </div>
     </main>
   );
