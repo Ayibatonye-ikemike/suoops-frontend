@@ -136,10 +136,21 @@ export default function EarningsPage() {
       setEditingPayout(false);
     } catch (error) {
       console.error("Error saving payout:", error);
-      const detail = error instanceof Error 
-        ? error.message 
-        : (error as any)?.response?.data?.detail || "Could not save payout account. Please try again.";
-      setPayoutError(detail);
+      let errorMsg = "Could not save payout account. Please try again.";
+      
+      const responseData = (error as any)?.response?.data;
+      if (responseData?.detail) {
+        if (Array.isArray(responseData.detail)) {
+          // Pydantic validation errors
+          errorMsg = responseData.detail[0]?.msg || responseData.detail[0]?.message || errorMsg;
+        } else if (typeof responseData.detail === 'string') {
+          errorMsg = responseData.detail;
+        }
+      } else if (error instanceof Error) {
+        errorMsg = error.message;
+      }
+      
+      setPayoutError(errorMsg);
     } finally {
       setSavingPayout(false);
     }
@@ -156,10 +167,21 @@ export default function EarningsPage() {
       setEditingPayout(false);
     } catch (error) {
       console.error("Error clearing payout:", error);
-      const detail = error instanceof Error 
-        ? error.message 
-        : (error as any)?.response?.data?.detail || "Could not switch account now. Please try again.";
-      setPayoutError(detail);
+      let errorMsg = "Could not switch account now. Please try again.";
+      
+      const responseData = (error as any)?.response?.data;
+      if (responseData?.detail) {
+        if (Array.isArray(responseData.detail)) {
+          // Pydantic validation errors
+          errorMsg = responseData.detail[0]?.msg || responseData.detail[0]?.message || errorMsg;
+        } else if (typeof responseData.detail === 'string') {
+          errorMsg = responseData.detail;
+        }
+      } else if (error instanceof Error) {
+        errorMsg = error.message;
+      }
+      
+      setPayoutError(errorMsg);
     } finally {
       setSavingPayout(false);
     }
