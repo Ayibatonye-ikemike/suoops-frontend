@@ -43,6 +43,7 @@ interface PayoutBank {
   account_number: string | null;
   account_name: string | null;
   is_complete: boolean;
+  using_business_bank?: boolean;
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -283,30 +284,37 @@ export default function EarningsPage() {
         </CardHeader>
         <CardContent>
           {bank?.is_complete ? (
-            <div className="flex items-center gap-4">
-              <div className="flex-1">
-                <p className="text-sm text-brand-textMuted">
-                  {bank.bank_name}
-                </p>
-                <p className="font-mono text-sm text-brand-text">
-                  {bank.account_number}
-                </p>
-                <p className="text-sm text-brand-text">{bank.account_name}</p>
+            <>
+              <div className="flex items-center gap-4">
+                <div className="flex-1">
+                  <p className="text-sm text-brand-textMuted">
+                    {bank.bank_name}
+                  </p>
+                  <p className="font-mono text-sm text-brand-text">
+                    {bank.account_number}
+                  </p>
+                  <p className="text-sm text-brand-text">{bank.account_name}</p>
+                </div>
+                <a
+                  href="/dashboard/settings#bank-details"
+                  className="text-sm font-medium text-brand-jade hover:underline"
+                >
+                  Edit
+                </a>
               </div>
-              <a
-                href="/dashboard/settings#profile"
-                className="text-sm font-medium text-brand-jade hover:underline"
-              >
-                Edit
-              </a>
-            </div>
+              {bank?.using_business_bank ? (
+                <p className="mt-3 text-xs text-brand-textMuted">
+                  Using your invoice bank account by default. You can still set a different payout account later.
+                </p>
+              ) : null}
+            </>
           ) : (
             <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-brand-textMuted">
-                Add your bank details to receive monthly payouts.
+                Add your bank details to receive weekly payouts.
               </p>
               <a
-                href="/dashboard/settings#profile"
+                href="/dashboard/settings#bank-details"
                 className="inline-flex items-center gap-1.5 rounded-lg bg-brand-jade px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-jade/80"
               >
                 <ArrowUpRight className="h-4 w-4" />
