@@ -134,8 +134,12 @@ export default function EarningsPage() {
       await queryClient.invalidateQueries({ queryKey: ["payoutBank"] });
       setPayoutSuccess("Payout account saved.");
       setEditingPayout(false);
-    } catch {
-      setPayoutError("Could not save payout account. Please try again.");
+    } catch (error) {
+      console.error("Error saving payout:", error);
+      const detail = error instanceof Error 
+        ? error.message 
+        : (error as any)?.response?.data?.detail || "Could not save payout account. Please try again.";
+      setPayoutError(detail);
     } finally {
       setSavingPayout(false);
     }
@@ -150,8 +154,12 @@ export default function EarningsPage() {
       await queryClient.invalidateQueries({ queryKey: ["payoutBank"] });
       setPayoutSuccess("Switched to your invoice bank account.");
       setEditingPayout(false);
-    } catch {
-      setPayoutError("Could not switch account now. Please try again.");
+    } catch (error) {
+      console.error("Error clearing payout:", error);
+      const detail = error instanceof Error 
+        ? error.message 
+        : (error as any)?.response?.data?.detail || "Could not switch account now. Please try again.";
+      setPayoutError(detail);
     } finally {
       setSavingPayout(false);
     }
