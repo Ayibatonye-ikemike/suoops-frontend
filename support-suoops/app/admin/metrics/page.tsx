@@ -151,13 +151,15 @@ function StatCard({
   title,
   value,
   subtitle,
+  details,
   icon: Icon,
   color = "emerald",
   alert,
 }: {
   title: string;
   value: string | number;
-  subtitle?: string;
+  subtitle?: React.ReactNode;
+  details?: React.ReactNode;
   icon: React.ElementType;
   color?: "emerald" | "blue" | "purple" | "orange" | "red" | "yellow";
   alert?: boolean;
@@ -180,9 +182,39 @@ function StatCard({
           {subtitle && (
             <p className={`mt-1 text-sm ${alert ? "text-red-500 font-medium" : "text-slate-500"}`}>{subtitle}</p>
           )}
+          {details && <div className="mt-3">{details}</div>}
         </div>
         <div className={`flex h-12 w-12 items-center justify-center rounded-lg ${colors[color]}`}>
           <Icon className="h-6 w-6" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ActiveCohortMiniBar({
+  total,
+  newUsers,
+  returningUsers,
+}: {
+  total: number;
+  newUsers: number;
+  returningUsers: number;
+}) {
+  const safeTotal = total > 0 ? total : 1;
+  const newPct = Math.max(0, Math.min(100, (newUsers / safeTotal) * 100));
+  const returningPct = Math.max(0, Math.min(100, (returningUsers / safeTotal) * 100));
+
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between text-[11px] text-slate-500">
+        <span>New (≤7d) {newUsers}</span>
+        <span>Returning (&gt;7d) {returningUsers}</span>
+      </div>
+      <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+        <div className="flex h-full w-full">
+          <div className="h-full bg-sky-500" style={{ width: `${newPct}%` }} />
+          <div className="h-full bg-emerald-500" style={{ width: `${returningPct}%` }} />
         </div>
       </div>
     </div>
@@ -307,6 +339,12 @@ interface ActivityAnalytics {
   active_users_today: number;
   active_users_this_week: number;
   active_users_this_month: number;
+  new_active_users_today: number;
+  returning_active_users_today: number;
+  new_active_users_this_week: number;
+  returning_active_users_this_week: number;
+  new_active_users_this_month: number;
+  returning_active_users_this_month: number;
   daily_trend: DailyPoint[];
   logins_today: number;
   logins_this_week: number;
@@ -1166,6 +1204,13 @@ export default function MetricsPage() {
                   title="Active Users Today"
                   value={activityData.active_users_today}
                   subtitle={`${activityData.logins_today} logins`}
+                  details={
+                    <ActiveCohortMiniBar
+                      total={activityData.active_users_today}
+                      newUsers={activityData.new_active_users_today}
+                      returningUsers={activityData.returning_active_users_today}
+                    />
+                  }
                   icon={Users}
                   color="blue"
                 />
@@ -1173,6 +1218,13 @@ export default function MetricsPage() {
                   title="Active Users This Week"
                   value={activityData.active_users_this_week}
                   subtitle={`${activityData.logins_this_week} logins`}
+                  details={
+                    <ActiveCohortMiniBar
+                      total={activityData.active_users_this_week}
+                      newUsers={activityData.new_active_users_this_week}
+                      returningUsers={activityData.returning_active_users_this_week}
+                    />
+                  }
                   icon={Users}
                   color="emerald"
                 />
@@ -1180,6 +1232,13 @@ export default function MetricsPage() {
                   title="Active Users This Month"
                   value={activityData.active_users_this_month}
                   subtitle={`${activityData.logins_this_month} logins`}
+                  details={
+                    <ActiveCohortMiniBar
+                      total={activityData.active_users_this_month}
+                      newUsers={activityData.new_active_users_this_month}
+                      returningUsers={activityData.returning_active_users_this_month}
+                    />
+                  }
                   icon={Users}
                   color="purple"
                 />
