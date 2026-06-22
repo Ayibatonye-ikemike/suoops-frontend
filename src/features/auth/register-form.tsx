@@ -101,7 +101,7 @@ export function RegisterForm() {
   }, [searchParams]);
 
   const validateReferralCode = async (code: string) => {
-    if (!code || code.length < 6) {
+    if (!code || code.length < 3) {
       setReferralValid(null);
       setReferrerName(null);
       return;
@@ -181,10 +181,10 @@ export function RegisterForm() {
       if (emailValue) {
         payload.email = emailValue;
       }
-      // Include referral code if it looks valid (length >= 6)
+      // Include referral code if it looks valid (length >= 3)
       // Backend will do final validation - this ensures code is sent even if
       // frontend validation had network issues
-      if (referralCode && referralCode.length >= 6) {
+      if (referralCode && referralCode.length >= 3) {
         // Only block if we explicitly know the code is invalid
         if (referralValid === false) {
           setError("Please enter a valid referral code or leave the field empty.");
@@ -579,11 +579,12 @@ export function RegisterForm() {
           id="referral-code"
           name="referral-code"
           placeholder="ABCD1234"
+          maxLength={50}
           value={referralCode}
           onChange={(e) => {
             const code = e.target.value.toUpperCase();
             setReferralCode(code);
-            if (code.length >= 6) {
+            if (code.length >= 3) {
               validateReferralCode(code);
             } else {
               setReferralValid(null);
@@ -607,7 +608,7 @@ export function RegisterForm() {
             Referred by {referrerName}
           </p>
         )}
-        {referralValid === false && referralCode.length >= 6 && (
+        {referralValid === false && referralCode.length >= 3 && (
           <p className="text-xs text-rose-500">Invalid referral code</p>
         )}
       </div>
