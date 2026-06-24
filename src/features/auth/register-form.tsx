@@ -209,14 +209,24 @@ export function RegisterForm() {
         startResendCountdown();
       } catch (requestError: unknown) {
         console.error(requestError);
-        const response = (requestError as { response?: { data?: { detail?: string }; status?: number } }).response;
-        const message = response?.data?.detail;
-        
+        const response = (requestError as { response?: { data?: { detail?: unknown }; status?: number } }).response;
+        const rawDetail = response?.data?.detail;
+        // FastAPI 422 returns `detail` as an array of validation errors; coalesce to a string.
+        const message: string | undefined = Array.isArray(rawDetail)
+          ? rawDetail
+              .map((d) => (d && typeof d === "object" && "msg" in d ? String((d as { msg: unknown }).msg) : String(d)))
+              .join(" ")
+          : typeof rawDetail === "string"
+            ? rawDetail
+            : undefined;
+
         // Provide specific guidance based on error type
         if (message?.toLowerCase().includes("already") || response?.status === 409) {
           setError("This phone number is already registered. Please log in instead.");
         } else if (message?.toLowerCase().includes("too many")) {
           setError("Too many attempts. Please wait a few minutes before trying again.");
+        } else if (message?.toLowerCase().includes("referral")) {
+          setError("That referral code isn't valid. Please correct it or clear the field, then try again.");
         } else if (!navigator.onLine) {
           setError("You appear to be offline. Please check your internet connection.");
         } else {
