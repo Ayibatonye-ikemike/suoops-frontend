@@ -53,6 +53,16 @@ const TASK_INFO: Record<string, { label: string; description: string; color: str
     description: "Auto-generate tax reports on the 1st of each month",
     color: "emerald",
   },
+  reconcile_brevo_dry: {
+    label: "Brevo Reconcile (Preview)",
+    description: "Dry run — logs how many stale Brevo contacts would be removed, deletes nothing. Check worker logs for the count.",
+    color: "blue",
+  },
+  reconcile_brevo: {
+    label: "Brevo Reconcile (Prune)",
+    description: "Delete Brevo contacts that are no longer registered users. Keeps suppressed (bounced/unsubscribed) contacts.",
+    color: "amber",
+  },
 };
 
 export default function TasksPage() {
@@ -214,6 +224,8 @@ export default function TasksPage() {
                   daily_summary: "summary.send_daily_summaries",
                   overdue_reminders: "maintenance.send_overdue_reminders",
                   tax_reports: "tax.generate_previous_month_reports",
+                  reconcile_brevo_dry: "maintenance.reconcile_brevo_contacts",
+                  reconcile_brevo: "maintenance.reconcile_brevo_contacts",
                 }[key])
               );
 
