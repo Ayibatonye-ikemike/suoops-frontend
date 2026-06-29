@@ -238,6 +238,31 @@ export default function UsersPage() {
     }
   }
 
+  // Downgrade user to FREE plan
+  async function downgradeToFree() {
+    if (!token || !selectedUser) return;
+    if (!confirm(`Downgrade ${selectedUser.name || selectedUser.email} to the FREE plan? This clears their PRO plan, subscription expiry, and any PRO override.`)) return;
+
+    setIsTogglingPro(true);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
+      const res = await fetch(`${apiUrl}/admin/users/${selectedUser.id}/downgrade-free`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) throw new Error("Failed to downgrade user");
+
+      const updated = { ...selectedUser, plan: "free", pro_override: false };
+      setSelectedUser(updated);
+      setUsers(users.map((u) => (u.id === selectedUser.id ? { ...u, plan: "free", pro_override: false } : u)));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Downgrade failed");
+    } finally {
+      setIsTogglingPro(false);
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -442,6 +467,23 @@ export default function UsersPage() {
                     <div className="mt-3 flex items-center gap-2 text-sm text-violet-700 bg-violet-100 rounded-lg px-3 py-2">
                       <Shield className="h-4 w-4 shrink-0" />
                       This user has admin-granted PRO access. Their actual plan ({selectedUser.plan}) and invoice balance are unchanged.
+                    </div>
+                  )}
+                  {selectedUser.plan === "pro" && (
+                    <div className="mt-4 pt-4 border-t border-violet-200 flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-slate-900">Downgrade to Free</p>
+                        <p className="text-sm text-slate-500 mt-1">
+                          Reset a stale PRO account to FREE: clears the PRO plan, subscription expiry, and PRO override. Invoice balance is kept.
+                        </p>
+                      </div>
+                      <button
+                        onClick={downgradeToFree}
+                        disabled={isTogglingPro}
+                        className="shrink-0 px-4 py-2 bg-white border border-violet-300 text-violet-700 rounded-lg hover:bg-violet-100 transition text-sm font-medium disabled:opacity-50"
+                      >
+                        Downgrade
+                      </button>
                     </div>
                   )}
                 </div>
