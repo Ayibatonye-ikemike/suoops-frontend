@@ -23,9 +23,10 @@ function applyConsent(choice: Choice) {
 /**
  * Cookie-consent banner wired to Google Consent Mode v2.
  *
- * Consent defaults to "denied" in app/layout.tsx; this banner lets the user
- * grant or decline, persists the choice in localStorage, and re-applies a
- * previous "granted" choice on return visits.
+ * Analytics is granted by default in app/layout.tsx (NDPA / non-EEA audience);
+ * this banner lets the user opt out (or back in), persists the choice in
+ * localStorage, and re-applies a prior "denied" choice on return visits so the
+ * opt-out sticks.
  */
 export function CookieConsent() {
   const [visible, setVisible] = useState(false);
@@ -39,7 +40,10 @@ export function CookieConsent() {
     }
     if (stored === "granted") {
       applyConsent("granted");
-    } else if (stored !== "denied") {
+    } else if (stored === "denied") {
+      // Analytics is granted by default, so honor a prior opt-out on load.
+      applyConsent("denied");
+    } else {
       setVisible(true);
     }
   }, []);

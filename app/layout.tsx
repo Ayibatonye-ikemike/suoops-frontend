@@ -59,13 +59,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              // Consent Mode v2 — default denied until the user chooses (see CookieConsent)
+              // Consent Mode v2 — analytics granted by default (NDPA, non-EEA audience);
+              // ad signals stay denied. The CookieConsent banner lets users opt out.
               gtag('consent', 'default', {
                 ad_storage: 'denied',
                 ad_user_data: 'denied',
                 ad_personalization: 'denied',
-                analytics_storage: 'denied',
-                wait_for_update: 500,
+                analytics_storage: 'granted',
               });
               gtag('config', 'G-DB7HG9NZNN');
             `,
