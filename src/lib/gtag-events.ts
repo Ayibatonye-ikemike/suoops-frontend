@@ -1,9 +1,10 @@
 /**
- * Helpers for firing Google Ads / GA4 conversion events via gtag.
+ * Helpers for firing GA4 analytics events via gtag.
  *
- * The gtag snippet is loaded globally in app/layout.tsx with tag ID AW-17976378572.
- * These helpers centralise conversion labels so they're easy to add/update
- * without hunting through component code.
+ * The gtag snippet is loaded globally in app/layout.tsx with the GA4
+ * measurement ID G-DB7HG9NZNN. Events fire to GA4 automatically. Mark the
+ * ones that matter (sign_up, purchase, invoice_created) as "key events" in
+ * the GA4 UI, and link Google Ads to GA4 if you later want ad-conversion import.
  */
 
 type GtagFn = (...args: unknown[]) => void;
@@ -14,25 +15,26 @@ function getGtag(): GtagFn | null {
   return typeof g === "function" ? (g as GtagFn) : null;
 }
 
-/** Signup completed (OTP verified, account created). */
+/** Signup completed (OTP verified, account created). GA4 recommended event. */
 export function trackSignupConversion() {
-  getGtag()?.("event", "conversion", {
-    send_to: "AW-17976378572/AascCOePmqMcEMyJ5_tC",
-  });
+  getGtag()?.("event", "sign_up");
 }
 
 /** First invoice created (or any invoice — useful as a micro-conversion). */
 export function trackInvoiceCreated() {
-  getGtag()?.("event", "conversion", {
-    send_to: "AW-17976378572/dHCMCPWWz6QcEMyJ5_tC",
-  });
+  getGtag()?.("event", "invoice_created");
 }
 
 /** Subscription or invoice pack purchase completed (Paystack success). */
-export function trackPurchaseConversion(value?: number, currency = "NGN") {
-  getGtag()?.("event", "conversion", {
-    send_to: "AW-17976378572/HlVhCP_LtqQcEMyJ5_tC",
+export function trackPurchaseConversion(
+  value?: number,
+  currency = "NGN",
+  transactionId?: string,
+) {
+  const params: Record<string, unknown> = {
     value: value ?? 1.0,
     currency,
-  });
+  };
+  if (transactionId) params.transaction_id = transactionId;
+  getGtag()?.("event", "purchase", params);
 }

@@ -50,15 +50,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
       <head>
-        {/* Google tag (gtag.js) */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17976378572"></script>
+        {/* Google tag (gtag.js) — GA4 */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-DB7HG9NZNN"></script>
         <script
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', 'AW-17976378572');
+              gtag('config', 'G-DB7HG9NZNN');
             `,
           }}
         />
