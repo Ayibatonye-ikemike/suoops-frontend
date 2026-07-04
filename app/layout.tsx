@@ -59,12 +59,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              // Consent Mode v2 — analytics granted by default (NDPA, non-EEA audience);
-              // ad signals stay denied. The CookieConsent banner lets users opt out.
+              // Consent Mode v2 — analytics + ads granted by default (NDPA, non-EEA
+              // audience) so GA4 measures and Google Ads remarketing works. The
+              // CookieConsent banner lets users opt out.
               gtag('consent', 'default', {
-                ad_storage: 'denied',
-                ad_user_data: 'denied',
-                ad_personalization: 'denied',
+                ad_storage: 'granted',
+                ad_user_data: 'granted',
+                ad_personalization: 'granted',
                 analytics_storage: 'granted',
               });
               gtag('config', 'G-DB7HG9NZNN');
