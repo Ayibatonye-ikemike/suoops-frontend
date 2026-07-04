@@ -3,6 +3,7 @@ import "./globals.css";
 import { Inter, Poppins } from "next/font/google";
 import { ReactQueryProvider } from "@/lib/react-query-provider";
 import { AuthProvider } from "@/features/auth/auth-provider";
+import { CookieConsent } from "@/components/cookie-consent";
 import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-body" });
@@ -58,6 +59,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
+              // Consent Mode v2 — default denied until the user chooses (see CookieConsent)
+              gtag('consent', 'default', {
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+                analytics_storage: 'denied',
+                wait_for_update: 500,
+              });
               gtag('config', 'G-DB7HG9NZNN');
             `,
           }}
@@ -95,6 +104,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             />
           </AuthProvider>
         </ReactQueryProvider>
+        <CookieConsent />
       </body>
     </html>
   );
