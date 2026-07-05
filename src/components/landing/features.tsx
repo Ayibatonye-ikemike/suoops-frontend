@@ -13,7 +13,7 @@ export function Features() {
             </p>
           </div>
 
-          <div className="mt-16 grid gap-8 sm:grid-cols-3">
+          <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <StepCard
               number={1}
               title="Create by texting"
@@ -26,8 +26,13 @@ export function Features() {
             />
             <StepCard
               number={3}
-              title="Get paid & track"
-              description="Share your storefront so customers order & pay online, or get notified on bank transfers. See who's paid, what stock is low, and if you're tax-safe."
+              title="Customers pay online"
+              description="Share your storefront or invoice link — customers pay by card or transfer, and orders auto-confirm and settle to your bank."
+            />
+            <StepCard
+              number={4}
+              title="Track everything"
+              description="See who's paid, what stock is low, and whether you're tax-safe — all in one dashboard."
             />
           </div>
         </div>
@@ -49,9 +54,9 @@ export function Features() {
                 "Create and send invoices in seconds",
                 "Track paid, pending, and overdue invoices",
                 "Works with any Nigerian bank — no forced lock-in",
-                "Custom branding with your logo",
-                "Team access for small teams"
+                "Custom branding and team access — included, no plans",
               ]}
+              highlight="Every feature included — just a flat 3% per invoice."
             />
             <FeatureCard
               title="🛒 Storefront & online payments"
