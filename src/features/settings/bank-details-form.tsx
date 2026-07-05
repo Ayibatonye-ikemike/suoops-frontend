@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   deleteBankDetails,
   getBankDetails,
+  resolveBankAccount,
   updateBankDetails,
 } from "@/api/bank-details";
 import { DEFAULT_FORM } from "./bank-details-form.constants";
@@ -38,6 +39,12 @@ export function BankDetailsForm() {
   const [copiedField, setCopiedField] = useState<keyof BankFormState | null>(
     null
   );
+  const [resolveStatus, setResolveStatus] = useState<
+    "idle" | "resolving" | "resolved" | "error"
+  >("idle");
+  const [resolveError, setResolveError] = useState("");
+  // Only auto-resolve after the user edits the form, never on initial hydration.
+  const userEditedRef = useRef(false);
 
   const copiedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -119,9 +126,51 @@ export function BankDetailsForm() {
     []
   );
 
+  // Live account-name resolution: once a bank + 10-digit number are entered,
+  // verify the holder's name via Paystack and auto-fill it so the saved name
+  // always matches the bank exactly.
+  useEffect(() => {
+    if (!userEditedRef.current) return;
+    const bank = formState.bankName.trim();
+    const acct = formState.accountNumber.trim();
+    if (!bank || acct.length !== 10) {
+      setResolveStatus("idle");
+      setResolveError("");
+      return;
+    }
+    let cancelled = false;
+    setResolveStatus("resolving");
+    setResolveError("");
+    const timer = setTimeout(async () => {
+      try {
+        const { account_name } = await resolveBankAccount(bank, acct);
+        if (cancelled) return;
+        setFormState((prev) => ({ ...prev, accountName: account_name }));
+        setResolveStatus("resolved");
+      } catch (err) {
+        if (cancelled) return;
+        setResolveStatus("error");
+        setResolveError(
+          getErrorMessage(err) ||
+            "Couldn't verify this account. Check the number and bank, or type the name manually."
+        );
+      }
+    }, 600);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [formState.bankName, formState.accountNumber]);
+
   const handleFieldChange = useCallback(
     (field: keyof BankFormState, value: string) => {
+      userEditedRef.current = true;
       setFormState((prev) => ({ ...prev, [field]: value }));
+      if (field === "accountName") {
+        // User is overriding the resolved name manually.
+        setResolveStatus("idle");
+        setResolveError("");
+      }
       if (updateMutation.isError) updateMutation.reset();
       if (deleteMutation.isError) deleteMutation.reset();
     },
@@ -235,6 +284,8 @@ export function BankDetailsForm() {
         onAccountNumberChange={handleAccountNumberChange}
         onCopy={handleCopy}
         copiedField={copiedField}
+        resolveStatus={resolveStatus}
+        resolveError={resolveError}
       />
 
       <InvoicePreview formState={formState} />

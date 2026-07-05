@@ -10,6 +10,8 @@ interface FormFieldsProps {
   onAccountNumberChange: (value: string) => void;
   onCopy: (field: "accountNumber" | "accountName") => Promise<void>;
   copiedField: keyof BankFormState | null;
+  resolveStatus: "idle" | "resolving" | "resolved" | "error";
+  resolveError: string;
 }
 
 export function BankDetailsFormFields({
@@ -18,6 +20,8 @@ export function BankDetailsFormFields({
   onAccountNumberChange,
   onCopy,
   copiedField,
+  resolveStatus,
+  resolveError,
 }: FormFieldsProps) {
   const formattedAccountNumber = formState.accountNumber
     ? formatAccountNumber(formState.accountNumber)
@@ -230,6 +234,17 @@ export function BankDetailsFormFields({
         <p className="mt-2 text-xs text-brand-textMuted">
           Must match your bank records so customers recognise the beneficiary.
         </p>
+        {resolveStatus === "resolving" && (
+          <p className="mt-1 text-xs text-brand-textMuted">Verifying account…</p>
+        )}
+        {resolveStatus === "resolved" && (
+          <p className="mt-1 text-xs font-medium text-emerald-600">
+            ✓ Verified with your bank
+          </p>
+        )}
+        {resolveStatus === "error" && resolveError && (
+          <p className="mt-1 text-xs text-amber-600">{resolveError}</p>
+        )}
       </div>
     </>
   );
