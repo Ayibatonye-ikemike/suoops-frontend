@@ -8,7 +8,6 @@ import {
   Users,
   TrendingUp,
   DollarSign,
-  Link2,
   Edit,
   Megaphone,
   ExternalLink,
