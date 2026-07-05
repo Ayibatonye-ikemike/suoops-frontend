@@ -55,6 +55,7 @@ interface PlatformMetrics {
   total_users: number;
   online_payments_enabled: number;
   storefronts_enabled: number;
+  monetized_users: number;
   commission_this_month: number;
   total_customers: number;
   top_up_buyers: TopUpBuyerInfo[];
@@ -644,18 +645,18 @@ export default function MetricsPage() {
 
           <div className="mt-6 pt-6 border-t border-slate-100 grid grid-cols-3 gap-4">
             <div className="text-center p-4 rounded-lg bg-slate-50">
-              <p className="text-sm text-slate-500">Online Payments</p>
-              <p className="text-2xl font-bold text-emerald-600">{metrics?.online_payments_enabled || 0}</p>
+              <p className="text-sm text-slate-500">Paying Businesses</p>
+              <p className="text-2xl font-bold text-emerald-600">{metrics?.monetized_users || 0}</p>
             </div>
             <div className="text-center p-4 rounded-lg bg-slate-50">
-              <p className="text-sm text-slate-500">Storefronts</p>
-              <p className="text-2xl font-bold text-blue-600">{metrics?.storefronts_enabled || 0}</p>
+              <p className="text-sm text-slate-500">Top-up Buyers</p>
+              <p className="text-2xl font-bold text-blue-600">{topUpBuyerCount}</p>
             </div>
             <div className="text-center p-4 rounded-lg bg-slate-50">
               <p className="text-sm text-slate-500">Payments Adoption</p>
               <p className="text-2xl font-bold text-purple-600">
                 {totalUsers > 0
-                  ? (((metrics?.online_payments_enabled || 0) / totalUsers) * 100).toFixed(1)
+                  ? (((metrics?.monetized_users || 0) / totalUsers) * 100).toFixed(1)
                   : 0}%
               </p>
             </div>
