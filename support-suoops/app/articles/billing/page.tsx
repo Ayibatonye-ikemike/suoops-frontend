@@ -4,8 +4,8 @@ import { ChevronRight, CreditCard, FileText } from "lucide-react";
 const articles = [
   { 
     slug: "plans", 
-    title: "Understanding subscription plans",
-    description: "Compare Free, invoice packs, and the Pro Pack to find the right fit for you."
+    title: "Pricing & your invoice wallet",
+    description: "How the flat 3% works, funding your prepaid wallet, and online payments — no plans or monthly fees."
   },
 ];
 
@@ -19,7 +19,7 @@ export default function BillingPage() {
           <ChevronRight className="h-4 w-4" />
           <Link href="/articles" className="hover:text-emerald-600">Articles</Link>
           <ChevronRight className="h-4 w-4" />
-          <span className="text-slate-900">Billing & Subscriptions</span>
+          <span className="text-slate-900">Pricing & Billing</span>
         </nav>
 
         {/* Header */}
@@ -29,8 +29,8 @@ export default function BillingPage() {
               <CreditCard className="h-6 w-6" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">Billing & Subscriptions</h1>
-              <p className="text-slate-600">Plans, payments, and upgrades</p>
+              <h1 className="text-2xl font-bold text-slate-900">Pricing & Billing</h1>
+              <p className="text-slate-600">The flat 3%, your wallet, and online payments</p>
             </div>
           </div>
         </div>

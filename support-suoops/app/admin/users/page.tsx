@@ -15,7 +15,6 @@ import {
   Crown,
   Download,
   Trash2,
-  Shield,
 } from "lucide-react";
 import { useAdminAuth } from "../layout";
 
@@ -27,7 +26,6 @@ interface UserInfo {
   phone_verified: boolean;
   role: string;
   plan: string;
-  pro_override: boolean;
   invoices_this_month: number;
   created_at: string;
   last_login: string | null;
@@ -41,6 +39,7 @@ interface UserActivity {
   total_customers: number;
   has_logo: boolean;
   has_bank_details: boolean;
+  wallet_balance_naira: number;
   invoice_balance: number;
   invoices_used: number;
   pack_purchases: Array<{
@@ -71,9 +70,6 @@ export default function UsersPage() {
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState("");
-
-  // Pro override toggle state
-  const [isTogglingPro, setIsTogglingPro] = useState(false);
 
   // Search
   const [searchInput, setSearchInput] = useState("");
@@ -209,57 +205,6 @@ export default function UsersPage() {
       setDeleteError(err instanceof Error ? err.message : "Delete failed");
     } finally {
       setIsDeleting(false);
-    }
-  }
-
-  // Toggle pro override
-  async function toggleProOverride() {
-    if (!token || !selectedUser) return;
-
-    setIsTogglingPro(true);
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
-      const res = await fetch(`${apiUrl}/admin/users/${selectedUser.id}/pro-override`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!res.ok) throw new Error("Failed to toggle PRO override");
-      const data = await res.json();
-
-      // Update local state
-      const updated = { ...selectedUser, pro_override: data.pro_override };
-      setSelectedUser(updated);
-      setUsers(users.map((u) => (u.id === selectedUser.id ? { ...u, pro_override: data.pro_override } : u)));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Toggle failed");
-    } finally {
-      setIsTogglingPro(false);
-    }
-  }
-
-  // Downgrade user to FREE plan
-  async function downgradeToFree() {
-    if (!token || !selectedUser) return;
-    if (!confirm(`Downgrade ${selectedUser.name || selectedUser.email} to the FREE plan? This clears their PRO plan, subscription expiry, and any PRO override.`)) return;
-
-    setIsTogglingPro(true);
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
-      const res = await fetch(`${apiUrl}/admin/users/${selectedUser.id}/downgrade-free`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!res.ok) throw new Error("Failed to downgrade user");
-
-      const updated = { ...selectedUser, plan: "free", pro_override: false };
-      setSelectedUser(updated);
-      setUsers(users.map((u) => (u.id === selectedUser.id ? { ...u, plan: "free", pro_override: false } : u)));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Downgrade failed");
-    } finally {
-      setIsTogglingPro(false);
     }
   }
 
@@ -405,12 +350,6 @@ export default function UsersPage() {
                         >
                           {selectedUser.plan} Plan
                         </span>
-                        {selectedUser.pro_override && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-violet-100 px-3 py-1 text-sm font-medium text-violet-700">
-                            <Shield className="h-3 w-3" />
-                            PRO Override
-                          </span>
-                        )}
                         <span
                           className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
                             selectedUser.phone_verified
@@ -432,62 +371,6 @@ export default function UsersPage() {
                 </div>
               </div>
 
-              {/* Admin Actions - Pro Override Toggle */}
-              <div className="rounded-xl border border-violet-200 bg-violet-50/50">
-                <div className="px-6 py-4 border-b border-violet-200">
-                  <h3 className="font-semibold text-violet-900 flex items-center gap-2">
-                    <Shield className="h-4 w-4" />
-                    Admin Actions
-                  </h3>
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-slate-900">Pro Plan Override</p>
-                      <p className="text-sm text-slate-500 mt-1">
-                        Grant access to all Pro Plan features (inventory, branding, voice, daily summary)
-                        <strong> without</strong> changing their plan or adding invoice packs.
-                      </p>
-                    </div>
-                    <button
-                      onClick={toggleProOverride}
-                      disabled={isTogglingPro}
-                      className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 disabled:opacity-50 ${
-                        selectedUser.pro_override ? "bg-violet-600" : "bg-slate-200"
-                      }`}
-                    >
-                      <span
-                        className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                          selectedUser.pro_override ? "translate-x-5" : "translate-x-0"
-                        }`}
-                      />
-                    </button>
-                  </div>
-                  {selectedUser.pro_override && (
-                    <div className="mt-3 flex items-center gap-2 text-sm text-violet-700 bg-violet-100 rounded-lg px-3 py-2">
-                      <Shield className="h-4 w-4 shrink-0" />
-                      This user has admin-granted PRO access. Their actual plan ({selectedUser.plan}) and invoice balance are unchanged.
-                    </div>
-                  )}
-                  {selectedUser.plan === "pro" && (
-                    <div className="mt-4 pt-4 border-t border-violet-200 flex items-center justify-between">
-                      <div>
-                        <p className="font-medium text-slate-900">Downgrade to Free</p>
-                        <p className="text-sm text-slate-500 mt-1">
-                          Reset a stale PRO account to FREE: clears the PRO plan, subscription expiry, and PRO override. Invoice balance is kept.
-                        </p>
-                      </div>
-                      <button
-                        onClick={downgradeToFree}
-                        disabled={isTogglingPro}
-                        className="shrink-0 px-4 py-2 bg-white border border-violet-300 text-violet-700 rounded-lg hover:bg-violet-100 transition text-sm font-medium disabled:opacity-50"
-                      >
-                        Downgrade
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
               <div className="rounded-xl border-2 border-red-200 bg-red-50">
                 <div className="px-6 py-4 border-b border-red-200">
                   <h3 className="font-semibold text-red-700">Danger Zone</h3>
@@ -640,27 +523,27 @@ export default function UsersPage() {
                           </div>
                         </div>
 
-                        {/* Invoice Balance */}
+                        {/* Wallet & Invoices */}
                         <div className="mt-4 p-4 rounded-lg bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-100">
                           <div className="flex items-center justify-between mb-3">
-                            <h4 className="text-sm font-semibold text-slate-700">Invoice Balance</h4>
-                            <span className="text-lg font-bold text-purple-600">{userActivity.invoice_balance} remaining</span>
+                            <h4 className="text-sm font-semibold text-slate-700">Invoice Wallet</h4>
+                            <span className="text-lg font-bold text-purple-600">₦{(userActivity.wallet_balance_naira || 0).toLocaleString()}</span>
                           </div>
                           <div className="grid grid-cols-2 gap-3 text-sm">
                             <div>
-                              <p className="text-slate-500">Used</p>
+                              <p className="text-slate-500">Invoices created</p>
                               <p className="font-medium text-slate-700">{userActivity.invoices_used}</p>
                             </div>
                             <div>
-                              <p className="text-slate-500">Remaining</p>
-                              <p className="font-medium text-purple-600">{userActivity.invoice_balance}</p>
+                              <p className="text-slate-500">Wallet balance</p>
+                              <p className="font-medium text-purple-600">₦{(userActivity.wallet_balance_naira || 0).toLocaleString()}</p>
                             </div>
                           </div>
                           
-                          {/* Pack Purchase History */}
+                          {/* Wallet Top-up History */}
                           {userActivity.pack_purchases && userActivity.pack_purchases.length > 0 && (
                             <div className="mt-4 pt-3 border-t border-purple-100">
-                              <p className="text-xs font-medium text-slate-600 mb-2">Pack Purchases</p>
+                              <p className="text-xs font-medium text-slate-600 mb-2">Wallet Top-ups</p>
                               <div className="space-y-2">
                                 {userActivity.pack_purchases.map((purchase, idx) => (
                                   <div key={idx} className="flex justify-between text-xs">
@@ -668,7 +551,7 @@ export default function UsersPage() {
                                       {purchase.date ? new Date(purchase.date).toLocaleDateString() : "Unknown"}
                                     </span>
                                     <span className="text-emerald-600 font-medium">
-                                      +{purchase.invoices_added} invoices (₦{purchase.amount.toLocaleString()})
+                                      +₦{purchase.amount.toLocaleString()}
                                     </span>
                                   </div>
                                 ))}

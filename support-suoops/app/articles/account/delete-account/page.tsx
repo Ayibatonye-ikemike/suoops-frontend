@@ -63,7 +63,7 @@ export default function DeleteAccountArticle() {
             <li>Inventory and product data</li>
             <li>Bank account details</li>
             <li>Business logo and branding</li>
-            <li>All subscription and payment history</li>
+            <li>Your wallet balance and payment history</li>
           </ul>
 
           <h2>How to Delete Your Account</h2>

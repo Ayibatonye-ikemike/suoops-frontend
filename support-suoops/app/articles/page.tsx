@@ -34,12 +34,12 @@ const categories = [
   },
   {
     slug: "billing",
-    title: "Billing & Subscriptions",
-    description: "Manage your subscription, payments, and upgrades",
+    title: "Pricing & Billing",
+    description: "The flat 3%, your invoice wallet, and online payments",
     icon: CreditCard,
     color: "bg-purple-500",
     articles: [
-      { slug: "plans", title: "Understanding subscription plans" },
+      { slug: "plans", title: "Pricing & your invoice wallet" },
     ],
   },
   {

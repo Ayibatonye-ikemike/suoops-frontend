@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, CreditCard, Clock, Check, Zap, Building2 } from "lucide-react";
+import { ChevronRight, CreditCard, Clock, Check, Wallet, ShoppingBag } from "lucide-react";
 
 export default function PlansArticle() {
   return (
@@ -11,7 +11,7 @@ export default function PlansArticle() {
           <ChevronRight className="h-4 w-4" />
           <Link href="/articles" className="hover:text-emerald-600">Articles</Link>
           <ChevronRight className="h-4 w-4" />
-          <span className="text-slate-900">Subscription Plans</span>
+          <span className="text-slate-900">Pricing & Wallet</span>
         </nav>
 
         {/* Article Header */}
@@ -23,201 +23,144 @@ export default function PlansArticle() {
             </span>
             <span className="inline-flex items-center gap-1 text-xs text-slate-500">
               <Clock className="h-3 w-3" />
-              5 min read
+              4 min read
             </span>
           </div>
           <h1 className="text-3xl font-bold text-slate-900">
-            Understanding Subscription Plans
+            Pricing & Your Invoice Wallet
           </h1>
           <p className="mt-3 text-lg text-slate-600">
-            Start with <strong>2 free invoices</strong> — no credit card needed. Pay only as you grow.
+            Every feature is <strong>free</strong>. You only pay a flat <strong>3% per invoice</strong> —
+            no plans, no monthly fees.
           </p>
         </div>
 
-        {/* Plans Grid */}
+        {/* Pricing Grid */}
         <div className="mb-10 grid gap-6 md:grid-cols-2">
-          {/* Free Plan */}
-          <div className="rounded-xl border border-slate-200 p-6">
+          {/* Manual invoices */}
+          <div className="rounded-xl border-2 border-emerald-500 p-6">
             <div className="flex items-center gap-2 mb-3">
-              <Zap className="h-5 w-5 text-slate-600" />
-              <h3 className="font-bold text-slate-900">Starter (Free)</h3>
+              <Wallet className="h-5 w-5 text-emerald-600" />
+              <h3 className="font-bold text-slate-900">Manual invoices</h3>
             </div>
             <div className="mb-4">
-              <span className="text-3xl font-bold text-slate-900">₦0</span>
-              <span className="text-slate-500 ml-2">+ buy packs as needed</span>
+              <span className="text-3xl font-bold text-slate-900">3%</span>
+              <span className="text-slate-500 ml-2">per invoice</span>
             </div>
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span><strong>2 free invoices</strong> to start</span>
+                <span>Charged from your prepaid wallet at creation</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>Buy more: 50 for ₦1,250</span>
+                <span>Minimum ₦20, capped at ₦2,000</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>WhatsApp & Email delivery</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-emerald-500" />
-                <span>PDF generation & QR verification</span>
+                <span>Confirm payment your own way</span>
               </li>
             </ul>
           </div>
 
-          {/* Pro Pack */}
-          <div className="rounded-xl border-2 border-emerald-500 p-6 relative">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-              <span className="bg-emerald-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                BEST VALUE
-              </span>
-            </div>
+          {/* Storefront / online payments */}
+          <div className="rounded-xl border border-slate-200 p-6">
             <div className="flex items-center gap-2 mb-3">
-              <Building2 className="h-5 w-5 text-emerald-600" />
-              <h3 className="font-bold text-slate-900">Pro Pack</h3>
+              <ShoppingBag className="h-5 w-5 text-slate-600" />
+              <h3 className="font-bold text-slate-900">Storefront orders</h3>
             </div>
             <div className="mb-4">
-              <span className="text-3xl font-bold text-slate-900">₦2,000</span>
-              <span className="text-slate-500">one-time</span>
+              <span className="text-3xl font-bold text-slate-900">3%</span>
+              <span className="text-slate-500 ml-2">when paid</span>
             </div>
             <ul className="space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span><strong>20 invoices</strong> + 30 days Pro</span>
+                <span>Customers pay online by card or transfer</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>Tax reports (PIT + CIT)</span>
+                <span>Settles to your bank via Paystack</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>Custom logo branding</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-emerald-500" />
-                <span>Inventory management</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-emerald-500" />
-                <span>Team management (3 members)</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-emerald-500" />
-                <span>Voice invoices (15/mo)</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="h-4 w-4 text-emerald-500" />
-                <span>Priority support</span>
+                <span>Nothing charged upfront</span>
               </li>
             </ul>
           </div>
+        </div>
+
+        {/* Free callout */}
+        <div className="mb-10 rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 p-6">
+          <h3 className="font-bold text-slate-900 mb-1">All features, free.</h3>
+          <p className="text-sm text-slate-600">
+            Custom branding, tax reports, inventory, team access, insights and your storefront are
+            included for everyone. There are no plans or subscriptions — you only pay when you invoice.
+          </p>
         </div>
 
         {/* Article Content */}
         <article className="prose prose-slate prose-emerald max-w-none">
-          <h2>Invoice Packs (Pay-As-You-Go)</h2>
+          <h2>Your invoice wallet</h2>
           <p>
-            All plans work with invoice packs - purchase as you need:
+            Manual invoices are funded by a prepaid wallet. Each manual invoice costs a flat 3%
+            (minimum ₦20, capped at ₦2,000), deducted when you create the invoice. New accounts
+            start with a small free balance so you can send your first invoices at no cost.
           </p>
           <ul>
-            <li><strong>50 invoices</strong> for ₦1,250 (never expires)</li>
-            <li>Works on any plan, including Free</li>
-            <li>Pro Pack adds 20 invoices + 30 days of premium features (₦2,000, one-time)</li>
-            <li>Buy additional packs anytime when you need more</li>
+            <li>Top up anytime: <strong>₦1,250</strong>, <strong>₦5,000</strong> or <strong>₦20,000</strong></li>
+            <li>Your wallet balance never expires</li>
+            <li>Storefront/online payments don&apos;t need the wallet — the 3% is taken from each payment</li>
           </ul>
 
-          <h2>How to Get Started</h2>
+          <h2>How to top up</h2>
           <ol>
-            <li>Sign up for a <strong>free Starter account</strong> (2 free invoices included — no credit card needed)</li>
-            <li>When you need more, either:
-              <ul>
-                <li>Buy invoice packs (50 for ₦1,250) — pay as you go, never expires</li>
-                <li>Get the Pro Pack (₦2,000) — 20 invoices + 30 days of premium features, pay once</li>
-                <li>Subscribe to Pro Features (₦1,500/month) — premium features only, auto-renews monthly</li>
-              </ul>
-            </li>
+            <li>Go to <strong>Dashboard → Settings → Billing</strong></li>
+            <li>Choose a top-up amount (₦1,250 / ₦5,000 / ₦20,000)</li>
             <li>Complete payment via Paystack (a small processing fee is added at checkout)</li>
-            <li>Invoices are added to your balance immediately</li>
+            <li>Your wallet is credited immediately</li>
           </ol>
 
-          <h2>Which Plan is Right for Me?</h2>
-          <div className="not-prose">
-            <div className="space-y-4 mb-8">
-              <div className="rounded-lg border border-slate-200 p-4">
-                <h4 className="font-semibold text-slate-900 mb-2">Starter (Free — Pay-as-you-go)</h4>
-                <p className="text-sm text-slate-600">
-                  Best for individuals, freelancers, and small traders just getting started. 
-                  Get 2 free invoices, then pay only for what you need. No monthly commitment.
-                </p>
-              </div>
-              <div className="rounded-lg border-2 border-emerald-200 bg-emerald-50/50 p-4">
-                <h4 className="font-semibold text-slate-900 mb-2">Pro Pack (₦2,000 one-time)</h4>
-                <p className="text-sm text-slate-600">
-                  Best for growing small and medium businesses that need premium features like 
-                  custom branding, team access, and voice invoices. Great value if 
-                  you&apos;re regularly invoicing customers.
-                </p>
-              </div>
-              <div className="rounded-lg border border-brand-jade/40 bg-emerald-50/30 p-4">
-                <h4 className="font-semibold text-slate-900 mb-2">Pro Features (₦1,500/month — recurring)</h4>
-                <p className="text-sm text-slate-600">
-                  Want premium features without buying a pack? Subscribe for ₦1,500/month to unlock
-                  custom branding, tax reports, inventory, team management and more. Auto-renews
-                  monthly until you cancel. No invoices included &mdash; buy packs separately.
-                </p>
-              </div>
-            </div>
-          </div>
+          <h2>Pricing FAQ</h2>
 
-          <h2>How to Upgrade</h2>
-          <ol>
-            <li>Go to <strong>Dashboard → Settings → Subscription</strong></li>
-            <li>Click <strong>Upgrade</strong> and choose the Pro Pack (one-time) or subscribe to Pro Features (monthly)</li>
-            <li>Complete payment via Paystack</li>
-            <li>Your new plan activates immediately</li>
-          </ol>
-
-          <h2>Billing FAQ</h2>
-          
           <h3>When am I charged?</h3>
           <p>
-            Invoice packs and the Pro Pack (₦2,000) are one-time purchases &mdash; no
-            recurring charges, and invoices you buy never expire. Pro Features is a
-            recurring subscription: ₦1,500/month (plus a small payment-processing fee)
-            charged automatically until you cancel, keeping your Pro features active.
+            For manual invoices, the flat 3% is taken from your wallet the moment you create the
+            invoice. For storefront/online payments, the 3% is taken from the customer&apos;s payment
+            when they pay — nothing upfront.
           </p>
 
-          <h3>Can I cancel anytime?</h3>
+          <h3>Are there any plans or monthly fees?</h3>
           <p>
-            Yes! Cancel from Settings → Subscription. You&apos;ll keep access until the end of your 
-            billing period, then revert to the Starter (free) plan. Your invoice balance is preserved.
+            No. There are no subscriptions, tiers or monthly fees. Every feature is included for
+            everyone; you only ever pay the flat 3% per invoice.
           </p>
 
-          <h3>What happens to my invoice balance if I downgrade?</h3>
+          <h3>What happens if my wallet runs out?</h3>
           <p>
-            Your invoice balance is preserved when you downgrade. Any purchased invoices never expire.
-            You just lose access to premium features like voice invoices and team management.
+            You can still receive storefront/online payments (the 3% is taken from each payment). To
+            keep creating manual invoices, top up your wallet. Your data and history are always
+            preserved.
           </p>
 
-          <h3>Do you offer refunds?</h3>
+          <h3>Are there other fees?</h3>
           <p>
-            We offer a 14-day money-back guarantee on first subscriptions. Contact support 
-            within 14 days of your first payment to request a refund.
+            Just the flat 3% per invoice. For storefront/online card and transfer payments, a small
+            payment-processing fee from the payment provider may also apply.
           </p>
         </article>
 
         {/* CTA */}
         <div className="mt-12 rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 p-8 text-center">
-          <h3 className="text-xl font-bold text-slate-900 mb-2">Ready to upgrade?</h3>
+          <h3 className="text-xl font-bold text-slate-900 mb-2">Ready to get started?</h3>
           <p className="text-slate-600 mb-4">
-            Start with Free and upgrade when you&apos;re ready. No commitment required.
+            Every feature is free — you only pay a flat 3% when you invoice.
           </p>
           <a
             href="https://suoops.com/dashboard/settings"
             className="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-6 py-3 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
           >
-            View Plans in Dashboard
+            Open Dashboard
           </a>
         </div>
       </div>

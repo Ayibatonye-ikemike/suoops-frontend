@@ -896,7 +896,7 @@ export default function InfluencersPage() {
           </div>
           <div>
             <p className="text-slate-500">Applies to</p>
-            <p className="font-medium text-slate-900">Pro Packs + Invoice Packs</p>
+            <p className="font-medium text-slate-900">Wallet top-ups</p>
           </div>
         </div>
       </div>

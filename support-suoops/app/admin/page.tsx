@@ -21,7 +21,8 @@ interface DashboardStats {
     registered_today: number;
     registered_this_week: number;
     active_last_30_days: number;
-    by_plan: Record<string, number>;
+    online_payments_enabled: number;
+    storefronts_enabled: number;
   };
   tickets: {
     total_tickets: number;
@@ -39,6 +40,7 @@ interface DashboardStats {
   };
   revenue: {
     this_month: number;
+    gmv_this_month: number;
   };
 }
 
@@ -230,8 +232,9 @@ export default function AdminDashboard() {
           icon={FileText}
         />
         <StatCard
-          title="Revenue This Month"
-          value={`₦${((stats?.revenue.this_month || 0) / 1000).toFixed(0)}k`}
+          title="Commission This Month"
+          value={`₦${((stats?.revenue.this_month || 0) / 1000).toFixed(1)}k`}
+          subtitle={`₦${((stats?.revenue.gmv_this_month || 0) / 1000).toFixed(0)}k processed (GMV)`}
           icon={TrendingUp}
         />
       </div>
@@ -239,14 +242,26 @@ export default function AdminDashboard() {
       {/* Secondary Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div className="rounded-xl border border-slate-200 bg-white p-6">
-          <h3 className="text-sm font-medium text-slate-500 mb-4">Users by Plan</h3>
+          <h3 className="text-sm font-medium text-slate-500 mb-4">Feature Adoption</h3>
           <div className="space-y-3">
-            {Object.entries(stats?.users.by_plan || {}).map(([plan, count]) => (
-              <div key={plan} className="flex items-center justify-between">
-                <span className="text-sm text-slate-600 capitalize">{plan}</span>
-                <span className="text-sm font-semibold text-slate-900">{count}</span>
-              </div>
-            ))}
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-slate-600">Online payments enabled</span>
+              <span className="text-sm font-semibold text-slate-900">
+                {stats?.users.online_payments_enabled || 0}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-slate-600">Storefronts live</span>
+              <span className="text-sm font-semibold text-slate-900">
+                {stats?.users.storefronts_enabled || 0}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-slate-600">Verified users</span>
+              <span className="text-sm font-semibold text-slate-900">
+                {stats?.users.verified || 0}
+              </span>
+            </div>
           </div>
         </div>
 

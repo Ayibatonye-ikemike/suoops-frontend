@@ -25,8 +25,8 @@ const faqCategories: FAQCategory[] = [
         answer: "You have two options: (1) From the dashboard, click 'New Invoice', fill in customer name, phone, and line items, then click 'Create'. (2) Via WhatsApp, message our bot with: 'Invoice [Name] [Phone], [Amount] [Item]' - e.g., 'Invoice Joy 08012345678, 12000 wig'."
       },
       {
-        question: "Is there a free plan?",
-        answer: "Yes! New users get 2 free invoices to start — no credit card required. After that, you can purchase invoice packs (25 invoices for ₦625 or 50 invoices for ₦1,250) whenever you need more. No monthly commitment necessary."
+        question: "Is Suoops free to use?",
+        answer: "Yes. Every feature is free — custom branding, tax reports, inventory, team access and your storefront. There are no plans or monthly fees. You only pay a flat 3% per invoice (minimum ₦20, capped at ₦2,000). New accounts also start with a small free wallet balance so you can send your first invoices at no cost."
       },
       {
         question: "How do I set up my business profile?",
@@ -44,11 +44,11 @@ const faqCategories: FAQCategory[] = [
     faqs: [
       {
         question: "Can I add my logo to invoices?",
-        answer: "Yes! Upload your business logo in Settings. It will appear on all your PDF invoices. Custom branding (colors, fonts) is available with the Pro Pack or Pro Features pass."
+        answer: "Yes! Upload your business logo in Settings and it will appear on all your PDF invoices. Custom branding is free — every feature is included under the flat 3% model."
       },
       {
         question: "How do I add VAT/Tax to invoices?",
-        answer: "Tax features are available with the Pro Pack or Pro Features pass. When creating an invoice, you can enable tax calculation and the system will automatically compute VAT and development levy."
+        answer: "Tax features are free for everyone. When creating an invoice, enable tax calculation and the system automatically computes VAT and the development levy."
       },
       {
         question: "How do invoices get sent to customers?",
@@ -65,32 +65,32 @@ const faqCategories: FAQCategory[] = [
     ]
   },
   {
-    title: "Billing & Subscription",
+    title: "Pricing & Wallet",
     icon: <CreditCard className="h-5 w-5" />,
     faqs: [
       {
-        question: "How does billing work?",
-        answer: "New users get 2 free invoices — no strings attached! After that, you can buy invoice packs (25 for ₦625 or 50 for ₦1,250) whenever you need more. Packs never expire. For premium features like custom branding and team management, get the Pro Pack (₦2,000, one-time) — 20 invoices + 30 days of Pro features — or subscribe to Pro Features for ₦1,500/month (recurring, premium features only)."
+        question: "How does pricing work?",
+        answer: "Suoops is free with every feature included. You only pay a flat 3% per invoice (minimum ₦20, capped at ₦2,000). For manual invoices the 3% is taken from your prepaid wallet when you create the invoice. For storefront/online payments it is taken from the customer's payment. No plans, no monthly fees."
       },
       {
-        question: "What are the subscription plans?",
-        answer: "Start free with 2 invoices, then buy invoice packs as needed (25 for ₦625 or 50 for ₦1,250, never expire) — these are one-time. For premium features, either buy the Pro Pack (₦2,000, one-time) — 20 invoices + 30 days of Pro features — or subscribe to Pro Features for ₦1,500/month (recurring, auto-renews) for premium features only (tax reports, custom branding, inventory, team management, and voice invoices)."
+        question: "Do I need a subscription?",
+        answer: "No. There are no subscriptions or plans. Custom branding, tax reports, inventory, team access and your storefront are all free. You simply fund a prepaid wallet and pay a flat 3% per invoice."
       },
       {
-        question: "Who should use the Pro Pack?",
-        answer: "The Pro Pack (₦2,000, one-time) is perfect for growing small and medium businesses that need premium features. It includes 20 invoices plus 30 days of premium features — custom branding, team management, and voice invoices. Need features only? Subscribe to Pro Features for ₦1,500/month (recurring, auto-renews until you cancel)."
+        question: "What is the invoice wallet?",
+        answer: "The prepaid wallet funds manual invoicing. Each manual invoice costs a flat 3% (min ₦20, max ₦2,000), deducted when you create it. Top up anytime — ₦1,250, ₦5,000 or ₦20,000 — from Settings → Billing. New accounts start with a small free balance."
       },
       {
-        question: "How do I upgrade my plan?",
-        answer: "Go to Settings → Subscription and click 'Upgrade'. Choose your preferred plan and complete payment via Paystack. Your new plan activates immediately."
+        question: "How do online payments work?",
+        answer: "Turn on online payments and share your storefront link. Customers pay by card or bank transfer, the money settles to your bank account via Paystack, and Suoops keeps a flat 3% commission. Nothing is charged upfront for storefront orders."
       },
       {
-        question: "Can I cancel my subscription?",
-        answer: "Yes, you can cancel anytime from Settings → Subscription. You keep access until the end of your billing period, then revert to the Starter (free) tier. Your invoice balance and data are preserved."
+        question: "What happens if my wallet runs out?",
+        answer: "You can still receive storefront/online payments — the 3% is simply taken from each payment. To keep creating manual invoices, top up your wallet from Settings → Billing. Your data and history are always preserved."
       },
       {
-        question: "What happens to my invoices if I downgrade?",
-        answer: "All your data is preserved. You just won't be able to create new invoices beyond your remaining balance until you purchase more or upgrade."
+        question: "Are there any other fees?",
+        answer: "Just the flat 3% per invoice. For storefront/online card and transfer payments, a small payment-processing fee from the payment provider may also apply."
       }
     ]
   },

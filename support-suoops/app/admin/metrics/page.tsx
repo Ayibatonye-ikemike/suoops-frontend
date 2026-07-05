@@ -8,7 +8,7 @@ import {
   TrendingDown,
   Receipt,
   Users,
-  Crown,
+  CreditCard,
   AlertCircle,
   AlertTriangle,
   Calendar,
@@ -31,29 +31,14 @@ import { useAdminAuth } from "../layout";
 
 // ─── Types ───────────────────────────────────────────────────────
 
-interface PaidUserInfo {
-  id: number;
-  name: string;
-  email: string | null;
-  phone: string;
-  plan: string;
-  business_name: string | null;
-  created_at: string;
-  subscription_started_at: string | null;
-  subscription_expires_at: string | null;
-  was_referred: boolean;
-  referred_by_name: string | null;
-  referred_by_id: number | null;
-}
-
-interface PackBuyerInfo {
+interface TopUpBuyerInfo {
   id: number;
   name: string;
   email: string | null;
   phone: string;
   business_name: string | null;
-  invoice_balance: number;
-  total_packs_bought: number;
+  wallet_balance_naira: number;
+  total_top_ups: number;
   last_purchase_date: string | null;
 }
 
@@ -67,13 +52,12 @@ interface PlatformMetrics {
   invoices_today: number;
   invoices_this_week: number;
   invoices_this_month: number;
-  active_subscriptions: {
-    free?: number;
-    pro?: number;
-  };
+  total_users: number;
+  online_payments_enabled: number;
+  storefronts_enabled: number;
+  commission_this_month: number;
   total_customers: number;
-  paid_users: PaidUserInfo[];
-  pack_buyers: PackBuyerInfo[];
+  top_up_buyers: TopUpBuyerInfo[];
 }
 
 interface MonthlyDataPoint {
@@ -85,13 +69,13 @@ interface ActivationFunnel {
   total_signups: number;
   created_first_invoice: number;
   received_first_payment: number;
-  upgraded_to_paid: number;
+  enabled_online_payments: number;
 }
 
 interface GrowthMetrics {
-  mrr: number;
-  mrr_trend: MonthlyDataPoint[];
-  arr: number;
+  commission_month: number;
+  commission_trend: MonthlyDataPoint[];
+  commission_run_rate: number;
   churned_users: number;
   churn_rate: number;
   activation_funnel: ActivationFunnel;
@@ -99,14 +83,12 @@ interface GrowthMetrics {
   avg_days_to_payment: number | null;
   user_growth: MonthlyDataPoint[];
   invoice_growth: MonthlyDataPoint[];
-  revenue_growth: MonthlyDataPoint[];
+  gmv_growth: MonthlyDataPoint[];
   avg_invoices_per_user: number;
   power_users: number;
   zero_invoice_users: number;
   whatsapp_users: number;
   email_only_users: number;
-  expired_subscriptions: number;
-  expiring_soon: number;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────
@@ -130,19 +112,6 @@ function formatMonth(month: string): string {
   const [year, m] = month.split("-");
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   return `${months[parseInt(m) - 1]} '${year.slice(2)}`;
-}
-
-function isExpired(dateStr: string | null): boolean {
-  if (!dateStr) return false;
-  return new Date(dateStr) < new Date();
-}
-
-function isExpiringSoon(dateStr: string | null): boolean {
-  if (!dateStr) return false;
-  const d = new Date(dateStr);
-  const now = new Date();
-  const sevenDays = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-  return d >= now && d <= sevenDays;
 }
 
 // ─── Components ──────────────────────────────────────────────────
@@ -415,8 +384,7 @@ export default function MetricsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState<Tab>("overview");
-  const [packPage, setPackPage] = useState(1);
-  const [proPage, setProPage] = useState(1);
+  const [topUpPage, setTopUpPage] = useState(1);
   const PAGE_SIZE = 10;
 
   useEffect(() => {
@@ -499,13 +467,8 @@ export default function MetricsPage() {
     );
   }
 
-  const totalSubscribers = metrics
-    ? ((metrics.active_subscriptions.free || 0) +
-        (metrics.active_subscriptions.pro || 0))
-    : 0;
-    
-  const proCount = metrics?.active_subscriptions.pro || 0;
-  const packBuyerCount = metrics?.pack_buyers?.length || 0;
+  const totalUsers = metrics?.total_users || 0;
+  const topUpBuyerCount = metrics?.top_up_buyers?.length || 0;
 
   return (
     <div className="space-y-6">
@@ -536,11 +499,6 @@ export default function MetricsPage() {
         >
           <TrendingUp className="h-4 w-4" />
           Growth Analytics
-          {growth && (growth.expired_subscriptions > 0 || growth.expiring_soon > 0) && (
-            <span className="ml-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700">
-              {growth.expired_subscriptions + growth.expiring_soon}
-            </span>
-          )}
         </button>
         <button
           onClick={() => setActiveTab("activity")}
@@ -579,7 +537,7 @@ export default function MetricsPage() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard
               title="Registered Users"
-              value={totalSubscribers.toLocaleString()}
+              value={totalUsers.toLocaleString()}
               subtitle={`${metrics?.total_customers || 0} invoiced customers`}
               icon={Users}
             />
@@ -591,16 +549,16 @@ export default function MetricsPage() {
               color="blue"
             />
             <StatCard
-              title="Revenue Tracked"
-              value={formatCurrency(metrics?.total_revenue_amount || 0)}
-              subtitle="From paid invoices"
+              title="Commission (This Month)"
+              value={formatCurrency(metrics?.commission_this_month || 0)}
+              subtitle="Suoops earnings (3% fees)"
               icon={DollarSign}
               color="emerald"
             />
             <StatCard
-              title="Expenses Tracked"
-              value={formatCurrency(metrics?.total_expense_amount || 0)}
-              subtitle="Across platform"
+              title="Payment Volume (GMV)"
+              value={formatCurrency(metrics?.total_revenue_amount || 0)}
+              subtitle="From paid invoices"
               icon={Receipt}
               color="orange"
             />
@@ -657,47 +615,47 @@ export default function MetricsPage() {
           </div>
         </div>
 
-        {/* Subscription Distribution */}
+        {/* Feature Adoption */}
         <div className="rounded-xl border border-slate-200 bg-white p-6">
           <div className="flex items-center gap-3 mb-6">
-            <Crown className="h-5 w-5 text-slate-500" />
-            <h3 className="text-lg font-semibold text-slate-900">Subscription Plans</h3>
+            <ShoppingCart className="h-5 w-5 text-slate-500" />
+            <h3 className="text-lg font-semibold text-slate-900">Feature Adoption</h3>
           </div>
           <div className="space-y-5">
             <ProgressBar
-              label="Free / Starter Users"
-              value={metrics?.active_subscriptions.free || 0}
-              total={totalSubscribers || 1}
-              color="bg-slate-400"
+              label="Online Payments Enabled"
+              value={metrics?.online_payments_enabled || 0}
+              total={totalUsers || 1}
+              color="bg-emerald-500"
             />
             <ProgressBar
-              label="Invoice Pack Buyers"
-              value={packBuyerCount}
-              total={totalSubscribers || 1}
+              label="Storefronts Live"
+              value={metrics?.storefronts_enabled || 0}
+              total={totalUsers || 1}
               color="bg-blue-500"
             />
             <ProgressBar
-              label="Pro Plan Subscribers"
-              value={metrics?.active_subscriptions.pro || 0}
-              total={totalSubscribers || 1}
+              label="Wallet Top-up Buyers"
+              value={topUpBuyerCount}
+              total={totalUsers || 1}
               color="bg-purple-500"
             />
           </div>
 
           <div className="mt-6 pt-6 border-t border-slate-100 grid grid-cols-3 gap-4">
             <div className="text-center p-4 rounded-lg bg-slate-50">
-              <p className="text-sm text-slate-500">Pro Users</p>
-              <p className="text-2xl font-bold text-purple-600">{proCount}</p>
+              <p className="text-sm text-slate-500">Online Payments</p>
+              <p className="text-2xl font-bold text-emerald-600">{metrics?.online_payments_enabled || 0}</p>
             </div>
             <div className="text-center p-4 rounded-lg bg-slate-50">
-              <p className="text-sm text-slate-500">Pack Buyers</p>
-              <p className="text-2xl font-bold text-blue-600">{packBuyerCount}</p>
+              <p className="text-sm text-slate-500">Storefronts</p>
+              <p className="text-2xl font-bold text-blue-600">{metrics?.storefronts_enabled || 0}</p>
             </div>
             <div className="text-center p-4 rounded-lg bg-slate-50">
-              <p className="text-sm text-slate-500">Pro Conversion</p>
-              <p className="text-2xl font-bold text-emerald-600">
-                {totalSubscribers > 0
-                  ? ((proCount / totalSubscribers) * 100).toFixed(1)
+              <p className="text-sm text-slate-500">Payments Adoption</p>
+              <p className="text-2xl font-bold text-purple-600">
+                {totalUsers > 0
+                  ? (((metrics?.online_payments_enabled || 0) / totalUsers) * 100).toFixed(1)
                   : 0}%
               </p>
             </div>
@@ -707,21 +665,21 @@ export default function MetricsPage() {
         </div>
       </div>
 
-      {/* Invoice Pack Buyers Table */}
-      {metrics?.pack_buyers && metrics.pack_buyers.length > 0 && (() => {
-        const totalPackPages = Math.ceil(metrics.pack_buyers.length / PAGE_SIZE);
-        const pagedPackBuyers = metrics.pack_buyers.slice((packPage - 1) * PAGE_SIZE, packPage * PAGE_SIZE);
+      {/* Wallet Top-up Buyers Table */}
+      {metrics?.top_up_buyers && metrics.top_up_buyers.length > 0 && (() => {
+        const totalTopUpPages = Math.ceil(metrics.top_up_buyers.length / PAGE_SIZE);
+        const pagedTopUpBuyers = metrics.top_up_buyers.slice((topUpPage - 1) * PAGE_SIZE, topUpPage * PAGE_SIZE);
         return (
         <div className="rounded-xl border border-slate-200 bg-white">
           <div className="border-b border-slate-100 px-6 py-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold text-slate-900">Invoice Pack Buyers</h3>
-                <p className="text-sm text-slate-500">Free users who purchased invoice packs</p>
+                <h3 className="text-lg font-semibold text-slate-900">Wallet Top-up Buyers</h3>
+                <p className="text-sm text-slate-500">Businesses who topped up their prepaid invoice wallet</p>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <ShoppingCart className="h-4 w-4 text-blue-500" />
-                <span className="text-slate-600">Total: <strong className="text-blue-700">{packBuyerCount}</strong></span>
+                <span className="text-slate-600">Total: <strong className="text-blue-700">{topUpBuyerCount}</strong></span>
               </div>
             </div>
           </div>
@@ -730,13 +688,13 @@ export default function MetricsPage() {
               <thead>
                 <tr className="border-b border-slate-100 text-left text-sm text-slate-500">
                   <th className="px-6 py-3 font-medium">User</th>
-                  <th className="px-6 py-3 font-medium">Packs Bought</th>
-                  <th className="px-6 py-3 font-medium">Balance</th>
+                  <th className="px-6 py-3 font-medium">Top-ups</th>
+                  <th className="px-6 py-3 font-medium">Wallet Balance</th>
                   <th className="px-6 py-3 font-medium">Last Purchase</th>
                 </tr>
               </thead>
               <tbody>
-                {pagedPackBuyers.map((buyer) => (
+                {pagedTopUpBuyers.map((buyer) => (
                   <tr key={buyer.id} className="border-b border-slate-50 hover:bg-slate-50">
                     <td className="px-6 py-4">
                       <div className="font-medium text-slate-900">{buyer.name}</div>
@@ -745,11 +703,11 @@ export default function MetricsPage() {
                     </td>
                     <td className="px-6 py-4">
                       <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-700">
-                        {buyer.total_packs_bought} pack{buyer.total_packs_bought !== 1 ? "s" : ""}
+                        {buyer.total_top_ups} top-up{buyer.total_top_ups !== 1 ? "s" : ""}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm font-medium text-emerald-600">{buyer.invoice_balance} invoices</span>
+                      <span className="text-sm font-medium text-emerald-600">₦{buyer.wallet_balance_naira.toLocaleString()}</span>
                     </td>
                     <td className="px-6 py-4 text-sm text-slate-600">
                       {buyer.last_purchase_date
@@ -761,22 +719,22 @@ export default function MetricsPage() {
               </tbody>
             </table>
           </div>
-          {totalPackPages > 1 && (
+          {totalTopUpPages > 1 && (
             <div className="flex items-center justify-between border-t border-slate-100 px-6 py-3">
               <span className="text-sm text-slate-500">
-                Page {packPage} of {totalPackPages}
+                Page {topUpPage} of {totalTopUpPages}
               </span>
               <div className="flex gap-2">
                 <button
-                  onClick={() => setPackPage((p) => Math.max(1, p - 1))}
-                  disabled={packPage <= 1}
+                  onClick={() => setTopUpPage((p) => Math.max(1, p - 1))}
+                  disabled={topUpPage <= 1}
                   className="px-3 py-1.5 text-sm rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Previous
                 </button>
                 <button
-                  onClick={() => setPackPage((p) => Math.min(totalPackPages, p + 1))}
-                  disabled={packPage >= totalPackPages}
+                  onClick={() => setTopUpPage((p) => Math.min(totalTopUpPages, p + 1))}
+                  disabled={topUpPage >= totalTopUpPages}
                   className="px-3 py-1.5 text-sm rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Next
@@ -785,122 +743,6 @@ export default function MetricsPage() {
             </div>
           )}
         </div>
-        );
-      })()}
-
-      {/* Pro Subscribers Table */}
-      {(() => {
-        const paidUsers = metrics?.paid_users || [];
-        const totalProPages = Math.ceil(paidUsers.length / PAGE_SIZE);
-        const pagedProUsers = paidUsers.slice((proPage - 1) * PAGE_SIZE, proPage * PAGE_SIZE);
-        return (
-      <div className="rounded-xl border border-slate-200 bg-white">
-        <div className="border-b border-slate-100 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900">Pro Plan Subscribers</h3>
-              <p className="text-sm text-slate-500">Users with an active Pro Plan subscription</p>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <Crown className="h-4 w-4 text-purple-500" />
-              <span className="text-slate-600">Total: <strong className="text-purple-700">{paidUsers.length}</strong></span>
-            </div>
-          </div>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-slate-100 text-left text-sm text-slate-500">
-                <th className="px-6 py-3 font-medium">User</th>
-                <th className="px-6 py-3 font-medium">Plan</th>
-                <th className="px-6 py-3 font-medium">Subscribed</th>
-                <th className="px-6 py-3 font-medium">Expires</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pagedProUsers.length > 0 ? (
-                pagedProUsers.map((user) => (
-                  <tr key={user.id} className={`border-b border-slate-50 hover:bg-slate-50 ${
-                    isExpired(user.subscription_expires_at) ? "bg-red-50/50" :
-                    isExpiringSoon(user.subscription_expires_at) ? "bg-amber-50/50" : ""
-                  }`}>
-                    <td className="px-6 py-4">
-                      <div className="font-medium text-slate-900">{user.name}</div>
-                      <div className="text-sm text-slate-500">{user.business_name || user.phone}</div>
-                      {user.email && <div className="text-xs text-slate-400">{user.email}</div>}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        user.plan === "pro" ? "bg-purple-100 text-purple-700" :
-                        "bg-blue-100 text-blue-700"
-                      }`}>
-                        {user.plan === "pro" ? "PRO PLAN" : user.plan.toUpperCase()}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-slate-600">
-                      {user.subscription_started_at
-                        ? new Date(user.subscription_started_at).toLocaleDateString()
-                        : "-"}
-                    </td>
-                    <td className="px-6 py-4 text-sm">
-                      {user.subscription_expires_at ? (
-                        <span className={`inline-flex items-center gap-1 ${
-                          isExpired(user.subscription_expires_at)
-                            ? "text-red-600 font-semibold"
-                            : isExpiringSoon(user.subscription_expires_at)
-                            ? "text-amber-600 font-semibold"
-                            : "text-slate-600"
-                        }`}>
-                          {isExpired(user.subscription_expires_at) && (
-                            <AlertCircle className="h-3.5 w-3.5" />
-                          )}
-                          {isExpiringSoon(user.subscription_expires_at) && (
-                            <AlertTriangle className="h-3.5 w-3.5" />
-                          )}
-                          {new Date(user.subscription_expires_at).toLocaleDateString()}
-                          {isExpired(user.subscription_expires_at) && " (expired)"}
-                          {isExpiringSoon(user.subscription_expires_at) && " (soon)"}
-                        </span>
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-slate-500">
-                    No paid subscribers yet
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-        {totalProPages > 1 && (
-          <div className="flex items-center justify-between border-t border-slate-100 px-6 py-3">
-            <span className="text-sm text-slate-500">
-              Page {proPage} of {totalProPages}
-            </span>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setProPage((p) => Math.max(1, p - 1))}
-                disabled={proPage <= 1}
-                className="px-3 py-1.5 text-sm rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                Previous
-              </button>
-              <button
-                onClick={() => setProPage((p) => Math.min(totalProPages, p + 1))}
-                disabled={proPage >= totalProPages}
-                className="px-3 py-1.5 text-sm rounded-md border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
         );
       })()}
         </>
@@ -915,16 +757,16 @@ export default function MetricsPage() {
               {/* Revenue Health */}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <StatCard
-                  title="Pro Revenue (30d)"
-                  value={`₦${growth.mrr.toLocaleString()}`}
-                  subtitle={`Annualized run-rate: ₦${growth.arr.toLocaleString()}`}
+                  title="Commission (This Month)"
+                  value={`₦${growth.commission_month.toLocaleString()}`}
+                  subtitle={`Annualized run-rate: ₦${growth.commission_run_rate.toLocaleString()}`}
                   icon={DollarSign}
                   color="emerald"
                 />
                 <StatCard
                   title="Churn Rate"
                   value={`${growth.churn_rate}%`}
-                  subtitle={`${growth.churned_users} expired subscriptions`}
+                  subtitle={`${growth.churned_users} businesses went inactive`}
                   icon={growth.churn_rate > 10 ? TrendingDown : Activity}
                   color={growth.churn_rate > 10 ? "red" : growth.churn_rate > 5 ? "orange" : "emerald"}
                   alert={growth.churn_rate > 10}
@@ -944,34 +786,6 @@ export default function MetricsPage() {
                   color="purple"
                 />
               </div>
-
-              {/* Subscription Health Warnings */}
-              {(growth.expired_subscriptions > 0 || growth.expiring_soon > 0) && (
-                <div className="rounded-lg border border-red-200 bg-red-50 p-4 flex items-start gap-3">
-                  <AlertTriangle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-sm font-medium text-red-800">Subscription Health Alert</p>
-                    <div className="mt-2 flex gap-6 text-sm">
-                      {growth.expired_subscriptions > 0 && (
-                        <div className="flex items-center gap-2">
-                          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-red-200 text-xs font-bold text-red-700">
-                            {growth.expired_subscriptions}
-                          </span>
-                          <span className="text-red-700">Expired — need renewal outreach</span>
-                        </div>
-                      )}
-                      {growth.expiring_soon > 0 && (
-                        <div className="flex items-center gap-2">
-                          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-200 text-xs font-bold text-amber-700">
-                            {growth.expiring_soon}
-                          </span>
-                          <span className="text-amber-700">Expiring within 7 days</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
 
               {/* Activation Funnel + Engagement */}
               <div className="grid gap-6 lg:grid-cols-2">
@@ -1007,10 +821,10 @@ export default function MetricsPage() {
                       color="bg-emerald-100 text-emerald-600"
                     />
                     <FunnelStep
-                      label="Upgraded to Paid Plan"
-                      value={growth.activation_funnel.upgraded_to_paid}
+                      label="Enabled Online Payments"
+                      value={growth.activation_funnel.enabled_online_payments}
                       total={growth.activation_funnel.total_signups}
-                      icon={Crown}
+                      icon={CreditCard}
                       color="bg-purple-100 text-purple-600"
                       isLast
                     />
@@ -1128,23 +942,23 @@ export default function MetricsPage() {
                 <div className="rounded-xl border border-slate-200 bg-white p-6">
                   <div className="flex items-center gap-3 mb-4">
                     <DollarSign className="h-5 w-5 text-purple-500" />
-                    <h3 className="font-semibold text-slate-900">Revenue Growth</h3>
+                    <h3 className="font-semibold text-slate-900">Payment Volume (GMV)</h3>
                   </div>
-                  <MiniBarChart data={growth.revenue_growth} color="bg-purple-500" label="Paid revenue per month" />
+                  <MiniBarChart data={growth.gmv_growth} color="bg-purple-500" label="Paid payment volume per month" />
                 </div>
               </div>
 
-              {/* MRR Trend */}
-              {growth.mrr_trend.length > 0 && (
+              {/* Commission Trend */}
+              {growth.commission_trend.length > 0 && (
                 <div className="rounded-xl border border-slate-200 bg-white p-6">
                   <div className="flex items-center gap-3 mb-4">
                     <TrendingUp className="h-5 w-5 text-emerald-500" />
                     <div>
-                      <h3 className="font-semibold text-slate-900">Pro Revenue Trend</h3>
-                      <p className="text-xs text-slate-500">Pro Pack &amp; Pro Plan revenue received</p>
+                      <h3 className="font-semibold text-slate-900">Commission Trend</h3>
+                      <p className="text-xs text-slate-500">Suoops earnings (3% fees) per month</p>
                     </div>
                   </div>
-                  <MiniBarChart data={growth.mrr_trend} color="bg-emerald-500" />
+                  <MiniBarChart data={growth.commission_trend} color="bg-emerald-500" />
                 </div>
               )}
             </div>

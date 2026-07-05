@@ -57,7 +57,7 @@ const BUSINESS_TYPES = [
 interface OnboardResult {
   user_id: number;
   is_new_user: boolean;
-  pro_granted: boolean;
+  wallet_credited: boolean;
   team_created: boolean;
   invites_sent: number;
   whatsapp_sent: boolean;
@@ -153,7 +153,7 @@ export default function SMEOnboardPage() {
           SME Onboarding
         </h1>
         <p className="text-slate-500 mt-1">
-          Set up a business with Pro features, team, and tailored instructions
+          Set up a business with a starter wallet, team, and tailored instructions
           — sent directly to their WhatsApp
         </p>
       </div>
@@ -367,9 +367,9 @@ export default function SMEOnboardPage() {
             </h3>
             <ul className="text-sm text-slate-500 space-y-1">
               <li>
-                ✓ Account created (or found if phone exists) with Pro features
+                ✓ Account created (or found if phone exists) — all features are free
               </li>
-              <li>✓ 5 free invoices credited to get started</li>
+              <li>✓ Starter wallet balance (₦500) credited to get started</li>
               {form.staff_emails.filter((e) => e.trim()).length > 0 && (
                 <li>
                   ✓ Team created +{" "}
