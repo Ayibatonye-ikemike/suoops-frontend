@@ -43,7 +43,7 @@ export function Hero({ onWatchDemo }: HeroProps) {
             </div>
             <Link
               href="/stores"
-              className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-jade transition-colors hover:text-white"
+              className="mt-6 inline-flex items-center gap-2 rounded-xl border border-brand-jade/50 bg-brand-jade/10 px-6 py-3.5 text-base font-bold text-brand-jade shadow-lg transition-all hover:scale-105 hover:bg-brand-jade hover:text-white sm:text-lg"
             >
               🛍️ Browse shops already selling on Suoops →
             </Link>

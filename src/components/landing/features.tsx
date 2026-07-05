@@ -27,7 +27,7 @@ export function Features() {
             <StepCard
               number={3}
               title="Get paid & track"
-              description="Get notified when customers pay. See who's paid, what stock is low, and if you're tax-safe."
+              description="Share your storefront so customers order & pay online, or get notified on bank transfers. See who's paid, what stock is low, and if you're tax-safe."
             />
           </div>
         </div>
@@ -52,6 +52,16 @@ export function Features() {
                 "Custom branding with your logo",
                 "Team access for small teams"
               ]}
+            />
+            <FeatureCard
+              title="🛒 Storefront & online payments"
+              features={[
+                "Share a public shop link on WhatsApp, Instagram or your bio",
+                "Customers browse your products and pay by card or transfer",
+                "Orders auto-confirm and settle straight to your bank",
+                "Just a flat 3% per invoice — no monthly fees, no plans",
+              ]}
+              highlight="Your own online storefront, live in minutes."
             />
             <FeatureCard
               title="📦 Inventory that actually helps you sell"
