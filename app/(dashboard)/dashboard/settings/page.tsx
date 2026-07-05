@@ -6,7 +6,6 @@ import { AlertTriangle, Mail, MessageCircle, User, Image, Building2, CreditCard,
 
 import { apiClient } from "@/api/client";
 import { getBankDetails } from "@/api/bank-details";
-import { useInventorySummary } from "@/features/inventory/use-inventory";
 import type { components } from "@/api/types";
 import { BankDetailsForm } from "@/features/settings/bank-details-form";
 import { SubscriptionSection } from "@/features/settings/subscription-section";
@@ -70,14 +69,14 @@ export default function SettingsPage() {
     staleTime: 60000,
   });
 
-  const { data: invSummary } = useInventorySummary();
-
   const hasPhone = Boolean(user?.phone);
   const phoneVerified = Boolean(user?.phone_verified);
   const hasBankDetails = Boolean(
     bankDetails && (bankDetails as { bank_name?: string })?.bank_name
   );
-  const hasInventory = ((invSummary?.active_products ?? 0) as number) > 0;
+  const hasOnlinePayments = Boolean(
+    (bankDetails as { online_payments_enabled?: boolean })?.online_payments_enabled
+  );
 
   return (
     <div className="min-h-screen">
@@ -98,7 +97,7 @@ export default function SettingsPage() {
             hasPhone={hasPhone}
             hasLogo={Boolean(user?.logo_url)}
             hasBankDetails={hasBankDetails}
-            hasInventory={hasInventory}
+            hasOnlinePayments={hasOnlinePayments}
           />
         </div>
 

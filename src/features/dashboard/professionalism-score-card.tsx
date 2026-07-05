@@ -11,6 +11,8 @@ const CHECK_LABELS: Record<string, string> = {
   uses_due_dates: "Due dates on invoices",
   sends_receipts: "Receipts on payment",
   has_inventory: "Products in your catalog",
+  has_online_payments: "Online payments enabled",
+  has_storefront: "Public storefront live",
 };
 
 const CHECK_LINKS: Record<string, string> = {
@@ -20,6 +22,8 @@ const CHECK_LINKS: Record<string, string> = {
   uses_due_dates: "/dashboard/invoices",
   sends_receipts: "/dashboard/invoices",
   has_inventory: "/dashboard/inventory",
+  has_online_payments: "/dashboard/settings#bank-details",
+  has_storefront: "/dashboard/settings#bank-details",
 };
 
 export function ProfessionalismScoreCard() {
