@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, Circle, MessageCircle, User, Image, Building2 } from "lucide-react";
+import { CheckCircle2, Circle, MessageCircle, User, Image, Building2, Package } from "lucide-react";
 
 interface SetupStep {
   label: string;
@@ -15,6 +15,7 @@ interface SetupProgressProps {
   hasPhone?: boolean;
   hasLogo?: boolean;
   hasBankDetails?: boolean;
+  hasInventory?: boolean;
 }
 
 export function SetupProgress({
@@ -23,6 +24,7 @@ export function SetupProgress({
   hasPhone,
   hasLogo,
   hasBankDetails,
+  hasInventory,
 }: SetupProgressProps) {
   const steps: SetupStep[] = [
     {
@@ -44,6 +46,12 @@ export function SetupProgress({
       label: "Add bank details",
       done: Boolean(hasBankDetails),
       icon: <Building2 className="h-4 w-4" />,
+    },
+    {
+      label: "Add a product",
+      done: Boolean(hasInventory),
+      icon: <Package className="h-4 w-4" />,
+      href: "/dashboard/inventory",
     },
   ];
 

@@ -10,6 +10,7 @@ const CHECK_LABELS: Record<string, string> = {
   has_bank_details: "Bank details & payment info",
   uses_due_dates: "Due dates on invoices",
   sends_receipts: "Receipts on payment",
+  has_inventory: "Products in your catalog",
 };
 
 const CHECK_LINKS: Record<string, string> = {
@@ -18,6 +19,7 @@ const CHECK_LINKS: Record<string, string> = {
   has_bank_details: "/dashboard/settings#bank-details",
   uses_due_dates: "/dashboard/invoices",
   sends_receipts: "/dashboard/invoices",
+  has_inventory: "/dashboard/inventory",
 };
 
 export function ProfessionalismScoreCard() {
