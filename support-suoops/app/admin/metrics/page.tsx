@@ -57,6 +57,8 @@ interface PlatformMetrics {
   storefronts_enabled: number;
   monetized_users: number;
   commission_this_month: number;
+  commission_wallet_this_month: number;
+  commission_online_this_month: number;
   total_customers: number;
   top_up_buyers: TopUpBuyerInfo[];
 }
@@ -552,7 +554,7 @@ export default function MetricsPage() {
             <StatCard
               title="Commission (This Month)"
               value={formatCurrency(metrics?.commission_this_month || 0)}
-              subtitle="Suoops earnings (3% fees)"
+              subtitle={`Wallet ${formatCurrency(metrics?.commission_wallet_this_month || 0)} · Online ${formatCurrency(metrics?.commission_online_this_month || 0)}`}
               icon={DollarSign}
               color="emerald"
             />
