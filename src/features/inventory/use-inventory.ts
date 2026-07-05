@@ -84,6 +84,17 @@ async function deleteProduct(id: number): Promise<void> {
   await apiClient.delete(`/inventory/products/${id}`);
 }
 
+async function uploadProductImage(id: number, file: File): Promise<Product> {
+  const formData = new FormData();
+  formData.append("file", file);
+  const { data } = await apiClient.post<Product>(
+    `/inventory/products/${id}/image`,
+    formData,
+    { headers: { "Content-Type": "multipart/form-data" } },
+  );
+  return data;
+}
+
 // ============================================================================
 // Product Hooks
 // ============================================================================
@@ -110,6 +121,17 @@ export function useCreateProduct() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: inventoryKeys.products() });
       queryClient.invalidateQueries({ queryKey: inventoryKeys.summary() });
+    },
+  });
+}
+
+export function useUploadProductImage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, file }: { id: number; file: File }) =>
+      uploadProductImage(id, file),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: inventoryKeys.products() });
     },
   });
 }

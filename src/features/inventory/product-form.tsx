@@ -1,8 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { X } from "lucide-react";
-import { useCreateProduct, useUpdateProduct, useCategories } from "./use-inventory";
+import { X, Image as ImageIcon } from "lucide-react";
+import {
+  useCreateProduct,
+  useUpdateProduct,
+  useCategories,
+  useUploadProductImage,
+} from "./use-inventory";
 import { useCurrency } from "@/hooks/use-currency";
 import type { Product, ProductCreate, ProductUpdate } from "./types";
 
@@ -19,6 +24,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
   const { data: categories } = useCategories();
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
+  const uploadImage = useUploadProductImage();
 
   const [formData, setFormData] = useState<ProductCreate>({
     sku: product?.sku ?? "",
@@ -36,12 +42,33 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
   });
 
   const [error, setError] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    product?.image_url ?? null
+  );
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setError("Please choose an image file.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Image must be under 5MB.");
+      return;
+    }
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+    setError(null);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
     try {
+      let productId = product?.id;
       if (isEditing) {
         const updates: ProductUpdate & { id: number } = {
           id: product.id,
@@ -49,7 +76,11 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
         };
         await updateProduct.mutateAsync(updates);
       } else {
-        await createProduct.mutateAsync(formData);
+        const created = await createProduct.mutateAsync(formData);
+        productId = created.id;
+      }
+      if (imageFile && productId) {
+        await uploadImage.mutateAsync({ id: productId, file: imageFile });
       }
       onSuccess?.();
       onClose();
@@ -65,7 +96,8 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
     }
   };
 
-  const isLoading = createProduct.isPending || updateProduct.isPending;
+  const isLoading =
+    createProduct.isPending || updateProduct.isPending || uploadImage.isPending;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -90,6 +122,41 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
               {error}
             </div>
           )}
+
+          {/* Product image (shown on the storefront) */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Product image{" "}
+              <span className="font-normal text-gray-400">
+                (shown on your storefront)
+              </span>
+            </label>
+            <div className="flex items-center gap-3">
+              <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700">
+                {imagePreview ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={imagePreview}
+                    alt="Product"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-gray-300">
+                    <ImageIcon className="h-6 w-6" />
+                  </div>
+                )}
+              </div>
+              <label className="cursor-pointer rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
+                {imagePreview ? "Change image" : "Upload image"}
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  className="hidden"
+                  onChange={handleImageChange}
+                />
+              </label>
+            </div>
+          </div>
 
           {/* Basic Info */}
           <div className="grid grid-cols-2 gap-4">
