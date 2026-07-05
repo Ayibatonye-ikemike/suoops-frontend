@@ -223,8 +223,8 @@ export function LogoUpload() {
             <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
               {previewUrl ? "Preview" : "Current Logo"}
             </p>
-            <p className="mt-2 text-sm text-brand-text">
-              This logo will appear on all your invoices and receipts
+            <p className="mt-1.5 text-sm text-brand-text">
+              Shown on your invoices and receipts
             </p>
           </div>
           {currentLogo && !previewUrl && (

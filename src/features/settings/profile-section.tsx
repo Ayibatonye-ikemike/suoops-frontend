@@ -61,7 +61,7 @@ export function ProfileSection({ currentName }: ProfileSectionProps) {
 
   return (
     <div>
-      <label className="block text-sm font-medium text-brand-textMuted mb-2">
+      <label className="block text-sm font-medium text-brand-textMuted mb-1.5">
         Full Name
       </label>
       

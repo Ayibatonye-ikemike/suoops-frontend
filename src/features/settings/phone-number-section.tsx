@@ -120,7 +120,7 @@ export function PhoneNumberSection({
             <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
               WhatsApp Number
             </p>
-            <p className="mt-2 text-lg font-semibold text-brand-text">
+            <p className="mt-1.5 text-lg font-semibold text-brand-text">
               {phone}
             </p>
             <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-brand-primary">
@@ -146,8 +146,7 @@ export function PhoneNumberSection({
         </div>
 
         <p className="text-xs text-brand-textMuted">
-          A phone number is required on every account so we can deliver invoices via WhatsApp.
-          You can change it anytime, but it can&apos;t be removed.
+          Required on every account — you can change it anytime, but it can&apos;t be removed.
         </p>
 
         {/* WhatsApp Bot Link */}
@@ -170,10 +169,6 @@ export function PhoneNumberSection({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
           </svg>
         </a>
-
-        <p className="text-xs text-brand-textMuted">
-          You can now use this number to create invoices and receive notifications via WhatsApp.
-        </p>
       </div>
     );
   }
@@ -217,11 +212,10 @@ export function PhoneNumberSection({
             placeholder="0801 234 5678"
             required
             disabled={loading}
-            className="w-full rounded-lg border border-brand-border bg-white px-3 py-3 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 disabled:cursor-not-allowed disabled:bg-brand-background"
+            className="w-full rounded-lg border border-brand-border bg-white px-3 py-2.5 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 disabled:cursor-not-allowed disabled:bg-brand-background"
           />
           <p className="text-xs text-brand-textMuted">
-            Enter the number you use on WhatsApp. You&apos;ll activate it by
-            sending a message to our bot.
+            Enter the number you use on WhatsApp — you&apos;ll activate it via our bot.
           </p>
         </div>
         <Button type="submit" disabled={loading} className="w-full">

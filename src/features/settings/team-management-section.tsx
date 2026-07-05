@@ -255,7 +255,7 @@ export function TeamManagementSection() {
           {team.team.name} • {team.members.length} of {team.team.max_members} members
         </p>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-4">
         {/* Admin Section */}
         <div>
           <h4 className="text-sm font-medium mb-3">Admin (You)</h4>

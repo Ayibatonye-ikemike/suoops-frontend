@@ -31,7 +31,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
 
   return (
     <div className="rounded-lg border border-brand-border bg-white text-brand-text shadow-card">
-      <div className="border-b border-brand-border px-6 py-5 sm:px-8">
+      <div className="border-b border-brand-border px-6 py-4 sm:px-8">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
           <h2 className="text-[22px] font-semibold text-brand-text">Billing &amp; wallet</h2>
           <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-textMuted">
@@ -40,12 +40,11 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
           </span>
         </div>
         <p className="mt-2 text-sm text-brand-textMuted">
-          Every feature is included. We take a flat 3% per invoice — from your
-          wallet on manual invoices, or as commission on storefront orders.
+          Every feature is included. We take a flat 3% per invoice.
         </p>
       </div>
 
-      <div className="px-6 py-6 sm:px-8 sm:py-8">
+      <div className="px-6 py-5 sm:px-8 sm:py-6">
         {/* Wallet balance */}
         <div className="rounded-2xl border border-brand-border bg-brand-background p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
