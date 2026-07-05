@@ -28,6 +28,9 @@ export function PaymentsStorefrontSection() {
     queryFn: getOnlinePaymentsStatus,
     retry: false,
     staleTime: 60000,
+    // Always re-check on mount so a bank-details change made elsewhere is
+    // reflected (otherwise the "Enable online payments" gate can stay stale).
+    refetchOnMount: "always",
   });
 
   const storefront = useQuery({

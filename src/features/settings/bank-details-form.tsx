@@ -67,6 +67,9 @@ export function BankDetailsForm() {
       setInitialValues(nextState);
       setFormState(nextState);
       queryClient.setQueryData(["bankDetails"], updated);
+      // Bank details gate the "Enable online payments" button on the same
+      // page; refresh its status so the button unlocks immediately.
+      queryClient.invalidateQueries({ queryKey: ["onlinePaymentsStatus"] });
       showSuccess("Bank details saved.");
     },
   });
@@ -77,6 +80,7 @@ export function BankDetailsForm() {
       setInitialValues(DEFAULT_FORM);
       setFormState(DEFAULT_FORM);
       queryClient.invalidateQueries({ queryKey: ["bankDetails"] });
+      queryClient.invalidateQueries({ queryKey: ["onlinePaymentsStatus"] });
       showSuccess("Bank details cleared.");
     },
   });
