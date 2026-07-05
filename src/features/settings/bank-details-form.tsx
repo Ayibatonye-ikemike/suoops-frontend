@@ -36,9 +36,6 @@ export function BankDetailsForm() {
   const [initialValues, setInitialValues] =
     useState<BankFormState>(DEFAULT_FORM);
   const [successMessage, setSuccessMessage] = useState("");
-  const [copiedField, setCopiedField] = useState<keyof BankFormState | null>(
-    null
-  );
   const [resolveStatus, setResolveStatus] = useState<
     "idle" | "resolving" | "resolved" | "error"
   >("idle");
@@ -46,7 +43,6 @@ export function BankDetailsForm() {
   // Only auto-resolve after the user edits the form, never on initial hydration.
   const userEditedRef = useRef(false);
 
-  const copiedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const {
@@ -120,7 +116,6 @@ export function BankDetailsForm() {
 
   useEffect(
     () => () => {
-      if (copiedTimeoutRef.current) clearTimeout(copiedTimeoutRef.current);
       if (successTimeoutRef.current) clearTimeout(successTimeoutRef.current);
     },
     []
@@ -185,29 +180,6 @@ export function BankDetailsForm() {
     [handleFieldChange]
   );
 
-  const handleCopy = useCallback(
-    async (field: "accountNumber" | "accountName") => {
-      const value =
-        field === "accountNumber"
-          ? formState.accountNumber
-          : formState.accountName;
-      if (!value || typeof navigator === "undefined" || !navigator.clipboard) {
-        return;
-      }
-      try {
-        await navigator.clipboard.writeText(value);
-        setCopiedField(field);
-        if (copiedTimeoutRef.current) {
-          clearTimeout(copiedTimeoutRef.current);
-        }
-        copiedTimeoutRef.current = setTimeout(() => setCopiedField(null), 2000);
-      } catch (copyError) {
-        console.error("Failed to copy bank detail", copyError);
-      }
-    },
-    [formState.accountName, formState.accountNumber]
-  );
-
   const handleSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
@@ -265,7 +237,7 @@ export function BankDetailsForm() {
     : null;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <StatusBanner
         isConfigured={isConfigured}
         hasChanges={hasChanges}
@@ -282,8 +254,6 @@ export function BankDetailsForm() {
         formState={formState}
         onFieldChange={handleFieldChange}
         onAccountNumberChange={handleAccountNumberChange}
-        onCopy={handleCopy}
-        copiedField={copiedField}
         resolveStatus={resolveStatus}
         resolveError={resolveError}
       />

@@ -7,15 +7,14 @@ interface InvoicePreviewProps {
 
 export function InvoicePreview({ formState }: InvoicePreviewProps) {
   return (
-    <div className="rounded-xl border border-brand-border bg-brand-background px-4 py-5 text-brand-text">
-      <h3 className="text-sm font-semibold uppercase tracking-wide text-brand-textMuted">
+    <div className="rounded-xl border border-brand-border bg-brand-background px-4 py-4 text-brand-text">
+      <h3 className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
         Invoice Preview
       </h3>
-      <p className="mt-2 text-xs text-brand-textMuted">
-        Customers receive these instructions on the PDF and WhatsApp message
-        once you save.
+      <p className="mt-1 text-xs text-brand-textMuted">
+        What customers see on the PDF &amp; WhatsApp once you save.
       </p>
-      <dl className="mt-4 space-y-2 text-sm text-brand-text">
+      <dl className="mt-3 space-y-1.5 text-sm text-brand-text">
         <div className="flex items-center justify-between">
           <dt className="font-medium text-brand-textMuted">Bank Name</dt>
           <dd>
