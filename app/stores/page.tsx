@@ -7,6 +7,7 @@ type StoreCard = {
   slug: string;
   business_name: string | null;
   logo_url: string | null;
+  description: string | null;
 };
 
 type Directory = {
@@ -81,6 +82,11 @@ export default async function StoresDirectoryPage() {
                     </div>
                   )}
                   <span className="line-clamp-2 text-sm font-semibold text-slate-900">{name}</span>
+                  {s.description && (
+                    <span className="line-clamp-2 text-xs text-slate-500">
+                      {s.description}
+                    </span>
+                  )}
                 </Link>
               );
             })}

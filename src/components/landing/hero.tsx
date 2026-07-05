@@ -41,6 +41,12 @@ export function Hero({ onWatchDemo }: HeroProps) {
                 See how it works
               </button>
             </div>
+            <Link
+              href="/stores"
+              className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-jade transition-colors hover:text-white"
+            >
+              🛍️ Browse shops already selling on Suoops →
+            </Link>
           </div>
 
           {/* Right: Phone Mockup */}

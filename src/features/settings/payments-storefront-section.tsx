@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { Check, Copy, CreditCard, ExternalLink, Store } from "lucide-react";
@@ -10,6 +10,7 @@ import {
   enableOnlinePayments,
   enableStorefront,
   getStorefront,
+  updateStorefront,
 } from "@/api/payments-storefront";
 import { getBankDetails } from "@/api/bank-details";
 
@@ -77,6 +78,20 @@ export function PaymentsStorefrontSection() {
       queryClient.invalidateQueries({ queryKey: ["storefrontStatus"] });
     },
     onError: (error) => toast.error(errorMessage(error, "Could not hide your storefront.")),
+  });
+
+  const [desc, setDesc] = useState("");
+  useEffect(() => {
+    if (storefront.data?.description != null) setDesc(storefront.data.description);
+  }, [storefront.data?.description]);
+
+  const saveDesc = useMutation({
+    mutationFn: () => updateStorefront(desc.trim()),
+    onSuccess: () => {
+      toast.success("Storefront description saved.");
+      queryClient.invalidateQueries({ queryKey: ["storefrontStatus"] });
+    },
+    onError: (error) => toast.error(errorMessage(error, "Could not save the description.")),
   });
 
   const bank = bankDetails.data as BankDetails | undefined;
@@ -199,6 +214,31 @@ export function PaymentsStorefrontSection() {
                 <ExternalLink className="h-3.5 w-3.5" />
                 View
               </a>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-brand-textMuted">
+                What do you sell?{" "}
+                <span className="font-normal">(shown in the Shops directory)</span>
+              </label>
+              <textarea
+                value={desc}
+                onChange={(e) => setDesc(e.target.value.slice(0, 160))}
+                rows={2}
+                maxLength={160}
+                placeholder="e.g. Fresh cakes, pastries & small chops for events."
+                className="mt-1 block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+              />
+              <div className="mt-1 flex items-center justify-between">
+                <span className="text-xs text-brand-textMuted">{desc.length}/160</span>
+                <button
+                  type="button"
+                  onClick={() => saveDesc.mutate()}
+                  disabled={saveDesc.isPending}
+                  className="rounded-md bg-brand-jade px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-brand-jadeHover disabled:opacity-60"
+                >
+                  {saveDesc.isPending ? "Saving…" : "Save description"}
+                </button>
+              </div>
             </div>
             <button
               type="button"

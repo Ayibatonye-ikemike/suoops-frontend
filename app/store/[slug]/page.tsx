@@ -17,6 +17,7 @@ type StoreProduct = {
 type Storefront = {
   slug: string;
   business_name: string | null;
+  description: string | null;
   logo_url: string | null;
   online_payments_enabled: boolean;
   whatsapp_url: string | null;
@@ -93,6 +94,9 @@ export default async function StorePage({ params }: RouteProps) {
           )}
           <div>
             <h1 className="text-xl font-bold text-white">{name}</h1>
+            {store.description && (
+              <p className="mt-0.5 text-sm text-emerald-100">{store.description}</p>
+            )}
             <p className="text-xs text-emerald-300">Powered by Suoops · suoops.com</p>
           </div>
         </div>

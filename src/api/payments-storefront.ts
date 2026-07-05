@@ -15,6 +15,7 @@ export interface StorefrontStatus {
   enabled: boolean;
   slug: string | null;
   link: string | null;
+  description: string | null;
 }
 
 export async function getOnlinePaymentsStatus(): Promise<OnlinePaymentsStatus> {
@@ -47,6 +48,14 @@ export async function enableStorefront(slug?: string): Promise<StorefrontStatus>
 export async function disableStorefront(): Promise<StorefrontStatus> {
   const res = await apiClient.post<StorefrontStatus>(
     "/inventory/storefront/disable",
+  );
+  return res.data;
+}
+
+export async function updateStorefront(description: string): Promise<StorefrontStatus> {
+  const res = await apiClient.patch<StorefrontStatus>(
+    "/inventory/storefront",
+    { description },
   );
   return res.data;
 }

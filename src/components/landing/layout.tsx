@@ -37,6 +37,12 @@ export function Navigation() {
             >
               Pricing
             </a>
+            <Link
+              href="/stores"
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-brand-jade/60 px-3 py-1.5 text-sm font-semibold text-brand-jade transition-colors hover:bg-brand-jade hover:text-white"
+            >
+              🛍️ Browse Shops
+            </Link>
             <a
               href="https://support.suoops.com"
               target="_blank"
