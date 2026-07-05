@@ -12,6 +12,7 @@ import {
   getOnlinePaymentsStatus,
   getStorefront,
 } from "@/api/payments-storefront";
+import { getBankDetails } from "@/api/bank-details";
 
 function errorMessage(error: unknown, fallback: string): string {
   const detail = (error as { response?: { data?: { detail?: string } } })?.response
@@ -36,6 +37,16 @@ export function PaymentsStorefrontSection() {
   const storefront = useQuery({
     queryKey: ["storefrontStatus"],
     queryFn: getStorefront,
+    retry: false,
+    staleTime: 60000,
+  });
+
+  // Shares the ["bankDetails"] cache with the bank-details form on the same
+  // page, so the gate reflects what the user just saved without depending on
+  // the separate online-payments status call.
+  const bankDetails = useQuery({
+    queryKey: ["bankDetails"],
+    queryFn: getBankDetails,
     retry: false,
     staleTime: 60000,
   });
@@ -68,7 +79,14 @@ export function PaymentsStorefrontSection() {
   });
 
   const payEnabled = payments.data?.enabled ?? false;
-  const hasBank = payments.data?.has_bank_details ?? false;
+  // Prefer the bank-details the user actually saved; fall back to the status
+  // endpoint. This keeps the button in sync with the form on the same page.
+  const hasBank =
+    Boolean(
+      bankDetails.data?.bank_name &&
+        bankDetails.data?.account_number &&
+        bankDetails.data?.account_name,
+    ) || (payments.data?.has_bank_details ?? false);
   const storeEnabled = storefront.data?.enabled ?? false;
   const link = storefront.data?.link ?? null;
 
