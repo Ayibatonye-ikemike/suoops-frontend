@@ -1,168 +1,58 @@
 "use client";
 
-import { useState } from "react";
-import { PAID_PLANS, type Plan } from "../../constants/pricing";
-
 interface PlanModalProps {
   isOpen: boolean;
   onClose: () => void;
-  currentPlan: string;
+  currentPlan?: string;
 }
 
-export function PlanSelectionModal({
-  isOpen,
-  onClose,
-  currentPlan,
-}: PlanModalProps) {
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
-
+/**
+ * Legacy "upgrade" modal. Under the commission model there are no plans — every
+ * feature is free and we take a flat 3% per invoice. Kept (with the same props)
+ * because a few older gated views still render it; it now just explains billing.
+ */
+export function PlanSelectionModal({ isOpen, onClose }: PlanModalProps) {
   if (!isOpen) return null;
 
-  const handleUpgrade = () => {
-    if (!selectedPlan) {
-      alert("Please select a plan");
-      return;
-    }
-    // Prepaid model: send to the Pro Pack checkout (no recurring subscription).
-    window.location.href = "/dashboard/billing/purchase?pack=pro_pack";
-  };
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-8 sm:px-6">
-      <div className="relative max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-brand-border bg-white p-6 text-brand-text shadow-2xl shadow-brand-border/30 sm:p-8">
-        {/* Close button */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-8">
+      <div className="relative w-full max-w-md rounded-2xl border border-brand-border bg-white p-6 text-brand-text shadow-2xl">
         <button
           onClick={onClose}
           className="absolute right-4 top-4 rounded-lg p-2 hover:bg-brand-background transition-colors"
           aria-label="Close"
         >
-          <svg
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
 
-        {/* Modal header */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold sm:text-3xl">Upgrade to Pro</h2>
+        <div className="text-center">
+          <div className="text-4xl">🎉</div>
+          <h2 className="mt-2 text-2xl font-bold">Everything is free</h2>
           <p className="mt-2 text-brand-textMuted">
-            Unlock custom branding, inventory, team management, and more
+            All features are included — custom branding, inventory, team, tax
+            reports and more. We simply take a flat 3% per invoice.
           </p>
         </div>
 
-        {/* Plan grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
-          {PAID_PLANS.map((plan: Plan) => {
-            const isCurrent = plan.id === currentPlan;
-            const isSelected = selectedPlan === plan.id;
-
-            return (
-              <button
-                key={plan.id}
-                type="button"
-                disabled={isCurrent}
-                onClick={() => setSelectedPlan(plan.id)}
-                className={`group relative rounded-xl border-2 p-6 text-left transition-all ${
-                  isCurrent
-                    ? "border-brand-border bg-brand-background cursor-not-allowed opacity-60"
-                    : isSelected
-                    ? "border-brand-jade bg-brand-jade/5 shadow-lg"
-                    : "border-brand-border bg-white hover:border-brand-jade/50 hover:shadow-md"
-                }`}
-              >
-                {plan.popular && !isCurrent && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="rounded-full bg-brand-jade px-3 py-1 text-xs font-semibold text-white">
-                      MOST POPULAR
-                    </span>
-                  </div>
-                )}
-
-                {isCurrent && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="rounded-full bg-brand-textMuted px-3 py-1 text-xs font-semibold text-white">
-                      CURRENT PLAN
-                    </span>
-                  </div>
-                )}
-
-                <div className="mb-4">
-                  <div className="text-4xl mb-2">{plan.icon}</div>
-                  <h3 className="text-xl font-bold">{plan.name}</h3>
-                </div>
-
-                <div className="mb-4">
-                  <div className="text-3xl font-bold">{plan.priceDisplay}</div>
-                  {plan.hasMonthlySubscription && <div className="text-sm text-brand-textMuted">/month</div>}
-                </div>
-
-                <div className="mb-4 text-sm font-semibold text-brand-textMuted">
-                  {plan.invoicesDisplay}
-                </div>
-
-                <ul className="space-y-2 text-sm text-brand-textMuted">
-                  {plan.features.map((feature: string, i: number) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <svg
-                        className="h-5 w-5 flex-shrink-0 text-brand-success"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {isSelected && !isCurrent && (
-                  <div className="mt-4 flex items-center gap-2 text-sm font-semibold text-brand-jade">
-                    <svg
-                      className="h-5 w-5"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    Selected
-                  </div>
-                )}
-              </button>
-            );
-          })}
+        <div className="mt-6 rounded-xl border border-brand-border bg-brand-background p-4 text-sm text-brand-textMuted">
+          Manual invoices use your prepaid wallet (3%, ₦20–₦2,000 at creation).
+          Storefront orders pay 3% only when the customer pays online.
         </div>
 
-        {/* Action buttons */}
-        <div className="mt-8 flex justify-end gap-4">
+        <div className="mt-6 flex justify-end gap-3">
           <button
             onClick={onClose}
             className="rounded-lg border border-brand-border bg-white px-6 py-2.5 text-sm font-semibold text-brand-text hover:bg-brand-background transition-colors"
           >
-            Cancel
+            Got it
           </button>
           <button
-            onClick={handleUpgrade}
-            disabled={!selectedPlan}
-            className="rounded-lg bg-brand-jade px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-jadeHover disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
+            onClick={() => (window.location.href = "/dashboard/billing/purchase")}
+            className="rounded-lg bg-brand-jade px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-jadeHover transition-colors"
           >
-            Continue to Payment
+            Top up wallet
           </button>
         </div>
       </div>

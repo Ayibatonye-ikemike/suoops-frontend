@@ -15,21 +15,24 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { apiClient } from "@/api/client";
+import { onboardingCompleteKey } from "@/features/dashboard/new-user-onboarding";
 
 const BOT_NUMBER = "2348106865807";
 
 interface UserData {
+  id?: number;
   name?: string;
   business_name?: string | null;
   invoice_balance?: number;
 }
 
 /**
- * Mark onboarding as complete so the user is not bounced back here.
+ * Mark onboarding as complete (per user) so the user is not bounced back here.
  */
-function markOnboardingComplete() {
+function markOnboardingComplete(userId?: number) {
+  if (!userId) return;
   try {
-    localStorage.setItem("onboarding-complete", "true");
+    localStorage.setItem(onboardingCompleteKey(userId), "true");
     localStorage.setItem("plan-chosen", "true");
   } catch {
     // non-fatal
@@ -83,7 +86,7 @@ export default function WelcomeOnboardingPage() {
           href={whatsappLink}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={() => markOnboardingComplete()}
+          onClick={() => markOnboardingComplete(user?.id)}
           className="flex w-full items-center justify-center gap-3 rounded-2xl bg-[#25D366] px-6 py-5 text-lg font-bold text-white shadow-lg transition hover:bg-[#20bd5a] hover:shadow-xl active:scale-[0.98]"
         >
           <MessageCircle className="h-7 w-7 shrink-0" />
@@ -96,7 +99,7 @@ export default function WelcomeOnboardingPage() {
         {/* Secondary CTA — Web dashboard */}
         <Link
           href="/dashboard"
-          onClick={() => markOnboardingComplete()}
+          onClick={() => markOnboardingComplete(user?.id)}
           className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-white/30 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/10 active:scale-[0.98]"
         >
           Use the Web Dashboard instead

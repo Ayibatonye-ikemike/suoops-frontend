@@ -113,19 +113,18 @@ export interface InvoicePackPurchaseResponse {
   reference: string;
   amount: number;
   invoices_to_add: number;
+  wallet_credit_naira?: number;
 }
 
 /**
- * Initialize Paystack payment for invoice pack purchase.
- * @param quantity Number of packs to purchase (default 1)
- * @param pack_type "standard" (50 for ₦1,250) or "small" (25 for ₦625)
+ * Initialize a Paystack payment to top up the prepaid invoice wallet.
+ * @param amount Top-up amount in Naira (must be an offered tier: 1250/5000/20000)
  */
-export async function initializeInvoicePackPurchase(
-  quantity: number = 1,
-  pack_type: string = "standard"
+export async function initializeWalletTopup(
+  amount: number = 1250
 ): Promise<InvoicePackPurchaseResponse> {
   const response = await apiClient.post("/invoices/purchase-pack", null, {
-    params: { quantity, pack_type },
+    params: { amount },
   });
   return response.data;
 }

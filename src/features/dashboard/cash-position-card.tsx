@@ -1,55 +1,17 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
 import { getCashPosition } from "@/api/analytics";
-import { apiClient } from "@/api/client";
-import { hasPlanFeature, type PlanTier } from "@/constants/pricing";
 import { useCurrency } from "@/hooks/use-currency";
 
 export function CashPositionCard() {
   const { formatCompact } = useCurrency();
-  const { data: user } = useQuery({
-    queryKey: ["currentUser"],
-    queryFn: async () => {
-      const response = await apiClient.get("/users/me");
-      return response.data as { plan?: string };
-    },
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const currentPlan = (user?.plan?.toUpperCase() || "FREE") as PlanTier;
-  const hasAccess = hasPlanFeature(currentPlan, "CASH_DASHBOARD");
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["cash-position"],
     queryFn: getCashPosition,
     refetchInterval: 60_000,
-    enabled: hasAccess,
   });
-
-  if (!hasAccess) {
-    return (
-      <div className="rounded-lg border border-brand-border bg-white p-4 shadow-card sm:p-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-sm font-semibold text-brand-dark">
-              💰 Cash Dashboard
-            </h3>
-            <p className="mt-1 text-xs text-brand-muted">
-              See real-time cash flow, overdue invoices, and expected inflow — upgrade to Pro.
-            </p>
-          </div>
-          <Link
-            href="/dashboard/upgrade/pro"
-            className="whitespace-nowrap rounded-lg bg-brand-jade px-3 py-1.5 text-xs font-semibold text-white transition-all hover:bg-brand-teal"
-          >
-            Upgrade →
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   if (isLoading) {
     return (

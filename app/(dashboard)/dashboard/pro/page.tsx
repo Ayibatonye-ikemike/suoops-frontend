@@ -211,14 +211,14 @@ export default function ProGuidePage() {
             </span>
             <div>
               <h1 className="text-2xl font-bold text-brand-text sm:text-3xl">
-                Your Pro features
+                Your features
               </h1>
               <p className="text-sm text-brand-textMuted">
                 {isPro
                   ? expiresAt
-                    ? `Active — premium features available until ${expiresAt}.`
-                    : "Active — all premium features unlocked."
-                  : "Unlock these with the Pro Pack or a Pro Features subscription."}
+                    ? `Premium features available until ${expiresAt}.`
+                    : "All features unlocked."
+                  : "All features are included, free — here's how to use each one."}
               </p>
             </div>
           </div>
@@ -228,11 +228,11 @@ export default function ProGuidePage() {
           </p>
           {!isPro && (
             <Link
-              href="/dashboard/billing/purchase?pack=pro_pack"
-              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-amber-500"
+              href="/dashboard/billing/purchase"
+              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-brand-jade px-4 py-2.5 text-sm font-bold text-white transition hover:bg-brand-jade/90"
             >
-              <Crown className="h-4 w-4" />
-              Get Pro
+              <Sparkles className="h-4 w-4" />
+              Top up wallet
               <ArrowRight className="h-4 w-4" />
             </Link>
           )}

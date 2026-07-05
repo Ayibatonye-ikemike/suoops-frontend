@@ -172,6 +172,11 @@ export function Footer() {
                 </a>
               </li>
               <li>
+                <Link href="/stores" className="hover:text-brand-jade transition-colors">
+                  Shops
+                </Link>
+              </li>
+              <li>
                 <Link href="/dashboard" className="hover:text-brand-jade transition-colors">
                   Dashboard
                 </Link>

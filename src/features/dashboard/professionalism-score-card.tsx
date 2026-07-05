@@ -3,8 +3,6 @@
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { getProfessionalismScore } from "@/api/analytics";
-import { apiClient } from "@/api/client";
-import { hasPlanFeature, type PlanTier } from "@/constants/pricing";
 
 const CHECK_LABELS: Record<string, string> = {
   has_business_name: "Business name",
@@ -23,26 +21,10 @@ const CHECK_LINKS: Record<string, string> = {
 };
 
 export function ProfessionalismScoreCard() {
-  const { data: user } = useQuery({
-    queryKey: ["currentUser"],
-    queryFn: async () => {
-      const response = await apiClient.get("/users/me");
-      return response.data as { plan?: string };
-    },
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const currentPlan = (user?.plan?.toUpperCase() || "FREE") as PlanTier;
-  const hasAccess = hasPlanFeature(currentPlan, "PROFESSIONALISM_SCORE");
-
   const { data, isLoading, error } = useQuery({
     queryKey: ["professionalism-score"],
     queryFn: getProfessionalismScore,
-    enabled: hasAccess,
   });
-
-  // Don't show at all for non-PRO users (cash card already has upgrade CTA)
-  if (!hasAccess) return null;
 
   if (isLoading) {
     return (

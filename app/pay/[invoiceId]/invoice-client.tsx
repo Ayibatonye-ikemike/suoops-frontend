@@ -9,6 +9,8 @@ import { printPdf } from "../../../src/utils/printPdf";
 type InvoicePublic = components["schemas"]["InvoicePublicOut"] & {
   pdf_url?: string | null;
   receipt_pdf_url?: string | null;
+  online_payments_enabled?: boolean;
+  online_only?: boolean;
 };
 
 type Props = {
@@ -71,6 +73,7 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPolling, setIsPolling] = useState(false);
+  const [payLoading, setPayLoading] = useState(false);
 
   const isPaid = invoice.status === "paid";
   const isAwaiting = invoice.status === "awaiting_confirmation";
@@ -109,6 +112,34 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
       setIsSubmitting(false);
     }
   }, [apiBaseUrl, invoiceId, isAwaiting, isClosed, isPaid, isSubmitting]);
+
+  const handlePayNow = useCallback(async () => {
+    if (payLoading || isPaid || isClosed) return;
+    setPayLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        `${apiBaseUrl}/public/invoices/${invoiceId}/pay`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          cache: "no-store",
+        },
+      );
+      if (!response.ok) {
+        throw new Error("Unable to start payment. Please try again.");
+      }
+      const data = (await response.json()) as { authorization_url?: string };
+      if (data.authorization_url) {
+        window.location.href = data.authorization_url;
+        return;
+      }
+      throw new Error("Payment could not be started.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setPayLoading(false);
+    }
+  }, [apiBaseUrl, invoiceId, isClosed, isPaid, payLoading]);
 
   // Poll for status updates with exponential backoff
   useEffect(() => {
@@ -316,7 +347,7 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
             )}
 
             {/* Bank Details — For unpaid invoices */}
-            {!isPaid && !isClosed && (
+            {!isPaid && !isClosed && !invoice.online_only && (
               <div className="border-b border-slate-100 px-6 py-5">
                 <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest text-slate-400">
                   Bank Transfer Details
@@ -412,8 +443,33 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
             <div className="px-6 py-6">
               {!isPaid && !isClosed && (
                 <>
+                  {/* Pay Now — online payment via the business's Paystack subaccount */}
+                  {invoice.online_payments_enabled && !isAwaiting && (
+                    <div className="mb-5">
+                      <button
+                        onClick={handlePayNow}
+                        disabled={payLoading}
+                        className="w-full rounded-xl bg-brand-jade py-4 text-base font-semibold text-white shadow-lg transition hover:bg-brand-jadeHover disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        {payLoading
+                          ? "Starting secure checkout…"
+                          : `Pay ${formatCurrency(invoice.amount, cur)} now`}
+                      </button>
+                      <p className="mt-2 text-center text-[11px] text-slate-400">
+                        Secure card or bank payment · instant confirmation
+                      </p>
+                      <div className="my-4 flex items-center gap-3">
+                        <span className="h-px flex-1 bg-slate-200" />
+                        <span className="text-[10px] font-medium uppercase tracking-wide text-slate-400">
+                          or pay by transfer
+                        </span>
+                        <span className="h-px flex-1 bg-slate-200" />
+                      </div>
+                    </div>
+                  )}
+
                   {/* How It Works — Reduces fear */}
-                  {!isAwaiting && (
+                  {!isAwaiting && !invoice.online_only && (
                     <div className="mb-5 rounded-xl bg-blue-50 px-4 py-3.5 ring-1 ring-blue-100">
                       <p className="mb-2 text-xs font-semibold text-blue-800">
                         How it works:
@@ -443,17 +499,19 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
                     </div>
                   )}
 
-                  <button
-                    onClick={handleConfirmTransfer}
-                    disabled={isSubmitting || isAwaiting}
-                    className="w-full rounded-xl bg-brand-primary py-4 text-base font-semibold text-white shadow-lg transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {isAwaiting
-                      ? "✓ Business Notified — Awaiting Confirmation"
-                      : isSubmitting
-                        ? "Notifying..."
-                        : "I’ve sent the transfer"}
-                  </button>
+                  {!invoice.online_only && (
+                    <button
+                      onClick={handleConfirmTransfer}
+                      disabled={isSubmitting || isAwaiting}
+                      className="w-full rounded-xl bg-brand-primary py-4 text-base font-semibold text-white shadow-lg transition hover:bg-brand-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {isAwaiting
+                        ? "✓ Business Notified — Awaiting Confirmation"
+                        : isSubmitting
+                          ? "Notifying..."
+                          : "I’ve sent the transfer"}
+                    </button>
+                  )}
 
                   {isAwaiting && (
                     <p className="mt-3 text-center text-xs text-slate-400">

@@ -8,8 +8,9 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 
 import { dismiss as dismissBanner, isDismissed } from "@/lib/dismissals";
+import { walletNaira } from "@/constants/pricing";
 
-type CurrentUser = components["schemas"]["UserOut"];
+type CurrentUser = components["schemas"]["UserOut"] & { wallet_balance_kobo?: number };
 
 const DISMISSED_KEY = "low-balance-banner-dismissed";
 // Re-surface after 1 day for low (>0) balance, never auto-redismiss for zero.
@@ -39,18 +40,12 @@ export function LowBalanceBanner() {
     staleTime: 60000,
   });
 
-  const invoiceBalance = user?.invoice_balance ?? 5;
-  const plan = user?.plan?.toUpperCase() || "FREE";
-  const isLowBalance = invoiceBalance <= 2 && invoiceBalance > 0;
-  const isZeroBalance = invoiceBalance === 0;
-  const isFreeOrStarter = plan === "FREE" || plan === "STARTER";  // STARTER is legacy, treat same as FREE
+  const wallet = walletNaira(user?.wallet_balance_kobo);
+  const isLowBalance = wallet > 0 && wallet < 500;
+  const isZeroBalance = wallet <= 0;
 
-  // Don't show if:
-  // - Still loading
-  // - User has healthy balance (>2)
-  // - User is PRO (gets monthly invoices)
-  // - User dismissed the banner (within 24h)
-  if (isLoading || (!isLowBalance && !isZeroBalance) || !isFreeOrStarter || dismissed) {
+  // Don't show if loading, the wallet is healthy, or the banner was dismissed.
+  if (isLoading || (!isLowBalance && !isZeroBalance) || dismissed) {
     return null;
   }
 
@@ -76,16 +71,14 @@ export function LowBalanceBanner() {
           <div className="flex items-start justify-between gap-2">
             <div>
               <h3 className="font-semibold text-gray-900">
-                {isZeroBalance 
-                  ? "No invoices remaining!" 
-                  : `Only ${invoiceBalance} invoice${invoiceBalance === 1 ? '' : 's'} left!`
-                }
+                {isZeroBalance
+                  ? "Your invoice wallet is empty"
+                  : `Wallet low: ₦${wallet.toLocaleString()} left`}
               </h3>
               <p className="mt-1 text-sm text-gray-600">
-                {isZeroBalance 
-                  ? "Purchase more to continue creating invoices for your customers."
-                  : "Running low? Stock up now so you never miss a sale."
-                }
+                {isZeroBalance
+                  ? "Top up to keep creating manual invoices — or share your storefront so customers pay online."
+                  : "Top up so you never miss creating an invoice. We take just 3% each."}
               </p>
             </div>
             {!isZeroBalance && (
@@ -105,23 +98,9 @@ export function LowBalanceBanner() {
               className="inline-flex items-center gap-2 rounded-lg bg-brand-jade px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:bg-brand-teal"
             >
               <ShoppingCart className="h-4 w-4" />
-              Buy 50 for ₦1,250
+              Top up wallet
             </Link>
-            {plan === "FREE" && (
-              <Link
-                href="/dashboard/settings"
-                className="inline-flex items-center gap-2 rounded-lg border border-brand-jade bg-white px-4 py-2 text-sm font-semibold text-brand-jade transition hover:bg-brand-jade/5"
-              >
-                Upgrade to Pro →
-              </Link>
-            )}
           </div>
-          
-          {isZeroBalance && (
-            <p className="mt-2 text-xs text-gray-500">
-              💡 Pro tip: the Pro Pack adds 20 invoices + 30 days of premium features for ₦2,000 (+ processing fee)!
-            </p>
-          )}
         </div>
       </div>
     </div>

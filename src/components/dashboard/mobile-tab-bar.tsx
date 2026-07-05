@@ -20,7 +20,6 @@ import {
 
 import { apiClient } from "@/api/client";
 import { components } from "@/api/types.generated";
-import { hasPlanFeature, type PlanTier } from "@/constants/pricing";
 import { useNewInvoiceDrawer } from "@/features/dashboard/new-invoice-provider";
 import { WhatsAppQuickCreate } from "@/features/dashboard/whatsapp-quick-create";
 
@@ -69,14 +68,12 @@ export function MobileTabBar() {
     staleTime: 5 * 60 * 1000,
   });
 
-  const currentPlan = (user?.plan?.toUpperCase() || "FREE") as PlanTier;
-
   const tabsToShow = PRIMARY_TABS.filter(
-    (t) => !t.gate || (t.gate === "INFLUENCER" ? user?.is_influencer : hasPlanFeature(currentPlan, t.gate)),
+    (t) => t.gate !== "INFLUENCER" || Boolean(user?.is_influencer),
   );
 
   const moreTabsToShow = MORE_TABS.filter(
-    (t) => !t.gate || (t.gate === "INFLUENCER" ? user?.is_influencer : hasPlanFeature(currentPlan, t.gate)),
+    (t) => t.gate !== "INFLUENCER" || Boolean(user?.is_influencer),
   );
 
   const isActive = (href: string) =>

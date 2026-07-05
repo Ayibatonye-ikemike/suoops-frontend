@@ -13,14 +13,11 @@ import {
   Image,
   ChevronDown,
   ChevronUp,
-  Crown,
   ShoppingCart,
-  Zap,
 } from "lucide-react";
 import Link from "next/link";
 import { apiClient } from "@/api/client";
 
-const ONBOARDING_COMPLETE_KEY = "onboarding-complete";
 const PLAN_CHOSEN_KEY = "plan-chosen";
 const PRICING_SNOOZED_KEY = "pricing-snoozed-at";
 const PRICING_SNOOZE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -99,7 +96,6 @@ export function WelcomeGuide() {
   });
 
   const invoiceBalance = user?.invoice_balance ?? 2;
-  const hasInvoices = (user?.invoices_this_month ?? 0) > 0 || invoiceBalance < 2;
 
   // Build setup steps
   const hasPhone = Boolean(user?.phone_verified && user?.phone);
@@ -145,15 +141,6 @@ export function WelcomeGuide() {
   const completedCount = steps.filter((s) => s.done).length;
   const allDone = completedCount === steps.length;
   const setupReady = hasPhone && hasBusinessName && hasBankDetails;
-
-  // Auto-complete: mark onboarding done if all REQUIRED steps finished.
-  // Logo upload is optional and shouldn't keep the welcome card visible
-  // once the user can actually invoice + get paid.
-  useEffect(() => {
-    if (!isLoading && (allDone || setupReady)) {
-      localStorage.setItem(ONBOARDING_COMPLETE_KEY, "true");
-    }
-  }, [allDone, setupReady, isLoading]);
 
   // Don't show if loading
   if (isLoading) return null;
@@ -264,101 +251,68 @@ export function WelcomeGuide() {
           <div className="flex items-center gap-2 mb-1">
             <Sparkles className="h-5 w-5 text-brand-jade" />
             <h2 className="text-lg sm:text-xl font-bold text-brand-text">
-              {planChosen
-                ? `Ready to grow, ${firstName}? Go Pro`
-                : `Welcome, ${firstName}! Choose your plan`}
+              Welcome, {firstName}! Pricing is simple: 3%.
             </h2>
           </div>
           <p className="text-sm text-brand-textMuted">
-            {planChosen
-              ? "Unlock tax reports, daily WhatsApp summaries, and more."
-              : "Pick how you want to use SuoOps. You can change anytime."}
+            Every feature is free — we only take a flat 3% per invoice.
           </p>
         </div>
 
-        <div className="relative grid gap-4 sm:grid-cols-3 mb-5">
-          {/* Starter (Free) */}
-          <div className="rounded-xl border-2 border-slate-200 bg-white p-5 hover:border-brand-jade/50 transition">
+        <div className="relative grid gap-4 sm:grid-cols-2 mb-5">
+          {/* Storefront orders */}
+          <div className="rounded-xl border-2 border-slate-200 bg-white p-5">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-2xl">🚀</span>
+              <span className="text-2xl">🛍️</span>
               <div>
-                <h3 className="text-base font-bold text-brand-text">Starter</h3>
-                <p className="text-xs text-brand-textMuted">Free forever</p>
+                <h3 className="text-base font-bold text-brand-text">Storefront orders</h3>
+                <p className="text-xs text-brand-textMuted">3% at payment</p>
               </div>
             </div>
             <ul className="space-y-2 text-xs text-slate-600 mb-4">
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> 25 invoices — ₦625</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> WhatsApp & Email delivery</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> PDF & QR verification</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> Buy more: 25 for ₦625</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> Customers order &amp; pay online</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> Nothing upfront — free to use</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> 3% only when you get paid</li>
             </ul>
-            <button
-              onClick={snoozePricing}
-              className="flex w-full items-center justify-center gap-2 rounded-lg border-2 border-brand-jade bg-white px-4 py-2.5 text-sm font-semibold text-brand-jade transition hover:bg-emerald-50"
-            >
-              Continue Free
-              <ArrowRight className="h-4 w-4" />
-            </button>
           </div>
 
-          {/* Invoice Pack */}
-          <div className="rounded-xl border-2 border-blue-200 bg-blue-50/50 p-5 hover:border-blue-400 transition">
+          {/* Manual invoices */}
+          <div className="rounded-xl border-2 border-brand-jade/40 bg-emerald-50/50 p-5">
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-2xl">📦</span>
+              <span className="text-2xl">🧾</span>
               <div>
-                <h3 className="text-base font-bold text-brand-text">Invoice Pack</h3>
-                <p className="text-xs text-blue-600 font-semibold">From ₦625</p>
+                <h3 className="text-base font-bold text-brand-text">Manual invoices</h3>
+                <p className="text-xs text-brand-jade font-semibold">3% from your wallet</p>
               </div>
             </div>
             <ul className="space-y-2 text-xs text-slate-600 mb-4">
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-blue-500 shrink-0" /> 25 invoices — ₦625</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-blue-500 shrink-0" /> 50 invoices — ₦1,250</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-blue-500 shrink-0" /> Never expires</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> Create &amp; confirm payment yourself</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> 3% (₦20–₦2,000) charged at creation</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> Top up: ₦1,250 / ₦5,000 / ₦20,000</li>
             </ul>
-            <Link
-              href="/dashboard/billing/purchase"
-              onClick={snoozePricing}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-600"
-            >
-              <ShoppingCart className="h-4 w-4" />
-              Buy Pack
-            </Link>
-          </div>
-
-          {/* Pro */}
-          <div className="rounded-xl border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-orange-50 p-5 relative">
-            <div className="absolute -top-1 right-3 rounded-b-lg bg-amber-400 px-2.5 py-1 text-[10px] font-bold text-white uppercase tracking-wide">
-              Best Value
-            </div>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-2xl">⭐</span>
-              <div>
-                <h3 className="text-base font-bold text-brand-text">Pro Pack</h3>
-                <p className="text-xs text-amber-700 font-semibold">₦2,000 one-time</p>
-              </div>
-            </div>
-            <ul className="space-y-2 text-xs text-slate-600 mb-4">
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-amber-500 shrink-0" /> 20 invoices + 30 days Pro</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-amber-500 shrink-0" /> Tax reports (PIT + CIT)</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-amber-500 shrink-0" /> Daily WhatsApp summary</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-amber-500 shrink-0" /> Customer insights & alerts</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-amber-500 shrink-0" /> Team management (3 members)</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-amber-500 shrink-0" /> Priority support</li>
-            </ul>
-            <Link
-              href="/dashboard/billing/purchase?pack=pro_pack"
-              onClick={snoozePricing}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-amber-500"
-            >
-              <Crown className="h-4 w-4" />
-              Get Pro Pack
-              <ArrowRight className="h-4 w-4" />
-            </Link>
           </div>
         </div>
 
+        <div className="relative mb-4 flex flex-wrap gap-3">
+          <button
+            onClick={snoozePricing}
+            className="flex items-center justify-center gap-2 rounded-lg border-2 border-brand-jade bg-white px-4 py-2.5 text-sm font-semibold text-brand-jade transition hover:bg-emerald-50"
+          >
+            Got it
+            <ArrowRight className="h-4 w-4" />
+          </button>
+          <Link
+            href="/dashboard/billing/purchase"
+            onClick={snoozePricing}
+            className="flex items-center justify-center gap-2 rounded-lg bg-brand-jade px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-jade/90"
+          >
+            <ShoppingCart className="h-4 w-4" />
+            Top up wallet
+          </Link>
+        </div>
+
         <p className="text-center text-xs text-brand-textMuted">
-          All plans include WhatsApp invoicing, PDF generation, and QR verification.
+          All features included: WhatsApp invoicing, PDF, QR, storefront, inventory &amp; tax reports.
         </p>
       </div>
     );

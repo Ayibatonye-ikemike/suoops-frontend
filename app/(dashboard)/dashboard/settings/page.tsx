@@ -12,10 +12,10 @@ import { SubscriptionSection } from "@/features/settings/subscription-section";
 import { TeamManagementSection } from "@/features/settings/team-management-section";
 import { LogoUpload } from "@/features/settings/logo-upload";
 import { PhoneNumberSection } from "@/features/settings/phone-number-section";
+import { PaymentsStorefrontSection } from "@/features/settings/payments-storefront-section";
 import { ProfileSection } from "@/features/settings/profile-section";
 import { SetupProgress } from "@/features/settings/setup-progress";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { type PlanTier } from "@/constants/pricing";
 
 type CurrentUser = components["schemas"]["UserOut"];
 
@@ -239,6 +239,27 @@ export default function SettingsPage() {
                 <BankDetailsForm />
               </CardContent>
             </Card>
+
+            <Card id="online-payments" className="scroll-mt-20">
+              <CardHeader className="border-b border-brand-border/60 px-4 sm:px-6">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-jade/10 text-brand-jade">
+                    <CreditCard className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg sm:text-[22px] font-semibold text-brand-text">
+                      Online Payments &amp; Storefront
+                    </h2>
+                    <p className="text-xs text-brand-textMuted">
+                      Get paid online (auto-confirmed) and share a public catalog of your products
+                    </p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
+                <PaymentsStorefrontSection />
+              </CardContent>
+            </Card>
           </div>
         )}
 
@@ -252,7 +273,7 @@ export default function SettingsPage() {
         {/* ─── Team Tab ─── */}
         {activeTab === "team" && (
           <div className="space-y-6">
-            <TeamManagementSection userPlan={(user?.plan?.toUpperCase() || "FREE") as PlanTier} />
+            <TeamManagementSection />
           </div>
         )}
 

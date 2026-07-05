@@ -15,14 +15,9 @@ import {
   removeMember,
 } from "@/api/team";
 import type { components } from "@/api/types";
-import { hasPlanFeature, type PlanTier } from "@/constants/pricing";
 
 type TeamWithMembersOut = components["schemas"]["TeamWithMembersOut"];
 type UserTeamRole = components["schemas"]["UserTeamRole"];
-
-interface TeamManagementSectionProps {
-  userPlan: PlanTier;
-}
 
 // Simple confirm dialog
 function ConfirmDialog({
@@ -67,7 +62,7 @@ function ConfirmDialog({
   );
 }
 
-export function TeamManagementSection({ userPlan }: TeamManagementSectionProps) {
+export function TeamManagementSection() {
   const [loading, setLoading] = useState(true);
   const [teamRole, setTeamRole] = useState<UserTeamRole | null>(null);
   const [team, setTeam] = useState<TeamWithMembersOut | null>(null);
@@ -76,14 +71,12 @@ export function TeamManagementSection({ userPlan }: TeamManagementSectionProps) 
   const [teamName, setTeamName] = useState("");
   const [creating, setCreating] = useState(false);
 
-  const hasTeamFeature = hasPlanFeature(userPlan, "TEAM_MANAGEMENT");
-
   const loadTeamData = useCallback(async () => {
     try {
       setLoading(true);
       const [roleData, teamData] = await Promise.all([
         getTeamRole(),
-        hasTeamFeature ? getTeam() : Promise.resolve(null),
+        getTeam(),
       ]);
       setTeamRole(roleData);
       setTeam(teamData);
@@ -92,7 +85,7 @@ export function TeamManagementSection({ userPlan }: TeamManagementSectionProps) 
     } finally {
       setLoading(false);
     }
-  }, [hasTeamFeature]);
+  }, []);
 
   useEffect(() => {
     loadTeamData();
@@ -160,29 +153,6 @@ export function TeamManagementSection({ userPlan }: TeamManagementSectionProps) 
       toast.error("Failed to remove member. Please try again.");
     }
   };
-
-  if (!hasTeamFeature) {
-    return (
-      <Card>
-        <CardHeader>
-          <h3 className="text-lg font-semibold flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            Team Management
-          </h3>
-          <p className="text-sm text-gray-600">
-            Invite team members to collaborate on your account
-          </p>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-6 text-gray-500">
-            <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p className="mb-2">Team Management requires Pro plan or higher</p>
-            <p className="text-sm">Upgrade to invite up to 3 team members</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
 
   if (loading) {
     return (

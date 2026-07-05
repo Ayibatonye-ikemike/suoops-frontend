@@ -69,6 +69,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 analytics_storage: 'granted',
               });
               gtag('config', 'G-DB7HG9NZNN');
+              // Google Ads — enables conversion tracking + remarketing for the
+              // AW-17976378572 account. Conversion events are fired from
+              // src/lib/gtag-events.ts (send_to: AW-.../<label>).
+              gtag('config', 'AW-17976378572');
             `,
           }}
         />

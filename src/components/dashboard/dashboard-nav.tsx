@@ -22,7 +22,6 @@ import {
 import { useLogout } from "@/features/auth/use-auth-session";
 import { apiClient } from "@/api/client";
 import { components } from "@/api/types.generated";
-import { hasPlanFeature, type PlanTier } from "@/constants/pricing";
 import { useNewInvoiceDrawer } from "@/features/dashboard/new-invoice-provider";
 import { WhatsAppQuickCreate } from "@/features/dashboard/whatsapp-quick-create";
 
@@ -99,13 +98,11 @@ export function DashboardNav() {
   }, [newInvoice]);
 
   const initial = (user?.name || user?.email || "U").trim().charAt(0).toUpperCase();
-  const currentPlan = (user?.plan?.toUpperCase() || "FREE") as PlanTier;
 
-  // Filter nav items based on plan and influencer status
+  // Filter nav items: feature gates are all free now; only INFLUENCER is gated.
   const navItems = allNavItems.filter((item) => {
-    if (!item.gate) return true;
     if (item.gate === "INFLUENCER") return user?.is_influencer === true;
-    return hasPlanFeature(currentPlan, item.gate);
+    return true;
   });
 
   const isActive = (href: string) =>

@@ -27,22 +27,17 @@ export default function UpgradeToProPage() {
   useEffect(() => {
     if (userLoading) return;
 
-    // Already on Pro?
-    if (user?.plan?.toUpperCase() === "PRO") {
-      router.replace("/dashboard/settings?already_pro=1");
-      return;
-    }
-
-    // Prepaid model: route to the Pro Pack checkout (no recurring subscription).
-    router.replace("/dashboard/billing/purchase?pack=pro_pack");
+    // Plans were removed — every feature is free. The only thing to pay for is
+    // the invoice wallet, so send users straight to the top-up page.
+    router.replace("/dashboard/billing/purchase");
   }, [user, userLoading, router]);
 
   return (
     <div className="min-h-screen bg-brand-background flex items-center justify-center">
       <div className="text-center">
         <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-brand-jade border-t-transparent" />
-        <p className="mt-4 text-lg text-brand-text">Preparing your Pro upgrade...</p>
-        <p className="mt-2 text-sm text-brand-textMuted">Redirecting to checkout...</p>
+        <p className="mt-4 text-lg text-brand-text">All features are free now 🎉</p>
+        <p className="mt-2 text-sm text-brand-textMuted">Taking you to your wallet…</p>
       </div>
     </div>
   );
