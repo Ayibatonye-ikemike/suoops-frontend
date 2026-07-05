@@ -9,11 +9,15 @@ import {
   disableStorefront,
   enableOnlinePayments,
   enableStorefront,
-  getOnlinePaymentsStatus,
   getStorefront,
-  type OnlinePaymentsStatus,
 } from "@/api/payments-storefront";
 import { getBankDetails } from "@/api/bank-details";
+
+// The generated OpenAPI types don't yet include online_payments_enabled on the
+// bank-details response; extend locally until types are regenerated.
+type BankDetails = Awaited<ReturnType<typeof getBankDetails>> & {
+  online_payments_enabled?: boolean;
+};
 
 function errorMessage(error: unknown, fallback: string): string {
   const detail = (error as { response?: { data?: { detail?: string } } })?.response
@@ -25,16 +29,6 @@ export function PaymentsStorefrontSection() {
   const queryClient = useQueryClient();
   const [copied, setCopied] = useState(false);
 
-  const payments = useQuery({
-    queryKey: ["onlinePaymentsStatus"],
-    queryFn: getOnlinePaymentsStatus,
-    retry: false,
-    staleTime: 60000,
-    // Always re-check on mount so a bank-details change made elsewhere is
-    // reflected (otherwise the "Enable online payments" gate can stay stale).
-    refetchOnMount: "always",
-  });
-
   const storefront = useQuery({
     queryKey: ["storefrontStatus"],
     queryFn: getStorefront,
@@ -42,14 +36,14 @@ export function PaymentsStorefrontSection() {
     staleTime: 60000,
   });
 
-  // Shares the ["bankDetails"] cache with the bank-details form on the same
-  // page, so the gate reflects what the user just saved without depending on
-  // the separate online-payments status call.
+  // Online-payments state + bank presence both come from the bank-details
+  // response, so the settings page doesn't fire a separate (slow) status call.
   const bankDetails = useQuery({
     queryKey: ["bankDetails"],
     queryFn: getBankDetails,
     retry: false,
     staleTime: 60000,
+    refetchOnMount: "always",
   });
 
   const enablePayments = useMutation({
@@ -57,12 +51,12 @@ export function PaymentsStorefrontSection() {
     onSuccess: () => {
       toast.success("Online payments enabled — storefront orders can now be paid online.");
       // The Paystack subaccount is created server-side on success, so flip the
-      // card immediately instead of waiting on the slow status refetch.
-      queryClient.setQueryData<OnlinePaymentsStatus | undefined>(
-        ["onlinePaymentsStatus"],
-        (old) => ({ enabled: true, has_bank_details: old?.has_bank_details ?? true }),
+      // card immediately, then reconcile.
+      queryClient.setQueryData<BankDetails | undefined>(
+        ["bankDetails"],
+        (old) => (old ? { ...old, online_payments_enabled: true } : old),
       );
-      queryClient.invalidateQueries({ queryKey: ["onlinePaymentsStatus"] });
+      queryClient.invalidateQueries({ queryKey: ["bankDetails"] });
     },
     onError: (error) => toast.error(errorMessage(error, "Could not enable online payments.")),
   });
@@ -85,15 +79,11 @@ export function PaymentsStorefrontSection() {
     onError: (error) => toast.error(errorMessage(error, "Could not hide your storefront.")),
   });
 
-  const payEnabled = payments.data?.enabled ?? false;
-  // Prefer the bank-details the user actually saved; fall back to the status
-  // endpoint. This keeps the button in sync with the form on the same page.
-  const hasBank =
-    Boolean(
-      bankDetails.data?.bank_name &&
-        bankDetails.data?.account_number &&
-        bankDetails.data?.account_name,
-    ) || (payments.data?.has_bank_details ?? false);
+  const bank = bankDetails.data as BankDetails | undefined;
+  const payEnabled = bank?.online_payments_enabled ?? false;
+  const hasBank = Boolean(
+    bank?.bank_name && bank?.account_number && bank?.account_name,
+  );
   const storeEnabled = storefront.data?.enabled ?? false;
   const link = storefront.data?.link ?? null;
 
@@ -147,7 +137,7 @@ export function PaymentsStorefrontSection() {
             <button
               type="button"
               onClick={() => enablePayments.mutate()}
-              disabled={!hasBank || enablePayments.isPending || payments.isLoading}
+              disabled={!hasBank || enablePayments.isPending || bankDetails.isLoading}
               className="rounded-lg bg-brand-jade px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-jadeHover disabled:cursor-not-allowed disabled:opacity-60"
             >
               {enablePayments.isPending ? "Enabling…" : "Enable online payments"}
