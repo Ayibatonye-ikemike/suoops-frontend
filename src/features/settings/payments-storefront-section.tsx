@@ -11,6 +11,7 @@ import {
   enableStorefront,
   getOnlinePaymentsStatus,
   getStorefront,
+  type OnlinePaymentsStatus,
 } from "@/api/payments-storefront";
 import { getBankDetails } from "@/api/bank-details";
 
@@ -55,6 +56,12 @@ export function PaymentsStorefrontSection() {
     mutationFn: enableOnlinePayments,
     onSuccess: () => {
       toast.success("Online payments enabled — storefront orders can now be paid online.");
+      // The Paystack subaccount is created server-side on success, so flip the
+      // card immediately instead of waiting on the slow status refetch.
+      queryClient.setQueryData<OnlinePaymentsStatus | undefined>(
+        ["onlinePaymentsStatus"],
+        (old) => ({ enabled: true, has_bank_details: old?.has_bank_details ?? true }),
+      );
       queryClient.invalidateQueries({ queryKey: ["onlinePaymentsStatus"] });
     },
     onError: (error) => toast.error(errorMessage(error, "Could not enable online payments.")),
