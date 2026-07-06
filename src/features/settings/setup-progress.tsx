@@ -51,7 +51,7 @@ export function SetupProgress({
       label: "Get paid online",
       done: Boolean(hasOnlinePayments),
       icon: <CreditCard className="h-4 w-4" />,
-      href: "/dashboard/settings#bank-details",
+      href: "/dashboard/settings#online-payments",
     },
   ];
 

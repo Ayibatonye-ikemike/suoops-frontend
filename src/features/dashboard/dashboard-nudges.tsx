@@ -8,6 +8,7 @@ import { isDismissed } from "@/lib/dismissals";
 
 import { FeatureDiscoveryTips } from "./feature-discovery-tips";
 import { LowBalanceBanner } from "./low-balance-banner";
+import { OnlinePaymentsSpotlight } from "./online-payments-spotlight";
 import { SalesFunnelBanner } from "./sales-funnel-banner";
 import { WhatsAppSetupBanner } from "./whatsapp-setup-banner";
 
@@ -16,6 +17,7 @@ interface UserData {
   phone_verified?: boolean;
   invoice_balance?: number;
   invoices_this_month?: number;
+  online_payments_enabled?: boolean;
 }
 
 /**
@@ -30,7 +32,8 @@ interface UserData {
  *   1. WhatsApp setup       — unblocks bot-based invoicing
  *   2. Low balance          — unblocks dashboard-based invoicing
  *   3. Sales funnel         — first-invoice activation prompt
- *   4. Feature tip          — exploration nudge for established users
+ *   4. Online payments      — "what's new" adoption spotlight
+ *   5. Feature tip          — exploration nudge for established users
  *
  * The referral banner is rendered separately on the dashboard so every
  * user (free + Pro) always sees the earn-cash opportunity, not just
@@ -79,6 +82,15 @@ export function DashboardNudges() {
     return <SalesFunnelBanner />;
   }
 
-  // 4. Feature tip — last priority, exploratory
+  // 4. Online payments spotlight — adoption nudge for users not yet monetizing
+  //    online. Hides automatically once they enable it.
+  if (
+    !user.online_payments_enabled &&
+    !isDismissed("online-payments-spotlight-dismissed", 10)
+  ) {
+    return <OnlinePaymentsSpotlight />;
+  }
+
+  // 5. Feature tip — last priority, exploratory
   return <FeatureDiscoveryTips />;
 }

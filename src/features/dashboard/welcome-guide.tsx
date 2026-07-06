@@ -14,6 +14,8 @@ import {
   ChevronDown,
   ChevronUp,
   ShoppingCart,
+  CreditCard,
+  Store,
 } from "lucide-react";
 import Link from "next/link";
 import { apiClient } from "@/api/client";
@@ -36,6 +38,8 @@ interface UserData {
   logo_url?: string | null;
   invoice_balance?: number;
   invoices_this_month?: number;
+  online_payments_enabled?: boolean;
+  storefront_enabled?: boolean;
 }
 
 interface SetupStep {
@@ -102,6 +106,8 @@ export function WelcomeGuide() {
   const hasBusinessName = Boolean(user?.business_name?.trim());
   const hasBankDetails = Boolean(user?.bank_name?.trim() && user?.account_number?.trim());
   const hasLogo = Boolean(user?.logo_url);
+  const hasOnlinePayments = Boolean(user?.online_payments_enabled);
+  const hasStorefront = Boolean(user?.storefront_enabled);
 
   const steps: SetupStep[] = [
     {
@@ -135,6 +141,22 @@ export function WelcomeGuide() {
       done: hasLogo,
       href: "/dashboard/settings#logo",
       icon: <Image className="h-4 w-4" />,
+    },
+    {
+      id: "online_payments",
+      label: "Get paid online",
+      description: "Card & transfer — auto-confirmed, flat 3%",
+      done: hasOnlinePayments,
+      href: "/dashboard/settings#online-payments",
+      icon: <CreditCard className="h-4 w-4" />,
+    },
+    {
+      id: "storefront",
+      label: "Set up your storefront",
+      description: "A shareable page of your products",
+      done: hasStorefront,
+      href: "/dashboard/settings#online-payments",
+      icon: <Store className="h-4 w-4" />,
     },
   ];
 
