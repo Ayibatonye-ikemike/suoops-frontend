@@ -141,6 +141,40 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
     }
   }, [apiBaseUrl, invoiceId, isClosed, isPaid, payLoading]);
 
+  // Verify on return from Paystack checkout: the callback URL carries ?ref=…,
+  // so confirm the payment directly (independent of the webhook) to avoid the
+  // customer being stuck on "pending" if the webhook is delayed or missed.
+  useEffect(() => {
+    if (isPaid || isClosed) return;
+    let reference: string | null = null;
+    try {
+      reference = new URLSearchParams(window.location.search).get("ref");
+    } catch {
+      reference = null;
+    }
+    if (!reference) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(
+          `${apiBaseUrl}/public/invoices/${invoiceId}/verify?reference=${encodeURIComponent(reference)}`,
+          { method: "POST" },
+        );
+        if (!res.ok || cancelled) return;
+        const data = (await res.json()) as { status?: string };
+        if (data.status === "paid") {
+          const fresh = await fetch(`${apiBaseUrl}/public/invoices/${invoiceId}`, { cache: "no-store" });
+          if (fresh.ok && !cancelled) setInvoice((await fresh.json()) as InvoicePublic);
+        }
+      } catch (err) {
+        console.warn("[verify] failed:", err);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [apiBaseUrl, invoiceId, isPaid, isClosed]);
+
   // Poll for status updates with exponential backoff
   useEffect(() => {
     if (isPaid || isClosed) return;
