@@ -46,6 +46,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(
     product?.image_url ?? null
   );
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -105,7 +106,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 px-6 py-4">
           <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-            {isEditing ? "Edit Product" : "Add New Product"}
+            {isEditing ? "Edit item" : "Add item"}
           </h2>
           <button
             onClick={onClose}
@@ -123,12 +124,87 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
             </div>
           )}
 
-          {/* Product image (shown on the storefront) */}
+          {/* What are you adding? Drives the rest of the form. */}
+          {!isEditing && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                What are you adding?
+              </label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, track_stock: true })}
+                  className={`rounded-xl border-2 p-3 text-left transition ${
+                    formData.track_stock
+                      ? "border-brand-jade bg-emerald-50 dark:bg-emerald-900/20"
+                      : "border-gray-200 dark:border-gray-600 hover:border-gray-300"
+                  }`}
+                >
+                  <div className="text-xl">📦</div>
+                  <div className="text-sm font-semibold text-gray-900 dark:text-white">Product</div>
+                  <div className="text-xs text-gray-500">Something you stock &amp; count</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, track_stock: false })}
+                  className={`rounded-xl border-2 p-3 text-left transition ${
+                    !formData.track_stock
+                      ? "border-brand-jade bg-emerald-50 dark:bg-emerald-900/20"
+                      : "border-gray-200 dark:border-gray-600 hover:border-gray-300"
+                  }`}
+                >
+                  <div className="text-xl">🛠️</div>
+                  <div className="text-sm font-semibold text-gray-900 dark:text-white">Service</div>
+                  <div className="text-xs text-gray-500">Freelance, digital — no stock</div>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Name — the essential */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Product image{" "}
+              {formData.track_stock ? "Product name" : "Service name"}{" "}
+              <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              required
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+              placeholder={
+                formData.track_stock
+                  ? "e.g. Bag of rice, Red handbag"
+                  : "e.g. Logo design, Consulting (per hour), Website build"
+              }
+            />
+          </div>
+
+          {/* Price — the essential */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Price ({symbol}) <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              required
+              min="0"
+              step="0.01"
+              value={formData.selling_price}
+              onChange={(e) => setFormData({ ...formData, selling_price: Number(e.target.value) })}
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+              placeholder="0.00"
+            />
+            <p className="mt-1 text-xs text-gray-500">What you charge customers.</p>
+          </div>
+
+          {/* Photo (optional) */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Photo{" "}
               <span className="font-normal text-gray-400">
-                (shown on your storefront)
+                (optional — shown on your storefront)
               </span>
             </label>
             <div className="flex items-center gap-3">
@@ -137,7 +213,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={imagePreview}
-                    alt="Product"
+                    alt="Item"
                     className="h-full w-full object-cover"
                   />
                 ) : (
@@ -147,7 +223,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
                 )}
               </div>
               <label className="cursor-pointer rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
-                {imagePreview ? "Change image" : "Upload image"}
+                {imagePreview ? "Change photo" : "Add photo"}
                 <input
                   type="file"
                   accept="image/png,image/jpeg,image/webp"
@@ -158,181 +234,139 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
             </div>
           </div>
 
-          {/* Basic Info */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2 sm:col-span-1">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                SKU <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.sku}
-                onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
-                placeholder="PROD-001"
-              />
+          {/* Stock — only for products */}
+          {formData.track_stock && (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  How many in stock?
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={formData.quantity_in_stock}
+                  onChange={(e) => setFormData({ ...formData, quantity_in_stock: Number(e.target.value) })}
+                  disabled={isEditing}
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade disabled:opacity-50 disabled:cursor-not-allowed"
+                />
+                {isEditing && (
+                  <p className="text-xs text-gray-500 mt-1">Use stock adjustment to change.</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Alert me at
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={formData.reorder_level}
+                  onChange={(e) => setFormData({ ...formData, reorder_level: Number(e.target.value) })}
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+                />
+                <p className="text-xs text-gray-500 mt-1">We&apos;ll remind you to restock.</p>
+              </div>
             </div>
+          )}
 
-            <div className="col-span-2 sm:col-span-1">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Barcode
-              </label>
-              <input
-                type="text"
-                value={formData.barcode ?? ""}
-                onChange={(e) => setFormData({ ...formData, barcode: e.target.value || null })}
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
-                placeholder="Optional"
-              />
-            </div>
-          </div>
-
+          {/* More options (optional) */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Product Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              required
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
-              placeholder="Product name"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Description
-            </label>
-            <textarea
-              value={formData.description ?? ""}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value || null })}
-              rows={2}
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
-              placeholder="Optional description"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Category
-            </label>
-            <select
-              value={formData.category_id ?? ""}
-              onChange={(e) => setFormData({ ...formData, category_id: e.target.value ? Number(e.target.value) : undefined })}
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+            <button
+              type="button"
+              onClick={() => setShowAdvanced((v) => !v)}
+              className="text-sm font-medium text-brand-jade hover:underline"
             >
-              <option value="">No category</option>
-              {categories?.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
+              {showAdvanced ? "Hide extra details" : "More options (optional)"}
+            </button>
           </div>
 
-          {/* Pricing */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Cost Price ({symbol})
-              </label>
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={formData.cost_price ?? ""}
-                onChange={(e) => setFormData({ ...formData, cost_price: e.target.value ? Number(e.target.value) : undefined })}
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
-                placeholder="0.00"
-              />
-            </div>
+          {showAdvanced && (
+            <div className="space-y-4 rounded-lg border border-gray-100 dark:border-gray-700 p-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Description
+                </label>
+                <textarea
+                  value={formData.description ?? ""}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value || null })}
+                  rows={2}
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+                  placeholder="What's included, size, colour, etc."
+                />
+              </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Selling Price ({symbol}) <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="number"
-                required
-                min="0"
-                step="0.01"
-                value={formData.selling_price}
-                onChange={(e) => setFormData({ ...formData, selling_price: Number(e.target.value) })}
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
-                placeholder="0.00"
-              />
-            </div>
-          </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Category
+                </label>
+                <select
+                  value={formData.category_id ?? ""}
+                  onChange={(e) => setFormData({ ...formData, category_id: e.target.value ? Number(e.target.value) : undefined })}
+                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+                >
+                  <option value="">No category</option>
+                  {categories?.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-          {/* Stock */}
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Initial Stock
-              </label>
-              <input
-                type="number"
-                min="0"
-                value={formData.quantity_in_stock}
-                onChange={(e) => setFormData({ ...formData, quantity_in_stock: Number(e.target.value) })}
-                disabled={isEditing}
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade disabled:opacity-50 disabled:cursor-not-allowed"
-              />
-              {isEditing && (
-                <p className="text-xs text-gray-500 mt-1">Use stock adjustment</p>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Cost price ({symbol})
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={formData.cost_price ?? ""}
+                    onChange={(e) => setFormData({ ...formData, cost_price: e.target.value ? Number(e.target.value) : undefined })}
+                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+                    placeholder="What it costs you"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Code / SKU
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.sku ?? ""}
+                    onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
+                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+                    placeholder="Auto-generated if blank"
+                  />
+                </div>
+              </div>
+
+              {formData.track_stock && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Unit
+                  </label>
+                  <select
+                    value={formData.unit}
+                    onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
+                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+                  >
+                    <option value="pcs">Pieces</option>
+                    <option value="kg">Kilograms</option>
+                    <option value="g">Grams</option>
+                    <option value="L">Liters</option>
+                    <option value="ml">Milliliters</option>
+                    <option value="m">Meters</option>
+                    <option value="box">Boxes</option>
+                    <option value="pack">Packs</option>
+                    <option value="dozen">Dozens</option>
+                  </select>
+                </div>
               )}
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Reorder Level
-              </label>
-              <input
-                type="number"
-                min="0"
-                value={formData.reorder_level}
-                onChange={(e) => setFormData({ ...formData, reorder_level: Number(e.target.value) })}
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Unit
-              </label>
-              <select
-                value={formData.unit}
-                onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
-              >
-                <option value="pcs">Pieces</option>
-                <option value="kg">Kilograms</option>
-                <option value="g">Grams</option>
-                <option value="L">Liters</option>
-                <option value="ml">Milliliters</option>
-                <option value="m">Meters</option>
-                <option value="box">Boxes</option>
-                <option value="pack">Packs</option>
-                <option value="dozen">Dozens</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Track Stock Toggle */}
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={formData.track_stock}
-              onChange={(e) => setFormData({ ...formData, track_stock: e.target.checked })}
-              className="h-4 w-4 rounded border-gray-300 text-brand-jade focus:ring-brand-jade"
-            />
-            <span className="text-sm text-gray-700 dark:text-gray-300">
-              Track inventory for this product
-            </span>
-          </label>
+          )}
 
           {/* Actions */}
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -349,7 +383,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
               disabled={isLoading}
               className="px-4 py-2 rounded-lg bg-brand-jade text-sm font-semibold text-white hover:bg-brand-jadeHover transition-colors disabled:opacity-50"
             >
-              {isLoading ? "Saving..." : isEditing ? "Update Product" : "Add Product"}
+              {isLoading ? "Saving..." : isEditing ? "Update item" : "Add item"}
             </button>
           </div>
         </form>

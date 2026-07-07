@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Search, Package, Edit, Trash2, AlertTriangle } from "lucide-react";
+import { Plus, Search, Package, Edit, Trash2, AlertTriangle, QrCode } from "lucide-react";
 import { useProducts, useCategories, useDeleteProduct } from "./use-inventory";
 import { useCurrency } from "@/hooks/use-currency";
+import { ScanToPayModal } from "./scan-to-pay-modal";
 import type { Product } from "./types";
 
 interface ProductListProps {
@@ -17,6 +18,7 @@ export function ProductList({ onSelectProduct, onCreateProduct, onEditProduct }:
   const [categoryFilter, setCategoryFilter] = useState<number | undefined>();
   const [stockFilter, setStockFilter] = useState<"all" | "low" | "out">("all");
   const [page, setPage] = useState(1);
+  const [qrProduct, setQrProduct] = useState<Product | null>(null);
   const pageSize = 20;
 
   const { data: categories } = useCategories();
@@ -204,6 +206,13 @@ export function ProductList({ onSelectProduct, onCreateProduct, onEditProduct }:
                       </td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+                          <button
+                            onClick={() => setQrProduct(product)}
+                            className="p-1.5 rounded-lg text-gray-400 hover:text-brand-jade hover:bg-brand-jade/10 transition-colors"
+                            title="Scan to pay"
+                          >
+                            <QrCode className="h-4 w-4" />
+                          </button>
                           {onEditProduct && (
                             <button
                               onClick={() => onEditProduct(product)}
@@ -259,6 +268,14 @@ export function ProductList({ onSelectProduct, onCreateProduct, onEditProduct }:
           </>
         )}
       </div>
+
+      {qrProduct && (
+        <ScanToPayModal
+          productId={qrProduct.id}
+          productName={qrProduct.name}
+          onClose={() => setQrProduct(null)}
+        />
+      )}
     </div>
   );
 }
