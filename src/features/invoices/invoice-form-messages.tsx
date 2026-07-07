@@ -32,7 +32,7 @@ export function InvoiceFormMessages({
       {/* Quota Display */}
       {invoiceType === "revenue" && quota && (
         <p className="text-xs text-brand-textMuted">
-          {quota.invoice_balance} invoice{quota.invoice_balance === 1 ? '' : 's'} remaining • Plan: {quota.current_plan}
+          {quota.invoice_balance} invoice{quota.invoice_balance === 1 ? '' : 's'} remaining
         </p>
       )}
 

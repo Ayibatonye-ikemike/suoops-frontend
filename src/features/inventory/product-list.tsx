@@ -52,7 +52,7 @@ export function ProductList({ onSelectProduct, onCreateProduct, onEditProduct }:
             className="inline-flex items-center gap-2 rounded-lg bg-brand-jade px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-jadeHover transition-colors"
           >
             <Plus className="h-4 w-4" />
-            Add Product
+            Add item
           </button>
         )}
       </div>
@@ -63,7 +63,7 @@ export function ProductList({ onSelectProduct, onCreateProduct, onEditProduct }:
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            placeholder="Search by name, SKU, or barcode..."
+            placeholder="Search your items..."
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -112,14 +112,16 @@ export function ProductList({ onSelectProduct, onCreateProduct, onEditProduct }:
         ) : !productData?.products.length ? (
           <div className="p-8 text-center text-gray-500">
             <Package className="mx-auto h-12 w-12 mb-4 text-gray-300" />
-            <p className="font-medium text-gray-700 dark:text-gray-300">No products yet</p>
-            <p className="text-sm text-gray-500 mt-1">Add products to invoice faster and avoid payment delays</p>
+            <p className="font-medium text-gray-700 dark:text-gray-300">No items yet</p>
+            <p className="text-sm text-gray-500 mt-1">
+              Add your products or services once, then add them to invoices in one tap — and sell them on your storefront.
+            </p>
             {onCreateProduct && (
               <button
                 onClick={onCreateProduct}
                 className="mt-4 text-brand-jade hover:underline"
               >
-                Add your first product
+                Add your first item
               </button>
             )}
           </div>
@@ -129,8 +131,7 @@ export function ProductList({ onSelectProduct, onCreateProduct, onEditProduct }:
               <table className="w-full text-left text-sm">
                 <thead className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
                   <tr>
-                    <th className="px-4 py-3 font-semibold text-gray-600 dark:text-gray-300">Product</th>
-                    <th className="px-4 py-3 font-semibold text-gray-600 dark:text-gray-300">SKU</th>
+                    <th className="px-4 py-3 font-semibold text-gray-600 dark:text-gray-300">Item</th>
                     <th className="px-4 py-3 font-semibold text-gray-600 dark:text-gray-300">Category</th>
                     <th className="px-4 py-3 font-semibold text-gray-600 dark:text-gray-300 text-right">Price</th>
                     <th className="px-4 py-3 font-semibold text-gray-600 dark:text-gray-300 text-right">Stock</th>
@@ -167,9 +168,6 @@ export function ProductList({ onSelectProduct, onCreateProduct, onEditProduct }:
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-gray-600 dark:text-gray-300 font-mono text-sm">
-                        {product.sku}
-                      </td>
                       <td className="px-4 py-3">
                         {product.category_name ? (
                           <span className="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-700 px-2.5 py-0.5 text-xs font-medium text-gray-700 dark:text-gray-300">
@@ -184,7 +182,9 @@ export function ProductList({ onSelectProduct, onCreateProduct, onEditProduct }:
                       </td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex items-center justify-end gap-2">
-                          {product.is_out_of_stock ? (
+                          {!product.track_stock ? (
+                            <span className="text-gray-400">—</span>
+                          ) : product.is_out_of_stock ? (
                             <span className="inline-flex items-center gap-1 text-red-600 dark:text-red-400 font-medium">
                               <AlertTriangle className="h-4 w-4" />
                               Out
