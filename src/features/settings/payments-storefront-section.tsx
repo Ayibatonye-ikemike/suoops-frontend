@@ -8,6 +8,7 @@ import Link from "next/link";
 
 import {
   disableStorefront,
+  disableOnlinePayments,
   enableOnlinePayments,
   enableStorefront,
   getStorefront,
@@ -66,6 +67,19 @@ export function PaymentsStorefrontSection() {
     onError: (error) => toast.error(errorMessage(error, "Could not enable online payments.")),
   });
 
+  const disablePayments = useMutation({
+    mutationFn: disableOnlinePayments,
+    onSuccess: () => {
+      toast.success("Online payments turned off.");
+      queryClient.setQueryData<BankDetails | undefined>(
+        ["bankDetails"],
+        (old) => (old ? { ...old, online_payments_enabled: false } : old),
+      );
+      queryClient.invalidateQueries({ queryKey: ["bankDetails"] });
+    },
+    onError: (error) => toast.error(errorMessage(error, "Could not turn off online payments.")),
+  });
+
   const enableShop = useMutation({
     mutationFn: () => enableStorefront(),
     onSuccess: (data) => {
@@ -105,7 +119,7 @@ export function PaymentsStorefrontSection() {
     onError: (error) => toast.error(errorMessage(error, "Could not save the description.")),
   });
 
-  // Store details (location, delivery, announcement, custom domain).
+  // Store details (location, delivery, announcement).
   const [details, setDetails] = useState({
     address: "",
     city: "",
@@ -114,7 +128,6 @@ export function PaymentsStorefrontSection() {
     delivery_enabled: false,
     pickup_enabled: true,
     delivery_fee: 0,
-    custom_domain: "",
   });
   useEffect(() => {
     const d = storefront.data;
@@ -127,7 +140,6 @@ export function PaymentsStorefrontSection() {
       delivery_enabled: d.delivery_enabled ?? false,
       pickup_enabled: d.pickup_enabled ?? true,
       delivery_fee: d.delivery_fee ?? 0,
-      custom_domain: d.custom_domain ?? "",
     });
   }, [storefront.data]);
 
@@ -141,7 +153,6 @@ export function PaymentsStorefrontSection() {
         delivery_enabled: details.delivery_enabled,
         pickup_enabled: details.pickup_enabled,
         delivery_fee: Number(details.delivery_fee) || 0,
-        custom_domain: details.custom_domain.trim(),
       }),
     onSuccess: () => {
       toast.success("Store details saved.");
@@ -217,9 +228,19 @@ export function PaymentsStorefrontSection() {
         </p>
 
         {payEnabled ? (
-          <p className="mt-3 text-xs font-medium text-emerald-700">
-            ✓ Storefront orders can be paid online and confirm instantly.
-          </p>
+          <div className="mt-3 flex items-center justify-between gap-3">
+            <p className="text-xs font-medium text-emerald-700">
+              ✓ Storefront orders can be paid online and confirm instantly.
+            </p>
+            <button
+              type="button"
+              onClick={() => disablePayments.mutate()}
+              disabled={disablePayments.isPending}
+              className="shrink-0 text-xs font-medium text-brand-textMuted underline-offset-2 hover:text-rose-600 hover:underline disabled:opacity-60"
+            >
+              {disablePayments.isPending ? "Turning off…" : "Turn off"}
+            </button>
+          </div>
         ) : (
           <div className="mt-3">
             <button
@@ -437,17 +458,6 @@ export function PaymentsStorefrontSection() {
                   </div>
                 )}
               </div>
-
-              <input
-                type="text"
-                value={details.custom_domain}
-                onChange={(e) => setDetails((d) => ({ ...d, custom_domain: e.target.value }))}
-                placeholder="Custom domain (optional) — e.g. shop.yourbrand.com"
-                className="block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
-              />
-              <p className="text-[11px] text-brand-textMuted">
-                Custom domains need a CNAME pointing to Suoops — contact support to finish setup.
-              </p>
 
               <div className="flex justify-end">
                 <button

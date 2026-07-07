@@ -27,7 +27,6 @@ export interface StorefrontStatus {
   delivery_enabled?: boolean;
   pickup_enabled?: boolean;
   delivery_fee?: number;
-  custom_domain?: string | null;
   views?: number;
 }
 
@@ -41,7 +40,6 @@ export interface StorefrontUpdate {
   delivery_enabled?: boolean;
   pickup_enabled?: boolean;
   delivery_fee?: number;
-  custom_domain?: string;
 }
 
 export interface StorefrontAnalytics {
@@ -68,6 +66,13 @@ export async function getOnlinePaymentsStatus(): Promise<OnlinePaymentsStatus> {
 export async function enableOnlinePayments(): Promise<EnableOnlinePaymentsResult> {
   const res = await apiClient.post<EnableOnlinePaymentsResult>(
     "/invoices/enable-online-payments",
+  );
+  return res.data;
+}
+
+export async function disableOnlinePayments(): Promise<{ enabled: boolean; message: string }> {
+  const res = await apiClient.post<{ enabled: boolean; message: string }>(
+    "/invoices/disable-online-payments",
   );
   return res.data;
 }

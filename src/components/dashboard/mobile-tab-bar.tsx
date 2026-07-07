@@ -14,6 +14,7 @@ import {
   Plus,
   Receipt,
   Settings as SettingsIcon,
+  Store,
   TrendingUp,
   X,
 } from "lucide-react";
@@ -36,11 +37,12 @@ const PRIMARY_TABS: TabItem[] = [
   { href: "/dashboard", label: "Invoices", Icon: FileText, gate: null },
   { href: "/dashboard/analytics", label: "Insights", Icon: BarChart3, gate: "CASH_DASHBOARD" },
   { href: "/dashboard/expenses", label: "Expenses", Icon: Receipt, gate: null },
-  { href: "/dashboard/tax", label: "Tax", Icon: Landmark, gate: "TAX_REPORTS" },
+  { href: "/dashboard/settings#business", label: "Business", Icon: Store, gate: null },
 ];
 
 const MORE_TABS: TabItem[] = [
   { href: "/dashboard/inventory", label: "Inventory", Icon: Package, gate: "INVENTORY" },
+  { href: "/dashboard/tax", label: "Tax", Icon: Landmark, gate: "TAX_REPORTS" },
   { href: "/dashboard/earnings", label: "Earnings", Icon: TrendingUp, gate: "INFLUENCER" },
   { href: "/dashboard/settings", label: "Settings", Icon: SettingsIcon, gate: null },
 ];
@@ -76,8 +78,10 @@ export function MobileTabBar() {
     (t) => t.gate !== "INFLUENCER" || Boolean(user?.is_influencer),
   );
 
-  const isActive = (href: string) =>
-    href === "/dashboard" ? pathname === href : pathname.startsWith(href);
+  const isActive = (href: string) => {
+    const base = href.split("#")[0];
+    return base === "/dashboard" ? pathname === base : pathname.startsWith(base);
+  };
 
   // Render only on small screens
   return (

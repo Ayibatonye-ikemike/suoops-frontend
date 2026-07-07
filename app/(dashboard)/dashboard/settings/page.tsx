@@ -37,6 +37,7 @@ export default function SettingsPage() {
   useEffect(() => {
     const map: Record<string, TabKey> = {
       profile: "profile",
+      business: "business",
       logo: "business",
       "bank-details": "business",
       "business-name": "business",
