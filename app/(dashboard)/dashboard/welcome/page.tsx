@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   MessageCircle,
@@ -14,6 +14,7 @@ import {
   Smartphone,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { apiClient } from "@/api/client";
 import { onboardingCompleteKey } from "@/features/dashboard/new-user-onboarding";
 
@@ -24,6 +25,7 @@ interface UserData {
   name?: string;
   business_name?: string | null;
   invoice_balance?: number;
+  has_invoiced?: boolean;
 }
 
 /**
@@ -55,11 +57,22 @@ function markOnboardingComplete(userId?: number) {
  *   - Educational content below as reference
  */
 export default function WelcomeOnboardingPage() {
+  const router = useRouter();
   const { data: user } = useQuery<UserData>({
     queryKey: ["currentUser"],
     queryFn: async () => (await apiClient.get<UserData>("/users/me")).data,
     staleTime: 60_000,
   });
+
+  // If the user has already created an invoice (e.g. via WhatsApp), they're
+  // activated — mark onboarding done and send them to the real dashboard so
+  // they aren't stranded on this "create your first invoice" screen.
+  useEffect(() => {
+    if (user?.has_invoiced) {
+      markOnboardingComplete(user.id);
+      router.replace("/dashboard");
+    }
+  }, [user, router]);
 
   const firstName = user?.name?.split(" ")[0] || "there";
   const bizName = user?.business_name || "your business";
