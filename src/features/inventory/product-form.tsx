@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Image as ImageIcon } from "lucide-react";
+import { X, Image as ImageIcon, QrCode } from "lucide-react";
 import {
   useCreateProduct,
   useUpdateProduct,
@@ -9,6 +9,7 @@ import {
   useUploadProductImage,
 } from "./use-inventory";
 import { useCurrency } from "@/hooks/use-currency";
+import { ScanToPayModal } from "./scan-to-pay-modal";
 import type { Product, ProductCreate, ProductUpdate } from "./types";
 
 interface ProductFormProps {
@@ -47,6 +48,8 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
     product?.image_url ?? null
   );
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [enableScanToPay, setEnableScanToPay] = useState(false);
+  const [savedProductId, setSavedProductId] = useState<number | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -84,7 +87,13 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
         await uploadImage.mutateAsync({ id: productId, file: imageFile });
       }
       onSuccess?.();
-      onClose();
+      // If the user opted in, show the scan-to-pay QR for the saved product
+      // instead of closing straight away.
+      if (enableScanToPay && productId) {
+        setSavedProductId(productId);
+      } else {
+        onClose();
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "An error occurred";
       // Try to extract detail from axios error
@@ -233,6 +242,26 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
               </label>
             </div>
           </div>
+
+          {/* Scan-to-pay opt-in */}
+          <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-gray-200 dark:border-gray-600 p-3">
+            <input
+              type="checkbox"
+              checked={enableScanToPay}
+              onChange={(e) => setEnableScanToPay(e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-gray-300 text-brand-jade focus:ring-brand-jade"
+            />
+            <span>
+              <span className="flex items-center gap-1.5 text-sm font-medium text-gray-900 dark:text-white">
+                <QrCode className="h-4 w-4 text-brand-jade" />
+                Add a scan-to-pay code
+              </span>
+              <span className="mt-0.5 block text-xs text-gray-500">
+                Customers scan a QR to order this and pay online. Print it or put
+                it on your shelf. (Needs your storefront turned on.)
+              </span>
+            </span>
+          </label>
 
           {/* Stock — only for products */}
           {formData.track_stock && (
@@ -388,6 +417,17 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
           </div>
         </form>
       </div>
+
+      {savedProductId && (
+        <ScanToPayModal
+          productId={savedProductId}
+          productName={formData.name}
+          onClose={() => {
+            setSavedProductId(null);
+            onClose();
+          }}
+        />
+      )}
     </div>
   );
 }
