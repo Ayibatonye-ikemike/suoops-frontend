@@ -29,6 +29,9 @@ function errorMessage(error: unknown, fallback: string): string {
   return typeof detail === "string" ? detail : fallback;
 }
 
+// 0 = Monday (matches the backend's weekday index).
+const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
 export function PaymentsStorefrontSection() {
   const queryClient = useQueryClient();
   const [copied, setCopied] = useState(false);
@@ -125,6 +128,8 @@ export function PaymentsStorefrontSection() {
     state: "",
     announcement: "",
   });
+  // Weekly opening hours: {"0".. "6": {open, close}} (0=Mon). Absent day = closed.
+  const [hours, setHours] = useState<Record<string, { open: string; close: string }>>({});
   useEffect(() => {
     const d = storefront.data;
     if (!d) return;
@@ -134,7 +139,19 @@ export function PaymentsStorefrontSection() {
       state: d.state ?? "",
       announcement: d.announcement ?? "",
     });
+    setHours(d.hours ?? {});
   }, [storefront.data]);
+
+  const toggleDay = (i: number) =>
+    setHours((h) => {
+      const key = String(i);
+      const next = { ...h };
+      if (next[key]) delete next[key];
+      else next[key] = { open: "09:00", close: "18:00" };
+      return next;
+    });
+  const setDayTime = (i: number, field: "open" | "close", value: string) =>
+    setHours((h) => ({ ...h, [String(i)]: { ...h[String(i)], [field]: value } }));
 
   const saveDetails = useMutation({
     mutationFn: () =>
@@ -143,6 +160,7 @@ export function PaymentsStorefrontSection() {
         city: details.city.trim(),
         state: details.state.trim(),
         announcement: details.announcement.trim(),
+        hours,
       }),
     onSuccess: () => {
       toast.success("Store details saved.");
@@ -408,6 +426,50 @@ export function PaymentsStorefrontSection() {
                   placeholder="State"
                   className="block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
                 />
+              </div>
+
+              <div>
+                <p className="mb-1.5 text-xs font-medium text-brand-textMuted">
+                  Opening hours{" "}
+                  <span className="font-normal">(shows an “Open / Closed” badge on your store)</span>
+                </p>
+                <div className="space-y-1.5">
+                  {DAY_LABELS.map((label, i) => {
+                    const key = String(i);
+                    const day = hours[key];
+                    return (
+                      <div key={key} className="flex items-center gap-2">
+                        <label className="flex w-20 shrink-0 items-center gap-1.5 text-xs text-brand-text">
+                          <input
+                            type="checkbox"
+                            checked={!!day}
+                            onChange={() => toggleDay(i)}
+                          />
+                          {label}
+                        </label>
+                        {day ? (
+                          <div className="flex items-center gap-1 text-xs text-brand-textMuted">
+                            <input
+                              type="time"
+                              value={day.open}
+                              onChange={(e) => setDayTime(i, "open", e.target.value)}
+                              className="rounded-md border border-brand-border bg-white px-2 py-1 text-xs text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+                            />
+                            <span>–</span>
+                            <input
+                              type="time"
+                              value={day.close}
+                              onChange={(e) => setDayTime(i, "close", e.target.value)}
+                              className="rounded-md border border-brand-border bg-white px-2 py-1 text-xs text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+                            />
+                          </div>
+                        ) : (
+                          <span className="text-xs text-brand-textMuted">Closed</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="flex justify-end">
