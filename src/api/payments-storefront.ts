@@ -19,6 +19,11 @@ export interface StorefrontStatus {
   product_count?: number;
 }
 
+export interface StorefrontQr {
+  link: string;
+  qr_png: string;
+}
+
 export async function getOnlinePaymentsStatus(): Promise<OnlinePaymentsStatus> {
   const res = await apiClient.get<OnlinePaymentsStatus>(
     "/invoices/online-payments-status",
@@ -58,5 +63,10 @@ export async function updateStorefront(description: string): Promise<StorefrontS
     "/inventory/storefront",
     { description },
   );
+  return res.data;
+}
+
+export async function getStorefrontQr(): Promise<StorefrontQr> {
+  const res = await apiClient.get<StorefrontQr>("/inventory/storefront/qr");
   return res.data;
 }

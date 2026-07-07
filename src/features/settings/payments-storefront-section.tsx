@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { Check, Copy, CreditCard, ExternalLink, Store } from "lucide-react";
+import { Check, Copy, CreditCard, Download, ExternalLink, QrCode, Store } from "lucide-react";
 import Link from "next/link";
 
 import {
@@ -11,6 +11,7 @@ import {
   enableOnlinePayments,
   enableStorefront,
   getStorefront,
+  getStorefrontQr,
   updateStorefront,
 } from "@/api/payments-storefront";
 import { getBankDetails } from "@/api/bank-details";
@@ -30,6 +31,7 @@ function errorMessage(error: unknown, fallback: string): string {
 export function PaymentsStorefrontSection() {
   const queryClient = useQueryClient();
   const [copied, setCopied] = useState(false);
+  const [showQr, setShowQr] = useState(false);
 
   const storefront = useQuery({
     queryKey: ["storefrontStatus"],
@@ -110,6 +112,14 @@ export function PaymentsStorefrontSection() {
   const storeEnabled = storefront.data?.enabled ?? false;
   const link = storefront.data?.link ?? null;
   const productCount = storefront.data?.product_count ?? 0;
+
+  const storefrontQr = useQuery({
+    queryKey: ["storefrontQr"],
+    queryFn: getStorefrontQr,
+    enabled: showQr && storeEnabled,
+    retry: false,
+    staleTime: 5 * 60 * 1000,
+  });
 
   const copyLink = async () => {
     if (!link || typeof navigator === "undefined" || !navigator.clipboard) return;
@@ -242,7 +252,46 @@ export function PaymentsStorefrontSection() {
                 <ExternalLink className="h-3.5 w-3.5" />
                 View
               </a>
+              <button
+                type="button"
+                onClick={() => setShowQr((v) => !v)}
+                className="inline-flex items-center gap-1 rounded-md bg-white px-2.5 py-1.5 text-xs font-medium text-slate-600 shadow-sm ring-1 ring-slate-200 transition hover:bg-slate-100"
+              >
+                <QrCode className="h-3.5 w-3.5" />
+                {showQr ? "Hide QR" : "QR code"}
+              </button>
             </div>
+            {showQr ? (
+              <div className="rounded-lg border border-brand-border bg-white p-4 text-center">
+                {storefrontQr.isLoading ? (
+                  <div className="mx-auto h-44 w-44 animate-pulse rounded-xl bg-slate-100" />
+                ) : storefrontQr.data ? (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={storefrontQr.data.qr_png}
+                      alt="Storefront QR code"
+                      className="mx-auto h-44 w-44"
+                    />
+                    <p className="mt-2 text-xs text-brand-textMuted">
+                      Scan to open your storefront. Print it, put it on your shop,
+                      flyers or packaging.
+                    </p>
+                    <a
+                      href={storefrontQr.data.qr_png}
+                      download="storefront-qr.png"
+                      className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-brand-jade px-3 py-2 text-xs font-semibold text-white transition hover:bg-brand-jadeHover"
+                    >
+                      <Download className="h-3.5 w-3.5" /> Download
+                    </a>
+                  </>
+                ) : (
+                  <p className="py-6 text-xs text-amber-600">
+                    Could not generate the QR code. Try again in a moment.
+                  </p>
+                )}
+              </div>
+            ) : null}
             <div>
               <label className="block text-xs font-medium text-brand-textMuted">
                 What do you sell?{" "}
