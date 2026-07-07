@@ -33,6 +33,12 @@ interface TaskScheduleResponse {
 }
 
 const TASK_INFO: Record<string, { label: string; description: string; color: string }> = {
+  feature_announcement: {
+    label: "Feature Announcement (one-off)",
+    description:
+      "Email + WhatsApp broadcast to existing users announcing online payments + storefront. Idempotent — each user gets it once; skips those already on online payments. Safe to run repeatedly.",
+    color: "emerald",
+  },
   engagement: {
     label: "Engagement Emails",
     description: "Activation, monetization, and tip emails to users based on lifecycle stage",
