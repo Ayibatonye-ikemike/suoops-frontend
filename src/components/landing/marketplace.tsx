@@ -1,0 +1,132 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+import { getConfig } from "@/lib/config";
+
+type StoreCard = {
+  slug: string;
+  business_name: string | null;
+  logo_url: string | null;
+};
+
+/**
+ * Marketplace hero band — the first thing on the landing page.
+ *
+ * Signals loudly that Suoops is a marketplace: a big headline, a product/shop
+ * search that deep-links into /stores, and a live strip of real shops.
+ */
+export function Marketplace() {
+  const { apiBaseUrl } = getConfig();
+  const router = useRouter();
+  const [query, setQuery] = useState("");
+  const [stores, setStores] = useState<StoreCard[]>([]);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const res = await fetch(`${apiBaseUrl}/public/stores?page_size=14`, {
+          cache: "no-store",
+        });
+        const data = (await res.json()) as { stores?: StoreCard[] };
+        if (active) setStores((data.stores ?? []).filter((s) => s.logo_url));
+      } catch {
+        /* silent — the band still shows the search + CTA */
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [apiBaseUrl]);
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = query.trim();
+    router.push(q ? `/stores?q=${encodeURIComponent(q)}` : "/stores");
+  };
+
+  return (
+    <section className="relative overflow-hidden border-b border-slate-200 bg-gradient-to-b from-white to-slate-50 px-4 py-12 sm:py-16">
+      <div className="mx-auto max-w-5xl text-center">
+        <span className="inline-flex items-center gap-2 rounded-full bg-brand-jade/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-brand-jade">
+          🛍️ The Suoops Marketplace
+        </span>
+        <h2 className="mt-4 font-heading text-3xl font-bold text-slate-900 sm:text-4xl lg:text-5xl">
+          Shop from businesses selling on Suoops
+        </h2>
+        <p className="mx-auto mt-3 max-w-2xl text-base text-slate-600 sm:text-lg">
+          Discover real Nigerian businesses. Search for a product, browse a shop,
+          and order — pay by card or transfer, confirmed instantly.
+        </p>
+
+        {/* Search → /stores */}
+        <form onSubmit={submit} className="mx-auto mt-7 flex max-w-2xl items-center gap-2">
+          <div className="relative flex-1">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
+            >
+              <circle cx="11" cy="11" r="7" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search products, categories or shops…"
+              className="w-full rounded-xl border border-slate-300 bg-white py-3.5 pl-12 pr-4 text-sm shadow-sm focus:border-brand-jade focus:outline-none focus:ring-2 focus:ring-brand-jade/20 sm:text-base"
+            />
+          </div>
+          <button
+            type="submit"
+            className="shrink-0 rounded-xl bg-brand-jade px-5 py-3.5 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-teal sm:px-7 sm:text-base"
+          >
+            Search
+          </button>
+        </form>
+
+        {/* Live shops strip */}
+        {stores.length > 0 && (
+          <div className="mt-8">
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              {stores.map((s) => {
+                const name = s.business_name || "Store";
+                return (
+                  <Link
+                    key={s.slug}
+                    href={`/store/${s.slug}`}
+                    title={name}
+                    className="group flex flex-col items-center gap-1.5"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={s.logo_url as string}
+                      alt={name}
+                      className="h-14 w-14 rounded-2xl bg-white object-cover shadow-sm ring-1 ring-slate-200 transition group-hover:scale-105 group-hover:shadow-md sm:h-16 sm:w-16"
+                    />
+                    <span className="max-w-[72px] truncate text-[11px] text-slate-500">
+                      {name}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        <Link
+          href="/stores"
+          className="mt-8 inline-flex items-center gap-2 rounded-xl bg-brand-evergreen px-7 py-3.5 text-base font-bold text-white shadow-lg transition hover:scale-105 hover:bg-brand-teal"
+        >
+          Browse all shops →
+        </Link>
+      </div>
+    </section>
+  );
+}

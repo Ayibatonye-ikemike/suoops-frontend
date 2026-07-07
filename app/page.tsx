@@ -2,6 +2,7 @@
 
 import { useState, Suspense } from "react";
 import { Hero } from "@/components/landing/hero";
+import { Marketplace } from "@/components/landing/marketplace";
 import { Features } from "@/components/landing/features";
 import { Pricing } from "@/components/landing/pricing";
 import { Testimonials } from "@/components/landing/testimonials";
@@ -25,6 +26,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-brand-evergreen">
       <Navigation />
+      <Marketplace />
       <Suspense>
         <Hero onWatchDemo={() => setShowVideoModal(true)} />
       </Suspense>
