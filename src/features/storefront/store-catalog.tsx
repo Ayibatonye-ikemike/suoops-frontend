@@ -12,6 +12,13 @@ export type StoreProduct = {
   unit: string | null;
   image_url: string | null;
   in_stock: boolean;
+  category?: string | null;
+};
+
+export type Fulfillment = {
+  delivery: boolean;
+  pickup: boolean;
+  delivery_fee: number;
 };
 
 type Props = {
@@ -20,6 +27,7 @@ type Props = {
   products: StoreProduct[];
   whatsappUrl: string | null;
   onlinePaymentsEnabled: boolean;
+  fulfillment?: Fulfillment;
 };
 
 const formatCurrency = (value: number | null) => {
@@ -37,6 +45,7 @@ export function StoreCatalog({
   products,
   whatsappUrl,
   onlinePaymentsEnabled,
+  fulfillment,
 }: Props) {
   const { apiBaseUrl } = getConfig();
   const storeUrl = `https://suoops.com/store/${slug}`;
@@ -48,16 +57,51 @@ export function StoreCatalog({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Discovery: search + category filter.
+  const [search, setSearch] = useState("");
+  const [activeCategory, setActiveCategory] = useState<string>("All");
+
+  // Fulfilment: default to pickup when offered, else delivery.
+  const deliveryOffered = Boolean(fulfillment?.delivery);
+  const pickupOffered = fulfillment ? fulfillment.pickup : true;
+  const deliveryFee = fulfillment?.delivery_fee ?? 0;
+  const [mode, setMode] = useState<"pickup" | "delivery">(
+    pickupOffered ? "pickup" : deliveryOffered ? "delivery" : "pickup",
+  );
+
+  // "Notify me when back in stock" for a sold-out product.
+  const [notifyFor, setNotifyFor] = useState<StoreProduct | null>(null);
+
+  const categories = useMemo(() => {
+    const set = new Set<string>();
+    products.forEach((p) => p.category && set.add(p.category));
+    return ["All", ...Array.from(set).sort()];
+  }, [products]);
+
+  const visibleProducts = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return products.filter((p) => {
+      if (activeCategory !== "All" && p.category !== activeCategory) return false;
+      if (!q) return true;
+      return (
+        p.name.toLowerCase().includes(q) ||
+        (p.description ?? "").toLowerCase().includes(q)
+      );
+    });
+  }, [products, search, activeCategory]);
+
   const productById = useMemo(
     () => new Map(products.map((p) => [p.id, p])),
     [products],
   );
   const cartEntries = Object.entries(cart).filter(([, q]) => q > 0);
   const count = cartEntries.reduce((s, [, q]) => s + q, 0);
-  const total = cartEntries.reduce(
+  const itemsTotal = cartEntries.reduce(
     (s, [id, q]) => s + (productById.get(Number(id))?.price ?? 0) * q,
     0,
   );
+  const appliedDeliveryFee = mode === "delivery" ? deliveryFee : 0;
+  const total = itemsTotal + appliedDeliveryFee;
 
   const add = (id: number) => setCart((c) => ({ ...c, [id]: (c[id] ?? 0) + 1 }));
   const dec = (id: number) =>
@@ -102,6 +146,7 @@ export function StoreCatalog({
         body: JSON.stringify({
           customer_name: customerName.trim(),
           customer_phone: customerPhone.trim(),
+          fulfillment: deliveryOffered || pickupOffered ? mode : null,
           items: cartEntries.map(([id, q]) => ({
             product_id: Number(id),
             quantity: q,
@@ -126,8 +171,39 @@ export function StoreCatalog({
 
   return (
     <>
+      {/* Search + category filter */}
+      {products.length > 4 && (
+        <div className="mb-4 space-y-3">
+          <input
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={`Search ${storeName}'s products…`}
+            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm focus:border-brand-jade focus:outline-none focus:ring-2 focus:ring-brand-jade/20"
+          />
+          {categories.length > 1 && (
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {categories.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setActiveCategory(c)}
+                  className={`whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition ${
+                    activeCategory === c
+                      ? "bg-brand-evergreen text-white"
+                      : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50"
+                  }`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="grid grid-cols-2 gap-4 pb-24 sm:grid-cols-3">
-        {products.map((p) => {
+        {visibleProducts.map((p) => {
           const qty = cart[p.id] ?? 0;
           return (
             <div
@@ -206,6 +282,14 @@ export function StoreCatalog({
                   >
                     Order
                   </a>
+                ) : !p.in_stock ? (
+                  <button
+                    type="button"
+                    onClick={() => setNotifyFor(p)}
+                    className="mt-2 rounded-lg border border-slate-200 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+                  >
+                    Notify me
+                  </button>
                 ) : null}
               </div>
             </div>
@@ -260,11 +344,49 @@ export function StoreCatalog({
                   </div>
                 );
               })}
+              {appliedDeliveryFee > 0 && (
+                <div className="flex items-center justify-between text-sm text-slate-600">
+                  <span>Delivery</span>
+                  <span>{formatCurrency(appliedDeliveryFee)}</span>
+                </div>
+              )}
               <div className="flex items-center justify-between border-t border-dashed border-slate-200 pt-2 text-sm font-bold">
                 <span>Total</span>
                 <span>{formatCurrency(total)}</span>
               </div>
             </div>
+
+            {/* Fulfilment: delivery vs pickup */}
+            {(deliveryOffered || (pickupOffered && deliveryOffered)) && (
+              <div className="mb-4 grid grid-cols-2 gap-2">
+                {pickupOffered && (
+                  <button
+                    type="button"
+                    onClick={() => setMode("pickup")}
+                    className={`rounded-lg border px-3 py-2 text-xs font-semibold transition ${
+                      mode === "pickup"
+                        ? "border-brand-jade bg-brand-jade/10 text-brand-jade"
+                        : "border-slate-200 text-slate-600"
+                    }`}
+                  >
+                    Pickup
+                  </button>
+                )}
+                {deliveryOffered && (
+                  <button
+                    type="button"
+                    onClick={() => setMode("delivery")}
+                    className={`rounded-lg border px-3 py-2 text-xs font-semibold transition ${
+                      mode === "delivery"
+                        ? "border-brand-jade bg-brand-jade/10 text-brand-jade"
+                        : "border-slate-200 text-slate-600"
+                    }`}
+                  >
+                    Delivery{deliveryFee > 0 ? ` +${formatCurrency(deliveryFee)}` : ""}
+                  </button>
+                )}
+              </div>
+            )}
 
             <div className="space-y-3">
               <input
@@ -302,6 +424,93 @@ export function StoreCatalog({
           </div>
         </div>
       )}
+      {/* Notify-me when back in stock */}
+      {notifyFor && (
+        <NotifyModal
+          slug={slug}
+          apiBaseUrl={apiBaseUrl}
+          product={notifyFor}
+          onClose={() => setNotifyFor(null)}
+        />
+      )}
     </>
+  );
+}
+
+function NotifyModal({
+  slug,
+  apiBaseUrl,
+  product,
+  onClose,
+}: {
+  slug: string;
+  apiBaseUrl: string;
+  product: StoreProduct;
+  onClose: () => void;
+}) {
+  const [phone, setPhone] = useState("");
+  const [state, setState] = useState<"idle" | "saving" | "done" | "error">("idle");
+  const [message, setMessage] = useState<string | null>(null);
+
+  const submit = async () => {
+    if (phone.trim().length < 6) return;
+    setState("saving");
+    try {
+      const res = await fetch(`${apiBaseUrl}/public/store/${slug}/notify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        cache: "no-store",
+        body: JSON.stringify({ product_id: product.id, phone: phone.trim() }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { message?: string };
+      if (!res.ok) throw new Error(data.message || "Could not save. Please try again.");
+      setMessage(data.message ?? "We'll text you when it's back.");
+      setState("done");
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Something went wrong.");
+      setState("error");
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4">
+      <div className="w-full max-w-sm rounded-t-2xl bg-white p-5 sm:rounded-2xl">
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-base font-bold text-slate-900">Notify me</h3>
+          <button type="button" onClick={onClose} className="text-slate-400 hover:text-slate-600" aria-label="Close">
+            ✕
+          </button>
+        </div>
+        {state === "done" ? (
+          <p className="py-4 text-sm text-emerald-700">{message}</p>
+        ) : (
+          <>
+            <p className="mb-3 text-sm text-slate-500">
+              <span className="font-semibold text-slate-900">{product.name}</span> is sold out.
+              Drop your number and we&apos;ll text you when it&apos;s back.
+            </p>
+            <input
+              type="tel"
+              inputMode="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Your phone (e.g. 08012345678)"
+              className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-jade focus:outline-none focus:ring-2 focus:ring-brand-jade/20"
+            />
+            {state === "error" && message && (
+              <p className="mt-2 text-xs text-rose-600">{message}</p>
+            )}
+            <button
+              type="button"
+              onClick={submit}
+              disabled={phone.trim().length < 6 || state === "saving"}
+              className="mt-4 w-full rounded-xl bg-brand-jade py-3 text-sm font-semibold text-white transition hover:bg-brand-jadeHover disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {state === "saving" ? "Saving…" : "Notify me"}
+            </button>
+          </>
+        )}
+      </div>
+    </div>
   );
 }

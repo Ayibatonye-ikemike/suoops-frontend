@@ -11,12 +11,46 @@ export interface EnableOnlinePaymentsResult {
   message: string;
 }
 
+export type StorefrontHours = Record<string, { open: string; close: string }>;
+
 export interface StorefrontStatus {
   enabled: boolean;
   slug: string | null;
   link: string | null;
   description: string | null;
   product_count?: number;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  hours?: StorefrontHours | null;
+  announcement?: string | null;
+  delivery_enabled?: boolean;
+  pickup_enabled?: boolean;
+  delivery_fee?: number;
+  custom_domain?: string | null;
+  views?: number;
+}
+
+export interface StorefrontUpdate {
+  description?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  hours?: StorefrontHours | null;
+  announcement?: string;
+  delivery_enabled?: boolean;
+  pickup_enabled?: boolean;
+  delivery_fee?: number;
+  custom_domain?: string;
+}
+
+export interface StorefrontAnalytics {
+  views: number;
+  orders: number;
+  paid_orders: number;
+  revenue: number;
+  conversion_rate: number;
+  top_products: { name: string; quantity: number }[];
 }
 
 export interface StorefrontQr {
@@ -58,11 +92,13 @@ export async function disableStorefront(): Promise<StorefrontStatus> {
   return res.data;
 }
 
-export async function updateStorefront(description: string): Promise<StorefrontStatus> {
-  const res = await apiClient.patch<StorefrontStatus>(
-    "/inventory/storefront",
-    { description },
-  );
+export async function updateStorefront(update: StorefrontUpdate): Promise<StorefrontStatus> {
+  const res = await apiClient.patch<StorefrontStatus>("/inventory/storefront", update);
+  return res.data;
+}
+
+export async function getStorefrontAnalytics(): Promise<StorefrontAnalytics> {
+  const res = await apiClient.get<StorefrontAnalytics>("/inventory/storefront/analytics");
   return res.data;
 }
 

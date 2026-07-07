@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { getConfig } from "@/lib/config";
 import { StoreCatalog } from "@/features/storefront/store-catalog";
+import { StoreReviews } from "@/features/storefront/store-reviews";
 
 type StoreProduct = {
   id: number;
@@ -12,6 +13,7 @@ type StoreProduct = {
   unit: string | null;
   image_url: string | null;
   in_stock: boolean;
+  category: string | null;
 };
 
 type Storefront = {
@@ -21,6 +23,19 @@ type Storefront = {
   logo_url: string | null;
   online_payments_enabled: boolean;
   whatsapp_url: string | null;
+  announcement: string | null;
+  location: {
+    address: string | null;
+    city: string | null;
+    state: string | null;
+    maps_url: string | null;
+  };
+  hours: Record<string, { open: string; close: string }> | null;
+  open_now: boolean;
+  open_from: string | null;
+  open_to: string | null;
+  fulfillment: { delivery: boolean; pickup: boolean; delivery_fee: number };
+  reviews: { count: number; average: number | null };
   products: StoreProduct[];
 };
 
@@ -45,18 +60,27 @@ export async function generateMetadata({ params }: RouteProps): Promise<Metadata
     const store = await fetchStore(slug, apiBaseUrl);
     if (!store) return { title: "Store Not Found — Suoops" };
     const name = store.business_name || "Store";
-    const description = `Browse ${name}'s products and order directly.`;
+    const description =
+      store.description || `Browse ${name}'s products and order directly.`;
+    const image = store.logo_url ?? undefined;
     return {
       title: `${name} — Shop on Suoops`,
       description,
+      manifest: `/store/${slug}/manifest.webmanifest`,
       openGraph: {
         title: name,
         description,
         siteName: "Suoops",
         type: "website",
         url: `https://suoops.com/store/${slug}`,
+        ...(image ? { images: [{ url: image }] } : {}),
       },
-      twitter: { card: "summary", title: name, description },
+      twitter: {
+        card: image ? "summary_large_image" : "summary",
+        title: name,
+        description,
+        ...(image ? { images: [image] } : {}),
+      },
     };
   } catch {
     return { title: "Store — Suoops" };
@@ -97,9 +121,48 @@ export default async function StorePage({ params }: RouteProps) {
             {store.description && (
               <p className="mt-0.5 text-sm text-emerald-100">{store.description}</p>
             )}
-            <p className="text-xs text-emerald-300">Powered by Suoops · suoops.com</p>
+            <div className="mt-1 flex flex-wrap items-center gap-2">
+              {store.hours && (
+                <span
+                  className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                    store.open_now
+                      ? "bg-emerald-400/20 text-emerald-200"
+                      : "bg-white/10 text-emerald-100"
+                  }`}
+                >
+                  <span
+                    className={`h-1.5 w-1.5 rounded-full ${store.open_now ? "bg-emerald-300" : "bg-slate-300"}`}
+                  />
+                  {store.open_now
+                    ? `Open${store.open_to ? ` · closes ${store.open_to}` : ""}`
+                    : "Closed"}
+                </span>
+              )}
+              {store.reviews.count > 0 && (
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-200">
+                  ★ {store.reviews.average} ({store.reviews.count})
+                </span>
+              )}
+            </div>
+            <p className="mt-1 text-xs text-emerald-300">Powered by Suoops · suoops.com</p>
           </div>
         </div>
+        {store.location.address && (
+          <div className="mx-auto mt-3 max-w-3xl">
+            <a
+              href={store.location.maps_url ?? "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs text-emerald-100 hover:text-white"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-3.5 w-3.5">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+              {store.location.address} · Get directions
+            </a>
+          </div>
+        )}
         {store.whatsapp_url && (
           <div className="mx-auto mt-4 max-w-3xl">
             <a
@@ -118,6 +181,11 @@ export default async function StorePage({ params }: RouteProps) {
       </header>
 
       <main className="mx-auto max-w-3xl px-4 py-6">
+        {store.announcement && (
+          <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-900">
+            {store.announcement}
+          </div>
+        )}
         {store.products.length === 0 ? (
           <div className="rounded-2xl bg-white px-6 py-12 text-center shadow-sm">
             <p className="text-sm text-slate-500">
@@ -131,8 +199,10 @@ export default async function StorePage({ params }: RouteProps) {
             products={store.products}
             whatsappUrl={store.whatsapp_url}
             onlinePaymentsEnabled={store.online_payments_enabled}
+            fulfillment={store.fulfillment}
           />
         )}
+        <StoreReviews slug={store.slug} summary={store.reviews} />
       </main>
     </div>
   );
