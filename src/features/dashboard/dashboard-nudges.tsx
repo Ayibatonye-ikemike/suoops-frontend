@@ -18,6 +18,7 @@ interface UserData {
   invoice_balance?: number;
   invoices_this_month?: number;
   online_payments_enabled?: boolean;
+  has_invoiced?: boolean;
 }
 
 /**
@@ -61,7 +62,7 @@ export function DashboardNudges() {
   const plan = (user.plan || "free").toLowerCase();
   const isPro = plan === "pro";
   const balance = user.invoice_balance ?? 2;
-  const hasInvoiced = (user.invoices_this_month ?? 0) > 0;
+  const hasInvoiced = Boolean(user.has_invoiced);
 
   // 1. WhatsApp setup — every user benefits, regardless of plan
   if (!user.phone_verified && !isDismissed("whatsapp-setup-banner-dismissed")) {

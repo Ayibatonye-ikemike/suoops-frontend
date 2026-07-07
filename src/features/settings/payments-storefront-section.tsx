@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { Check, Copy, CreditCard, ExternalLink, Store } from "lucide-react";
+import Link from "next/link";
 
 import {
   disableStorefront,
@@ -101,6 +102,7 @@ export function PaymentsStorefrontSection() {
   );
   const storeEnabled = storefront.data?.enabled ?? false;
   const link = storefront.data?.link ?? null;
+  const productCount = storefront.data?.product_count ?? 0;
 
   const copyLink = async () => {
     if (!link || typeof navigator === "undefined" || !navigator.clipboard) return;
@@ -192,6 +194,25 @@ export function PaymentsStorefrontSection() {
           online payments on — pay instantly. Share the link on WhatsApp,
           Instagram, or your bio.
         </p>
+
+        {storeEnabled && productCount === 0 ? (
+          <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3">
+            <p className="text-xs font-semibold text-amber-900">
+              Your storefront is empty
+            </p>
+            <p className="mt-0.5 text-xs text-amber-800">
+              Add products to your inventory so customers have something to order
+              — until then your storefront link shows nothing. It also boosts your
+              professionalism score.
+            </p>
+            <Link
+              href="/dashboard/inventory"
+              className="mt-2 inline-flex items-center gap-1 rounded-md bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-amber-700"
+            >
+              Add products →
+            </Link>
+          </div>
+        ) : null}
 
         {storeEnabled && link ? (
           <div className="mt-3 space-y-2">

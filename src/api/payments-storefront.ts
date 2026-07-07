@@ -16,6 +16,7 @@ export interface StorefrontStatus {
   slug: string | null;
   link: string | null;
   description: string | null;
+  product_count?: number;
 }
 
 export async function getOnlinePaymentsStatus(): Promise<OnlinePaymentsStatus> {

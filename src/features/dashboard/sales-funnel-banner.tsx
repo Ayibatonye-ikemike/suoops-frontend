@@ -18,6 +18,7 @@ interface UserData {
   wallet_balance_kobo?: number;
   invoices_this_month?: number;
   subscription_expires_at?: string | null;
+  has_invoiced?: boolean;
 }
 
 /**
@@ -46,7 +47,7 @@ export function SalesFunnelBanner() {
   if (isLoading || dismissed) return null;
 
   const wallet = walletNaira(user?.wallet_balance_kobo);
-  const hasInvoiced = (user?.invoices_this_month ?? 0) > 0;
+  const hasInvoiced = Boolean(user?.has_invoiced);
   const hasPhone = Boolean(user?.phone_verified);
   const firstName = user?.name?.split(" ")[0] || "there";
 
