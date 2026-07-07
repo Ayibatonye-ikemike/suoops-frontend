@@ -34,7 +34,6 @@ type Storefront = {
   open_now: boolean;
   open_from: string | null;
   open_to: string | null;
-  fulfillment: { delivery: boolean; pickup: boolean; delivery_fee: number };
   reviews: { count: number; average: number | null };
   products: StoreProduct[];
 };
@@ -199,7 +198,6 @@ export default async function StorePage({ params }: RouteProps) {
             products={store.products}
             whatsappUrl={store.whatsapp_url}
             onlinePaymentsEnabled={store.online_payments_enabled}
-            fulfillment={store.fulfillment}
           />
         )}
         <StoreReviews slug={store.slug} summary={store.reviews} />

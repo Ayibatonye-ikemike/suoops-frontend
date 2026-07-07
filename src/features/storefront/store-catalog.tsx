@@ -15,19 +15,12 @@ export type StoreProduct = {
   category?: string | null;
 };
 
-export type Fulfillment = {
-  delivery: boolean;
-  pickup: boolean;
-  delivery_fee: number;
-};
-
 type Props = {
   slug: string;
   storeName: string;
   products: StoreProduct[];
   whatsappUrl: string | null;
   onlinePaymentsEnabled: boolean;
-  fulfillment?: Fulfillment;
 };
 
 const formatCurrency = (value: number | null) => {
@@ -45,7 +38,6 @@ export function StoreCatalog({
   products,
   whatsappUrl,
   onlinePaymentsEnabled,
-  fulfillment,
 }: Props) {
   const { apiBaseUrl } = getConfig();
   const storeUrl = `https://suoops.com/store/${slug}`;
@@ -60,14 +52,6 @@ export function StoreCatalog({
   // Discovery: search + category filter.
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("All");
-
-  // Fulfilment: default to pickup when offered, else delivery.
-  const deliveryOffered = Boolean(fulfillment?.delivery);
-  const pickupOffered = fulfillment ? fulfillment.pickup : true;
-  const deliveryFee = fulfillment?.delivery_fee ?? 0;
-  const [mode, setMode] = useState<"pickup" | "delivery">(
-    pickupOffered ? "pickup" : deliveryOffered ? "delivery" : "pickup",
-  );
 
   // "Notify me when back in stock" for a sold-out product.
   const [notifyFor, setNotifyFor] = useState<StoreProduct | null>(null);
@@ -96,12 +80,10 @@ export function StoreCatalog({
   );
   const cartEntries = Object.entries(cart).filter(([, q]) => q > 0);
   const count = cartEntries.reduce((s, [, q]) => s + q, 0);
-  const itemsTotal = cartEntries.reduce(
+  const total = cartEntries.reduce(
     (s, [id, q]) => s + (productById.get(Number(id))?.price ?? 0) * q,
     0,
   );
-  const appliedDeliveryFee = mode === "delivery" ? deliveryFee : 0;
-  const total = itemsTotal + appliedDeliveryFee;
 
   const add = (id: number) => setCart((c) => ({ ...c, [id]: (c[id] ?? 0) + 1 }));
   const dec = (id: number) =>
@@ -146,7 +128,6 @@ export function StoreCatalog({
         body: JSON.stringify({
           customer_name: customerName.trim(),
           customer_phone: customerPhone.trim(),
-          fulfillment: deliveryOffered || pickupOffered ? mode : null,
           items: cartEntries.map(([id, q]) => ({
             product_id: Number(id),
             quantity: q,
@@ -344,49 +325,11 @@ export function StoreCatalog({
                   </div>
                 );
               })}
-              {appliedDeliveryFee > 0 && (
-                <div className="flex items-center justify-between text-sm text-slate-600">
-                  <span>Delivery</span>
-                  <span>{formatCurrency(appliedDeliveryFee)}</span>
-                </div>
-              )}
               <div className="flex items-center justify-between border-t border-dashed border-slate-200 pt-2 text-sm font-bold">
                 <span>Total</span>
                 <span>{formatCurrency(total)}</span>
               </div>
             </div>
-
-            {/* Fulfilment: delivery vs pickup */}
-            {(deliveryOffered || (pickupOffered && deliveryOffered)) && (
-              <div className="mb-4 grid grid-cols-2 gap-2">
-                {pickupOffered && (
-                  <button
-                    type="button"
-                    onClick={() => setMode("pickup")}
-                    className={`rounded-lg border px-3 py-2 text-xs font-semibold transition ${
-                      mode === "pickup"
-                        ? "border-brand-jade bg-brand-jade/10 text-brand-jade"
-                        : "border-slate-200 text-slate-600"
-                    }`}
-                  >
-                    Pickup
-                  </button>
-                )}
-                {deliveryOffered && (
-                  <button
-                    type="button"
-                    onClick={() => setMode("delivery")}
-                    className={`rounded-lg border px-3 py-2 text-xs font-semibold transition ${
-                      mode === "delivery"
-                        ? "border-brand-jade bg-brand-jade/10 text-brand-jade"
-                        : "border-slate-200 text-slate-600"
-                    }`}
-                  >
-                    Delivery{deliveryFee > 0 ? ` +${formatCurrency(deliveryFee)}` : ""}
-                  </button>
-                )}
-              </div>
-            )}
 
             <div className="space-y-3">
               <input

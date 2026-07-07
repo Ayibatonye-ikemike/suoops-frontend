@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { getConfig } from "@/lib/config";
+import { StoreDirectory } from "@/features/storefront/store-directory";
 
 type StoreCard = {
   slug: string;
   business_name: string | null;
   logo_url: string | null;
   description: string | null;
+  location?: string | null;
+  matched_products?: string[];
 };
 
 type Directory = {
@@ -46,52 +48,13 @@ export default async function StoresDirectoryPage() {
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-2xl font-bold text-white sm:text-3xl">Shops on Suoops</h1>
           <p className="mt-2 text-sm text-emerald-200">
-            Browse businesses and order directly on WhatsApp.
+            Search across every shop — find a product and order directly.
           </p>
         </div>
       </header>
 
       <main className="mx-auto max-w-3xl px-4 py-6">
-        {stores.length === 0 ? (
-          <div className="rounded-2xl bg-white px-6 py-12 text-center shadow-sm">
-            <p className="text-sm text-slate-500">
-              No shops are listed yet. Check back soon.
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-            {stores.map((s) => {
-              const name = s.business_name || "Store";
-              const initial = name[0]?.toUpperCase() ?? "S";
-              return (
-                <Link
-                  key={s.slug}
-                  href={`/store/${s.slug}`}
-                  className="flex flex-col items-center gap-3 rounded-2xl bg-white p-5 text-center shadow-sm ring-1 ring-slate-100 transition hover:shadow-md"
-                >
-                  {s.logo_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={s.logo_url}
-                      alt={name}
-                      className="h-16 w-16 rounded-2xl bg-slate-100 object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-evergreen/10 text-2xl font-bold text-brand-evergreen">
-                      {initial}
-                    </div>
-                  )}
-                  <span className="line-clamp-2 text-sm font-semibold text-slate-900">{name}</span>
-                  {s.description && (
-                    <span className="line-clamp-2 text-xs text-slate-500">
-                      {s.description}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </div>
-        )}
+        <StoreDirectory apiBaseUrl={apiBaseUrl} initialStores={stores} />
       </main>
     </div>
   );

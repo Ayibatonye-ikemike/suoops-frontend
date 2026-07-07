@@ -12,7 +12,6 @@ import {
   enableOnlinePayments,
   enableStorefront,
   getStorefront,
-  getStorefrontAnalytics,
   getStorefrontQr,
   updateStorefront,
 } from "@/api/payments-storefront";
@@ -119,15 +118,12 @@ export function PaymentsStorefrontSection() {
     onError: (error) => toast.error(errorMessage(error, "Could not save the description.")),
   });
 
-  // Store details (location, delivery, announcement).
+  // Store details (location, announcement).
   const [details, setDetails] = useState({
     address: "",
     city: "",
     state: "",
     announcement: "",
-    delivery_enabled: false,
-    pickup_enabled: true,
-    delivery_fee: 0,
   });
   useEffect(() => {
     const d = storefront.data;
@@ -137,9 +133,6 @@ export function PaymentsStorefrontSection() {
       city: d.city ?? "",
       state: d.state ?? "",
       announcement: d.announcement ?? "",
-      delivery_enabled: d.delivery_enabled ?? false,
-      pickup_enabled: d.pickup_enabled ?? true,
-      delivery_fee: d.delivery_fee ?? 0,
     });
   }, [storefront.data]);
 
@@ -150,23 +143,12 @@ export function PaymentsStorefrontSection() {
         city: details.city.trim(),
         state: details.state.trim(),
         announcement: details.announcement.trim(),
-        delivery_enabled: details.delivery_enabled,
-        pickup_enabled: details.pickup_enabled,
-        delivery_fee: Number(details.delivery_fee) || 0,
       }),
     onSuccess: () => {
       toast.success("Store details saved.");
       queryClient.invalidateQueries({ queryKey: ["storefrontStatus"] });
     },
     onError: (error) => toast.error(errorMessage(error, "Could not save store details.")),
-  });
-
-  const analytics = useQuery({
-    queryKey: ["storefrontAnalytics"],
-    queryFn: getStorefrontAnalytics,
-    enabled: storefront.data?.enabled ?? false,
-    retry: false,
-    staleTime: 60000,
   });
 
   const bank = bankDetails.data as BankDetails | undefined;
@@ -428,37 +410,6 @@ export function PaymentsStorefrontSection() {
                 />
               </div>
 
-              <div className="flex flex-wrap items-center gap-4">
-                <label className="flex items-center gap-2 text-xs text-brand-text">
-                  <input
-                    type="checkbox"
-                    checked={details.pickup_enabled}
-                    onChange={(e) => setDetails((d) => ({ ...d, pickup_enabled: e.target.checked }))}
-                  />
-                  Pickup
-                </label>
-                <label className="flex items-center gap-2 text-xs text-brand-text">
-                  <input
-                    type="checkbox"
-                    checked={details.delivery_enabled}
-                    onChange={(e) => setDetails((d) => ({ ...d, delivery_enabled: e.target.checked }))}
-                  />
-                  Delivery
-                </label>
-                {details.delivery_enabled && (
-                  <div className="flex items-center gap-1 text-xs text-brand-textMuted">
-                    <span>Fee ₦</span>
-                    <input
-                      type="number"
-                      min={0}
-                      value={details.delivery_fee}
-                      onChange={(e) => setDetails((d) => ({ ...d, delivery_fee: Number(e.target.value) }))}
-                      className="w-24 rounded-lg border border-brand-border bg-white px-2 py-1 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
-                    />
-                  </div>
-                )}
-              </div>
-
               <div className="flex justify-end">
                 <button
                   type="button"
@@ -470,39 +421,6 @@ export function PaymentsStorefrontSection() {
                 </button>
               </div>
             </div>
-
-            {/* Analytics */}
-            {analytics.data && (
-              <div className="rounded-lg border border-brand-border p-3">
-                <p className="mb-2 text-xs font-semibold text-brand-text">Performance</p>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  {[
-                    { label: "Views", value: analytics.data.views },
-                    { label: "Orders", value: analytics.data.orders },
-                    { label: "Paid", value: analytics.data.paid_orders },
-                    { label: "Conversion", value: `${analytics.data.conversion_rate}%` },
-                  ].map((s) => (
-                    <div key={s.label}>
-                      <p className="text-lg font-bold text-brand-text">{s.value}</p>
-                      <p className="text-[11px] text-brand-textMuted">{s.label}</p>
-                    </div>
-                  ))}
-                </div>
-                {analytics.data.top_products.length > 0 && (
-                  <div className="mt-3 border-t border-brand-border pt-2">
-                    <p className="text-[11px] font-semibold text-brand-textMuted">Top sellers</p>
-                    <ul className="mt-1 space-y-0.5">
-                      {analytics.data.top_products.map((p) => (
-                        <li key={p.name} className="flex justify-between text-xs text-brand-text">
-                          <span className="truncate">{p.name}</span>
-                          <span className="text-brand-textMuted">×{p.quantity}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
 
             <button
               type="button"
