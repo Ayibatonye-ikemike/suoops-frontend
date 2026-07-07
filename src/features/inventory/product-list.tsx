@@ -127,7 +127,79 @@ export function ProductList({ onSelectProduct, onCreateProduct, onEditProduct }:
           </div>
         ) : (
           <>
-            <div className="overflow-x-auto">
+            {/* Mobile: cards (easier to tap than a wide table) */}
+            <div className="divide-y divide-gray-100 dark:divide-gray-700 sm:hidden">
+              {productData.products.map((product) => (
+                <div
+                  key={product.id}
+                  onClick={() => onSelectProduct?.(product)}
+                  className="flex items-center gap-3 p-3 active:bg-gray-50 dark:active:bg-gray-700/50"
+                >
+                  {product.image_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={product.image_url}
+                      alt={product.name}
+                      className="h-12 w-12 shrink-0 rounded-lg object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700">
+                      <Package className="h-5 w-5 text-gray-400" />
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium text-gray-900 dark:text-white">{product.name}</p>
+                    <p className="text-sm font-semibold text-brand-jade">{formatAmount(product.selling_price)}</p>
+                    <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-gray-500">
+                      {product.category_name && <span>{product.category_name}</span>}
+                      {!product.track_stock ? (
+                        <span>Service</span>
+                      ) : product.is_out_of_stock ? (
+                        <span className="inline-flex items-center gap-1 font-medium text-red-600 dark:text-red-400">
+                          <AlertTriangle className="h-3 w-3" /> Out of stock
+                        </span>
+                      ) : product.is_low_stock ? (
+                        <span className="inline-flex items-center gap-1 font-medium text-amber-600 dark:text-amber-400">
+                          <AlertTriangle className="h-3 w-3" /> {product.quantity_in_stock} {product.unit} left
+                        </span>
+                      ) : (
+                        <span>
+                          {product.quantity_in_stock} {product.unit} in stock
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      onClick={() => setQrProduct(product)}
+                      className="rounded-lg p-2 text-gray-400 hover:bg-brand-jade/10 hover:text-brand-jade"
+                      title="Scan to pay"
+                    >
+                      <QrCode className="h-4 w-4" />
+                    </button>
+                    {onEditProduct && (
+                      <button
+                        onClick={() => onEditProduct(product)}
+                        className="rounded-lg p-2 text-gray-400 hover:bg-brand-jade/10 hover:text-brand-jade"
+                        title="Edit"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleDelete(product)}
+                      className="rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20"
+                      title="Delete"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop: table */}
+            <div className="hidden overflow-x-auto sm:block">
               <table className="w-full text-left text-sm">
                 <thead className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
                   <tr>
