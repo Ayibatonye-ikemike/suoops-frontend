@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { getConfig } from "@/lib/config";
 
@@ -62,6 +62,19 @@ export function StoreCatalog({
   const add = (id: number) => setCart((c) => ({ ...c, [id]: (c[id] ?? 0) + 1 }));
   const dec = (id: number) =>
     setCart((c) => ({ ...c, [id]: Math.max(0, (c[id] ?? 0) - 1) }));
+
+  // Deep link from a product's scan-to-pay QR: /store/{slug}?p={id}. Pre-add
+  // that product and open checkout so a customer who scanned just pays.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const pid = Number(new URLSearchParams(window.location.search).get("p"));
+    if (!pid) return;
+    const product = productById.get(pid);
+    if (product && product.in_stock) {
+      setCart((c) => (c[pid] ? c : { ...c, [pid]: 1 }));
+      setCheckoutOpen(true);
+    }
+  }, [productById]);
 
   const orderLink = (productName?: string, price?: number | null) => {
     if (!whatsappUrl) return null;
