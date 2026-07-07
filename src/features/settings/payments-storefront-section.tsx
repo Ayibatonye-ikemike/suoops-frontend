@@ -439,7 +439,7 @@ export function PaymentsStorefrontSection() {
                     const day = hours[key];
                     return (
                       <div key={key} className="flex items-center gap-2">
-                        <label className="flex w-20 shrink-0 items-center gap-1.5 text-xs text-brand-text">
+                        <label className="flex w-16 shrink-0 items-center gap-1.5 text-xs text-brand-text">
                           <input
                             type="checkbox"
                             checked={!!day}
@@ -448,19 +448,19 @@ export function PaymentsStorefrontSection() {
                           {label}
                         </label>
                         {day ? (
-                          <div className="flex items-center gap-1 text-xs text-brand-textMuted">
+                          <div className="flex min-w-0 flex-1 items-center gap-1 text-xs text-brand-textMuted">
                             <input
                               type="time"
                               value={day.open}
                               onChange={(e) => setDayTime(i, "open", e.target.value)}
-                              className="rounded-md border border-brand-border bg-white px-2 py-1 text-xs text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+                              className="w-full min-w-0 rounded-md border border-brand-border bg-white px-2 py-1 text-xs text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
                             />
-                            <span>–</span>
+                            <span className="shrink-0">–</span>
                             <input
                               type="time"
                               value={day.close}
                               onChange={(e) => setDayTime(i, "close", e.target.value)}
-                              className="rounded-md border border-brand-border bg-white px-2 py-1 text-xs text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+                              className="w-full min-w-0 rounded-md border border-brand-border bg-white px-2 py-1 text-xs text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
                             />
                           </div>
                         ) : (
