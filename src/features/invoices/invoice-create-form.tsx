@@ -244,13 +244,13 @@ export function InvoiceCreateForm() {
         </div>
       </div>
 
-      {/* Line Items with Inventory Product Picker (Pro/Business only) */}
+      {/* Line Items with Inventory Product Picker (free for all — flat 3% model) */}
       <InvoiceLineItems
         lines={lines}
         onUpdateLine={updateLine}
         onRemoveLine={removeLine}
         onAddLine={addLine}
-        showProductPicker={["pro", "business"].includes(quota?.current_plan?.toLowerCase() || "")}
+        showProductPicker
         currency={currency}
       />
 
