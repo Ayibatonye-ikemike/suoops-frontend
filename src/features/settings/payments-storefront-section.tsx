@@ -65,8 +65,15 @@ export function PaymentsStorefrontSection() {
 
   const enableShop = useMutation({
     mutationFn: () => enableStorefront(),
-    onSuccess: () => {
-      toast.success("Storefront enabled.");
+    onSuccess: (data) => {
+      if ((data?.product_count ?? 0) === 0) {
+        toast(
+          "Storefront enabled — but it's empty. Add products so customers can order.",
+          { icon: "🛍️", duration: 6000 },
+        );
+      } else {
+        toast.success("Storefront enabled.");
+      }
       queryClient.invalidateQueries({ queryKey: ["storefrontStatus"] });
     },
     onError: (error) => toast.error(errorMessage(error, "Could not enable your storefront.")),
