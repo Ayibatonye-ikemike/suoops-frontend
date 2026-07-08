@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { X, Image as ImageIcon, QrCode } from "lucide-react";
 import {
   useCreateProduct,
@@ -9,6 +10,7 @@ import {
   useUploadProductImage,
 } from "./use-inventory";
 import { useCurrency } from "@/hooks/use-currency";
+import { getStorefront } from "@/api/payments-storefront";
 import { ScanToPayModal } from "./scan-to-pay-modal";
 import type { Product, ProductCreate, ProductUpdate } from "./types";
 
@@ -26,6 +28,13 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
   const uploadImage = useUploadProductImage();
+  // When the business runs a storefront, every listed item must carry a
+  // description AND a photo (buyer protection: know what was ordered).
+  const { data: storefront } = useQuery({
+    queryKey: ["storefront"],
+    queryFn: getStorefront,
+  });
+  const storefrontEnabled = Boolean(storefront?.enabled);
 
   const [formData, setFormData] = useState<ProductCreate>({
     sku: product?.sku ?? "",
@@ -70,6 +79,18 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    // Storefront items must show buyers a description and a real photo.
+    if (storefrontEnabled) {
+      if (!(formData.description ?? "").trim()) {
+        setError("Add a short description so buyers know what they're getting.");
+        return;
+      }
+      if (!imageFile && !imagePreview) {
+        setError("Add a photo of this item — it's required to sell on your storefront.");
+        return;
+      }
+    }
 
     try {
       let productId = product?.id;
@@ -209,13 +230,42 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
             <p className="mt-1 text-xs text-gray-500">What you charge customers.</p>
           </div>
 
-          {/* Photo (optional) */}
+          {/* Description — required for storefront items (buyer protection) */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Description{" "}
+              {storefrontEnabled ? (
+                <span className="text-red-500">*</span>
+              ) : (
+                <span className="font-normal text-gray-400">(optional)</span>
+              )}
+            </label>
+            <textarea
+              value={formData.description ?? ""}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value || null })}
+              rows={2}
+              required={storefrontEnabled}
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+              placeholder="What's included, size, colour, etc."
+            />
+            {storefrontEnabled && (
+              <p className="mt-1 text-xs text-gray-500">
+                Buyers see this on your storefront — it&apos;s how disputes are settled.
+              </p>
+            )}
+          </div>
+
+          {/* Photo — required for storefront items */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Photo{" "}
-              <span className="font-normal text-gray-400">
-                (optional — shown on your storefront)
-              </span>
+              {storefrontEnabled ? (
+                <span className="text-red-500">*</span>
+              ) : (
+                <span className="font-normal text-gray-400">
+                  (optional — shown on your storefront)
+                </span>
+              )}
             </label>
             <div className="flex items-center gap-3">
               <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700">
@@ -313,19 +363,6 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
 
           {showAdvanced && (
             <div className="space-y-4 rounded-lg border border-gray-100 dark:border-gray-700 p-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Description
-                </label>
-                <textarea
-                  value={formData.description ?? ""}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value || null })}
-                  rows={2}
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
-                  placeholder="What's included, size, colour, etc."
-                />
-              </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Category

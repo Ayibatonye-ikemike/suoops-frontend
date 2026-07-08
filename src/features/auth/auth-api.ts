@@ -20,6 +20,7 @@ export type SignupStartPayload = {
   email?: string | null;
   name: string;
   business_name: string;
+  accept_terms?: boolean;
   referral_code?: string | null;
   signup_source?: string | null;
   device_fingerprint?: string | null;

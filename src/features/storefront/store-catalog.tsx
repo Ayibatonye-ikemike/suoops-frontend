@@ -48,6 +48,7 @@ export function StoreCatalog({
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [location, setLocation] = useState<CapturedLocation | null>(null);
+  const [deliveryNote, setDeliveryNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -133,6 +134,7 @@ export function StoreCatalog({
           customer_phone: customerPhone.trim(),
           customer_lat: location?.lat,
           customer_lng: location?.lng,
+          delivery_note: deliveryNote.trim() || undefined,
           items: cartEntries.map(([id, q]) => ({
             product_id: Number(id),
             quantity: q,
@@ -363,6 +365,13 @@ export function StoreCatalog({
                   ctaLabel="Share my current location"
                 />
               </div>
+              <textarea
+                value={deliveryNote}
+                onChange={(e) => setDeliveryNote(e.target.value.slice(0, 200))}
+                rows={2}
+                placeholder="Landmark or delivery note (optional) — e.g. blue gate, call on arrival"
+                className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-jade focus:outline-none focus:ring-2 focus:ring-brand-jade/20"
+              />
             </div>
 
             {error && (

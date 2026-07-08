@@ -27,7 +27,7 @@ export default function TermsPage() {
       <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
         <h1 className="text-4xl font-bold text-slate-900">Terms of Service</h1>
         <p className="mt-4 text-lg text-slate-600">
-          Last updated: November 9, 2025
+          Last updated: July 8, 2026
         </p>
 
         <div className="mt-12 space-y-8 text-slate-700">
@@ -107,16 +107,56 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-slate-900">7. Invoice Payments</h2>
+            <h2 className="text-2xl font-bold text-slate-900">7. Direct Invoice Payments</h2>
             <p className="mt-4">
-              <strong>Important:</strong> SuoOps is NOT a payment processor. We facilitate invoice delivery via WhatsApp, but:
+              <strong>Important:</strong> For direct invoices you send over WhatsApp or email (where the customer pays your bank account or your own online payment link), SuoOps only facilitates delivery:
             </p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
               <li>Customers pay directly to your bank account</li>
-              <li>We do NOT hold, process, or guarantee payments</li>
+              <li>We do NOT hold, process, or guarantee these payments</li>
               <li>You are responsible for verifying and confirming payments</li>
-              <li>Disputes between you and your customers are your responsibility</li>
+              <li>Disputes on these direct payments are between you and your customer</li>
             </ul>
+            <p className="mt-4 text-sm text-slate-500">
+              Storefront orders work differently — see Section 7.1 (Storefront Orders &amp; Buyer Protection).
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-slate-900">7.1. Storefront Orders &amp; Buyer Protection (Escrow)</h2>
+            <p className="mt-4">
+              When a customer orders and pays through your public SuoOps storefront, the payment may be
+              <strong> held in escrow</strong> to protect the buyer. By enabling your storefront and accepting online orders, you agree to the following:
+            </p>
+            <ul className="mt-4 list-disc space-y-2 pl-6">
+              <li>
+                <strong>Funds are held, not instantly settled.</strong> For businesses that are new or not yet trusted, the customer&apos;s payment is collected and held by SuoOps (via our payment partner) instead of settling to you immediately.
+              </li>
+              <li>
+                <strong>Release window.</strong> Held funds are released to you after the buyer confirms they received their order, OR automatically after the protection window passes with no complaint — 12 hours when you and the customer are in the same state, otherwise 3 days.
+              </li>
+              <li>
+                <strong>Platform fee.</strong> SuoOps deducts a commission (currently 3%) from each released storefront payout. The exact fee is shown in-app and may change with notice.
+              </li>
+              <li>
+                <strong>Accurate listings are required.</strong> Every storefront item must have a clear description and a real photo of the actual item. This is how we know what was ordered if there is a dispute. Items without both are hidden from your store and cannot be ordered.
+              </li>
+              <li>
+                <strong>Delivery is your responsibility.</strong> You must deliver the exact item ordered to the customer&apos;s provided location within a reasonable time.
+              </li>
+              <li>
+                <strong>Disputes &amp; refunds.</strong> If a buyer reports a problem (e.g. non-delivery or wrong item) during the protection window, the order is paused for review. SuoOps may, at its discretion, refund the buyer from the held funds and withhold your payout.
+              </li>
+              <li>
+                <strong>Suspension.</strong> Businesses that repeatedly fail to deliver, list fake or misleading items, or attract fraud reports may be flagged, have their storefront delisted, and/or have their account suspended.
+              </li>
+              <li>
+                <strong>Trusted businesses.</strong> Established businesses that meet our trust criteria may have orders settle directly (without a hold). SuoOps decides trust status and may change it at any time.
+              </li>
+            </ul>
+            <p className="mt-4">
+              Buyer protection applies to storefront orders only. It does not turn SuoOps into a guarantor of your business, and it does not cover direct/WhatsApp invoices described in Section 7.
+            </p>
           </section>
 
           <section>

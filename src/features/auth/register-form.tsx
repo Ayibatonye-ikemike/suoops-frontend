@@ -62,6 +62,8 @@ export function RegisterForm() {
   const [referralValid, setReferralValid] = useState<boolean | null>(null);
   const [referrerName, setReferrerName] = useState<string | null>(null);
   const [validatingReferral, setValidatingReferral] = useState(false);
+  // Terms & Conditions acceptance (required before signup)
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
   const canResend = useMemo(() => resendTimer === 0, [resendTimer]);
 
@@ -172,10 +174,16 @@ export function RegisterForm() {
         return;
       }
 
+      if (!acceptTerms) {
+        setError("Please accept the Terms & Conditions to continue.");
+        return;
+      }
+
       const payload: SignupStartPayload = {
         name: String(form.get("name") ?? "").trim(),
         phone,
         business_name: businessName,
+        accept_terms: true,
       };
 
       // Email is optional — include if provided
@@ -250,7 +258,7 @@ export function RegisterForm() {
         setLoading(false);
       }
     },
-    [startResendCountdown, referralCode, referralValid]
+    [startResendCountdown, referralCode, referralValid, acceptTerms]
   );
 
   const handleVerifyOTP = useCallback(
@@ -634,9 +642,30 @@ export function RegisterForm() {
         )}
       </div>
       
+      <label className="flex items-start gap-2.5 text-left text-sm text-slate-600">
+        <input
+          type="checkbox"
+          checked={acceptTerms}
+          onChange={(e) => setAcceptTerms(e.target.checked)}
+          className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-green-600 focus:ring-green-600"
+        />
+        <span>
+          I agree to the{" "}
+          <Link
+            href="/terms"
+            target="_blank"
+            className="font-semibold text-green-700 underline hover:text-green-800"
+          >
+            Terms &amp; Conditions
+          </Link>
+          , including the buyer-protection (escrow) policy that holds storefront
+          payments until the customer confirms delivery.
+        </span>
+      </label>
+
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || !acceptTerms}
         className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-70"
       >
         {loading ? "Sending code..." : "Send WhatsApp verification code"}
