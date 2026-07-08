@@ -34,6 +34,12 @@ function errorMessage(error: unknown, fallback: string): string {
 // 0 = Monday (matches the backend's weekday index).
 const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
+// Storefronts may only open between 7am and 6pm — times are clamped to this range.
+const HOURS_MIN = "07:00";
+const HOURS_MAX = "18:00";
+const clampTime = (v: string): string =>
+  !v ? v : v < HOURS_MIN ? HOURS_MIN : v > HOURS_MAX ? HOURS_MAX : v;
+
 export function PaymentsStorefrontSection() {
   const queryClient = useQueryClient();
   const [copied, setCopied] = useState(false);
@@ -114,18 +120,9 @@ export function PaymentsStorefrontSection() {
     if (storefront.data?.description != null) setDesc(storefront.data.description);
   }, [storefront.data?.description]);
 
-  const saveDesc = useMutation({
-    mutationFn: () => updateStorefront({ description: desc.trim() }),
-    onSuccess: () => {
-      toast.success("Storefront description saved.");
-      queryClient.invalidateQueries({ queryKey: ["storefrontStatus"] });
-    },
-    onError: (error) => toast.error(errorMessage(error, "Could not save the description.")),
-  });
-
-  // Store details (location, announcement).
+  // Store details (announcement + GPS-derived city/state). Address/city/state are
+  // NOT hand-typed — they come from the GPS pin (anti-fraud, exact location).
   const [details, setDetails] = useState({
-    address: "",
     city: "",
     state: "",
     announcement: "",
@@ -136,7 +133,6 @@ export function PaymentsStorefrontSection() {
     const d = storefront.data;
     if (!d) return;
     setDetails({
-      address: d.address ?? "",
       city: d.city ?? "",
       state: d.state ?? "",
       announcement: d.announcement ?? "",
@@ -153,22 +149,22 @@ export function PaymentsStorefrontSection() {
       return next;
     });
   const setDayTime = (i: number, field: "open" | "close", value: string) =>
-    setHours((h) => ({ ...h, [String(i)]: { ...h[String(i)], [field]: value } }));
+    setHours((h) => ({ ...h, [String(i)]: { ...h[String(i)], [field]: clampTime(value) } }));
 
-  const saveDetails = useMutation({
+  // One Save for the whole storefront tab: description + announcement + hours.
+  // (Location is saved the moment you pin it via GPS.)
+  const saveStore = useMutation({
     mutationFn: () =>
       updateStorefront({
-        address: details.address.trim(),
-        city: details.city.trim(),
-        state: details.state.trim(),
+        description: desc.trim(),
         announcement: details.announcement.trim(),
         hours,
       }),
     onSuccess: () => {
-      toast.success("Store details saved.");
+      toast.success("Storefront saved.");
       queryClient.invalidateQueries({ queryKey: ["storefrontStatus"] });
     },
-    onError: (error) => toast.error(errorMessage(error, "Could not save store details.")),
+    onError: (error) => toast.error(errorMessage(error, "Could not save your storefront.")),
   });
 
   // GPS location capture — server derives the state for the buyer-protection window.
@@ -199,6 +195,12 @@ export function PaymentsStorefrontSection() {
   const storeEnabled = storefront.data?.enabled ?? false;
   const link = storefront.data?.link ?? null;
   const productCount = storefront.data?.product_count ?? 0;
+
+  // Everything on the storefront tab is required before it can be saved.
+  const stateSet = Boolean(details.state.trim());
+  const hoursSet = Object.keys(hours).length > 0;
+  const descSet = desc.trim().length > 0;
+  const detailsComplete = descSet && stateSet && hoursSet;
 
   const storefrontQr = useQuery({
     queryKey: ["storefrontQr"],
@@ -392,6 +394,7 @@ export function PaymentsStorefrontSection() {
             <div>
               <label className="block text-xs font-medium text-brand-textMuted">
                 What do you sell?{" "}
+                <span className="text-rose-500">*</span>{" "}
                 <span className="font-normal">(shown in the Shops directory)</span>
               </label>
               <textarea
@@ -402,25 +405,17 @@ export function PaymentsStorefrontSection() {
                 placeholder="e.g. Fresh cakes, pastries & small chops for events."
                 className="mt-1 block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
               />
-              <div className="mt-1 flex items-center justify-between">
-                <span className="text-xs text-brand-textMuted">{desc.length}/160</span>
-                <button
-                  type="button"
-                  onClick={() => saveDesc.mutate()}
-                  disabled={saveDesc.isPending}
-                  className="rounded-md bg-brand-jade px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-brand-jadeHover disabled:opacity-60"
-                >
-                  {saveDesc.isPending ? "Saving…" : "Save description"}
-                </button>
-              </div>
+              <span className="mt-1 block text-xs text-brand-textMuted">{desc.length}/160</span>
             </div>
 
-            {/* Store details: location, announcement, delivery, domain */}
+            {/* Store details: location, announcement, opening hours */}
             <div className="space-y-3 rounded-lg border border-brand-border p-3">
               <p className="text-xs font-semibold text-brand-text">Store details</p>
 
               <div className="rounded-lg bg-brand-background/60 p-3">
-                <p className="text-xs font-medium text-brand-text">Store location (GPS)</p>
+                <p className="text-xs font-medium text-brand-text">
+                  Store location (GPS) <span className="text-rose-500">*</span>
+                </p>
                 <p className="mb-2 text-[11px] text-brand-textMuted">
                   Tap to pin your shop&apos;s exact spot. This sets your store&apos;s
                   state and powers safe-payment protection for your buyers.
@@ -431,43 +426,35 @@ export function PaymentsStorefrontSection() {
                   confirmedLabel={details.state || null}
                   ctaLabel="Pin my store location"
                 />
+                {details.state ? (
+                  <p className="mt-2 text-[11px] font-medium text-emerald-700">
+                    ✓ Location set{details.city ? ` — ${details.city}, ` : " — "}
+                    {details.state}
+                  </p>
+                ) : (
+                  <p className="mt-2 text-[11px] text-amber-600">
+                    Required — pin your location to set your state.
+                  </p>
+                )}
               </div>
 
-              <input
-                type="text"
-                value={details.announcement}
-                onChange={(e) => setDetails((d) => ({ ...d, announcement: e.target.value.slice(0, 200) }))}
-                placeholder="Announcement banner — e.g. 🎉 20% off this week"
-                className="block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
-              />
-              <input
-                type="text"
-                value={details.address}
-                onChange={(e) => setDetails((d) => ({ ...d, address: e.target.value }))}
-                placeholder="Street address (for “Get directions”)"
-                className="block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
-              />
-              <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-xs font-medium text-brand-textMuted">
+                  Announcement <span className="font-normal">(optional)</span>
+                </label>
                 <input
                   type="text"
-                  value={details.city}
-                  onChange={(e) => setDetails((d) => ({ ...d, city: e.target.value }))}
-                  placeholder="City"
-                  className="block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
-                />
-                <input
-                  type="text"
-                  value={details.state}
-                  onChange={(e) => setDetails((d) => ({ ...d, state: e.target.value }))}
-                  placeholder="State"
-                  className="block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+                  value={details.announcement}
+                  onChange={(e) => setDetails((d) => ({ ...d, announcement: e.target.value.slice(0, 200) }))}
+                  placeholder="Announcement banner — e.g. 🎉 20% off this week"
+                  className="mt-1 block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
                 />
               </div>
 
               <div>
                 <p className="mb-1.5 text-xs font-medium text-brand-textMuted">
-                  Opening hours{" "}
-                  <span className="font-normal">(shows an “Open / Closed” badge on your store)</span>
+                  Opening hours <span className="text-rose-500">*</span>{" "}
+                  <span className="font-normal">(7am–6pm only — shows an “Open / Closed” badge)</span>
                 </p>
                 <div className="space-y-1.5">
                   {DAY_LABELS.map((label, i) => {
@@ -487,6 +474,8 @@ export function PaymentsStorefrontSection() {
                           <div className="flex min-w-0 flex-1 items-center gap-1 text-xs text-brand-textMuted">
                             <input
                               type="time"
+                              min={HOURS_MIN}
+                              max={HOURS_MAX}
                               value={day.open}
                               onChange={(e) => setDayTime(i, "open", e.target.value)}
                               className="w-full min-w-0 rounded-md border border-brand-border bg-white px-2 py-1 text-xs text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
@@ -494,6 +483,8 @@ export function PaymentsStorefrontSection() {
                             <span className="shrink-0">–</span>
                             <input
                               type="time"
+                              min={HOURS_MIN}
+                              max={HOURS_MAX}
                               value={day.close}
                               onChange={(e) => setDayTime(i, "close", e.target.value)}
                               className="w-full min-w-0 rounded-md border border-brand-border bg-white px-2 py-1 text-xs text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
@@ -508,14 +499,20 @@ export function PaymentsStorefrontSection() {
                 </div>
               </div>
 
+              {!detailsComplete && (
+                <p className="text-xs text-amber-600">
+                  To save, add a description, pin your location, and set at least one
+                  opening day.
+                </p>
+              )}
               <div className="flex justify-end">
                 <button
                   type="button"
-                  onClick={() => saveDetails.mutate()}
-                  disabled={saveDetails.isPending}
-                  className="rounded-md bg-brand-jade px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-brand-jadeHover disabled:opacity-60"
+                  onClick={() => saveStore.mutate()}
+                  disabled={saveStore.isPending || !detailsComplete}
+                  className="rounded-md bg-brand-jade px-4 py-1.5 text-xs font-semibold text-white transition hover:bg-brand-jadeHover disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {saveDetails.isPending ? "Saving…" : "Save details"}
+                  {saveStore.isPending ? "Saving…" : "Save"}
                 </button>
               </div>
             </div>
