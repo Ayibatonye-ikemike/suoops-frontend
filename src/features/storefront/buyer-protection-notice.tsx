@@ -28,8 +28,8 @@ export function BuyerProtectionNotice({ className = "" }: { className?: string }
           Shop safely — you&apos;re protected
         </p>
         <p className="mt-0.5 text-emerald-800">
-          When you pay online here, your money is protected. If your order
-          doesn&apos;t arrive,{" "}
+          When you pay online here, your payment is protected until your order
+          reaches you. If it doesn&apos;t arrive,{" "}
           <a
             href="mailto:support@suoops.com?subject=I%20didn%27t%20receive%20my%20order"
             className="font-semibold underline underline-offset-2 hover:text-emerald-900"
@@ -37,6 +37,11 @@ export function BuyerProtectionNotice({ className = "" }: { className?: string }
             report it
           </a>{" "}
           and we&apos;ll help you get your money back.
+        </p>
+        <p className="mt-1 text-xs text-emerald-700">
+          Report within about <span className="font-semibold">12 hours</span> for
+          orders in your state, or <span className="font-semibold">3 days</span> for
+          orders from another state.
         </p>
       </div>
     </div>
