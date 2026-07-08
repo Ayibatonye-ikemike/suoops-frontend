@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getConfig } from "@/lib/config";
 import { StoreCatalog } from "@/features/storefront/store-catalog";
 import { StoreReviews } from "@/features/storefront/store-reviews";
+import { BuyerProtectionNotice } from "@/features/storefront/buyer-protection-notice";
 
 type StoreProduct = {
   id: number;
@@ -180,6 +181,7 @@ export default async function StorePage({ params }: RouteProps) {
       </header>
 
       <main className="mx-auto max-w-3xl px-4 py-6">
+        <BuyerProtectionNotice className="mb-4" />
         {store.announcement && (
           <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-900">
             {store.announcement}

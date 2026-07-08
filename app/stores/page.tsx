@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { getConfig } from "@/lib/config";
 import { StoreDirectory } from "@/features/storefront/store-directory";
+import { BuyerProtectionNotice } from "@/features/storefront/buyer-protection-notice";
 
 type StoreCard = {
   slug: string;
@@ -54,6 +55,7 @@ export default async function StoresDirectoryPage() {
       </header>
 
       <main className="mx-auto max-w-3xl px-4 py-6">
+        <BuyerProtectionNotice className="mb-6" />
         <StoreDirectory apiBaseUrl={apiBaseUrl} initialStores={stores} />
       </main>
     </div>
