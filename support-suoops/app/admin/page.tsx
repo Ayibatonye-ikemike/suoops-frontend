@@ -23,6 +23,7 @@ interface DashboardStats {
     active_last_30_days: number;
     online_payments_enabled: number;
     storefronts_enabled: number;
+    storefronts_live: number;
   };
   tickets: {
     total_tickets: number;
@@ -253,7 +254,7 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between">
               <span className="text-sm text-slate-600">Storefronts live</span>
               <span className="text-sm font-semibold text-slate-900">
-                {stats?.users.storefronts_enabled || 0}
+                {stats?.users.storefronts_live || 0}
               </span>
             </div>
             <div className="flex items-center justify-between">

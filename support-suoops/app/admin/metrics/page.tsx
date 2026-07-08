@@ -55,6 +55,7 @@ interface PlatformMetrics {
   total_users: number;
   online_payments_enabled: number;
   storefronts_enabled: number;
+  storefronts_live: number;
   monetized_users: number;
   commission_this_month: number;
   commission_wallet_this_month: number;
@@ -633,7 +634,7 @@ export default function MetricsPage() {
             />
             <ProgressBar
               label="Storefronts Live"
-              value={metrics?.storefronts_enabled || 0}
+              value={metrics?.storefronts_live || 0}
               total={totalUsers || 1}
               color="bg-blue-500"
             />

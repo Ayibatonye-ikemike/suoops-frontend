@@ -214,7 +214,15 @@ export default function StorefrontsPage() {
       </div>
 
       {/* Status filter cards */}
-      <div className="grid gap-3 grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-3 grid-cols-2 lg:grid-cols-6">
+        {/* Live = discoverable in the public global search (logo + online pay + active product). Display-only. */}
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <div className="flex items-center gap-2 text-sm text-blue-600">
+            <Store className="h-4 w-4" />
+            Live in search
+          </div>
+          <p className="mt-1 text-xl font-bold text-blue-700">{counts.live ?? 0}</p>
+        </div>
         {([
           { key: "all", label: "All Stores", value: counts.total, color: "text-slate-900" },
           { key: "active", label: "Active", value: counts.active, color: "text-emerald-700" },
