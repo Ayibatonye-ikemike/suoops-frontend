@@ -10,8 +10,16 @@ export async function getBankDetails(): Promise<BankDetailsOut> {
   return response.data;
 }
 
-export async function updateBankDetails(data: BankDetailsUpdate): Promise<BankDetailsOut> {
+export async function updateBankDetails(
+  data: BankDetailsUpdate & { otp?: string },
+): Promise<BankDetailsOut> {
   const response = await apiClient.patch<BankDetailsOut>("/users/me/bank-details", data);
+  return response.data;
+}
+
+/** Send a step-up OTP required to change an existing bank account. */
+export async function requestBankChangeOtp(): Promise<MessageOut> {
+  const response = await apiClient.post<MessageOut>("/users/me/bank-details/request-otp");
   return response.data;
 }
 

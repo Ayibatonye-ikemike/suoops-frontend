@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   deleteBankDetails,
   getBankDetails,
+  requestBankChangeOtp,
   resolveBankAccount,
   updateBankDetails,
 } from "@/api/bank-details";
@@ -40,6 +41,9 @@ export function BankDetailsForm() {
     "idle" | "resolving" | "resolved" | "error"
   >("idle");
   const [resolveError, setResolveError] = useState("");
+  // Step-up OTP challenge state (shown when changing an existing bank account).
+  const [otpChallenge, setOtpChallenge] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
   // Only auto-resolve after the user edits the form, never on initial hydration.
   const userEditedRef = useRef(false);
 
@@ -64,16 +68,27 @@ export function BankDetailsForm() {
   }, []);
 
   const updateMutation = useMutation({
-    mutationFn: (payload: BankDetailsUpdate) => updateBankDetails(payload),
+    mutationFn: (payload: BankDetailsUpdate & { otp?: string }) => updateBankDetails(payload),
     onSuccess: (updated) => {
       const nextState = toFormState(updated);
       setInitialValues(nextState);
       setFormState(nextState);
+      setOtpChallenge(false);
+      setOtpCode("");
       queryClient.setQueryData(["bankDetails"], updated);
       // Bank details gate the "Enable online payments" button on the same
       // page; refresh its status so the button unlocks immediately.
       queryClient.invalidateQueries({ queryKey: ["onlinePaymentsStatus"] });
       showSuccess("Bank details saved.");
+    },
+  });
+
+  // Step-up OTP required to change an EXISTING bank account.
+  const requestOtpMutation = useMutation({
+    mutationFn: requestBankChangeOtp,
+    onSuccess: () => {
+      setOtpChallenge(true);
+      showSuccess("Confirmation code sent.");
     },
   });
 
@@ -185,9 +200,21 @@ export function BankDetailsForm() {
       event.preventDefault();
       const hasChanges = hasFormChanges(formState, initialValues);
       if (!hasChanges) return;
-      updateMutation.mutate(toPayload(formState));
+      // Changing an EXISTING payout account needs a step-up OTP first.
+      const bankChanged =
+        Boolean(initialValues.bankName && initialValues.accountNumber) &&
+        (formState.bankName !== initialValues.bankName ||
+          formState.accountNumber !== initialValues.accountNumber);
+      if (bankChanged && !otpChallenge) {
+        requestOtpMutation.mutate();
+        return;
+      }
+      updateMutation.mutate({
+        ...toPayload(formState),
+        otp: otpChallenge ? otpCode : undefined,
+      });
     },
-    [formState, initialValues, updateMutation]
+    [formState, initialValues, updateMutation, requestOtpMutation, otpChallenge, otpCode]
   );
 
   const handleClear = useCallback(() => {
@@ -265,9 +292,59 @@ export function BankDetailsForm() {
         hasChanges={hasChanges}
         isFormValid={isFormValid}
         isDeleting={deleteMutation.isPending}
-        isSaving={updateMutation.isPending}
+        isSaving={updateMutation.isPending || requestOtpMutation.isPending}
         onClear={handleClear}
       />
+
+      {otpChallenge && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4">
+          <div className="w-full max-w-sm rounded-t-2xl bg-white p-5 sm:rounded-2xl">
+            <h3 className="text-base font-bold text-brand-text">Confirm bank change</h3>
+            <p className="mt-1 text-xs text-brand-textMuted">
+              Enter the code we sent to your WhatsApp to confirm changing your payout
+              account. For your safety, payouts pause for 48 hours after a change.
+            </p>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={otpCode}
+              onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 8))}
+              placeholder="Enter code"
+              className="mt-3 block w-full rounded-lg border border-brand-border bg-white px-3 py-2.5 text-center text-lg tracking-[0.3em] text-brand-text focus:border-brand-jade focus:outline-none focus:ring-2 focus:ring-brand-jade/20"
+            />
+            <div className="mt-4 flex gap-2">
+              <button
+                type="button"
+                onClick={() =>
+                  updateMutation.mutate({ ...toPayload(formState), otp: otpCode })
+                }
+                disabled={otpCode.length < 4 || updateMutation.isPending}
+                className="flex-1 rounded-lg bg-brand-jade py-2.5 text-sm font-semibold text-white transition hover:bg-brand-jadeHover disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {updateMutation.isPending ? "Confirming…" : "Confirm change"}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setOtpChallenge(false);
+                  setOtpCode("");
+                }}
+                className="rounded-lg border border-brand-border px-3 py-2.5 text-sm font-medium text-brand-textMuted hover:bg-slate-50"
+              >
+                Cancel
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={() => requestOtpMutation.mutate()}
+              disabled={requestOtpMutation.isPending}
+              className="mt-3 w-full text-xs font-medium text-brand-jade hover:underline disabled:opacity-60"
+            >
+              {requestOtpMutation.isPending ? "Sending…" : "Resend code"}
+            </button>
+          </div>
+        </div>
+      )}
     </form>
   );
 }
