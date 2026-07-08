@@ -34,6 +34,7 @@ interface Influencer {
   total_signups: number;
   activated_users: number;
   pro_conversions: number;
+  gmv_referred: number;
   total_commission_earned: number;
   signup_link: string;
 }
@@ -286,7 +287,7 @@ export default function InfluencersPage() {
   // Summary stats
   const totalSignups = influencers.reduce((s, i) => s + i.total_signups, 0);
   const totalActivated = influencers.reduce((s, i) => s + i.activated_users, 0);
-  const totalPro = influencers.reduce((s, i) => s + i.pro_conversions, 0);
+  const totalGmv = influencers.reduce((s, i) => s + (i.gmv_referred || 0), 0);
   const totalCommission = influencers.reduce(
     (s, i) => s + i.total_commission_earned,
     0
@@ -542,12 +543,13 @@ export default function InfluencersPage() {
         </div>
         <div className="bg-white rounded-xl border border-slate-200 p-4">
           <div className="flex items-center gap-2 text-slate-500 text-sm">
-            <DollarSign className="h-4 w-4" />
-            Pro Conversions
+            <TrendingUp className="h-4 w-4" />
+            GMV Referred
           </div>
           <p className="text-2xl font-bold text-emerald-600 mt-1">
-            {totalPro}
+            ₦{totalGmv.toLocaleString()}
           </p>
+          <p className="text-xs text-slate-400">Paid revenue from referred businesses</p>
         </div>
         <div className="bg-white rounded-xl border border-slate-200 p-4">
           <div className="flex items-center gap-2 text-slate-500 text-sm">
@@ -786,8 +788,8 @@ export default function InfluencersPage() {
                 <th className="text-center px-4 py-3 text-sm font-medium text-slate-600">
                   Activated
                 </th>
-                <th className="text-center px-4 py-3 text-sm font-medium text-slate-600">
-                  Pro
+                <th className="text-right px-4 py-3 text-sm font-medium text-slate-600">
+                  GMV
                 </th>
                 <th className="text-right px-4 py-3 text-sm font-medium text-slate-600">
                   Commission
@@ -862,8 +864,8 @@ export default function InfluencersPage() {
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-center font-medium text-emerald-600">
-                      {inf.pro_conversions}
+                    <td className="px-4 py-3 text-right font-medium text-emerald-600">
+                      ₦{(inf.gmv_referred || 0).toLocaleString()}
                     </td>
                     <td className="px-4 py-3 text-right font-medium text-amber-600">
                       ₦{inf.total_commission_earned.toLocaleString()}
