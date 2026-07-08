@@ -9,6 +9,7 @@ import { printPdf } from "../../utils/printPdf";
 import { useInvoiceDetail, InvoiceDetail } from "./use-invoice-detail";
 import { buildInvoiceShareLink } from "@/lib/share-link";
 import { useUpdateInvoiceStatus } from "./use-update-invoice-status";
+import { StorefrontOrderPanel } from "./storefront-order-panel";
 
 /** Format an amount using the invoice's own currency (no conversion). */
 function formatInvoiceAmount(amount: number, currency: string): string {
@@ -292,6 +293,7 @@ export function InvoiceDetailPanel({
                 <p className="mt-2 text-sm text-brand-text">{invoice.notes}</p>
               </div>
             )}
+            <StorefrontOrderPanel invoiceId={invoiceId} />
           </>
         )}
 

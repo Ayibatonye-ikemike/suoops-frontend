@@ -22,6 +22,12 @@ interface Dispute {
   dispute_reason: string | null;
   held_for_review: boolean;
   review_reason: string | null;
+  delivered_at: string | null;
+  delivery_proof_note: string | null;
+  delivery_proof_url: string | null;
+  buyer_disputes: number;
+  buyer_false_disputes: number;
+  buyer_flagged: boolean;
   disputed_at: string | null;
   created_at: string | null;
 }
@@ -215,10 +221,42 @@ export default function DisputesPage() {
                     {d.customer_phone && (
                       <span className="text-slate-400">({d.customer_phone})</span>
                     )}
+                    {(d.buyer_disputes > 0 || d.buyer_flagged) && (
+                      <span
+                        className={`ml-1 text-xs font-semibold ${
+                          d.buyer_flagged ? "text-rose-600" : "text-slate-500"
+                        }`}
+                      >
+                        {d.buyer_flagged ? "⚠ abusive — " : ""}
+                        {d.buyer_disputes} dispute{d.buyer_disputes === 1 ? "" : "s"}
+                        {d.buyer_false_disputes > 0
+                          ? `, ${d.buyer_false_disputes} false`
+                          : ""}
+                      </span>
+                    )}
                   </p>
                   {d.dispute_reason && (
                     <p className="mt-1 rounded-lg bg-amber-50 px-2 py-1 text-sm text-amber-800">
                       “{d.dispute_reason}”
+                    </p>
+                  )}
+                  {d.delivered_at && (
+                    <p className="mt-1 rounded-lg bg-emerald-50 px-2 py-1 text-xs text-emerald-800">
+                      ✓ Seller marked delivered
+                      {d.delivery_proof_note ? `: “${d.delivery_proof_note}”` : ""}
+                      {d.delivery_proof_url && (
+                        <>
+                          {" "}
+                          <a
+                            href={d.delivery_proof_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-semibold underline"
+                          >
+                            view photo
+                          </a>
+                        </>
+                      )}
                     </p>
                   )}
                   {d.held_for_review && (
