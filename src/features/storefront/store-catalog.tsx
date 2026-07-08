@@ -51,6 +51,9 @@ export function StoreCatalog({
   const [deliveryNote, setDeliveryNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Set when a held order returns a buyer-only delivery code: we show it before
+  // sending the buyer to payment so they can save it for confirming delivery.
+  const [pendingPay, setPendingPay] = useState<{ code: string; url: string } | null>(null);
 
   // Discovery: search + category filter.
   const [search, setSearch] = useState("");
@@ -145,8 +148,15 @@ export function StoreCatalog({
         const data = (await res.json().catch(() => ({}))) as { detail?: string };
         throw new Error(data.detail || "Could not place your order. Please try again.");
       }
-      const data = (await res.json()) as { authorization_url?: string };
+      const data = (await res.json()) as { authorization_url?: string; delivery_code?: string };
       if (data.authorization_url) {
+        // Held order → show the buyer-only delivery code before paying, so they
+        // can confirm delivery later. Otherwise go straight to payment.
+        if (data.delivery_code) {
+          setPendingPay({ code: data.delivery_code, url: data.authorization_url });
+          setSubmitting(false);
+          return;
+        }
         window.location.href = data.authorization_url;
         return;
       }
@@ -159,6 +169,29 @@ export function StoreCatalog({
 
   return (
     <>
+      {pendingPay && (
+        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
+          <div className="w-full max-w-sm rounded-t-2xl bg-white p-5 text-center sm:rounded-2xl">
+            <p className="text-sm font-semibold text-slate-900">Save your delivery code</p>
+            <p className="mt-1 text-xs text-slate-500">
+              Give this code to the seller <span className="font-semibold">only</span> when your
+              order arrives — it releases your payment. We&apos;ve also sent it to your WhatsApp.
+            </p>
+            <div className="my-4 rounded-xl bg-brand-jade/10 py-4 text-3xl font-bold tracking-[0.4em] text-brand-jade">
+              {pendingPay.code}
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                window.location.href = pendingPay.url;
+              }}
+              className="w-full rounded-xl bg-brand-jade py-3 text-sm font-semibold text-white transition hover:bg-brand-jadeHover"
+            >
+              I&apos;ve saved it — continue to payment
+            </button>
+          </div>
+        </div>
+      )}
       {/* Search + category filter */}
       {products.length > 4 && (
         <div className="mb-4 space-y-3">

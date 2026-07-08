@@ -20,6 +20,8 @@ interface Dispute {
   gross_naira: number;
   payout_naira: number;
   dispute_reason: string | null;
+  held_for_review: boolean;
+  review_reason: string | null;
   disputed_at: string | null;
   created_at: string | null;
 }
@@ -29,9 +31,9 @@ interface DisputeListResponse {
   total: number;
 }
 
-type Filter = "disputed" | "held" | "refunded" | "released" | "all";
+type Filter = "disputed" | "review" | "held" | "refunded" | "released" | "all";
 
-const FILTERS: Filter[] = ["disputed", "held", "refunded", "released", "all"];
+const FILTERS: Filter[] = ["disputed", "review", "held", "refunded", "released", "all"];
 
 function statusBadge(status: string): string {
   switch (status) {
@@ -217,6 +219,11 @@ export default function DisputesPage() {
                   {d.dispute_reason && (
                     <p className="mt-1 rounded-lg bg-amber-50 px-2 py-1 text-sm text-amber-800">
                       “{d.dispute_reason}”
+                    </p>
+                  )}
+                  {d.held_for_review && (
+                    <p className="mt-1 rounded-lg bg-rose-50 px-2 py-1 text-xs font-semibold text-rose-700">
+                      ⚠ Flagged for review{d.review_reason ? `: ${d.review_reason}` : ""}
                     </p>
                   )}
                 </div>

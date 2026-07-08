@@ -47,19 +47,19 @@ function ConfirmModal({
   apiBaseUrl: string;
   onClose: () => void;
 }) {
-  const [phone, setPhone] = useState("");
+  const [code, setCode] = useState("");
   const [state, setState] = useState<"idle" | "saving" | "done" | "error">("idle");
   const [message, setMessage] = useState<string | null>(null);
 
   const submit = async () => {
-    if (phone.trim().length < 6) return;
+    if (code.trim().length < 4) return;
     setState("saving");
     try {
-      const res = await fetch(`${apiBaseUrl}/public/store/${slug}/order-received`, {
+      const res = await fetch(`${apiBaseUrl}/public/store/${slug}/confirm-delivery`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         cache: "no-store",
-        body: JSON.stringify({ phone: phone.trim() }),
+        body: JSON.stringify({ code: code.trim() }),
       });
       const data = (await res.json().catch(() => ({}))) as { message?: string; detail?: string };
       if (!res.ok) throw new Error(data.detail || data.message || "Could not confirm your order.");
@@ -91,15 +91,16 @@ function ConfirmModal({
           <>
             <p className="mb-3 text-xs text-slate-500">
               Only confirm once you actually have your order — this releases your payment to the
-              seller. Enter the phone number you ordered with.
+              seller. Enter the <span className="font-semibold">delivery code</span> we sent you
+              (also shown when you ordered).
             </p>
             <input
-              type="tel"
-              inputMode="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="Phone you ordered with"
-              className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-jade focus:outline-none focus:ring-2 focus:ring-brand-jade/20"
+              type="text"
+              inputMode="numeric"
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+              placeholder="6-digit delivery code"
+              className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-center text-lg tracking-[0.3em] focus:border-brand-jade focus:outline-none focus:ring-2 focus:ring-brand-jade/20"
             />
             {state === "error" && message && (
               <p className="mt-2 text-xs text-rose-600">{message}</p>
@@ -107,7 +108,7 @@ function ConfirmModal({
             <button
               type="button"
               onClick={submit}
-              disabled={phone.trim().length < 6 || state === "saving"}
+              disabled={code.trim().length < 4 || state === "saving"}
               className="mt-4 w-full rounded-xl bg-brand-jade py-3 text-sm font-semibold text-white transition hover:bg-brand-jadeHover disabled:cursor-not-allowed disabled:opacity-60"
             >
               {state === "saving" ? "Confirming…" : "Yes, I received my order"}
