@@ -20,6 +20,7 @@ import {
   Building2,
   Store,
   ShieldAlert,
+  Scale,
 } from "lucide-react";
 
 // Simple auth context for admin
@@ -182,6 +183,7 @@ const navItems = [
   { href: "/admin/businesses", label: "Businesses", icon: Briefcase },
   { href: "/admin/storefronts", label: "Storefronts", icon: Store },
   { href: "/admin/fraud", label: "Trust & Safety", icon: ShieldAlert },
+  { href: "/admin/disputes", label: "Disputes", icon: Scale },
   { href: "/admin/testimonials", label: "Testimonials", icon: MessageSquare },
   { href: "/admin/metrics", label: "Metrics", icon: BarChart3 },
   { href: "/admin/influencers", label: "Influencers", icon: Megaphone },
