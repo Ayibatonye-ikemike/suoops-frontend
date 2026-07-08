@@ -84,13 +84,15 @@ export default function InfluencersPage() {
     influencer_name: "",
     influencer_contact: "",
     custom_slug: "",
-    commission_first: 500,
-    commission_recurring: 200,
-    commission_months: 2,
-    commission_perpetual_pct: 5,
+    commission_first: 0,
+    commission_recurring: 0,
+    commission_months: 0,
+    commission_perpetual_pct: 20,
     bonus_invoices: 3,
     notes: "",
   });
+  const [lookupBusy, setLookupBusy] = useState(false);
+  const [lookupMsg, setLookupMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
   const fetchInfluencers = useCallback(async () => {
     try {
@@ -131,6 +133,65 @@ export default function InfluencersPage() {
     if (tab === "payouts") fetchPayouts();
   }, [tab, fetchPayouts]);
 
+  const slugify = (s: string) =>
+    s.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 48);
+
+  // Auto-fill: look up an existing Suoops account by phone or email and prefill
+  // the influencer's name, contact and a suggested vanity slug.
+  const lookupUser = async () => {
+    const q = form.user_phone.trim() || form.user_email.trim();
+    if (!q) {
+      setLookupMsg({ ok: false, text: "Enter a phone or email first" });
+      return;
+    }
+    setLookupBusy(true);
+    setLookupMsg(null);
+    try {
+      const res = await authFetch(
+        `${API}/admin/users?search=${encodeURIComponent(q)}&limit=5`
+      );
+      if (!res.ok) throw new Error();
+      const users: Array<{
+        id: number;
+        name: string;
+        email: string | null;
+        phone: string | null;
+        business_name: string | null;
+      }> = await res.json();
+      const ql = q.toLowerCase();
+      const digits = q.replace(/\D/g, "");
+      const match =
+        users.find((u) => (u.email || "").toLowerCase() === ql) ||
+        (digits.length >= 7
+          ? users.find((u) =>
+              (u.phone || "").replace(/\D/g, "").endsWith(digits.slice(-10))
+            )
+          : undefined) ||
+        users[0];
+      if (!match) {
+        setLookupMsg({ ok: false, text: "No Suoops account found for that phone/email" });
+        return;
+      }
+      const displayName = match.business_name || match.name || "";
+      setForm((f) => ({
+        ...f,
+        user_phone: match.phone || f.user_phone,
+        user_email: match.email || f.user_email,
+        influencer_name: f.influencer_name || displayName,
+        influencer_contact: f.influencer_contact || match.phone || match.email || "",
+        custom_slug: f.custom_slug || slugify(displayName),
+      }));
+      setLookupMsg({
+        ok: true,
+        text: `Linked ${match.name}${match.business_name ? ` · ${match.business_name}` : ""}${match.phone ? ` · ${match.phone}` : ""}`,
+      });
+    } catch {
+      setLookupMsg({ ok: false, text: "Lookup failed. Try again." });
+    } finally {
+      setLookupBusy(false);
+    }
+  };
+
   const handleCreate = async () => {
     setError("");
     if (!form.influencer_name.trim() || !form.custom_slug.trim()) {
@@ -164,13 +225,14 @@ export default function InfluencersPage() {
         influencer_name: "",
         influencer_contact: "",
         custom_slug: "",
-        commission_first: 500,
-        commission_recurring: 200,
-        commission_months: 2,
-        commission_perpetual_pct: 5,
+        commission_first: 0,
+        commission_recurring: 0,
+        commission_months: 0,
+        commission_perpetual_pct: 20,
         bonus_invoices: 3,
         notes: "",
       });
+      setLookupMsg(null);
       fetchInfluencers();
     } catch {
       setError("Network error");
@@ -510,44 +572,62 @@ export default function InfluencersPage() {
             </div>
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* User lookup fields — only shown when creating */}
+            {/* User lookup + autofill — only shown when creating */}
             {!editId && (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    User Phone *
-                  </label>
+              <div className="md:col-span-2 rounded-lg border border-emerald-200 bg-emerald-50/50 p-4">
+                <p className="text-sm font-medium text-slate-800 mb-1">
+                  Link an existing Suoops account
+                </p>
+                <p className="text-xs text-slate-500 mb-3">
+                  Enter the influencer&apos;s phone or email and we&apos;ll auto-fill the
+                  rest (name, contact &amp; a suggested link).
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <input
                     type="text"
                     value={form.user_phone}
-                    onChange={(e) =>
-                      setForm({ ...form, user_phone: e.target.value })
-                    }
-                    placeholder="e.g. 08012345678 or +2348012345678"
+                    onChange={(e) => setForm({ ...form, user_phone: e.target.value })}
+                    onBlur={() => {
+                      if (form.user_phone.trim()) lookupUser();
+                    }}
+                    placeholder="Phone e.g. 08012345678"
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                   />
-                  <p className="text-xs text-slate-400 mt-1">
-                    The influencer must have an existing Suoops account
-                  </p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Or User Email
-                  </label>
                   <input
                     type="email"
                     value={form.user_email}
-                    onChange={(e) =>
-                      setForm({ ...form, user_email: e.target.value })
-                    }
-                    placeholder="e.g. coach@example.com"
+                    onChange={(e) => setForm({ ...form, user_email: e.target.value })}
+                    onBlur={() => {
+                      if (!form.user_phone.trim() && form.user_email.trim()) lookupUser();
+                    }}
+                    placeholder="or Email e.g. coach@example.com"
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                   />
-                  <p className="text-xs text-slate-400 mt-1">
-                    Fallback if phone not provided
-                  </p>
                 </div>
-              </>
+                <div className="mt-3 flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={lookupUser}
+                    disabled={lookupBusy}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50"
+                  >
+                    <Users className="h-4 w-4" />
+                    {lookupBusy ? "Looking up…" : "Find & auto-fill"}
+                  </button>
+                  {lookupMsg && (
+                    <span
+                      className={`inline-flex items-center gap-1 text-xs font-medium ${lookupMsg.ok ? "text-emerald-700" : "text-red-600"}`}
+                    >
+                      {lookupMsg.ok ? (
+                        <CheckCircle2 className="h-3.5 w-3.5" />
+                      ) : (
+                        <AlertTriangle className="h-3.5 w-3.5" />
+                      )}
+                      {lookupMsg.text}
+                    </span>
+                  )}
+                </div>
+              </div>
             )}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
@@ -625,67 +705,12 @@ export default function InfluencersPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
-                First Purchase Commission (₦)
+                Commission Rate (%)
               </label>
               <input
                 type="number"
                 min={0}
-                value={form.commission_first}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    commission_first: parseInt(e.target.value) || 0,
-                  })
-                }
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Recurring Commission (₦ / month)
-              </label>
-              <input
-                type="number"
-                min={0}
-                value={form.commission_recurring}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    commission_recurring: parseInt(e.target.value) || 0,
-                  })
-                }
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Recurring Months
-              </label>
-              <input
-                type="number"
-                min={0}
-                max={12}
-                value={form.commission_months}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    commission_months: parseInt(e.target.value) || 0,
-                  })
-                }
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-              />
-              <p className="text-xs text-slate-400 mt-1">
-                Purchases after first (e.g. 2 = purchases 2–3)
-              </p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Perpetual Commission (%)
-              </label>
-              <input
-                type="number"
-                min={0}
-                max={25}
+                max={50}
                 value={form.commission_perpetual_pct}
                 onChange={(e) =>
                   setForm({
@@ -696,7 +721,8 @@ export default function InfluencersPage() {
                 className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
               />
               <p className="text-xs text-slate-400 mt-1">
-                % on every purchase after recurring window (forever)
+                Share of SuoOps&apos; 3% fee on every referred transaction — paid for
+                life while active. Default 20%.
               </p>
             </div>
             <div>
@@ -714,11 +740,11 @@ export default function InfluencersPage() {
           </div>
           <div className="mt-4 p-3 bg-slate-50 rounded-lg">
             <p className="text-sm text-slate-600">
-              <strong>Commission structure:</strong> ₦
-              {form.commission_first.toLocaleString()} on first purchase → ₦
-              {form.commission_recurring.toLocaleString()}/purchase for{" "}
-              {form.commission_months} purchases → then{" "}
-              {form.commission_perpetual_pct}% on every purchase forever
+              <strong>Commission:</strong> earns{" "}
+              <strong>{form.commission_perpetual_pct}%</strong> of SuoOps&apos; 3% fee
+              on every transaction their referred businesses make — for life, while
+              active. Plus <strong>+{form.bonus_invoices}</strong> bonus signup
+              invoices for each referred business.
             </p>
           </div>
           <div className="flex gap-3 mt-4">
