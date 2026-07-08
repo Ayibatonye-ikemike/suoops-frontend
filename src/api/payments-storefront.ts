@@ -22,6 +22,8 @@ export interface StorefrontStatus {
   address?: string | null;
   city?: string | null;
   state?: string | null;
+  lat?: number | null;
+  lng?: number | null;
   hours?: StorefrontHours | null;
   announcement?: string | null;
   views?: number;
@@ -84,6 +86,19 @@ export async function disableStorefront(): Promise<StorefrontStatus> {
 
 export async function updateStorefront(update: StorefrontUpdate): Promise<StorefrontStatus> {
   const res = await apiClient.patch<StorefrontStatus>("/inventory/storefront", update);
+  return res.data;
+}
+
+export async function saveStorefrontLocation(
+  lat: number,
+  lng: number,
+  accuracy?: number,
+): Promise<StorefrontStatus> {
+  const res = await apiClient.post<StorefrontStatus>("/inventory/storefront/location", {
+    lat,
+    lng,
+    accuracy,
+  });
   return res.data;
 }
 

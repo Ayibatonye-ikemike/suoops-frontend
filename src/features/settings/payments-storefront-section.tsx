@@ -13,9 +13,11 @@ import {
   enableStorefront,
   getStorefront,
   getStorefrontQr,
+  saveStorefrontLocation,
   updateStorefront,
 } from "@/api/payments-storefront";
 import { getBankDetails } from "@/api/bank-details";
+import { CurrentLocationCapture, type CapturedLocation } from "@/features/storefront/current-location-capture";
 
 // The generated OpenAPI types don't yet include online_payments_enabled on the
 // bank-details response; extend locally until types are regenerated.
@@ -168,6 +170,26 @@ export function PaymentsStorefrontSection() {
     },
     onError: (error) => toast.error(errorMessage(error, "Could not save store details.")),
   });
+
+  // GPS location capture — server derives the state for the buyer-protection window.
+  const [locBusy, setLocBusy] = useState(false);
+  const handleLocate = async (loc: CapturedLocation) => {
+    setLocBusy(true);
+    try {
+      const res = await saveStorefrontLocation(loc.lat, loc.lng, loc.accuracy);
+      setDetails((d) => ({
+        ...d,
+        city: res.city ?? d.city,
+        state: res.state ?? d.state,
+      }));
+      queryClient.invalidateQueries({ queryKey: ["storefrontStatus"] });
+      toast.success(res.state ? `Store location saved — ${res.state}` : "Store location saved.");
+    } catch (error) {
+      toast.error(errorMessage(error, "Couldn't save your location. Please try again."));
+    } finally {
+      setLocBusy(false);
+    }
+  };
 
   const bank = bankDetails.data as BankDetails | undefined;
   const payEnabled = bank?.online_payments_enabled ?? false;
@@ -396,6 +418,20 @@ export function PaymentsStorefrontSection() {
             {/* Store details: location, announcement, delivery, domain */}
             <div className="space-y-3 rounded-lg border border-brand-border p-3">
               <p className="text-xs font-semibold text-brand-text">Store details</p>
+
+              <div className="rounded-lg bg-brand-background/60 p-3">
+                <p className="text-xs font-medium text-brand-text">Store location (GPS)</p>
+                <p className="mb-2 text-[11px] text-brand-textMuted">
+                  Tap to pin your shop&apos;s exact spot. This sets your store&apos;s
+                  state and powers safe-payment protection for your buyers.
+                </p>
+                <CurrentLocationCapture
+                  onCapture={handleLocate}
+                  busy={locBusy}
+                  confirmedLabel={details.state || null}
+                  ctaLabel="Pin my store location"
+                />
+              </div>
 
               <input
                 type="text"
