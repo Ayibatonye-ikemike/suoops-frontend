@@ -35,13 +35,13 @@ interface TabItem {
 
 const PRIMARY_TABS: TabItem[] = [
   { href: "/dashboard/invoices", label: "Invoices", Icon: FileText, gate: null },
-  { href: "/dashboard/analytics", label: "Insights", Icon: BarChart3, gate: "CASH_DASHBOARD" },
+  { href: "/dashboard/inventory", label: "Inventory", Icon: Package, gate: "INVENTORY" },
   { href: "/dashboard/expenses", label: "Expenses", Icon: Receipt, gate: null },
   { href: "/dashboard/settings#business", label: "Business", Icon: Store, gate: null },
 ];
 
 const MORE_TABS: TabItem[] = [
-  { href: "/dashboard/inventory", label: "Inventory", Icon: Package, gate: "INVENTORY" },
+  { href: "/dashboard/analytics", label: "Insights", Icon: BarChart3, gate: "CASH_DASHBOARD" },
   { href: "/dashboard/tax", label: "Tax", Icon: Landmark, gate: "TAX_REPORTS" },
   { href: "/dashboard/earnings", label: "Earnings", Icon: TrendingUp, gate: "INFLUENCER" },
   { href: "/dashboard/settings", label: "Settings", Icon: SettingsIcon, gate: null },
