@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { getConfig } from "@/lib/config";
+import { CurrentLocationCapture, type CapturedLocation } from "./current-location-capture";
 
 export type StoreProduct = {
   id: number;
@@ -46,6 +47,7 @@ export function StoreCatalog({
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
+  const [location, setLocation] = useState<CapturedLocation | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -113,6 +115,7 @@ export function StoreCatalog({
   const canSubmit =
     customerName.trim().length > 0 &&
     customerPhone.trim().length >= 6 &&
+    location != null &&
     count > 0 &&
     !submitting;
 
@@ -128,6 +131,8 @@ export function StoreCatalog({
         body: JSON.stringify({
           customer_name: customerName.trim(),
           customer_phone: customerPhone.trim(),
+          customer_lat: location?.lat,
+          customer_lng: location?.lng,
           items: cartEntries.map(([id, q]) => ({
             product_id: Number(id),
             quantity: q,
@@ -347,6 +352,17 @@ export function StoreCatalog({
                 placeholder="Your phone (e.g. 08012345678)"
                 className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-jade focus:outline-none focus:ring-2 focus:ring-brand-jade/20"
               />
+              <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                <p className="text-xs font-medium text-slate-700">Your delivery location</p>
+                <p className="mb-2 text-[11px] text-slate-500">
+                  Required for buyer protection — we use your current location to
+                  keep your payment safe until your order arrives.
+                </p>
+                <CurrentLocationCapture
+                  onCapture={setLocation}
+                  ctaLabel="Share my current location"
+                />
+              </div>
             </div>
 
             {error && (
