@@ -5,6 +5,7 @@ import { getConfig } from "@/lib/config";
 import { StoreCatalog } from "@/features/storefront/store-catalog";
 import { StoreReviews } from "@/features/storefront/store-reviews";
 import { BuyerProtectionNotice } from "@/features/storefront/buyer-protection-notice";
+import { ConfirmReceipt } from "@/features/storefront/confirm-receipt";
 
 type StoreProduct = {
   id: number;
@@ -202,6 +203,7 @@ export default async function StorePage({ params }: RouteProps) {
             onlinePaymentsEnabled={store.online_payments_enabled}
           />
         )}
+        <ConfirmReceipt slug={store.slug} />
         <StoreReviews slug={store.slug} summary={store.reviews} />
       </main>
     </div>
