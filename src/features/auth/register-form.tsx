@@ -18,6 +18,7 @@ import axios from "axios";
 import { getConfig } from "@/lib/config";
 import { Gift, CheckCircle2, MessageCircle, Building2, CreditCard } from "lucide-react";
 import { trackSignupConversion } from "@/lib/gtag-events";
+import { getDeviceFingerprint } from "@/lib/device-fingerprint";
 import { NIGERIAN_BANKS } from "@/features/settings/bank-details-form.constants";
 
 type Step = "details" | "otp" | "bank";
@@ -201,6 +202,16 @@ export function RegisterForm() {
       setLoading(true);
       setError(null);
       try {
+        // Attach a best-effort device fingerprint for anti-fraud / duplicate
+        // account detection. Never blocks signup if it can't be computed.
+        try {
+          const fingerprint = await getDeviceFingerprint();
+          if (fingerprint) {
+            payload.device_fingerprint = fingerprint;
+          }
+        } catch {
+          /* fingerprinting is best-effort — ignore failures */
+        }
         await requestSignupOTP(payload);
         setFormValues(payload);
         setDeliveryFailure(null);
