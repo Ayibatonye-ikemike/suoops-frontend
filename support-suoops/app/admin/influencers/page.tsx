@@ -902,31 +902,6 @@ export default function InfluencersPage() {
           </table>
         </div>
       </div>
-
-      {/* Commission Structure Info */}
-      <div className="bg-slate-50 rounded-xl border border-slate-200 p-6">
-        <h3 className="font-semibold text-slate-900 mb-2">
-          Default Commission Structure
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-sm">
-          <div>
-            <p className="text-slate-500">First Purchase</p>
-            <p className="font-medium text-slate-900">₦500 (25%)</p>
-          </div>
-          <div>
-            <p className="text-slate-500">Purchases 2–3</p>
-            <p className="font-medium text-slate-900">₦200 each (10%)</p>
-          </div>
-          <div>
-            <p className="text-slate-500">Purchase 4+</p>
-            <p className="font-medium text-slate-900">5% forever</p>
-          </div>
-          <div>
-            <p className="text-slate-500">Applies to</p>
-            <p className="font-medium text-slate-900">Wallet top-ups</p>
-          </div>
-        </div>
-      </div>
       </>}
     </div>
   );
