@@ -97,6 +97,7 @@ export function InventorySummaryCards() {
 
 export function LowStockAlertsList() {
   const { data: alerts, isLoading } = useLowStockAlerts();
+  const { data: summary } = useInventorySummary();
   const [showAll, setShowAll] = useState(false);
 
   if (isLoading) {
@@ -112,6 +113,25 @@ export function LowStockAlertsList() {
   }
 
   if (!alerts || alerts.length === 0) {
+    // Don't claim "well stocked" if the summary cards show items needing
+    // attention — that direct contradiction confuses users. Fall back to a
+    // truthful message that matches the counts above.
+    const outOfStock = summary?.out_of_stock_count ?? 0;
+    const lowStock = summary?.low_stock_count ?? 0;
+    if (outOfStock > 0 || lowStock > 0) {
+      const parts = [
+        outOfStock > 0 ? `${outOfStock} out of stock` : null,
+        lowStock > 0 ? `${lowStock} low on stock` : null,
+      ].filter(Boolean);
+      return (
+        <div className="rounded-xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20 p-6">
+          <div className="flex items-center gap-2 text-amber-700 dark:text-amber-300">
+            <AlertTriangle className="h-5 w-5" />
+            <span>{parts.join(" · ")} — review your products and restock.</span>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6">
         <div className="flex items-center gap-2 text-gray-500">

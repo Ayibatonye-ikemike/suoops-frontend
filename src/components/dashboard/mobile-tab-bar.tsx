@@ -34,7 +34,7 @@ interface TabItem {
 }
 
 const PRIMARY_TABS: TabItem[] = [
-  { href: "/dashboard", label: "Invoices", Icon: FileText, gate: null },
+  { href: "/dashboard/invoices", label: "Invoices", Icon: FileText, gate: null },
   { href: "/dashboard/analytics", label: "Insights", Icon: BarChart3, gate: "CASH_DASHBOARD" },
   { href: "/dashboard/expenses", label: "Expenses", Icon: Receipt, gate: null },
   { href: "/dashboard/settings#business", label: "Business", Icon: Store, gate: null },

@@ -76,16 +76,20 @@ export default function ExpensesPage() {
     queryFn: async () => {
       const start = `${year}-${String(month).padStart(2, "0")}-01`;
       const end = `${year}-${String(month).padStart(2, "0")}-${new Date(year, month, 0).getDate()}`;
-      // Use unified invoice endpoint with invoice_type filter
-      const response = await apiClient.get<ExpenseInvoiceResponse[]>("/invoices/", { 
+      // Use unified invoice endpoint with invoice_type filter.
+      // NOTE: GET /invoices/ returns a paginated envelope { items, total, ... },
+      // so we read `.items` (not the raw body) before mapping.
+      const response = await apiClient.get<{ items: ExpenseInvoiceResponse[] }>("/invoices/", { 
         params: { 
           invoice_type: "expense",
           start_date: start, 
-          end_date: end 
+          end_date: end,
+          limit: 200,
         } 
       });
+      const items = Array.isArray(response.data?.items) ? response.data.items : [];
       // Map invoice format to expense format for display
-      return response.data.map((inv) => ({
+      return items.map((inv) => ({
         id: inv.id,
         invoice_id: inv.invoice_id,  // For deletion
         amount: typeof inv.amount === "string" ? parseFloat(inv.amount) : inv.amount ?? 0,

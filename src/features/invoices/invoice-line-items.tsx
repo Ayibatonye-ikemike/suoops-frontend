@@ -195,7 +195,7 @@ export function InvoiceLineItems({
                   <label className="mb-1 block text-xs font-medium text-brand-textMuted">Unit Price ({symbol})</label>
                   <input
                     type="number"
-                    min="0"
+                    min="0.01"
                     step="0.01"
                     value={line.unit_price}
                     onChange={(e) => onUpdateLine(line.id, { unit_price: Number(e.target.value) })}

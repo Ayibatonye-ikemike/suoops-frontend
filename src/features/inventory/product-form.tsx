@@ -198,10 +198,11 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
             <input
               type="number"
               required
-              min="0"
+              min="0.01"
               step="0.01"
-              value={formData.selling_price}
+              value={formData.selling_price || ""}
               onChange={(e) => setFormData({ ...formData, selling_price: Number(e.target.value) })}
+              onFocus={(e) => e.target.select()}
               className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
               placeholder="0.00"
             />

@@ -35,7 +35,7 @@ interface NavItem {
 }
 
 const allNavItems: NavItem[] = [
-  { href: "/dashboard", label: "Invoices", Icon: FileText, gate: null },
+  { href: "/dashboard/invoices", label: "Invoices", Icon: FileText, gate: null },
   { href: "/dashboard/analytics", label: "Insights", Icon: BarChart3, gate: "CASH_DASHBOARD" },
   { href: "/dashboard/inventory", label: "Inventory", Icon: Package, gate: "INVENTORY" },
   { href: "/dashboard/expenses", label: "Expenses", Icon: Receipt, gate: null },

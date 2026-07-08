@@ -127,7 +127,12 @@ export function initializeAuth(): Promise<void> {
     try {
       await refresh({ markLoading: true });
     } catch (error) {
-      console.info("No active session", error);
+      // A failed refresh on first load almost always just means "not signed in
+      // yet" — that's expected, so don't log it as noise on every page load.
+      // Keep a dev-only debug line for genuine troubleshooting.
+      if (process.env.NODE_ENV !== "production") {
+        console.debug("initializeAuth: no active session", error);
+      }
       const { status } = useAuthStore.getState();
       if (status !== "expired") {
         clearTokens();

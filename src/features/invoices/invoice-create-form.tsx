@@ -117,6 +117,14 @@ export function InvoiceCreateForm() {
         product_id: line.product_id || null,  // Include product_id for inventory tracking
       }));
 
+    // Every listed item must have a positive price — otherwise the earlier
+    // "positive amount" check can pass on the grand total while a ₦0 line slips
+    // through silently. Give explicit per-line feedback instead.
+    if (preparedLines.some((line) => !(Number(line.unit_price) > 0))) {
+      setError("Each item's price must be greater than 0. Remove the item or set a price.");
+      return;
+    }
+
     try {
       const payload: InvoiceCreatePayload = {
         invoice_type: "revenue",
@@ -176,10 +184,29 @@ export function InvoiceCreateForm() {
       }
 
       // Fallback - try to extract specific error message from response
-      const errorData = (submitError as { response?: { data?: { detail?: string } } })?.response?.data;
-      if (errorData?.detail && typeof errorData.detail === "string") {
+      const errorData = (submitError as { response?: { data?: { detail?: unknown } } })?.response?.data;
+      // Any other structured backend error the parser understood (e.g. empty
+      // wallet "invoice_wallet_empty", validation messages). The parser already
+      // pulled the human message out of an object `detail`, so show it — this is
+      // the fix for the previously-silent "wallet too low" failure.
+      if (gate?.message) {
+        setError(gate.message);
+        return;
+      }
+      // detail may be a plain string OR FastAPI's 422 array of {msg}. Handle both.
+      if (typeof errorData?.detail === "string") {
         setError(errorData.detail);
         return;
+      }
+      if (Array.isArray(errorData?.detail)) {
+        const msg = errorData.detail
+          .map((d) => (d && typeof d === "object" && "msg" in d ? String((d as { msg: unknown }).msg) : String(d)))
+          .filter(Boolean)
+          .join(" ");
+        if (msg) {
+          setError(msg);
+          return;
+        }
       }
       
       // Network error
