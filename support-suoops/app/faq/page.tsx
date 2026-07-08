@@ -26,7 +26,7 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: "Is Suoops free to use?",
-        answer: "Yes. Every feature is free — custom branding, tax reports, inventory, team access and your storefront. There are no plans or monthly fees. You only pay a flat 3% per invoice (minimum ₦20, capped at ₦2,000). New accounts also start with a small free wallet balance so you can send your first invoices at no cost."
+        answer: "Yes. Every feature is free — custom branding, tax reports, inventory, team access and your storefront. There are no plans or monthly fees. You only pay a flat 3% per invoice (minimum ₦20, capped at ₦2,000 for invoices up to ₦500,000, then +₦2,000 per additional ₦500,000). New accounts also start with a small free wallet balance so you can send your first invoices at no cost."
       },
       {
         question: "How do I set up my business profile?",
@@ -70,7 +70,7 @@ const faqCategories: FAQCategory[] = [
     faqs: [
       {
         question: "How does pricing work?",
-        answer: "Suoops is free with every feature included. You only pay a flat 3% per invoice (minimum ₦20, capped at ₦2,000). For manual invoices the 3% is taken from your prepaid wallet when you create the invoice. For storefront/online payments it is taken from the customer's payment. No plans, no monthly fees."
+        answer: "Suoops is free with every feature included. You only pay a flat 3% per invoice (minimum ₦20, capped at ₦2,000 for invoices up to ₦500,000, then +₦2,000 per additional ₦500,000). For manual invoices the 3% is taken from your prepaid wallet when you create the invoice. For storefront/online payments it is taken from the customer's payment. No plans, no monthly fees."
       },
       {
         question: "Do I need a subscription?",

@@ -29,7 +29,7 @@ export function Pricing() {
             </p>
             <p className="mt-4 text-3xl font-bold text-brand-evergreen">3%</p>
             <p className="text-sm text-slate-500">
-              taken only when the customer pays (capped at ₦2,000). Nothing upfront.
+              taken only when the customer pays (capped at ₦2,000 for orders up to ₦500,000). Nothing upfront.
             </p>
           </div>
 
@@ -42,7 +42,7 @@ export function Pricing() {
             </p>
             <p className="mt-4 text-3xl font-bold text-brand-evergreen">3%</p>
             <p className="text-sm text-slate-500">
-              ₦20–₦2,000, from your prepaid wallet at creation.
+              Min ₦20, capped at ₦2,000 up to ₦500k, from your prepaid wallet at creation.
             </p>
           </div>
         </div>

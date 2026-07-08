@@ -37,7 +37,7 @@ export function PlanSelectionModal({ isOpen, onClose }: PlanModalProps) {
         </div>
 
         <div className="mt-6 rounded-xl border border-brand-border bg-brand-background p-4 text-sm text-brand-textMuted">
-          Manual invoices use your prepaid wallet (3%, ₦20–₦2,000 at creation).
+          Manual invoices use your prepaid wallet (3%, min ₦20, ₦2,000 cap up to ₦500k, at creation).
           Storefront orders pay 3% only when the customer pays online.
         </div>
 

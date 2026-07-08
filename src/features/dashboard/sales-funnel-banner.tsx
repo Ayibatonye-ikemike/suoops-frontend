@@ -132,7 +132,7 @@ export function SalesFunnelBanner() {
               {isEmpty ? "Your invoice wallet is empty" : `Wallet low: ₦${wallet.toLocaleString()} left`}
             </h3>
             <p className="text-sm text-slate-600 mb-4">
-              Top up to keep creating manual invoices (3%, ₦20–₦2,000 each) — or share
+              Top up to keep creating manual invoices (3%, min ₦20, ₦2,000 cap up to ₦500k) — or share
               your storefront so customers order and pay online, no wallet needed.
             </p>
             <div className="flex flex-wrap gap-3">

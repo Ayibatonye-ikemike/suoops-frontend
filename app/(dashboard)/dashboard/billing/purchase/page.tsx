@@ -43,7 +43,8 @@ export default function TopUpWalletPage() {
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-brand-text">Top up your wallet</h1>
           <p className="mt-2 text-brand-textMuted">
-            We take a flat 3% per invoice (₦20–₦2,000), charged from your wallet when
+            We take a flat 3% per invoice (minimum ₦20, capped at ₦2,000 for invoices up to
+            ₦500,000, then +₦2,000 per additional ₦500,000), charged from your wallet when
             you create one. Storefront orders pay 3% only when the customer pays.
           </p>
         </div>

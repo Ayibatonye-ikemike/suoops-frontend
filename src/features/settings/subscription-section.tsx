@@ -53,7 +53,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
               <p className="text-xs text-brand-textMuted">
                 {isLow
                   ? "⚠️ Running low — top up to keep creating manual invoices"
-                  : "Funds manual invoices (3%, ₦20–₦2,000 charged at creation)"}
+                  : "Funds manual invoices (3%, min ₦20, ₦2,000 cap up to ₦500k, charged at creation)"}
               </p>
             </div>
             <span className={`text-2xl font-bold ${isLow ? "text-amber-600" : "text-brand-jade"}`}>
