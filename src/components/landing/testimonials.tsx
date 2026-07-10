@@ -11,7 +11,7 @@ function StarRating({ rating }: { rating: number }) {
       {[1, 2, 3, 4, 5].map((star) => (
         <span
           key={star}
-          className={star <= rating ? "text-amber-400" : "text-slate-300"}
+          className={star <= rating ? "text-amber-400" : "text-brand-charcoal/20"}
         >
           ★
         </span>
@@ -27,9 +27,9 @@ function TestimonialCard({ t }: { t: PublicTestimonial }) {
   const showAvatar = !t.logo_url || imgError;
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md">
+    <div className="rounded-xl border border-brand-teal/10 bg-white p-6 shadow-sm transition hover:shadow-md">
       <StarRating rating={t.rating} />
-      <p className="mt-3 text-sm text-slate-700 leading-relaxed">
+      <p className="mt-3 text-sm text-brand-charcoal/80 leading-relaxed">
         &ldquo;{t.text}&rdquo;
       </p>
       <div className="mt-4 flex items-center gap-3">
@@ -49,9 +49,9 @@ function TestimonialCard({ t }: { t: PublicTestimonial }) {
           />
         )}
         <div>
-          <p className="text-sm font-semibold text-slate-900">{t.user_name}</p>
+          <p className="text-sm font-semibold text-brand-evergreen">{t.user_name}</p>
           {t.business_name && (
-            <p className="text-xs text-slate-500">{t.business_name}</p>
+            <p className="text-xs text-brand-charcoal/50">{t.business_name}</p>
           )}
         </div>
       </div>
@@ -73,13 +73,13 @@ export function Testimonials() {
   if (!loading && testimonials.length === 0) return null;
 
   return (
-    <section className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
+    <section className="bg-white px-4 py-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-brand-evergreen sm:text-4xl">
             Trusted by businesses across Nigeria
           </h2>
-          <p className="mt-3 text-lg text-slate-600">
+          <p className="mt-3 text-lg text-brand-charcoal/70">
             Hear from real business owners using SuoOps every day
           </p>
         </div>
@@ -89,7 +89,7 @@ export function Testimonials() {
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="h-48 animate-pulse rounded-xl bg-slate-200"
+                className="h-48 animate-pulse rounded-xl bg-brand-textMuted"
               />
             ))}
           </div>

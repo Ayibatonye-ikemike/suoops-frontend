@@ -62,7 +62,7 @@ export function Marketplace() {
   };
 
   return (
-    <section className="relative overflow-hidden border-b border-slate-200 bg-gradient-to-b from-white to-slate-50 px-4 py-12 sm:py-16">
+    <section className="relative overflow-hidden border-b border-brand-teal/10 bg-gradient-to-b from-white to-brand-textMuted px-4 py-12 sm:py-16">
       <div className="mx-auto max-w-5xl text-center">
         <span className="inline-flex items-center gap-2 rounded-full bg-brand-jade/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-brand-teal">
           🛍️ Suoops Marketplace
@@ -83,7 +83,7 @@ export function Marketplace() {
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
-              className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
+              className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-brand-charcoal/40"
             >
               <circle cx="11" cy="11" r="7" />
               <path d="m21 21-4.3-4.3" />
@@ -93,7 +93,7 @@ export function Marketplace() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search products, categories or shops…"
-              className="w-full rounded-xl border border-slate-300 bg-white py-3.5 pl-12 pr-4 text-sm shadow-sm focus:border-brand-jade focus:outline-none focus:ring-2 focus:ring-brand-jade/20 sm:text-base"
+              className="w-full rounded-xl border border-brand-teal/20 bg-white py-3.5 pl-12 pr-4 text-sm shadow-sm focus:border-brand-jade focus:outline-none focus:ring-2 focus:ring-brand-jade/20 sm:text-base"
             />
           </div>
           <button
@@ -110,7 +110,7 @@ export function Marketplace() {
             <Link
               key={c.label}
               href={`/stores?q=${encodeURIComponent(c.term)}`}
-              className="group flex flex-col items-center gap-1.5 rounded-2xl bg-white px-2 py-3 shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-0.5 hover:shadow-md"
+              className="group flex flex-col items-center gap-1.5 rounded-2xl bg-white px-2 py-3 shadow-sm ring-1 ring-brand-teal/10 transition hover:-translate-y-0.5 hover:shadow-md"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-jade/10 text-2xl transition group-hover:bg-brand-jade/20">
                 {c.emoji}
@@ -146,9 +146,9 @@ export function Marketplace() {
                       height={64}
                       loading="lazy"
                       decoding="async"
-                      className="h-14 w-14 rounded-2xl bg-white object-cover shadow-sm ring-1 ring-slate-200 transition group-hover:scale-105 group-hover:shadow-md sm:h-16 sm:w-16"
+                      className="h-14 w-14 rounded-2xl bg-white object-cover shadow-sm ring-1 ring-brand-teal/10 transition group-hover:scale-105 group-hover:shadow-md sm:h-16 sm:w-16"
                     />
-                    <span className="max-w-[72px] truncate text-[11px] text-slate-500">
+                    <span className="max-w-[72px] truncate text-[11px] text-brand-charcoal/50">
                       {name}
                     </span>
                   </Link>

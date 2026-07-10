@@ -2,13 +2,13 @@ export function Features() {
   return (
     <>
       {/* How It Works */}
-      <section id="features" className="bg-slate-50 px-4 py-20 sm:px-6 lg:px-8">
+      <section id="features" className="bg-brand-textMuted px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-brand-evergreen sm:text-4xl">
               Built for WhatsApp-first businesses
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-brand-charcoal/70">
               Text an invoice, send it instantly, and know exactly where your money stands.
             </p>
           </div>
@@ -27,7 +27,7 @@ export function Features() {
             <StepCard
               number={3}
               title="Customers pay online"
-              description="Share your storefront or invoice link — customers pay by card or transfer, and orders auto-confirm and settle to your bank."
+              description="Share your storefront or invoice link — customers pay by bank transfer, and orders auto-confirm and settle to your bank."
             />
             <StepCard
               number={4}
@@ -62,7 +62,7 @@ export function Features() {
               title="🛒 Storefront & online payments"
               features={[
                 "Share a public shop link on WhatsApp, Instagram or your bio",
-                "Customers browse your products and pay by card or transfer",
+                "Customers browse your products and pay by bank transfer",
                 "Orders auto-confirm and settle straight to your bank",
                 "Just a flat 3% per invoice — no monthly fees, no plans",
               ]}
@@ -114,7 +114,7 @@ function StepCard({ number, title, description }: StepCardProps) {
         {number}
       </div>
       <h3 className="mt-4 text-lg font-bold text-brand-evergreen">{title}</h3>
-      <p className="mt-2 text-sm text-slate-600">{description}</p>
+      <p className="mt-2 text-sm text-brand-charcoal/70">{description}</p>
     </div>
   );
 }
@@ -128,18 +128,18 @@ interface FeatureCardProps {
 
 function FeatureCard({ title, features, note, highlight }: FeatureCardProps) {
   return (
-    <div className="p-6 bg-slate-50 rounded-xl">
+    <div className="p-6 bg-brand-textMuted rounded-xl">
       <h3 className="text-xl font-bold text-brand-evergreen mb-4">{title}</h3>
       <ul className="space-y-3">
         {features.map((feature, i) => (
-          <li key={i} className="flex items-start gap-2 text-slate-700">
+          <li key={i} className="flex items-start gap-2 text-brand-charcoal/80">
             <span className="text-brand-jade mt-1">•</span>
             <span>{feature}</span>
           </li>
         ))}
       </ul>
       {note && (
-        <div className="mt-4 p-3 bg-brand-jade/10 rounded-lg text-sm text-slate-700">
+        <div className="mt-4 p-3 bg-brand-jade/10 rounded-lg text-sm text-brand-charcoal/80">
           {note}
         </div>
       )}
