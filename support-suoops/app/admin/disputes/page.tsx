@@ -124,7 +124,9 @@ export default function DisputesPage() {
         const body = await res.json().catch(() => ({}));
         throw new Error(body.detail || "Action failed");
       }
+      const body = await res.json().catch(() => ({}));
       await fetchData();
+      if (body.message) alert(body.message);
     } catch (err) {
       alert(err instanceof Error ? err.message : "Action failed");
     } finally {
