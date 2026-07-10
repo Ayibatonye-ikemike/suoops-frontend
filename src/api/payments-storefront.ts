@@ -30,6 +30,7 @@ export interface StorefrontStatus {
 }
 
 export interface StorefrontUpdate {
+  slug?: string;
   description?: string;
   address?: string;
   city?: string;

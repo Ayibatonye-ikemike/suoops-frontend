@@ -120,6 +120,13 @@ export function PaymentsStorefrontSection() {
     if (storefront.data?.description != null) setDesc(storefront.data.description);
   }, [storefront.data?.description]);
 
+  // Editable store-link slug. Renaming the business does NOT auto-change it (that
+  // would break links already shared), so the seller edits it here deliberately.
+  const [slug, setSlug] = useState("");
+  useEffect(() => {
+    if (storefront.data?.slug != null) setSlug(storefront.data.slug);
+  }, [storefront.data?.slug]);
+
   // Store details (announcement + GPS-derived city/state). Address/city/state are
   // NOT hand-typed — they come from the GPS pin (anti-fraud, exact location).
   const [details, setDetails] = useState({
@@ -156,6 +163,10 @@ export function PaymentsStorefrontSection() {
   const saveStore = useMutation({
     mutationFn: () =>
       updateStorefront({
+        slug:
+          slug.trim() && slug.trim() !== (storefront.data?.slug ?? "")
+            ? slug.trim()
+            : undefined,
         description: desc.trim(),
         announcement: details.announcement.trim(),
         hours,
@@ -391,6 +402,32 @@ export function PaymentsStorefrontSection() {
                 )}
               </div>
             ) : null}
+            <div>
+              <label className="block text-xs font-medium text-brand-textMuted">
+                Store link
+              </label>
+              <div className="mt-1 flex items-center rounded-lg border border-brand-border bg-white focus-within:border-brand-jade focus-within:ring-1 focus-within:ring-brand-jade">
+                <span className="whitespace-nowrap pl-3 text-sm text-brand-textMuted">
+                  suoops.com/store/
+                </span>
+                <input
+                  type="text"
+                  value={slug}
+                  onChange={(e) =>
+                    setSlug(
+                      e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-").slice(0, 58),
+                    )
+                  }
+                  placeholder="your-store"
+                  className="block w-full rounded-r-lg bg-transparent px-1 py-2 text-sm text-brand-text focus:outline-none"
+                />
+              </div>
+              <span className="mt-1 block text-[11px] text-brand-textMuted">
+                Renaming your business doesn&apos;t change this. Editing it updates your
+                store URL — links you already shared will stop working.
+              </span>
+            </div>
+
             <div>
               <label className="block text-xs font-medium text-brand-textMuted">
                 What do you sell?{" "}
