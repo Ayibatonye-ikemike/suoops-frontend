@@ -285,17 +285,23 @@ export function InvoiceDetailPanel({
                 </a>
               </div>
             )}
-            {invoice.notes && (
-              <div className="rounded-lg border border-brand-border bg-brand-background p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
-                  Notes
-                </p>
-                <p className="mt-2 text-sm text-brand-text">{invoice.notes}</p>
-              </div>
-            )}
-            <StorefrontOrderPanel invoiceId={invoiceId} />
           </>
         )}
+
+        {/* Notes / delivery details — shown for every invoice type
+            (storefront orders keep the delivery location + landmark here). */}
+        {invoice.notes && (
+          <div className="rounded-lg border border-brand-border bg-brand-background p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
+              Notes
+            </p>
+            <p className="mt-2 whitespace-pre-line text-sm text-brand-text">{invoice.notes}</p>
+          </div>
+        )}
+
+        {/* Buyer-protection panel + buyer chat — self-guards (renders nothing
+            unless this invoice has a storefront escrow row). */}
+        <StorefrontOrderPanel invoiceId={invoiceId} />
 
         {/* Customer Info - Only for revenue invoices */}
         {invoice.invoice_type !== "expense" && invoice.customer && (

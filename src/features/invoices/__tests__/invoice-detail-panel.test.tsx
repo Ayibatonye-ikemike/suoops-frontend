@@ -1,7 +1,18 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import type { ReactElement } from "react";
 import type { components } from "@/api/types";
+
+function renderWithClient(ui: ReactElement) {
+  const client = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  return render(
+    <QueryClientProvider client={client}>{ui}</QueryClientProvider>,
+  );
+}
 
 vi.mock("../use-invoice-detail", () => ({
   useInvoiceDetail: vi.fn(),
@@ -52,7 +63,7 @@ describe("InvoiceDetailPanel", () => {
   });
 
   it("returns null when no invoice is selected", () => {
-    const { container } = render(<InvoiceDetailPanel invoiceId={null} />);
+    const { container } = renderWithClient(<InvoiceDetailPanel invoiceId={null} />);
     expect(container.firstChild).toBeNull();
   });
 
@@ -88,7 +99,7 @@ describe("InvoiceDetailPanel", () => {
       isPending: false,
     } as unknown as ReturnType<typeof useUpdateInvoiceStatus>);
 
-    render(<InvoiceDetailPanel invoiceId="INV-100" />);
+    renderWithClient(<InvoiceDetailPanel invoiceId="INV-100" />);
 
     expect(screen.getByText(/Invoice INV-100/)).toBeInTheDocument();
     expect(screen.getByText(/Consulting/)).toBeInTheDocument();
