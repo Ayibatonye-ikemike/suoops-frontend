@@ -13,6 +13,14 @@ interface Msg {
   created_at: string | null;
 }
 
+interface OrderView {
+  status: string;
+  dispatched_at: string | null;
+  dispatch_tracking: string | null;
+  dispatch_proof_url: string | null;
+  delivered_at: string | null;
+}
+
 /**
  * Buyer-side order chat, authenticated by the buyer-only delivery code. Delivery
  * coordination only — the seller can't share contact/bank details or push an
@@ -50,6 +58,7 @@ function MessagesModal({
 }) {
   const [code, setCode] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
+  const [order, setOrder] = useState<OrderView | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [body, setBody] = useState("");
   const [busy, setBusy] = useState(false);
@@ -69,10 +78,12 @@ function MessagesModal({
       });
       const data = (await res.json().catch(() => ({}))) as {
         messages?: Msg[];
+        order?: OrderView;
         detail?: string;
       };
       if (!res.ok) throw new Error(data.detail || "That delivery code isn't valid.");
       setMessages(data.messages ?? []);
+      setOrder(data.order ?? null);
       setLoaded(true);
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Something went wrong.");
@@ -155,6 +166,25 @@ function MessagesModal({
           </>
         ) : (
           <>
+            {order?.dispatched_at && (
+              <div className="mb-3 rounded-lg bg-sky-50 px-3 py-2 text-xs text-sky-800">
+                📦 <span className="font-semibold">Your order was sent out.</span>
+                {order.dispatch_tracking ? ` Tracking: ${order.dispatch_tracking}.` : ""}
+                {order.dispatch_proof_url && (
+                  <>
+                    {" "}
+                    <a
+                      href={order.dispatch_proof_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold underline"
+                    >
+                      view photo
+                    </a>
+                  </>
+                )}
+              </div>
+            )}
             <div className="mb-2 max-h-64 space-y-2 overflow-y-auto">
               {messages.length === 0 ? (
                 <p className="text-xs text-slate-500">

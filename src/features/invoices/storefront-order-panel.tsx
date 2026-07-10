@@ -21,6 +21,10 @@ interface OrderEscrow {
   payout_naira: number;
   customer_name: string | null;
   customer_phone: string | null;
+  dispatched_at: string | null;
+  dispatch_tracking: string | null;
+  dispatch_note: string | null;
+  dispatch_proof_url: string | null;
   unread_messages?: number;
 }
 
@@ -44,6 +48,10 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [sentOpen, setSentOpen] = useState(false);
+  const [tracking, setTracking] = useState("");
+  const [sentNote, setSentNote] = useState("");
+  const [sentFile, setSentFile] = useState<File | null>(null);
 
   const { data: escrow } = useQuery({
     queryKey: ["orderEscrow", invoiceId],
@@ -78,6 +86,29 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
     onError: () => toast.error("Could not mark delivered. Please try again."),
   });
 
+  const markSent = useMutation({
+    mutationFn: async () => {
+      const fd = new FormData();
+      if (tracking.trim()) fd.append("tracking", tracking.trim());
+      if (sentNote.trim()) fd.append("note", sentNote.trim());
+      if (sentFile) fd.append("file", sentFile);
+      const res = await apiClient.post(
+        `/inventory/storefront/orders/${invoiceId}/mark-sent`,
+        fd,
+      );
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Marked as sent out — the buyer has been notified.");
+      setSentOpen(false);
+      setTracking("");
+      setSentNote("");
+      setSentFile(null);
+      qc.invalidateQueries({ queryKey: ["orderEscrow", invoiceId] });
+    },
+    onError: () => toast.error("Could not mark sent out. Please try again."),
+  });
+
   if (!escrow) return null;
 
   const statusLine = (() => {
@@ -110,6 +141,88 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
           confirms. Marking delivery adds proof in case of a dispute.
         </p>
       )}
+
+      {/* Step 1 — Sent out (seller protection: dispatch proof before delivery).
+          A courier/waybill code + a photo of the packaged item = timestamped
+          proof you shipped a quality item, and the buyer is told it's on the way. */}
+      {escrow.dispatched_at ? (
+        <div className="mt-3 rounded-md bg-sky-50 px-3 py-2 text-xs text-sky-800">
+          📦 You marked this sent out
+          {escrow.dispatch_tracking ? ` — tracking ${escrow.dispatch_tracking}` : ""}
+          {escrow.dispatch_note ? `: “${escrow.dispatch_note}”` : ""}
+          {escrow.dispatch_proof_url && (
+            <>
+              {" "}
+              <a
+                href={escrow.dispatch_proof_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold underline"
+              >
+                view photo
+              </a>
+            </>
+          )}
+        </div>
+      ) : showActions ? (
+        <div className="mt-3">
+          {sentOpen ? (
+            <div className="space-y-2 rounded-md border border-sky-200 bg-sky-50/50 p-3">
+              <p className="text-xs font-semibold text-sky-800">
+                Sending it out? Add proof to protect yourself.
+              </p>
+              <input
+                type="text"
+                value={tracking}
+                onChange={(e) => setTracking(e.target.value.slice(0, 120))}
+                placeholder="Courier / waybill tracking code (optional)"
+                className="block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+              />
+              <textarea
+                value={sentNote}
+                onChange={(e) => setSentNote(e.target.value.slice(0, 255))}
+                rows={2}
+                placeholder="Dispatch note (optional) — e.g. packed 2 items, sealed blue box"
+                className="block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+              />
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                onChange={(e) => setSentFile(e.target.files?.[0] ?? null)}
+                className="block w-full text-xs text-brand-textMuted"
+              />
+              <p className="text-[11px] text-brand-textMuted">
+                Snap the packaged item before it leaves — it proves quality and shipment.
+              </p>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => markSent.mutate()}
+                  disabled={markSent.isPending}
+                  className="rounded-md bg-sky-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-sky-700 disabled:opacity-60"
+                >
+                  {markSent.isPending ? "Saving…" : "Save & notify buyer"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSentOpen(false)}
+                  className="rounded-md border border-brand-border px-3 py-1.5 text-xs font-medium text-brand-textMuted hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setSentOpen(true)}
+              className="rounded-md border border-sky-600 px-3 py-1.5 text-xs font-semibold text-sky-700 transition hover:bg-sky-50"
+            >
+              Mark as sent out
+            </button>
+          )}
+        </div>
+      ) : null}
 
       {escrow.delivered_at ? (
         <div className="mt-3 rounded-md bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
