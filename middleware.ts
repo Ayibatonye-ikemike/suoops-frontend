@@ -26,9 +26,11 @@ export function middleware(request: NextRequest) {
   headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
 
   // -- Restrict browser features --
+  // geolocation is allowed for our own pages (self) — the storefront checkout uses
+  // it for buyer-protection location capture; camera/microphone stay blocked.
   headers.set(
     "Permissions-Policy",
-    "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+    "camera=(), microphone=(), geolocation=(self), interest-cohort=()"
   );
 
   // -- Content Security Policy --
