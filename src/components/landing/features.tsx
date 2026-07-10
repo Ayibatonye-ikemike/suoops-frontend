@@ -2,7 +2,7 @@ export function Features() {
   return (
     <>
       {/* How It Works */}
-      <section id="features" className="bg-brand-textMuted px-4 py-20 sm:px-6 lg:px-8">
+      <section id="features" className="bg-brand-mint px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-brand-evergreen sm:text-4xl">
@@ -128,7 +128,7 @@ interface FeatureCardProps {
 
 function FeatureCard({ title, features, note, highlight }: FeatureCardProps) {
   return (
-    <div className="p-6 bg-brand-textMuted rounded-xl">
+    <div className="p-6 bg-brand-mint rounded-xl">
       <h3 className="text-xl font-bold text-brand-evergreen mb-4">{title}</h3>
       <ul className="space-y-3">
         {features.map((feature, i) => (

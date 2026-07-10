@@ -62,7 +62,7 @@ export function Marketplace() {
   };
 
   return (
-    <section className="relative overflow-hidden border-b border-brand-teal/10 bg-gradient-to-b from-white to-brand-textMuted px-4 py-12 sm:py-16">
+    <section className="relative overflow-hidden border-b border-brand-teal/10 bg-gradient-to-b from-white to-brand-mint px-4 py-12 sm:py-16">
       <div className="mx-auto max-w-5xl text-center">
         <span className="inline-flex items-center gap-2 rounded-full bg-brand-jade/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-brand-teal">
           🛍️ Suoops Marketplace

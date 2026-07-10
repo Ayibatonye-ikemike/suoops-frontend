@@ -7,7 +7,7 @@ import { useRegisterHref } from "@/hooks/use-tracking-params";
 export function Pricing() {
   const registerHref = useRegisterHref();
   return (
-    <section id="pricing" className="bg-brand-textMuted px-4 py-20 sm:px-6 lg:px-8">
+    <section id="pricing" className="bg-brand-mint px-4 py-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-brand-evergreen sm:text-4xl">
@@ -51,7 +51,7 @@ export function Pricing() {
         <div className="mt-10 max-w-3xl mx-auto rounded-2xl bg-gradient-to-r from-brand-evergreen to-brand-jade p-6 text-center shadow-lg">
           <div className="text-4xl mb-2">🎉</div>
           <h3 className="text-xl font-bold text-white">All features, free.</h3>
-          <p className="mt-2 text-brand-textMuted">
+          <p className="mt-2 text-brand-mint">
             Custom branding, inventory, team, tax reports, insights & storefront —
             included for everyone. You only pay when you invoice.
           </p>

@@ -7,7 +7,7 @@
  */
 export function Protection() {
   return (
-    <section className="bg-brand-textMuted px-4 py-20 sm:px-6 lg:px-8">
+    <section className="bg-brand-mint px-4 py-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="text-center">
           <span className="inline-flex items-center gap-2 rounded-full bg-brand-jade/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-brand-teal">
