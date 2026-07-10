@@ -175,6 +175,7 @@ export default function DisputesPage() {
 
   async function resolve(escrowId: number, action: "refund" | "release") {
     let suspendSeller = false;
+    let blockCard = false;
     let reason: string | null = null;
     if (action === "refund") {
       if (
@@ -185,6 +186,9 @@ export default function DisputesPage() {
         return;
       suspendSeller = window.confirm(
         "Also SUSPEND the seller's storefront (delist it)? OK = suspend, Cancel = don't.",
+      );
+      blockCard = window.confirm(
+        "Was this CARD FRAUD? OK = block the funding card from new orders, Cancel = don't.",
       );
       reason = window.prompt("Reason (optional):", "") || null;
     } else {
@@ -202,7 +206,13 @@ export default function DisputesPage() {
         authFetch(`${API}/admin/disputes/${escrowId}/resolve`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ action, suspend_seller: suspendSeller, reason, otp }),
+          body: JSON.stringify({
+            action,
+            suspend_seller: suspendSeller,
+            block_card: blockCard,
+            reason,
+            otp,
+          }),
         });
       let res = await doPost();
       if (res.status === 401) {
