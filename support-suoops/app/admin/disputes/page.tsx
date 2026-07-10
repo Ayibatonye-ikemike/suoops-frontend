@@ -121,10 +121,25 @@ export default function DisputesPage() {
       return;
     setPayoutBusy(escrowId);
     try {
-      const res = await authFetch(`${API}/admin/disputes/${escrowId}/retry-payout`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const doPost = (otp?: string) =>
+        authFetch(`${API}/admin/disputes/${escrowId}/retry-payout`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ otp }),
+        });
+      let res = await doPost();
+      if (res.status === 401) {
+        await authFetch(`${API}/admin/disputes/${escrowId}/step-up-otp`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const otp =
+          window.prompt(
+            "This is a high-value payout. Enter the confirmation code sent to your admin email:",
+          ) || "";
+        if (!otp) return;
+        res = await doPost(otp);
+      }
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.detail || "Retry failed");
       if (body.state) setPayoutLive((p) => ({ ...p, [escrowId]: body.state }));
@@ -183,11 +198,26 @@ export default function DisputesPage() {
     }
     setBusyId(escrowId);
     try {
-      const res = await authFetch(`${API}/admin/disputes/${escrowId}/resolve`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ action, suspend_seller: suspendSeller, reason }),
-      });
+      const doPost = (otp?: string) =>
+        authFetch(`${API}/admin/disputes/${escrowId}/resolve`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ action, suspend_seller: suspendSeller, reason, otp }),
+        });
+      let res = await doPost();
+      if (res.status === 401) {
+        // High-value action → step-up: send a code to the admin email, then retry.
+        await authFetch(`${API}/admin/disputes/${escrowId}/step-up-otp`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const otp =
+          window.prompt(
+            "This is a high-value action. Enter the confirmation code sent to your admin email:",
+          ) || "";
+        if (!otp) return;
+        res = await doPost(otp);
+      }
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         throw new Error(body.detail || "Action failed");
