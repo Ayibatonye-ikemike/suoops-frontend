@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import { Hero } from "@/components/landing/hero";
 import { Marketplace } from "@/components/landing/marketplace";
 import { Features } from "@/components/landing/features";
+import { Protection } from "@/components/landing/protection";
 import { Pricing } from "@/components/landing/pricing";
 import { Testimonials } from "@/components/landing/testimonials";
 import {
@@ -31,6 +32,7 @@ export default function HomePage() {
         <Hero onWatchDemo={() => setShowVideoModal(true)} />
       </Suspense>
       <Features />
+      <Protection />
       <Testimonials />
       <Suspense>
         <Pricing />

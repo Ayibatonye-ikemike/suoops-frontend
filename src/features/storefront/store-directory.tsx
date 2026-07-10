@@ -12,6 +12,20 @@ type StoreCard = {
   matched_products?: string[];
 };
 
+// Jumia-style quick categories. Selecting one just seeds the search term — the
+// backend already matches product names/categories — so no new API is needed.
+const CATEGORIES: { label: string; term: string; emoji: string }[] = [
+  { label: "All", term: "", emoji: "🛍️" },
+  { label: "Fashion", term: "fashion", emoji: "👗" },
+  { label: "Food & Drinks", term: "food", emoji: "🍲" },
+  { label: "Beauty", term: "beauty", emoji: "💄" },
+  { label: "Electronics", term: "electronics", emoji: "📱" },
+  { label: "Home", term: "home", emoji: "🏠" },
+  { label: "Health", term: "health", emoji: "💊" },
+  { label: "Kids", term: "kids", emoji: "🧸" },
+  { label: "Services", term: "service", emoji: "🛠️" },
+];
+
 /**
  * Global marketplace search across every store on Suoops. Searches business
  * name, description, location and product names/categories — so a shopper can
@@ -28,6 +42,9 @@ export function StoreDirectory({
   const [stores, setStores] = useState<StoreCard[]>(initialStores);
   const [loading, setLoading] = useState(false);
   const debounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // The server already rendered the unfiltered list, so skip the redundant
+  // fetch on first mount (a real load-speed win) — only fetch on interaction.
+  const firstRun = useRef(true);
 
   // Pick up a search term deep-linked from the landing page (/stores?q=…).
   useEffect(() => {
@@ -37,6 +54,11 @@ export function StoreDirectory({
   }, []);
 
   useEffect(() => {
+    if (firstRun.current && query.trim() === "") {
+      firstRun.current = false;
+      return;
+    }
+    firstRun.current = false;
     if (debounce.current) clearTimeout(debounce.current);
     debounce.current = setTimeout(async () => {
       const q = query.trim();
@@ -59,9 +81,11 @@ export function StoreDirectory({
     };
   }, [query, apiBaseUrl]);
 
+  const activeCategory = query.trim().toLowerCase();
+
   return (
     <div>
-      <div className="relative mb-6">
+      <div className="relative mb-4">
         <svg
           viewBox="0 0 24 24"
           fill="none"
@@ -81,10 +105,33 @@ export function StoreDirectory({
         />
       </div>
 
+      {/* Category chips (Jumia-style quick filters) */}
+      <div className="mb-6 flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {CATEGORIES.map((c) => {
+          const active =
+            c.term === "" ? activeCategory === "" : activeCategory === c.term;
+          return (
+            <button
+              key={c.label}
+              type="button"
+              onClick={() => setQuery(c.term)}
+              className={`flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition ${
+                active
+                  ? "bg-brand-evergreen text-white shadow-sm"
+                  : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50"
+              }`}
+            >
+              <span aria-hidden>{c.emoji}</span>
+              {c.label}
+            </button>
+          );
+        })}
+      </div>
+
       {loading && stores.length === 0 ? (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-40 animate-pulse rounded-2xl bg-white/70" />
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="h-52 animate-pulse rounded-2xl bg-white/70" />
           ))}
         </div>
       ) : stores.length === 0 ? (
@@ -96,7 +143,7 @@ export function StoreDirectory({
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {stores.map((s) => {
             const name = s.business_name || "Store";
             const initial = name[0]?.toUpperCase() ?? "S";
@@ -104,33 +151,58 @@ export function StoreDirectory({
               <Link
                 key={s.slug}
                 href={`/store/${s.slug}`}
-                className="flex flex-col items-center gap-3 rounded-2xl bg-white p-5 text-center shadow-sm ring-1 ring-slate-100 transition hover:shadow-md"
+                className="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-0.5 hover:shadow-md"
               >
-                {s.logo_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={s.logo_url}
-                    alt={name}
-                    className="h-16 w-16 rounded-2xl bg-slate-100 object-cover"
-                  />
-                ) : (
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-evergreen/10 text-2xl font-bold text-brand-evergreen">
-                    {initial}
-                  </div>
-                )}
-                <span className="line-clamp-2 text-sm font-semibold text-slate-900">{name}</span>
-                {s.location && (
-                  <span className="text-[11px] text-slate-400">{s.location}</span>
-                )}
-                {s.matched_products && s.matched_products.length > 0 ? (
-                  <span className="line-clamp-2 text-xs text-brand-jade">
-                    {s.matched_products.join(" · ")}
+                {/* Card header — brand band + logo, marketplace look */}
+                <div className="relative h-20 bg-gradient-to-br from-brand-evergreen to-brand-teal">
+                  <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-white/95 px-2 py-0.5 text-[10px] font-bold text-brand-jade shadow-sm">
+                    🛡 Protected
                   </span>
-                ) : (
-                  s.description && (
-                    <span className="line-clamp-2 text-xs text-slate-500">{s.description}</span>
-                  )
-                )}
+                  <div className="absolute -bottom-6 left-1/2 -translate-x-1/2">
+                    {s.logo_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={s.logo_url}
+                        alt={name}
+                        width={56}
+                        height={56}
+                        loading="lazy"
+                        className="h-14 w-14 rounded-2xl bg-white object-cover shadow-md ring-2 ring-white"
+                      />
+                    ) : (
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-xl font-bold text-brand-evergreen shadow-md ring-2 ring-white">
+                        {initial}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-1 flex-col items-center gap-1 px-3 pb-4 pt-8 text-center">
+                  <span className="line-clamp-1 text-sm font-semibold text-slate-900">
+                    {name}
+                  </span>
+                  {s.location && (
+                    <span className="text-[11px] text-slate-400">📍 {s.location}</span>
+                  )}
+                  {s.matched_products && s.matched_products.length > 0 ? (
+                    <div className="mt-1.5 flex flex-wrap justify-center gap-1">
+                      {s.matched_products.slice(0, 3).map((p) => (
+                        <span
+                          key={p}
+                          className="line-clamp-1 rounded-full bg-brand-jade/10 px-2 py-0.5 text-[10px] font-medium text-brand-jade"
+                        >
+                          {p}
+                        </span>
+                      ))}
+                    </div>
+                  ) : (
+                    s.description && (
+                      <span className="mt-1 line-clamp-2 text-xs text-slate-500">
+                        {s.description}
+                      </span>
+                    )
+                  )}
+                </div>
               </Link>
             );
           })}
