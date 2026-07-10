@@ -112,6 +112,31 @@ export default function DisputesPage() {
     }
   }
 
+  async function retryPayout(escrowId: number) {
+    if (
+      !window.confirm(
+        "Retry the seller payout on the correct rail? Safe — it won't double-pay if a transfer already went through.",
+      )
+    )
+      return;
+    setPayoutBusy(escrowId);
+    try {
+      const res = await authFetch(`${API}/admin/disputes/${escrowId}/retry-payout`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.detail || "Retry failed");
+      if (body.state) setPayoutLive((p) => ({ ...p, [escrowId]: body.state }));
+      await fetchData();
+      if (body.message) alert(body.message);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Retry failed");
+    } finally {
+      setPayoutBusy(null);
+    }
+  }
+
   const fetchData = useCallback(async () => {
     if (!token) return;
     setIsLoading(true);
@@ -335,7 +360,7 @@ export default function DisputesPage() {
               </div>
 
               {d.payout_state !== "none" && (
-                <div className="mt-2">
+                <div className="mt-2 flex flex-wrap gap-2">
                   <button
                     type="button"
                     onClick={() => checkPayout(d.escrow_id)}
@@ -347,6 +372,19 @@ export default function DisputesPage() {
                     />{" "}
                     Check payout status
                   </button>
+                  {d.status === "held" &&
+                    ["processing", "unknown", "failed", "pending"].includes(
+                      payoutLive[d.escrow_id] ?? d.payout_state,
+                    ) && (
+                      <button
+                        type="button"
+                        onClick={() => retryPayout(d.escrow_id)}
+                        disabled={payoutBusy === d.escrow_id}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-amber-400 px-3 py-1 text-xs font-semibold text-amber-700 hover:bg-amber-50 disabled:opacity-60"
+                      >
+                        <RefreshCw className="h-3.5 w-3.5" /> Retry payout
+                      </button>
+                    )}
                 </div>
               )}
 
