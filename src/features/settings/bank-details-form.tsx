@@ -160,9 +160,13 @@ export function BankDetailsForm() {
       } catch (err) {
         if (cancelled) return;
         setResolveStatus("error");
+        // Inline verification is best-effort. Show the API's message if it gave a
+        // specific one, else a clear instruction — never a raw "status code 400".
+        const detail = getErrorMessage(err);
         setResolveError(
-          getErrorMessage(err) ||
-            "Couldn't verify this account. Check the number and bank, or type the name manually."
+          detail && !/something went wrong/i.test(detail)
+            ? detail
+            : "Couldn't verify this account. Check the number and bank, or type the name manually.",
         );
       }
     }, 600);

@@ -24,7 +24,17 @@ export const toFormState = (
 });
 
 export const getErrorMessage = (err: unknown) => {
-  if (err instanceof Error) return err.message;
+  // Prefer the API's friendly message (axios error shape: response.data.detail).
+  const detail = (err as { response?: { data?: { detail?: unknown } } })?.response?.data
+    ?.detail;
+  if (typeof detail === "string" && detail.trim()) return detail;
+  if (err instanceof Error) {
+    // Never surface raw transport messages like "Request failed with status code 400".
+    if (/request failed with status code|network error|timeout/i.test(err.message)) {
+      return "Something went wrong. Please try again.";
+    }
+    return err.message;
+  }
   if (typeof err === "string") return err;
   return "Something went wrong. Please try again.";
 };
