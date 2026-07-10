@@ -29,6 +29,8 @@ interface Dispute {
   buyer_false_disputes: number;
   buyer_flagged: boolean;
   seller_circumvention_attempts: number;
+  payout_state: string;
+  transfer_reference: string | null;
   disputed_at: string | null;
   created_at: string | null;
 }
@@ -61,6 +63,24 @@ function money(n: number): string {
   return `₦${n.toLocaleString("en-NG", { minimumFractionDigits: 2 })}`;
 }
 
+function payoutLabel(state: string): { text: string; cls: string } {
+  switch (state) {
+    case "paid":
+      return { text: "Payout paid ✓", cls: "bg-emerald-100 text-emerald-700" };
+    case "processing":
+    case "pending":
+      return { text: "Payout processing…", cls: "bg-amber-100 text-amber-700" };
+    case "failed":
+      return { text: "Payout failed", cls: "bg-rose-100 text-rose-700" };
+    case "refunded":
+      return { text: "Refunded", cls: "bg-rose-100 text-rose-700" };
+    case "unknown":
+      return { text: "Payout status unknown", cls: "bg-slate-100 text-slate-600" };
+    default:
+      return { text: "No payout yet", cls: "bg-slate-100 text-slate-500" };
+  }
+}
+
 export default function DisputesPage() {
   const { token, authFetch } = useAdminAuth();
   const [data, setData] = useState<DisputeListResponse | null>(null);
@@ -68,6 +88,24 @@ export default function DisputesPage() {
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<Filter>("disputed");
   const [busyId, setBusyId] = useState<number | null>(null);
+  const [payoutLive, setPayoutLive] = useState<Record<number, string>>({});
+  const [payoutBusy, setPayoutBusy] = useState<number | null>(null);
+
+  async function checkPayout(escrowId: number) {
+    setPayoutBusy(escrowId);
+    try {
+      const res = await authFetch(`${API}/admin/disputes/${escrowId}/payout-status`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Could not fetch payout status");
+      const body = await res.json();
+      setPayoutLive((p) => ({ ...p, [escrowId]: body.state }));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Could not fetch payout status");
+    } finally {
+      setPayoutBusy(null);
+    }
+  }
 
   const fetchData = useCallback(async () => {
     if (!token) return;
@@ -277,8 +315,35 @@ export default function DisputesPage() {
                 <div className="text-right">
                   <p className="text-lg font-bold text-slate-900">{money(d.gross_naira)}</p>
                   <p className="text-xs text-slate-400">payout {money(d.payout_naira)}</p>
+                  {(() => {
+                    const st = payoutLive[d.escrow_id] ?? d.payout_state;
+                    const b = payoutLabel(st);
+                    return (
+                      <span
+                        className={`mt-1 inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${b.cls}`}
+                      >
+                        {b.text}
+                      </span>
+                    );
+                  })()}
                 </div>
               </div>
+
+              {d.payout_state !== "none" && (
+                <div className="mt-2">
+                  <button
+                    type="button"
+                    onClick={() => checkPayout(d.escrow_id)}
+                    disabled={payoutBusy === d.escrow_id}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-60"
+                  >
+                    <RefreshCw
+                      className={`h-3.5 w-3.5 ${payoutBusy === d.escrow_id ? "animate-spin" : ""}`}
+                    />{" "}
+                    Check payout status
+                  </button>
+                </div>
+              )}
 
               {(d.status === "disputed" || d.status === "held") && (
                 <div className="mt-3 flex flex-wrap gap-2 border-t border-slate-100 pt-3">
