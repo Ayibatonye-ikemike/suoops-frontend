@@ -12,6 +12,19 @@ type StoreCard = {
   logo_url: string | null;
 };
 
+// Jumia-style category tiles. Each seeds the /stores search term — the backend
+// already matches product names/categories — so no new API is needed.
+const CATEGORIES: { label: string; term: string; emoji: string }[] = [
+  { label: "Fashion", term: "fashion", emoji: "👗" },
+  { label: "Food", term: "food", emoji: "🍲" },
+  { label: "Beauty", term: "beauty", emoji: "💄" },
+  { label: "Electronics", term: "electronics", emoji: "📱" },
+  { label: "Home", term: "home", emoji: "🏠" },
+  { label: "Health", term: "health", emoji: "💊" },
+  { label: "Kids", term: "kids", emoji: "🧸" },
+  { label: "Services", term: "service", emoji: "🛠️" },
+];
+
 /**
  * Marketplace hero band — the first thing on the landing page.
  *
@@ -51,15 +64,15 @@ export function Marketplace() {
   return (
     <section className="relative overflow-hidden border-b border-slate-200 bg-gradient-to-b from-white to-slate-50 px-4 py-12 sm:py-16">
       <div className="mx-auto max-w-5xl text-center">
-        <span className="inline-flex items-center gap-2 rounded-full bg-brand-jade/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-brand-jade">
-          🛍️ The Suoops Marketplace
+        <span className="inline-flex items-center gap-2 rounded-full bg-brand-jade/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-brand-teal">
+          🛍️ Suoops Marketplace
         </span>
-        <h2 className="mt-4 font-heading text-3xl font-bold text-slate-900 sm:text-4xl lg:text-5xl">
-          Shop from businesses selling on Suoops
+        <h2 className="mt-4 font-heading text-3xl font-bold text-brand-evergreen sm:text-4xl lg:text-5xl">
+          Buy from real Nigerian shops — protected
         </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-base text-slate-600 sm:text-lg">
-          Discover real Nigerian businesses. Search for a product, browse a shop,
-          and order — pay by card or transfer, confirmed instantly.
+        <p className="mx-auto mt-3 max-w-2xl text-base text-brand-charcoal/70 sm:text-lg">
+          Find a product, order in minutes, and pay by bank transfer. Your money is
+          held safely until your order arrives.
         </p>
 
         {/* Search → /stores */}
@@ -85,15 +98,36 @@ export function Marketplace() {
           </div>
           <button
             type="submit"
-            className="shrink-0 rounded-xl bg-brand-jade px-5 py-3.5 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-teal sm:px-7 sm:text-base"
+            className="shrink-0 rounded-xl bg-brand-jade px-5 py-3.5 text-sm font-semibold text-white shadow-lg transition hover:bg-brand-jadeHover sm:px-7 sm:text-base"
           >
             Search
           </button>
         </form>
 
+        {/* Category tiles (Jumia-style quick entry) */}
+        <div className="mx-auto mt-7 grid max-w-3xl grid-cols-4 gap-3 sm:grid-cols-8">
+          {CATEGORIES.map((c) => (
+            <Link
+              key={c.label}
+              href={`/stores?q=${encodeURIComponent(c.term)}`}
+              className="group flex flex-col items-center gap-1.5 rounded-2xl bg-white px-2 py-3 shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-jade/10 text-2xl transition group-hover:bg-brand-jade/20">
+                {c.emoji}
+              </span>
+              <span className="text-[11px] font-medium text-brand-charcoal/80">
+                {c.label}
+              </span>
+            </Link>
+          ))}
+        </div>
+
         {/* Live shops strip */}
         {stores.length > 0 && (
           <div className="mt-8">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-brand-charcoal/50">
+              Popular shops
+            </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
               {stores.map((s) => {
                 const name = s.business_name || "Store";
@@ -126,7 +160,7 @@ export function Marketplace() {
 
         <Link
           href="/stores"
-          className="mt-8 inline-flex items-center gap-2 rounded-xl bg-brand-evergreen px-7 py-3.5 text-base font-bold text-white shadow-lg transition hover:scale-105 hover:bg-brand-teal"
+          className="mt-8 inline-flex items-center gap-2 rounded-xl bg-brand-jade px-7 py-3.5 text-base font-bold text-white shadow-lg transition hover:scale-105 hover:bg-brand-jadeHover"
         >
           Browse all shops →
         </Link>
