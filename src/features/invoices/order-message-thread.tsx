@@ -16,7 +16,7 @@ import {
  * contact/account/link the seller tries to share and blocks off-platform payment
  * pushes, and repeated attempts flag the store. Kept intentionally minimal.
  */
-export function OrderMessageThread({ invoiceId }: { invoiceId: string }) {
+export function OrderMessageThread({ invoiceId, unread = 0 }: { invoiceId: string; unread?: number }) {
   const qc = useQueryClient();
   const [body, setBody] = useState("");
 
@@ -51,6 +51,11 @@ export function OrderMessageThread({ invoiceId }: { invoiceId: string }) {
     <div className="mt-3 border-t border-brand-jade/20 pt-3">
       <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
         Chat with buyer
+        {unread > 0 && (
+          <span className="ml-2 rounded-full bg-brand-jade px-2 py-0.5 text-[10px] font-bold text-white">
+            {unread} new
+          </span>
+        )}
       </p>
       <div className="mt-2 max-h-56 space-y-2 overflow-y-auto">
         {isLoading ? (

@@ -28,6 +28,7 @@ interface Dispute {
   buyer_disputes: number;
   buyer_false_disputes: number;
   buyer_flagged: boolean;
+  seller_circumvention_attempts: number;
   disputed_at: string | null;
   created_at: string | null;
 }
@@ -235,6 +236,12 @@ export default function DisputesPage() {
                       </span>
                     )}
                   </p>
+                  {d.seller_circumvention_attempts > 0 && (
+                    <p className="text-xs font-semibold text-rose-600">
+                      ⚠ Seller: {d.seller_circumvention_attempts} off-platform message
+                      attempt{d.seller_circumvention_attempts === 1 ? "" : "s"}
+                    </p>
+                  )}
                   {d.dispute_reason && (
                     <p className="mt-1 rounded-lg bg-amber-50 px-2 py-1 text-sm text-amber-800">
                       “{d.dispute_reason}”

@@ -21,6 +21,7 @@ interface OrderEscrow {
   payout_naira: number;
   customer_name: string | null;
   customer_phone: string | null;
+  unread_messages?: number;
 }
 
 function timeUntil(iso: string): string {
@@ -174,7 +175,9 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
           )}
         </div>
       ) : null}
-      {invoiceId && escrow.held ? <OrderMessageThread invoiceId={invoiceId} /> : null}
+      {invoiceId && escrow.held ? (
+        <OrderMessageThread invoiceId={invoiceId} unread={escrow.unread_messages ?? 0} />
+      ) : null}
     </div>
   );
 }
