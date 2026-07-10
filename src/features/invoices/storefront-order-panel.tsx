@@ -121,7 +121,10 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
     return "Payment is being held safely.";
   })();
 
-  const showActions = escrow.held && !escrow.held_for_review;
+  // Delivery-proof uploads are allowed even while an order is under review — the
+  // proof (photo/tracking) is exactly what helps our team resolve it. (These
+  // actions never release funds; only the window/buyer code/admin do.)
+  const showActions = escrow.held;
 
   return (
     <div className="rounded-lg border border-brand-jade/30 bg-brand-jade/5 p-4">
@@ -135,10 +138,16 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
       </div>
       <p className="mt-2 text-sm text-brand-text">{statusLine}</p>
 
-      {escrow.held && (
+      {escrow.held && !escrow.held_for_review && (
         <p className="mt-1 text-xs text-brand-textMuted">
           You&apos;ll be paid automatically when the window ends — even if the buyer never
           confirms. Marking delivery adds proof in case of a dispute.
+        </p>
+      )}
+      {escrow.held && escrow.held_for_review && (
+        <p className="mt-1 text-xs text-brand-textMuted">
+          While we review this order, add your dispatch/delivery proof below — a photo and
+          tracking help us resolve it faster and protect your payout.
         </p>
       )}
 
