@@ -20,7 +20,6 @@ type Props = {
   slug: string;
   storeName: string;
   products: StoreProduct[];
-  whatsappUrl: string | null;
   onlinePaymentsEnabled: boolean;
 };
 
@@ -37,11 +36,9 @@ export function StoreCatalog({
   slug,
   storeName,
   products,
-  whatsappUrl,
   onlinePaymentsEnabled,
 }: Props) {
   const { apiBaseUrl } = getConfig();
-  const storeUrl = `https://suoops.com/store/${slug}`;
 
   const [cart, setCart] = useState<Record<number, number>>({});
   const [checkoutOpen, setCheckoutOpen] = useState(false);
@@ -107,14 +104,6 @@ export function StoreCatalog({
       setCheckoutOpen(true);
     }
   }, [productById]);
-
-  const orderLink = (productName?: string, price?: number | null) => {
-    if (!whatsappUrl) return null;
-    const text = productName
-      ? `Hi ${storeName}, I'd like to order: ${productName}${price != null ? ` (${formatCurrency(price)})` : ""}. via ${storeUrl}`
-      : `Hi ${storeName}, I'd like to order from your store (${storeUrl}).`;
-    return `${whatsappUrl}?text=${encodeURIComponent(text)}`;
-  };
 
   const canSubmit =
     customerName.trim().length > 0 &&
@@ -294,15 +283,6 @@ export function StoreCatalog({
                       Add
                     </button>
                   )
-                ) : p.in_stock && orderLink(p.name, p.price) ? (
-                  <a
-                    href={orderLink(p.name, p.price) as string}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-2 flex items-center justify-center gap-1 rounded-lg bg-[#25D366] py-2 text-xs font-semibold text-white transition hover:bg-[#1ebe5a]"
-                  >
-                    Order
-                  </a>
                 ) : !p.in_stock ? (
                   <button
                     type="button"
