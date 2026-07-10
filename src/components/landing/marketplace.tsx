@@ -108,6 +108,10 @@ export function Marketplace() {
                     <img
                       src={s.logo_url as string}
                       alt={name}
+                      width={64}
+                      height={64}
+                      loading="lazy"
+                      decoding="async"
                       className="h-14 w-14 rounded-2xl bg-white object-cover shadow-sm ring-1 ring-slate-200 transition group-hover:scale-105 group-hover:shadow-md sm:h-16 sm:w-16"
                     />
                     <span className="max-w-[72px] truncate text-[11px] text-slate-500">
