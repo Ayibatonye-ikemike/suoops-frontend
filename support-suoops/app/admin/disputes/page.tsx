@@ -25,6 +25,11 @@ interface Dispute {
   delivered_at: string | null;
   delivery_proof_note: string | null;
   delivery_proof_url: string | null;
+  dispatched_at: string | null;
+  dispatch_tracking: string | null;
+  dispatch_note: string | null;
+  dispatch_proof_url: string | null;
+  delivery_location: string | null;
   buyer_disputes: number;
   buyer_false_disputes: number;
   buyer_flagged: boolean;
@@ -355,6 +360,31 @@ export default function DisputesPage() {
                   {d.dispute_reason && (
                     <p className="mt-1 rounded-lg bg-amber-50 px-2 py-1 text-sm text-amber-800">
                       “{d.dispute_reason}”
+                    </p>
+                  )}
+                  {d.delivery_location && (
+                    <p className="mt-1 whitespace-pre-line rounded-lg bg-slate-50 px-2 py-1 text-xs text-slate-700">
+                      {d.delivery_location}
+                    </p>
+                  )}
+                  {d.dispatched_at && (
+                    <p className="mt-1 rounded-lg bg-sky-50 px-2 py-1 text-xs text-sky-800">
+                      📦 Seller marked sent out
+                      {d.dispatch_tracking ? ` — tracking ${d.dispatch_tracking}` : ""}
+                      {d.dispatch_note ? `: “${d.dispatch_note}”` : ""}
+                      {d.dispatch_proof_url && (
+                        <>
+                          {" "}
+                          <a
+                            href={d.dispatch_proof_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-semibold underline"
+                          >
+                            view photo
+                          </a>
+                        </>
+                      )}
                     </p>
                   )}
                   {d.delivered_at && (

@@ -194,6 +194,9 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
                 placeholder="Dispatch note (optional) — e.g. packed 2 items, sealed blue box"
                 className="block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
               />
+              <label className="block text-[11px] font-semibold text-sky-800">
+                Photo of the packaged item <span className="text-rose-600">*</span>
+              </label>
               <input
                 type="file"
                 accept="image/png,image/jpeg,image/webp"
@@ -201,13 +204,14 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
                 className="block w-full text-xs text-brand-textMuted"
               />
               <p className="text-[11px] text-brand-textMuted">
-                Snap the packaged item before it leaves — it proves quality and shipment.
+                A photo is required — snap the packaged item before it leaves; it proves
+                quality and shipment.
               </p>
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => markSent.mutate()}
-                  disabled={markSent.isPending}
+                  disabled={markSent.isPending || !sentFile}
                   className="rounded-md bg-sky-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-sky-700 disabled:opacity-60"
                 >
                   {markSent.isPending ? "Saving…" : "Save & notify buyer"}
