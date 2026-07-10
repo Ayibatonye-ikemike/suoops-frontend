@@ -100,6 +100,11 @@ export default function DisputesPage() {
       if (!res.ok) throw new Error("Could not fetch payout status");
       const body = await res.json();
       setPayoutLive((p) => ({ ...p, [escrowId]: body.state }));
+      // If the transfer landed, the hold was finalized — refresh so the row
+      // moves to Released.
+      if (body.escrow_status === "released" || body.state === "paid") {
+        await fetchData();
+      }
     } catch (err) {
       alert(err instanceof Error ? err.message : "Could not fetch payout status");
     } finally {
