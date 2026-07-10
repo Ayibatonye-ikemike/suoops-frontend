@@ -6,6 +6,8 @@ import toast from "react-hot-toast";
 
 import { apiClient } from "@/api/client";
 
+import { OrderMessageThread } from "./order-message-thread";
+
 interface OrderEscrow {
   status: string;
   held: boolean;
@@ -172,6 +174,7 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
           )}
         </div>
       ) : null}
+      {invoiceId && escrow.held ? <OrderMessageThread invoiceId={invoiceId} /> : null}
     </div>
   );
 }
