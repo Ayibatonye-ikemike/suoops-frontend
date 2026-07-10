@@ -158,6 +158,12 @@ export function StoreCatalog({
 
   return (
     <>
+      {!onlinePaymentsEnabled && (
+        <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm text-slate-600">
+          🔒 This store isn&apos;t taking online orders yet. Check back soon — ordering opens once
+          the seller turns on secure online payments.
+        </div>
+      )}
       {pendingPay && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
           <div className="w-full max-w-sm rounded-t-2xl bg-white p-5 text-center sm:rounded-2xl">
