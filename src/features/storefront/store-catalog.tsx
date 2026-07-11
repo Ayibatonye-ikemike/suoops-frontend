@@ -52,6 +52,22 @@ export function StoreCatalog({
   // sending the buyer to payment so they can save it for confirming delivery.
   const [pendingPay, setPendingPay] = useState<{ code: string; url: string } | null>(null);
 
+  // Courier delivery options (buyer-pays-delivery). Empty/disabled → no fee.
+  type CourierOption = {
+    courier_id: string;
+    service_code: string;
+    name: string;
+    image: string | null;
+    amount: number;
+    currency: string;
+    delivery_eta: string | null;
+    service_type: string | null;
+  };
+  const [deliveryOptions, setDeliveryOptions] = useState<CourierOption[]>([]);
+  const [deliveryEnabled, setDeliveryEnabled] = useState(false);
+  const [deliveryLoading, setDeliveryLoading] = useState(false);
+  const [selectedCourier, setSelectedCourier] = useState<CourierOption | null>(null);
+
   // Discovery: search + category filter.
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("All");
@@ -105,12 +121,95 @@ export function StoreCatalog({
     }
   }, [productById]);
 
+  const cartSig = useMemo(
+    () =>
+      Object.entries(cart)
+        .filter(([, q]) => q > 0)
+        .map(([id, q]) => `${id}:${q}`)
+        .join(","),
+    [cart],
+  );
+
+  // Fetch live courier options once the buyer has a phone + location + items.
+  // Debounced; refetched when the cart or location changes. When the store's
+  // courier integration is off (or no options), delivery is simply skipped.
+  useEffect(() => {
+    if (
+      !checkoutOpen ||
+      customerPhone.trim().length < 6 ||
+      !location ||
+      cartSig === ""
+    ) {
+      setDeliveryOptions([]);
+      setSelectedCourier(null);
+      setDeliveryEnabled(false);
+      return;
+    }
+    const ctrl = new AbortController();
+    const timer = setTimeout(async () => {
+      setDeliveryLoading(true);
+      try {
+        const res = await fetch(`${apiBaseUrl}/public/store/${slug}/delivery-quote`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          cache: "no-store",
+          signal: ctrl.signal,
+          body: JSON.stringify({
+            customer_name: customerName.trim() || "Customer",
+            customer_phone: customerPhone.trim(),
+            customer_lat: location.lat,
+            customer_lng: location.lng,
+            items: cartEntries.map(([id, q]) => ({
+              product_id: Number(id),
+              quantity: q,
+            })),
+          }),
+        });
+        const data = (await res.json()) as {
+          enabled?: boolean;
+          options?: CourierOption[];
+        };
+        setDeliveryEnabled(Boolean(data.enabled));
+        const opts = data.options ?? [];
+        setDeliveryOptions(opts);
+        setSelectedCourier((prev) => {
+          if (
+            prev &&
+            opts.some(
+              (o) =>
+                o.courier_id === prev.courier_id &&
+                o.service_code === prev.service_code,
+            )
+          )
+            return prev;
+          return opts.length
+            ? [...opts].sort((a, b) => a.amount - b.amount)[0]
+            : null;
+        });
+      } catch {
+        /* aborted or offline — leave delivery unset, order can still proceed */
+      } finally {
+        setDeliveryLoading(false);
+      }
+    }, 500);
+    return () => {
+      clearTimeout(timer);
+      ctrl.abort();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkoutOpen, customerPhone, location, cartSig, slug, apiBaseUrl]);
+
+  const deliveryFee = selectedCourier?.amount ?? 0;
+  const grandTotal = total + deliveryFee;
+
   const canSubmit =
     customerName.trim().length > 0 &&
     customerPhone.trim().length >= 6 &&
     location != null &&
     count > 0 &&
-    !submitting;
+    !submitting &&
+    // If the store offers couriers, a delivery option must be chosen.
+    (!deliveryEnabled || deliveryOptions.length === 0 || selectedCourier != null);
 
   const submitOrder = async () => {
     if (!canSubmit) return;
@@ -127,6 +226,8 @@ export function StoreCatalog({
           customer_lat: location?.lat,
           customer_lng: location?.lng,
           delivery_note: deliveryNote.trim() || undefined,
+          delivery_courier_id: selectedCourier?.courier_id,
+          delivery_service_code: selectedCourier?.service_code,
           items: cartEntries.map(([id, q]) => ({
             product_id: Number(id),
             quantity: q,
@@ -351,9 +452,23 @@ export function StoreCatalog({
                   </div>
                 );
               })}
-              <div className="flex items-center justify-between border-t border-dashed border-slate-200 pt-2 text-sm font-bold">
+              <div className="flex items-center justify-between border-t border-dashed border-slate-200 pt-2 text-sm">
+                <span className="text-slate-600">Subtotal</span>
+                <span className="text-slate-900">{formatCurrency(total)}</span>
+              </div>
+              {selectedCourier && (
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate-600">
+                    Delivery ({selectedCourier.name})
+                  </span>
+                  <span className="text-slate-900">
+                    {formatCurrency(selectedCourier.amount)}
+                  </span>
+                </div>
+              )}
+              <div className="flex items-center justify-between pt-1 text-sm font-bold">
                 <span>Total</span>
-                <span>{formatCurrency(total)}</span>
+                <span>{formatCurrency(grandTotal)}</span>
               </div>
             </div>
 
@@ -384,6 +499,67 @@ export function StoreCatalog({
                   ctaLabel="Share my current location"
                 />
               </div>
+
+              {location &&
+                customerPhone.trim().length >= 6 &&
+                (deliveryLoading || deliveryOptions.length > 0) && (
+                  <div className="rounded-lg border border-slate-200 bg-white p-3">
+                    <p className="text-xs font-medium text-slate-700">
+                      Choose delivery
+                    </p>
+                    {deliveryLoading ? (
+                      <p className="mt-2 text-[11px] text-slate-500">
+                        Fetching courier options…
+                      </p>
+                    ) : (
+                      <div className="mt-2 space-y-2">
+                        {deliveryOptions.map((o) => {
+                          const sel =
+                            selectedCourier?.courier_id === o.courier_id &&
+                            selectedCourier?.service_code === o.service_code;
+                          return (
+                            <button
+                              key={`${o.courier_id}:${o.service_code}`}
+                              type="button"
+                              onClick={() => setSelectedCourier(o)}
+                              className={`flex w-full items-center gap-3 rounded-xl border-2 p-2.5 text-left transition ${
+                                sel
+                                  ? "border-brand-jade bg-brand-jade/5"
+                                  : "border-slate-200 hover:bg-slate-50"
+                              }`}
+                            >
+                              {o.image ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={o.image}
+                                  alt={o.name}
+                                  className="h-8 w-8 rounded object-contain"
+                                />
+                              ) : (
+                                <div className="flex h-8 w-8 items-center justify-center rounded bg-slate-100 text-sm">
+                                  🚚
+                                </div>
+                              )}
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate text-sm font-semibold text-slate-900">
+                                  {o.name}
+                                </p>
+                                {o.delivery_eta && (
+                                  <p className="text-[11px] text-slate-500">
+                                    {o.delivery_eta}
+                                  </p>
+                                )}
+                              </div>
+                              <span className="shrink-0 text-sm font-bold text-brand-jade">
+                                {formatCurrency(o.amount)}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
               <textarea
                 value={deliveryNote}
                 onChange={(e) => setDeliveryNote(e.target.value.slice(0, 200))}
@@ -403,7 +579,7 @@ export function StoreCatalog({
               disabled={!canSubmit}
               className="mt-4 w-full rounded-xl bg-brand-jade py-3 text-sm font-semibold text-white transition hover:bg-brand-jadeHover disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {submitting ? "Starting secure checkout…" : `Pay ${formatCurrency(total)}`}
+              {submitting ? "Starting secure checkout…" : `Pay ${formatCurrency(grandTotal)}`}
             </button>
             <p className="mt-2 text-center text-[11px] text-slate-400">
               Secure payment · you&apos;ll get a receipt on confirmation
