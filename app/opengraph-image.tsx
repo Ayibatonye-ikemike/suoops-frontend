@@ -1,12 +1,24 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
-
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const alt = "SuoOps — The commerce operating system for African business";
 
-export default function OgImage() {
+// Best-effort: embed the logo as a data URI so the card never fails to render
+// if the asset fetch hiccups (a failed <img> can produce an empty image).
+async function logoDataUri(): Promise<string | null> {
+  try {
+    const res = await fetch("https://suoops.com/icon.png");
+    if (!res.ok) return null;
+    const buf = Buffer.from(await res.arrayBuffer());
+    return `data:${res.headers.get("content-type") || "image/png"};base64,${buf.toString("base64")}`;
+  } catch {
+    return null;
+  }
+}
+
+export default async function OgImage() {
+  const logo = await logoDataUri();
   return new ImageResponse(
     (
       <div
@@ -40,17 +52,18 @@ export default function OgImage() {
               width: "96px",
               height: "96px",
               borderRadius: "24px",
-              background: "rgba(255,255,255,0.08)",
+              background: logo ? "rgba(255,255,255,0.08)" : "#14B56A",
               border: "1px solid rgba(255,255,255,0.15)",
             }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://suoops.com/icon.png"
-              alt="SuoOps"
-              width={64}
-              height={64}
-            />
+            {logo ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={logo} alt="SuoOps" width={64} height={64} />
+            ) : (
+              <div style={{ fontSize: "52px", fontWeight: 700, color: "#ffffff" }}>
+                S
+              </div>
+            )}
           </div>
           <div
             style={{
@@ -67,6 +80,9 @@ export default function OgImage() {
         {/* Headline */}
         <div
           style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
             fontSize: "56px",
             fontWeight: 700,
             color: "#ffffff",
@@ -75,7 +91,7 @@ export default function OgImage() {
             lineHeight: 1.15,
           }}
         >
-          Sell, get paid &amp; grow{" "}
+          <span>Sell, get paid &amp; grow&nbsp;</span>
           <span style={{ color: "#BFF74A" }}>— all in one place</span>
         </div>
 
