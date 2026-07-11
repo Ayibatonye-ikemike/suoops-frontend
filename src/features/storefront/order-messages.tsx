@@ -17,8 +17,21 @@ interface OrderView {
   status: string;
   dispatched_at: string | null;
   dispatch_tracking: string | null;
+  dispatch_carrier: string | null;
+  dispatch_eta: string | null;
   dispatch_proof_url: string | null;
   delivered_at: string | null;
+}
+
+// Format an ISO date (YYYY-MM-DD) as e.g. "Tue 14 Jul".
+function formatEta(iso: string): string {
+  const d = new Date(`${iso}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-NG", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
 }
 
 /**
@@ -168,8 +181,10 @@ function MessagesModal({
           <>
             {order?.dispatched_at && (
               <div className="mb-3 rounded-lg bg-sky-50 px-3 py-2 text-xs text-sky-800">
-                📦 <span className="font-semibold">Your order was sent out.</span>
+                📦 <span className="font-semibold">Your order is on the way.</span>
+                {order.dispatch_carrier ? ` Courier: ${order.dispatch_carrier}.` : ""}
                 {order.dispatch_tracking ? ` Tracking: ${order.dispatch_tracking}.` : ""}
+                {order.dispatch_eta ? ` Expected: ${formatEta(order.dispatch_eta)}.` : ""}
                 {order.dispatch_proof_url && (
                   <>
                     {" "}

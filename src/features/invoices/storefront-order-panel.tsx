@@ -24,6 +24,8 @@ interface OrderEscrow {
   dispatched_at: string | null;
   dispatch_tracking: string | null;
   dispatch_note: string | null;
+  dispatch_carrier: string | null;
+  dispatch_eta: string | null;
   dispatch_proof_url: string | null;
   unread_messages?: number;
 }
@@ -39,6 +41,17 @@ function timeUntil(iso: string): string {
   return `${totalH}h ${mins}m`;
 }
 
+// Format an ISO date (YYYY-MM-DD) as e.g. "Tue 14 Jul".
+function formatEta(iso: string): string {
+  const d = new Date(`${iso}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-NG", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  });
+}
+
 /**
  * Buyer-protection status for a storefront order, shown to the business on the
  * invoice. Renders nothing for non-storefront invoices (no escrow row).
@@ -50,6 +63,8 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
   const [file, setFile] = useState<File | null>(null);
   const [sentOpen, setSentOpen] = useState(false);
   const [tracking, setTracking] = useState("");
+  const [carrier, setCarrier] = useState("");
+  const [sentEta, setSentEta] = useState("");
   const [sentNote, setSentNote] = useState("");
   const [sentFile, setSentFile] = useState<File | null>(null);
 
@@ -90,6 +105,8 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
     mutationFn: async () => {
       const fd = new FormData();
       if (tracking.trim()) fd.append("tracking", tracking.trim());
+      if (carrier.trim()) fd.append("carrier", carrier.trim());
+      if (sentEta.trim()) fd.append("eta", sentEta.trim());
       if (sentNote.trim()) fd.append("note", sentNote.trim());
       if (sentFile) fd.append("file", sentFile);
       const res = await apiClient.post(
@@ -102,6 +119,8 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
       toast.success("Marked as sent out — the buyer has been notified.");
       setSentOpen(false);
       setTracking("");
+      setCarrier("");
+      setSentEta("");
       setSentNote("");
       setSentFile(null);
       qc.invalidateQueries({ queryKey: ["orderEscrow", invoiceId] });
@@ -157,7 +176,9 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
       {escrow.dispatched_at ? (
         <div className="mt-3 rounded-md bg-sky-50 px-3 py-2 text-xs text-sky-800">
           📦 You marked this sent out
+          {escrow.dispatch_carrier ? ` via ${escrow.dispatch_carrier}` : ""}
           {escrow.dispatch_tracking ? ` — tracking ${escrow.dispatch_tracking}` : ""}
+          {escrow.dispatch_eta ? ` · arriving ${formatEta(escrow.dispatch_eta)}` : ""}
           {escrow.dispatch_note ? `: “${escrow.dispatch_note}”` : ""}
           {escrow.dispatch_proof_url && (
             <>
@@ -185,6 +206,22 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
                 value={tracking}
                 onChange={(e) => setTracking(e.target.value.slice(0, 120))}
                 placeholder="Courier / waybill tracking code (optional)"
+                className="block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+              />
+              <input
+                type="text"
+                value={carrier}
+                onChange={(e) => setCarrier(e.target.value.slice(0, 80))}
+                placeholder="Courier / company name — e.g. GIG Logistics (optional)"
+                className="block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+              />
+              <label className="block text-[11px] font-medium text-sky-800">
+                Expected delivery date (optional)
+              </label>
+              <input
+                type="date"
+                value={sentEta}
+                onChange={(e) => setSentEta(e.target.value)}
                 className="block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
               />
               <textarea
