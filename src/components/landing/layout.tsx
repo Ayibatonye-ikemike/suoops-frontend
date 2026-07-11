@@ -74,10 +74,11 @@ export function CTASection() {
     <section className="relative bg-brand-evergreen px-4 py-20 sm:px-6 lg:px-8 text-white">
       <div className="mx-auto max-w-3xl text-center">
         <h2 className="text-3xl font-bold sm:text-4xl">
-          Ready to simplify your invoicing?
+          Ready to run your whole business in one place?
         </h2>
         <p className="mt-4 text-lg text-white/80">
-          Start creating professional invoices in seconds via WhatsApp or dashboard.
+          Set up your storefront, take payments, manage orders and invoice — with
+          buyer protection built in. Free to start, in minutes.
         </p>
         <Link
           href={registerHref}
@@ -113,7 +114,8 @@ export function Footer() {
               <span className="text-lg font-bold text-brand-evergreen">SuoOps</span>
             </div>
             <p className="mt-4 text-sm text-brand-charcoal/70">
-              The easiest way for Small Scale Businesses (SMEs) to create invoices and get paid.
+              The commerce operating system for African business — sell, get paid,
+              manage operations, and grow.
             </p>
             {/* Social media links */}
             <div className="mt-5 flex items-center gap-3">

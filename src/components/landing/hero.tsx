@@ -17,22 +17,25 @@ export function Hero({ onWatchDemo }: HeroProps) {
           {/* Left: Text Content */}
           <div className="flex flex-col justify-center">
             <h1 className="font-heading text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-              Tax-ready invoicing for Small Scale Businesses (SMEs) —
+              Sell, get paid, and grow —
               <br />
-              <span className="text-brand-citrus">right from WhatsApp</span>
+              <span className="text-brand-citrus">all in one place</span>
             </h1>
             <p className="mt-6 text-lg text-white/80 max-w-lg">
-              Send invoices, get paid, and stay on top of your PIT &amp; CIT — without switching banks or learning accounting software.
+              SuoOps is the commerce operating system for African business — a
+              buyer-protected storefront, online payments, orders, inventory and
+              invoicing, in one platform.
             </p>
             <p className="mt-4 text-sm text-white/60 max-w-lg">
-              Built for freelancers and small businesses in Nigeria who already do business on WhatsApp.
+              Commerce, operations &amp; trust — built for how you already sell on
+              WhatsApp.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <Link
                 href={registerHref}
                 className="inline-flex items-center justify-center rounded-lg bg-brand-jade px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:scale-105 hover:bg-brand-teal"
               >
-                Start invoicing on WhatsApp
+                Start selling free
               </Link>
               <button
                 onClick={onWatchDemo}
@@ -40,6 +43,23 @@ export function Hero({ onWatchDemo }: HeroProps) {
               >
                 See how it works
               </button>
+            </div>
+
+            {/* Positioning pillars: Commerce · Operations · Trust */}
+            <div className="mt-8 flex flex-wrap gap-2">
+              {[
+                { icon: "🛍️", label: "Commerce" },
+                { icon: "⚙️", label: "Operations" },
+                { icon: "🛡️", label: "Trust" },
+              ].map((p) => (
+                <span
+                  key={p.label}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-sm font-medium text-white/90"
+                >
+                  <span aria-hidden>{p.icon}</span>
+                  {p.label}
+                </span>
+              ))}
             </div>
           </div>
 

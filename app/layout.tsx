@@ -12,19 +12,22 @@ const poppins = Poppins({ subsets: ["latin"], weight: ["600", "700"], display: "
 export const metadata: Metadata = {
   metadataBase: new URL("https://suoops.com"),
   title: {
-    default: "SuoOps — Invoice & Expense Management for SMEs",
+    default: "SuoOps — The Commerce Operating System for African Business",
     template: "%s | SuoOps",
   },
   description:
-    "Create and send invoices via WhatsApp or dashboard. Professional invoicing, expense tracking, and tax compliance made simple for Small Scale Businesses (SMEs).",
+    "SuoOps is the commerce operating system for African business — a buyer-protected storefront, online payments, orders, inventory and invoicing in one platform. Sell, get paid, manage operations, and grow.",
   keywords: [
+    "commerce operating system",
+    "marketplace Nigeria",
+    "buyer protection",
+    "storefront",
+    "online payments",
+    "WhatsApp commerce",
     "invoice",
-    "Nigeria",
-    "WhatsApp invoicing",
-    "expense tracker",
+    "inventory",
     "small business",
-    "payment",
-    "tax",
+    "Nigeria",
   ],
   icons: {
     icon: "/icon.png",
@@ -35,15 +38,15 @@ export const metadata: Metadata = {
     locale: "en_NG",
     url: "https://suoops.com",
     siteName: "SuoOps",
-    title: "SuoOps — Invoice Customers & Get Paid from WhatsApp",
+    title: "SuoOps — Sell, Get Paid & Grow, all in one place",
     description:
-      "Create invoices, track payments, manage inventory, and stay tax-aware — straight from WhatsApp. Built for freelancers and small businesses in Nigeria.",
+      "The commerce operating system for African business: a buyer-protected storefront, payments, orders, inventory and invoicing — built for how you already sell on WhatsApp.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "SuoOps — Invoice & Get Paid from WhatsApp",
+    title: "SuoOps — The Commerce Operating System for African Business",
     description:
-      "Professional invoicing for Small Scale Businesses (SMEs). WhatsApp-first, tax-aware, mobile-friendly.",
+      "Sell, get paid, manage operations, and grow — with buyer protection built in. Commerce, operations & trust in one platform.",
   },
 };
 

@@ -49,7 +49,7 @@ export default function OgImage() {
               lineHeight: 1.3,
             }}
           >
-            Invoice Customers & Get Paid from WhatsApp
+            Sell, Get Paid & Grow — all in one place
           </div>
           <div
             style={{
@@ -60,7 +60,7 @@ export default function OgImage() {
               marginTop: "8px",
             }}
           >
-            Professional invoicing, expense tracking & tax compliance for SMEs
+            The commerce operating system for African business
           </div>
           <div
             style={{
