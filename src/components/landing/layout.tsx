@@ -195,6 +195,11 @@ export function Footer() {
             <h4 className="font-semibold text-brand-evergreen">Company</h4>
             <ul className="mt-4 space-y-2 text-sm text-brand-charcoal/70">
               <li>
+                <Link href="/about" className="hover:text-brand-jade transition-colors">
+                  About
+                </Link>
+              </li>
+              <li>
                 <a 
                   href="https://support.suoops.com/contact" 
                   target="_blank"
