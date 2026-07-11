@@ -62,26 +62,24 @@ export async function generateMetadata({ params }: RouteProps): Promise<Metadata
     const store = await fetchStore(slug, apiBaseUrl);
     if (!store) return { title: "Store Not Found — Suoops" };
     const name = store.business_name || "Store";
-    const description =
-      store.description || `Browse ${name}'s products and order directly.`;
-    const image = store.logo_url ?? undefined;
+    const base =
+      store.description || `Browse ${name}'s products and order online.`;
+    const description = `${base} Protected by SuoOps — your money is held safely until your order arrives.`;
     return {
-      title: `${name} — Shop on Suoops`,
+      title: `${name} — Shop safely on Suoops`,
       description,
       manifest: `/store/${slug}/manifest.webmanifest`,
       openGraph: {
-        title: name,
+        title: `${name} — Shop safely on Suoops`,
         description,
         siteName: "Suoops",
         type: "website",
         url: `https://suoops.com/store/${slug}`,
-        ...(image ? { images: [{ url: image }] } : {}),
       },
       twitter: {
-        card: image ? "summary_large_image" : "summary",
-        title: name,
+        card: "summary_large_image",
+        title: `${name} — Shop safely on Suoops`,
         description,
-        ...(image ? { images: [image] } : {}),
       },
     };
   } catch {
