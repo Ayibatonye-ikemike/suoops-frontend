@@ -9,6 +9,7 @@ import type { components } from "@/api/types";
 export type InvoiceDetail = components["schemas"]["InvoiceOutDetailed"] & {
   receipt_pdf_url?: string | null;
   paid_at?: string | null;
+  channel?: string | null;
 };
 
 async function fetchInvoiceDetail(invoiceId: string): Promise<InvoiceDetail> {

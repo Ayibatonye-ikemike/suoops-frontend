@@ -127,6 +127,10 @@ export function InvoiceDetailPanel({
   }
 
   const helpText = invoiceStatusHelpText[invoice.status];
+  // Storefront orders are paid online at checkout via buyer-protection escrow —
+  // no due date, no payment link to share, and the buyer's contact stays with
+  // the courier/chat (never surfaced to the seller here).
+  const isStorefront = invoice.channel === "storefront";
 
   return (
     <div className="space-y-4 sm:space-y-6 rounded-lg border border-brand-border bg-white p-4 sm:p-6 shadow-card">
@@ -280,7 +284,7 @@ export function InvoiceDetailPanel({
             <p className="mt-2 text-base font-semibold text-brand-text">
               {invoice.customer.name}
             </p>
-            {invoice.customer.phone && (
+            {invoice.customer.phone && !isStorefront && (
               <p className="mt-1 text-sm text-brand-textMuted">
                 {invoice.customer.phone}
               </p>
@@ -322,14 +326,16 @@ export function InvoiceDetailPanel({
                   )}
                 </div>
               </div>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
-                  Due Date
-                </p>
-                <p className="mt-2 text-sm font-medium text-brand-text break-words">
-                  {formatIsoDate(invoice.due_date ?? null)}
-                </p>
-              </div>
+              {!isStorefront && (
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
+                    Due Date
+                  </p>
+                  <p className="mt-2 text-sm font-medium text-brand-text break-words">
+                    {formatIsoDate(invoice.due_date ?? null)}
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Action Buttons - Only show for non-terminal states */}
@@ -399,8 +405,9 @@ export function InvoiceDetailPanel({
             </div>
           )}
 
-        {/* Share Link - Only for revenue invoices */}
-        {invoice.invoice_type !== "expense" && shareLink && (
+        {/* Share Link - Only for revenue invoices paid off-platform. Storefront
+            orders are already paid online, so there's nothing to share. */}
+        {invoice.invoice_type !== "expense" && shareLink && !isStorefront && (
           <div className="rounded-lg border border-brand-border bg-brand-background p-4">
             <p className="text-sm font-semibold text-brand-text">
               Customer Payment Link
