@@ -117,6 +117,8 @@ interface Dossier {
     buyer_phone: string | null;
     created_at: string | null;
     disputed_at: string | null;
+    dispatch_proof_url: string | null;
+    delivery_proof_url: string | null;
   }[];
   circumvention_evidence: {
     id: number;
@@ -257,7 +259,7 @@ function DossierPanel({ d }: { d: Dossier }) {
           <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
             <table className="min-w-full divide-y divide-slate-100 text-xs">
               <thead className="bg-slate-50 text-left text-[10px] uppercase text-slate-400">
-                <tr><th className="px-3 py-2">Order</th><th className="px-3 py-2">Status</th><th className="px-3 py-2">Amount</th><th className="px-3 py-2">Buyer</th><th className="px-3 py-2">Date</th></tr>
+                <tr><th className="px-3 py-2">Order</th><th className="px-3 py-2">Status</th><th className="px-3 py-2">Amount</th><th className="px-3 py-2">Buyer</th><th className="px-3 py-2">Photos</th><th className="px-3 py-2">Date</th></tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
                 {d.recent_orders.map((o) => (
@@ -266,6 +268,23 @@ function DossierPanel({ d }: { d: Dossier }) {
                     <td className="px-3 py-2"><span className={`rounded-full px-1.5 py-0.5 text-[10px] ${orderBadge(o.status)}`}>{o.status}</span>{o.held_for_review && <span className="ml-1 rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] text-amber-700" title={o.review_reason || ""}>review</span>}</td>
                     <td className="px-3 py-2">{money(o.gross_naira)}</td>
                     <td className="px-3 py-2">{o.buyer_name || "—"}<span className="block text-[10px] text-slate-400">{o.buyer_phone || ""}</span></td>
+                    <td className="px-3 py-2">
+                      <div className="flex items-center gap-1.5">
+                        {o.dispatch_proof_url && (
+                          <a href={o.dispatch_proof_url} target="_blank" rel="noopener noreferrer" title="Packaged item (sent-out proof)">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={o.dispatch_proof_url} alt="sent-out proof" className="h-9 w-9 rounded object-cover ring-1 ring-slate-200 hover:ring-sky-400" />
+                          </a>
+                        )}
+                        {o.delivery_proof_url && (
+                          <a href={o.delivery_proof_url} target="_blank" rel="noopener noreferrer" title="Delivery proof">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={o.delivery_proof_url} alt="delivery proof" className="h-9 w-9 rounded object-cover ring-1 ring-emerald-200 hover:ring-emerald-400" />
+                          </a>
+                        )}
+                        {!o.dispatch_proof_url && !o.delivery_proof_url && <span className="text-[10px] text-slate-300">—</span>}
+                      </div>
+                    </td>
                     <td className="px-3 py-2 text-slate-500">{fmtDate(o.created_at)}</td>
                   </tr>
                 ))}
