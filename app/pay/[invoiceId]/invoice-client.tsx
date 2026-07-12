@@ -75,14 +75,17 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
   const [isPolling, setIsPolling] = useState(false);
   const [payLoading, setPayLoading] = useState(false);
   // Buyer-only escrow RELEASE code for held storefront orders. It's stashed in
-  // this browser's localStorage at checkout (keyed by invoice) and revealed here
-  // AFTER payment — it never reaches the seller or the rider.
+  // this tab's sessionStorage at checkout (keyed by invoice) and revealed here
+  // AFTER payment. sessionStorage is deliberate: it survives the payment redirect
+  // but is wiped when the tab closes, so the code never persists on a shared
+  // device. It never reaches the seller or the rider, and the WhatsApp message
+  // is the durable copy.
   const [releaseCode, setReleaseCode] = useState<string | null>(null);
   const [codeCopied, setCodeCopied] = useState(false);
 
   useEffect(() => {
     try {
-      const code = window.localStorage.getItem(`suoops_release:${invoiceId}`);
+      const code = window.sessionStorage.getItem(`suoops_release:${invoiceId}`);
       if (code) setReleaseCode(code);
     } catch {
       /* storage blocked — the code is also on the buyer's WhatsApp */

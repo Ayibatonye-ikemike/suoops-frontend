@@ -243,13 +243,16 @@ export function StoreCatalog({
         invoice_id?: string;
       };
       if (data.authorization_url) {
-        // Held order → stash the buyer-only RELEASE code on this device so we can
-        // reveal it AFTER payment (on the /pay return page), never before the
-        // buyer commits money and never to anyone but this buyer's own browser.
-        // It's also sent to their WhatsApp as the durable copy.
+        // Held order → stash the buyer-only RELEASE code in sessionStorage so we
+        // can reveal it AFTER payment (on the /pay return page). sessionStorage
+        // (not localStorage) is deliberate: it survives the payment redirect
+        // round-trip in this same tab but is wiped when the tab closes, so the
+        // code never lingers on a shared/public device. The durable copy is the
+        // buyer's WhatsApp. Note the code only ever RELEASES funds to the
+        // legitimate seller, so it is not a credential an attacker can monetise.
         if (data.delivery_code && data.invoice_id) {
           try {
-            window.localStorage.setItem(
+            window.sessionStorage.setItem(
               `suoops_release:${data.invoice_id}`,
               data.delivery_code,
             );
