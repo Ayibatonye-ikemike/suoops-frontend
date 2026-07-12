@@ -25,7 +25,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Shops on Suoops — Browse Nigerian businesses",
   description:
-    "Discover businesses selling on Suoops. Browse their products and order directly on WhatsApp.",
+    "Discover businesses selling on Suoops. Pay securely with buyer protection and get your order delivered nationwide by courier.",
 };
 
 async function fetchStores(apiBaseUrl: string): Promise<Directory | null> {
@@ -49,8 +49,13 @@ export default async function StoresDirectoryPage() {
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-2xl font-bold text-white sm:text-3xl">Shops on Suoops</h1>
           <p className="mt-2 text-sm text-emerald-200">
-            Search across every shop — find a product and order directly.
+            Search across every shop — pay securely and get it delivered nationwide.
           </p>
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
+            <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white ring-1 ring-white/20">🛡 Buyer protection</span>
+            <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white ring-1 ring-white/20">🚚 Delivery nationwide</span>
+            <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white ring-1 ring-white/20">🔒 Pay online</span>
+          </div>
         </div>
       </header>
 
