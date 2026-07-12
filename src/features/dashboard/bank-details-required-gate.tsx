@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Building2, CreditCard, ArrowRight } from "lucide-react";
 import { apiClient } from "@/api/client";
-import { updateBankDetails } from "@/api/bank-details";
+import { requestBankChangeOtp, updateBankDetails } from "@/api/bank-details";
 import { NIGERIAN_BANKS } from "@/features/settings/bank-details-form.constants";
 
 interface UserData {
@@ -28,6 +28,9 @@ export function BankDetailsRequiredGate({ children }: { children: React.ReactNod
   const [accountName, setAccountName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Step-up OTP: setting a payout account requires a code sent to the owner.
+  const [otpChallenge, setOtpChallenge] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
   const queryClient = useQueryClient();
 
   const { data: user, isLoading } = useQuery<UserData>({
@@ -63,12 +66,34 @@ export function BankDetailsRequiredGate({ children }: { children: React.ReactNod
       return;
     }
 
+    // Step-up: setting a payout account requires an OTP. First request the code,
+    // then submit the details together with it.
+    if (!otpChallenge) {
+      setLoading(true);
+      try {
+        await requestBankChangeOtp();
+        setOtpChallenge(true);
+      } catch (err) {
+        const message = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail;
+        setError(message || "Couldn't send your confirmation code. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    if (otpCode.trim().length < 4) {
+      setError("Enter the confirmation code we sent you.");
+      return;
+    }
+
     setLoading(true);
     try {
       await updateBankDetails({
         bank_name: bankName,
         account_number: accountNumber,
         account_name: accountName.trim(),
+        otp: otpCode.trim(),
       });
       await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     } catch (err) {
@@ -145,12 +170,34 @@ export function BankDetailsRequiredGate({ children }: { children: React.ReactNod
           </label>
         </div>
 
+        {otpChallenge && (
+          <label className="mt-4 flex flex-col gap-1.5 text-sm font-semibold text-slate-700">
+            Confirmation code
+            <input
+              type="text"
+              inputMode="numeric"
+              maxLength={6}
+              value={otpCode}
+              onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+              placeholder="6-digit code"
+              className="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-base font-normal text-slate-900 outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
+            />
+            <span className="text-xs font-normal text-slate-400">
+              We sent a code to confirm it&apos;s you — this keeps your payout account safe.
+            </span>
+          </label>
+        )}
+
         <button
           type="submit"
           disabled={loading}
           className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-brand-jade px-4 py-3 text-base font-semibold text-white transition hover:bg-brand-teal disabled:cursor-not-allowed disabled:opacity-70"
         >
-          {loading ? "Saving..." : "Save & Start Invoicing"}
+          {loading
+            ? "Saving..."
+            : otpChallenge
+              ? "Confirm & Start Invoicing"
+              : "Send confirmation code"}
           {!loading && <ArrowRight className="h-4 w-4" />}
         </button>
 

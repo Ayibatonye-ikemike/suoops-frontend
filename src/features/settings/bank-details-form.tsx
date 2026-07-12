@@ -204,12 +204,13 @@ export function BankDetailsForm() {
       event.preventDefault();
       const hasChanges = hasFormChanges(formState, initialValues);
       if (!hasChanges) return;
-      // Changing an EXISTING payout account needs a step-up OTP first.
-      const bankChanged =
-        Boolean(initialValues.bankName && initialValues.accountNumber) &&
+      // Setting OR changing the payout account needs a step-up OTP first (a
+      // hijacked session must not be able to point payouts at an attacker).
+      const bankBeingSet =
+        Boolean(formState.bankName && formState.accountNumber) &&
         (formState.bankName !== initialValues.bankName ||
           formState.accountNumber !== initialValues.accountNumber);
-      if (bankChanged && !otpChallenge) {
+      if (bankBeingSet && !otpChallenge) {
         requestOtpMutation.mutate();
         return;
       }
