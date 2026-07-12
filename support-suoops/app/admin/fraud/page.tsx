@@ -14,6 +14,7 @@ import {
   Globe,
   ChevronDown,
   ChevronUp,
+  FileSearch,
 } from "lucide-react";
 import { useAdminAuth } from "../layout";
 
@@ -62,6 +63,73 @@ interface LinkedAccount {
   same_device: boolean;
 }
 
+interface Dossier {
+  identity: {
+    id: number;
+    name: string;
+    business_name: string | null;
+    phone: string | null;
+    email: string | null;
+    created_at: string | null;
+    last_login: string | null;
+    phone_verified: boolean;
+    role: string;
+    store_status: string;
+    store_status_reason: string | null;
+    storefront_slug: string | null;
+    has_logo: boolean;
+  };
+  signup_forensics: {
+    signup_source: string | null;
+    signup_ip: string | null;
+    signup_device_id: string | null;
+    signup_user_agent: string | null;
+    risk_score: number;
+    risk_signals: string[];
+    flagged_for_review: boolean;
+    circumvention_attempts: number;
+  };
+  financials: {
+    wallet_balance_naira: number;
+    has_bank_details: boolean;
+    bank_name: string | null;
+    account_number_masked: string | null;
+    account_name: string | null;
+    held_escrow_naira: number;
+  };
+  activity: {
+    total_invoices: number;
+    paid_invoices: number;
+    storefront_orders: number;
+    paid_revenue_naira: number;
+    unique_customers: number;
+    escrow_by_status: Record<string, { count: number; gross_naira: number }>;
+  };
+  buyer_reputation: { disputes: number; false_disputes: number; flagged: boolean } | null;
+  recent_orders: {
+    escrow_id: number;
+    invoice_public_id: string | null;
+    status: string;
+    held_for_review: boolean;
+    review_reason: string | null;
+    gross_naira: number;
+    buyer_name: string | null;
+    buyer_phone: string | null;
+    created_at: string | null;
+    disputed_at: string | null;
+  }[];
+  circumvention_evidence: {
+    id: number;
+    escrow_id: number;
+    sender_role: string;
+    body_raw: string;
+    flag_reasons: string | null;
+    blocked: boolean;
+    created_at: string | null;
+  }[];
+  linked_accounts: LinkedAccount[];
+}
+
 type ViewMode = "flagged" | "risky" | "all";
 
 // ─── Helpers ─────────────────────────────────────────────────────
@@ -93,6 +161,166 @@ function signalBadge(sig: string) {
   );
 }
 
+function money(n: number): string {
+  return `₦${n.toLocaleString("en-NG", { minimumFractionDigits: 2 })}`;
+}
+
+function fmtDate(iso: string | null): string {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleString("en-NG", { dateStyle: "medium", timeStyle: "short" });
+}
+
+function orderBadge(s: string): string {
+  switch (s) {
+    case "held": return "bg-blue-100 text-blue-700";
+    case "disputed": return "bg-amber-100 text-amber-700";
+    case "refunded": return "bg-rose-100 text-rose-700";
+    case "released": return "bg-emerald-100 text-emerald-700";
+    case "pending": return "bg-slate-100 text-slate-500";
+    default: return "bg-slate-100 text-slate-600";
+  }
+}
+
+function Field({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div>
+      <dt className="text-[10px] uppercase tracking-wide text-slate-400">{label}</dt>
+      <dd className="text-xs text-slate-800 break-words">{value ?? "—"}</dd>
+    </div>
+  );
+}
+
+function DossierPanel({ d }: { d: Dossier }) {
+  return (
+    <div className="space-y-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Identity */}
+        <section className="rounded-lg border border-slate-200 bg-white p-3">
+          <h4 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Identity</h4>
+          <dl className="space-y-1.5">
+            <Field label="Business" value={d.identity.business_name || d.identity.name} />
+            <Field label="Contact person" value={d.identity.name} />
+            <Field label="Phone" value={<span>{d.identity.phone || "—"}{d.identity.phone_verified && <span className="ml-1 rounded bg-emerald-100 px-1 text-[9px] text-emerald-700">verified</span>}</span>} />
+            <Field label="Email" value={d.identity.email} />
+            <Field label="Store" value={<span className="inline-flex items-center gap-1"><span className={`rounded-full px-1.5 py-0.5 text-[10px] ${d.identity.store_status === "active" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>{d.identity.store_status}</span>{d.identity.storefront_slug ? `/${d.identity.storefront_slug}` : ""}</span>} />
+            {d.identity.store_status_reason && <Field label="Store status reason" value={d.identity.store_status_reason} />}
+            <Field label="Joined" value={fmtDate(d.identity.created_at)} />
+            <Field label="Last login" value={fmtDate(d.identity.last_login)} />
+          </dl>
+        </section>
+        {/* Signup forensics */}
+        <section className="rounded-lg border border-slate-200 bg-white p-3">
+          <h4 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Signup forensics</h4>
+          <dl className="space-y-1.5">
+            <Field label="Risk score" value={<span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold ${riskColor(d.signup_forensics.risk_score)}`}>{d.signup_forensics.risk_score}</span>} />
+            <Field label="Signals" value={<div className="flex flex-wrap gap-1">{d.signup_forensics.risk_signals.length ? d.signup_forensics.risk_signals.map(signalBadge) : "none"}</div>} />
+            <Field label="Source" value={d.signup_forensics.signup_source} />
+            <Field label="Signup IP" value={d.signup_forensics.signup_ip} />
+            <Field label="Device ID" value={d.signup_forensics.signup_device_id} />
+            <Field label="User agent" value={<span className="block max-w-full truncate" title={d.signup_forensics.signup_user_agent || ""}>{d.signup_forensics.signup_user_agent || "—"}</span>} />
+            <Field label="Off-platform attempts" value={<span className={d.signup_forensics.circumvention_attempts > 0 ? "font-semibold text-red-600" : ""}>{d.signup_forensics.circumvention_attempts}</span>} />
+          </dl>
+        </section>
+        {/* Financials */}
+        <section className="rounded-lg border border-slate-200 bg-white p-3">
+          <h4 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Financials</h4>
+          <dl className="space-y-1.5">
+            <Field label="Wallet balance" value={money(d.financials.wallet_balance_naira)} />
+            <Field label="Held in escrow" value={money(d.financials.held_escrow_naira)} />
+            <Field label="Bank" value={d.financials.has_bank_details ? (d.financials.bank_name || "—") : "Not set"} />
+            <Field label="Account no." value={d.financials.account_number_masked} />
+            <Field label="Account name" value={d.financials.account_name} />
+          </dl>
+        </section>
+        {/* Activity */}
+        <section className="rounded-lg border border-slate-200 bg-white p-3">
+          <h4 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Activity</h4>
+          <dl className="space-y-1.5">
+            <Field label="Paid revenue" value={money(d.activity.paid_revenue_naira)} />
+            <Field label="Invoices" value={`${d.activity.paid_invoices} paid / ${d.activity.total_invoices} total`} />
+            <Field label="Storefront orders" value={d.activity.storefront_orders} />
+            <Field label="Unique customers" value={d.activity.unique_customers} />
+            {d.buyer_reputation && (
+              <Field label="As a buyer" value={<span>{d.buyer_reputation.disputes} disputes · {d.buyer_reputation.false_disputes} false{d.buyer_reputation.flagged && <span className="ml-1 rounded bg-red-100 px-1 text-[9px] text-red-700">flagged buyer</span>}</span>} />
+            )}
+            <Field label="Escrow" value={<div className="flex flex-wrap gap-1">{Object.entries(d.activity.escrow_by_status).map(([s, v]) => <span key={s} className={`rounded-full px-1.5 py-0.5 text-[10px] ${orderBadge(s)}`}>{s} {v.count}</span>)}{Object.keys(d.activity.escrow_by_status).length === 0 && "—"}</div>} />
+          </dl>
+        </section>
+      </div>
+
+      {/* Recent orders */}
+      {d.recent_orders.length > 0 && (
+        <section>
+          <h4 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Recent storefront orders</h4>
+          <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
+            <table className="min-w-full divide-y divide-slate-100 text-xs">
+              <thead className="bg-slate-50 text-left text-[10px] uppercase text-slate-400">
+                <tr><th className="px-3 py-2">Order</th><th className="px-3 py-2">Status</th><th className="px-3 py-2">Amount</th><th className="px-3 py-2">Buyer</th><th className="px-3 py-2">Date</th></tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {d.recent_orders.map((o) => (
+                  <tr key={o.escrow_id}>
+                    <td className="px-3 py-2 font-mono text-[10px] text-slate-500">{o.invoice_public_id || o.escrow_id}</td>
+                    <td className="px-3 py-2"><span className={`rounded-full px-1.5 py-0.5 text-[10px] ${orderBadge(o.status)}`}>{o.status}</span>{o.held_for_review && <span className="ml-1 rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] text-amber-700" title={o.review_reason || ""}>review</span>}</td>
+                    <td className="px-3 py-2">{money(o.gross_naira)}</td>
+                    <td className="px-3 py-2">{o.buyer_name || "—"}<span className="block text-[10px] text-slate-400">{o.buyer_phone || ""}</span></td>
+                    <td className="px-3 py-2 text-slate-500">{fmtDate(o.created_at)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
+      {/* Circumvention evidence */}
+      {d.circumvention_evidence.length > 0 && (
+        <section>
+          <h4 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-red-500">Off-platform / circumvention evidence</h4>
+          <div className="space-y-1.5">
+            {d.circumvention_evidence.map((m) => (
+              <div key={m.id} className="rounded-lg border border-red-100 bg-red-50/50 px-3 py-2 text-xs">
+                <div className="flex flex-wrap items-center gap-2 text-[10px] text-slate-400">
+                  <span className="font-medium text-slate-600">{m.sender_role}</span>
+                  {m.blocked && <span className="rounded-full bg-red-100 px-1.5 py-0.5 text-red-700">blocked</span>}
+                  {m.flag_reasons && <span className="text-red-500">{m.flag_reasons}</span>}
+                  <span>{fmtDate(m.created_at)}</span>
+                </div>
+                <p className="mt-0.5 text-slate-700">{m.body_raw}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Linked accounts */}
+      <section>
+        <h4 className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500">Duplicate-account cluster (same IP / device)</h4>
+        {d.linked_accounts.length === 0 ? (
+          <p className="text-xs text-slate-400">No linked accounts.</p>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            {d.linked_accounts.map((la) => (
+              <div key={la.id} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs">
+                <div className="font-medium text-slate-800">{la.business_name || la.name}</div>
+                <div className="text-slate-400">{la.phone || la.email || "—"}</div>
+                <div className="mt-1 flex items-center gap-1">
+                  <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold ${riskColor(la.risk_score)}`}>{la.risk_score}</span>
+                  {la.same_ip && <span className="rounded-full bg-blue-100 px-1.5 py-0.5 text-[10px] text-blue-700">same IP</span>}
+                  {la.same_device && <span className="rounded-full bg-purple-100 px-1.5 py-0.5 text-[10px] text-purple-700">same device</span>}
+                  {la.flagged_for_review && <span className="rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] text-red-700">flagged</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}
+
 // ─── Page ────────────────────────────────────────────────────────
 
 export default function FraudPage() {
@@ -109,7 +337,7 @@ export default function FraudPage() {
   const pageSize = 25;
 
   const [expandedId, setExpandedId] = useState<number | null>(null);
-  const [linked, setLinked] = useState<Record<number, LinkedAccount[]>>({});
+  const [dossier, setDossier] = useState<Record<number, Dossier>>({});
 
   const fetchData = useCallback(async () => {
     if (!token) return;
@@ -138,20 +366,20 @@ export default function FraudPage() {
     fetchData();
   }, [fetchData]);
 
-  async function toggleLinked(id: number) {
+  async function toggleDossier(id: number) {
     if (expandedId === id) {
       setExpandedId(null);
       return;
     }
     setExpandedId(id);
-    if (!linked[id]) {
+    if (!dossier[id]) {
       try {
-        const res = await authFetch(`${API}/admin/fraud/${id}/linked`, {
+        const res = await authFetch(`${API}/admin/fraud/${id}/dossier`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.ok) {
           const body = await res.json();
-          setLinked((prev) => ({ ...prev, [id]: body.linked || [] }));
+          setDossier((prev) => ({ ...prev, [id]: body }));
         }
       } catch {
         /* ignore */
@@ -267,7 +495,7 @@ export default function FraudPage() {
                   </td>
                   <td className="px-4 py-3">
                     {u.linked_account_count > 0 ? (
-                      <button onClick={() => toggleLinked(u.id)} className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700 hover:bg-purple-200">
+                      <button onClick={() => toggleDossier(u.id)} className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700 hover:bg-purple-200">
                         <Users className="h-3 w-3" />{u.linked_account_count}
                         {expandedId === u.id ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
                       </button>
@@ -275,6 +503,7 @@ export default function FraudPage() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1">
+                      <button onClick={() => toggleDossier(u.id)} title="Full account review" className={`rounded-md p-1.5 hover:bg-slate-100 ${expandedId === u.id ? "bg-slate-100 text-slate-900" : "text-slate-500"}`}><FileSearch className="h-4 w-4" /></button>
                       {u.flagged_for_review ? (
                         <button disabled={busyId === u.id} onClick={() => review(u.id, "clear")} title="Mark legitimate" className="rounded-md p-1.5 text-emerald-600 hover:bg-emerald-50 disabled:opacity-50"><ShieldCheck className="h-4 w-4" /></button>
                       ) : (
@@ -285,28 +514,12 @@ export default function FraudPage() {
                   </td>
                 </tr>
                 {expandedId === u.id && (
-                  <tr key={`${u.id}-linked`} className="bg-slate-50">
-                    <td colSpan={6} className="px-4 py-3">
-                      <p className="mb-2 text-xs font-medium text-slate-500">Accounts sharing this IP / device:</p>
-                      {!linked[u.id] ? (
-                        <p className="text-xs text-slate-400">Loading…</p>
-                      ) : linked[u.id].length === 0 ? (
-                        <p className="text-xs text-slate-400">No linked accounts.</p>
+                  <tr key={`${u.id}-dossier`} className="bg-slate-50">
+                    <td colSpan={6} className="px-4 py-4">
+                      {!dossier[u.id] ? (
+                        <p className="text-xs text-slate-400">Loading full account review…</p>
                       ) : (
-                        <div className="flex flex-wrap gap-2">
-                          {linked[u.id].map((la) => (
-                            <div key={la.id} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs">
-                              <div className="font-medium text-slate-800">{la.business_name || la.name}</div>
-                              <div className="text-slate-400">{la.phone || la.email || "—"}</div>
-                              <div className="mt-1 flex items-center gap-1">
-                                <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-bold ${riskColor(la.risk_score)}`}>{la.risk_score}</span>
-                                {la.same_ip && <span className="rounded-full bg-blue-100 px-1.5 py-0.5 text-[10px] text-blue-700">same IP</span>}
-                                {la.same_device && <span className="rounded-full bg-purple-100 px-1.5 py-0.5 text-[10px] text-purple-700">same device</span>}
-                                {la.flagged_for_review && <span className="rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] text-red-700">flagged</span>}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
+                        <DossierPanel d={dossier[u.id]} />
                       )}
                     </td>
                   </tr>
