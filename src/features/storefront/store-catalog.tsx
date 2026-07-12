@@ -267,7 +267,15 @@ export function StoreCatalog({
       )}
       {pendingPay && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
-          <div className="w-full max-w-sm rounded-t-2xl bg-white p-5 text-center sm:rounded-2xl">
+          <div className="relative w-full max-w-sm rounded-t-2xl bg-white p-5 text-center sm:rounded-2xl">
+            <button
+              type="button"
+              aria-label="Back to order"
+              onClick={() => setPendingPay(null)}
+              className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+            >
+              ✕
+            </button>
             <p className="text-sm font-semibold text-slate-900">Save your delivery code</p>
             <p className="mt-1 text-xs text-slate-500">
               Give this code to the seller <span className="font-semibold">only</span> when your
@@ -284,6 +292,13 @@ export function StoreCatalog({
               className="w-full rounded-xl bg-brand-jade py-3 text-sm font-semibold text-white transition hover:bg-brand-jadeHover"
             >
               I&apos;ve saved it — continue to payment
+            </button>
+            <button
+              type="button"
+              onClick={() => setPendingPay(null)}
+              className="mt-2 w-full rounded-xl py-2 text-xs font-medium text-slate-500 hover:text-slate-700"
+            >
+              ← Back to my order
             </button>
           </div>
         </div>
@@ -424,7 +439,7 @@ export function StoreCatalog({
       {/* Checkout modal */}
       {checkoutOpen && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4">
-          <div className="w-full max-w-md rounded-t-2xl bg-white p-5 sm:rounded-2xl">
+          <div className="max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-2xl bg-white p-5 sm:rounded-2xl">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-lg font-bold text-slate-900">Your order</h3>
               <button
