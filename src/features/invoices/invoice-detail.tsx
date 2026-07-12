@@ -5,7 +5,6 @@ import { toast } from "react-hot-toast";
 
 import { invoiceStatusHelpText, invoiceStatusLabels } from "./status-map";
 import { formatPaidAt } from "../../utils/formatDate";
-import { printPdf } from "../../utils/printPdf";
 import { useInvoiceDetail, InvoiceDetail } from "./use-invoice-detail";
 import { buildInvoiceShareLink } from "@/lib/share-link";
 import { useUpdateInvoiceStatus } from "./use-update-invoice-status";
@@ -70,27 +69,6 @@ export function InvoiceDetailPanel({
   const shareLink = invoice?.invoice_id
     ? buildInvoiceShareLink(invoice.invoice_id)
     : "";
-  // Pick the right document to print: receipt PDF when paid, otherwise the
-  // invoice PDF. Returns null if neither is available so we can hide the button.
-  const printableUrl =
-    invoice?.status === "paid" && invoice?.receipt_pdf_url
-      ? invoice.receipt_pdf_url
-      : invoice?.pdf_url ?? null;
-  const printLabel =
-    invoice?.status === "paid" && invoice?.receipt_pdf_url
-      ? "Print Receipt"
-      : "Print Invoice";
-
-  const handlePrint = useCallback(() => {
-    if (!printableUrl) return;
-    try {
-      printPdf(printableUrl);
-      toast.success("Opening PDF — tap your browser's print button");
-    } catch (err) {
-      console.error("Print failed", err);
-      toast.error("Unable to open PDF for printing");
-    }
-  }, [printableUrl]);
 
   const handleCopyLink = useCallback(async () => {
     if (
@@ -197,16 +175,6 @@ export function InvoiceDetailPanel({
             >
               ✅ Receipt
             </a>
-          )}
-          {printableUrl && (
-            <button
-              type="button"
-              onClick={handlePrint}
-              aria-label={printLabel}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-brand-jade bg-brand-jade px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-brand-jadeHover whitespace-nowrap"
-            >
-              🖨 {printLabel}
-            </button>
           )}
         </div>
       </header>
