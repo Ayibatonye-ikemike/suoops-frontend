@@ -211,6 +211,9 @@ export function StoreCatalog({
     location != null &&
     count > 0 &&
     !submitting &&
+    // A delivery address / landmark is always required (the GPS pin may not be
+    // where the buyer wants delivery).
+    deliveryNote.trim().length >= 4 &&
     // If the store offers couriers, the buyer must either pick one or explicitly
     // opt out of delivery (service order / self-pickup).
     (!deliveryEnabled ||
@@ -232,7 +235,7 @@ export function StoreCatalog({
           customer_phone: customerPhone.trim(),
           customer_lat: location?.lat,
           customer_lng: location?.lng,
-          delivery_note: deliveryNote.trim() || undefined,
+          delivery_note: deliveryNote.trim(),
           delivery_courier_id: selectedCourier?.courier_id,
           delivery_service_code: selectedCourier?.service_code,
           items: cartEntries.map(([id, q]) => ({
@@ -604,13 +607,22 @@ export function StoreCatalog({
                     )}
                   </div>
                 )}
-              <textarea
-                value={deliveryNote}
-                onChange={(e) => setDeliveryNote(e.target.value.slice(0, 200))}
-                rows={2}
-                placeholder="Landmark or delivery note (optional) — e.g. blue gate, call on arrival"
-                className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-jade focus:outline-none focus:ring-2 focus:ring-brand-jade/20"
-              />
+              <div>
+                <p className="mb-1 text-xs font-medium text-slate-700">
+                  Delivery address &amp; landmark
+                </p>
+                <textarea
+                  value={deliveryNote}
+                  onChange={(e) => setDeliveryNote(e.target.value.slice(0, 200))}
+                  rows={2}
+                  placeholder="Full delivery address + landmark — e.g. 12 Bourdillon Rd, Ikoyi; blue gate, call on arrival"
+                  className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-jade focus:outline-none focus:ring-2 focus:ring-brand-jade/20"
+                />
+                <p className="mt-1 text-[11px] text-slate-500">
+                  Required — your GPS pin may not be where you want delivery, so
+                  tell the seller exactly where to send it.
+                </p>
+              </div>
             </div>
 
             {error && (
