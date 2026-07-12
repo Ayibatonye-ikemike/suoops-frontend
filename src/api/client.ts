@@ -37,7 +37,14 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   if (typeof window === "undefined") {
     return config;
   }
-  
+
+  // For multipart uploads (photos), let the browser set
+  // "multipart/form-data; boundary=..." itself. The instance default of
+  // application/json would otherwise strip the boundary and break parsing.
+  if (typeof FormData !== "undefined" && config.data instanceof FormData) {
+    config.headers.delete("Content-Type");
+  }
+
   // Add Authorization header if we have an access token
   const token = useAuthStore.getState().accessToken;
   if (token) {

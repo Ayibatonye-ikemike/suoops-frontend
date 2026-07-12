@@ -101,7 +101,11 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
       setFile(null);
       qc.invalidateQueries({ queryKey: ["orderEscrow", invoiceId] });
     },
-    onError: () => toast.error("Could not mark delivered. Please try again."),
+    onError: (err) => {
+      const detail = (err as { response?: { data?: { detail?: string } } })
+        ?.response?.data?.detail;
+      toast.error(detail || "Could not mark delivered. Please try again.");
+    },
   });
 
   const markSent = useMutation({
@@ -128,7 +132,11 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
       setSentFile(null);
       qc.invalidateQueries({ queryKey: ["orderEscrow", invoiceId] });
     },
-    onError: () => toast.error("Could not mark sent out. Please try again."),
+    onError: (err) => {
+      const detail = (err as { response?: { data?: { detail?: string } } })
+        ?.response?.data?.detail;
+      toast.error(detail || "Could not mark sent out. Please try again.");
+    },
   });
 
   if (!escrow) return null;
