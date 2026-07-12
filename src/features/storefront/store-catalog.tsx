@@ -172,20 +172,19 @@ export function StoreCatalog({
         setDeliveryEnabled(Boolean(data.enabled));
         const opts = data.options ?? [];
         setDeliveryOptions(opts);
-        setSelectedCourier((prev) => {
-          if (
-            prev &&
-            opts.some(
-              (o) =>
-                o.courier_id === prev.courier_id &&
-                o.service_code === prev.service_code,
-            )
+        // Keep the buyer's prior choice if it's still offered; otherwise leave
+        // it unselected so they consciously pick a courier (we only *advise*
+        // the cheapest via a badge — we never choose for them).
+        setSelectedCourier((prev) =>
+          prev &&
+          opts.some(
+            (o) =>
+              o.courier_id === prev.courier_id &&
+              o.service_code === prev.service_code,
           )
-            return prev;
-          return opts.length
-            ? [...opts].sort((a, b) => a.amount - b.amount)[0]
-            : null;
-        });
+            ? prev
+            : null,
+        );
       } catch {
         /* aborted or offline — leave delivery unset, order can still proceed */
       } finally {
@@ -201,6 +200,9 @@ export function StoreCatalog({
 
   const deliveryFee = selectedCourier?.amount ?? 0;
   const grandTotal = total + deliveryFee;
+  const cheapestAmount = deliveryOptions.length
+    ? Math.min(...deliveryOptions.map((o) => o.amount))
+    : 0;
 
   const canSubmit =
     customerName.trim().length > 0 &&
@@ -520,8 +522,13 @@ export function StoreCatalog({
                 (deliveryLoading || deliveryOptions.length > 0) && (
                   <div className="rounded-lg border border-slate-200 bg-white p-3">
                     <p className="text-xs font-medium text-slate-700">
-                      Choose delivery
+                      Choose your courier
                     </p>
+                    {!deliveryLoading && !selectedCourier && deliveryOptions.length > 0 && (
+                      <p className="mt-0.5 text-[11px] text-amber-600">
+                        Tap an option to continue — you decide who delivers.
+                      </p>
+                    )}
                     {deliveryLoading ? (
                       <p className="mt-2 text-[11px] text-slate-500">
                         Fetching courier options…
@@ -556,8 +563,14 @@ export function StoreCatalog({
                                 </div>
                               )}
                               <div className="min-w-0 flex-1">
-                                <p className="truncate text-sm font-semibold text-slate-900">
+                                <p className="flex items-center gap-1.5 truncate text-sm font-semibold text-slate-900">
                                   {o.name}
+                                  {deliveryOptions.length > 1 &&
+                                    o.amount === cheapestAmount && (
+                                      <span className="shrink-0 rounded-full bg-brand-jade/10 px-1.5 py-0.5 text-[10px] font-semibold text-brand-jade">
+                                        Cheapest
+                                      </span>
+                                    )}
                                 </p>
                                 {o.delivery_eta && (
                                   <p className="text-[11px] text-slate-500">
