@@ -97,6 +97,20 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
   const isClosed = invoice.status === "cancelled";
   const cur = invoice.currency ?? "NGN";
 
+  // Security: if the checkout was cancelled/closed, wipe the stashed release
+  // code. An unpaid order's code is meaningless and must never linger on the
+  // device (a cancelled Paystack checkout redirects back to this page).
+  useEffect(() => {
+    if (isClosed) {
+      try {
+        window.sessionStorage.removeItem(`suoops_release:${invoiceId}`);
+      } catch {
+        /* ignore */
+      }
+      setReleaseCode(null);
+    }
+  }, [isClosed, invoiceId]);
+
   const handleConfirmTransfer = useCallback(async () => {
     if (isSubmitting || isPaid || isAwaiting || isClosed) return;
 
@@ -357,9 +371,10 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
             </div>
 
             {/* Buyer-only escrow RELEASE code (held storefront orders). Shown
-                after payment on the buyer's own device — this is NOT the courier
+                ONLY after payment is confirmed (never on a cancelled/abandoned
+                checkout) and on the buyer's own device — this is NOT the courier
                 code and the rider never needs it. */}
-            {releaseCode && (
+            {releaseCode && isPaid && (
               <div className="border-b border-slate-100 bg-brand-jade/5 px-6 py-5">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-semibold uppercase tracking-widest text-brand-jade">
