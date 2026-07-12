@@ -27,6 +27,9 @@ interface OrderEscrow {
   dispatch_carrier: string | null;
   dispatch_eta: string | null;
   dispatch_proof_url: string | null;
+  dispatch_tracking_url: string | null;
+  delivery_status: string | null;
+  delivery_status_label: string | null;
   delivery_courier: string | null;
   delivery_service_type: string | null;
   delivery_dropoff_station: string | null;
@@ -167,6 +170,24 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
         </span>
       </div>
       <p className="mt-2 text-sm text-brand-text">{statusLine}</p>
+
+      {escrow.delivery_status &&
+        escrow.delivery_status_label &&
+        escrow.delivery_status !== "delivered" && (
+          <div className="mt-2 flex items-center justify-between gap-2 rounded-md bg-emerald-50 px-3 py-1.5 text-xs text-emerald-800">
+            <span className="font-semibold">🚚 {escrow.delivery_status_label}</span>
+            {escrow.dispatch_tracking_url && (
+              <a
+                href={escrow.dispatch_tracking_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0 font-semibold underline"
+              >
+                Track live →
+              </a>
+            )}
+          </div>
+        )}
 
       {escrow.held && !escrow.held_for_review && (
         <p className="mt-1 text-xs text-brand-textMuted">

@@ -19,8 +19,103 @@ interface OrderView {
   dispatch_tracking: string | null;
   dispatch_carrier: string | null;
   dispatch_eta: string | null;
+  dispatch_tracking_url: string | null;
   dispatch_proof_url: string | null;
+  delivery_status: string | null;
+  delivery_status_label: string | null;
   delivered_at: string | null;
+}
+
+// Buyer-facing delivery progress steps. `pickup_enroute` shares the first step.
+const DELIVERY_STEPS = ["booked", "picked_up", "in_transit", "out_for_delivery", "delivered"] as const;
+const STEP_INDEX: Record<string, number> = {
+  booked: 0,
+  pickup_enroute: 0,
+  picked_up: 1,
+  in_transit: 2,
+  out_for_delivery: 3,
+  delivered: 4,
+};
+
+function DeliveryStatusBanner({ order }: { order: OrderView }) {
+  const status = order.delivery_status;
+  if (!status && !order.dispatched_at) return null;
+
+  if (status === "cancelled" || status === "returned") {
+    return (
+      <div className="mb-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2.5 text-sm text-rose-800">
+        <span className="font-semibold">{order.delivery_status_label || "Delivery issue"}</span>
+        {order.dispatch_tracking_url && (
+          <>
+            {" "}·{" "}
+            <a href={order.dispatch_tracking_url} target="_blank" rel="noopener noreferrer" className="font-semibold underline">
+              Track
+            </a>
+          </>
+        )}
+      </div>
+    );
+  }
+
+  const idx = status ? STEP_INDEX[status] ?? 0 : order.dispatched_at ? 1 : 0;
+  const headline =
+    order.delivery_status_label || (order.dispatched_at ? "On the way" : "Booked");
+  const emoji = ["📦", "🚚", "🛣️", "🛵", "✅"][idx] ?? "📦";
+
+  return (
+    <div className="mb-3 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-3">
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-sm font-semibold text-emerald-900">
+          <span className="mr-1">{emoji}</span>
+          {headline}
+        </p>
+        {order.dispatch_tracking_url && (
+          <a
+            href={order.dispatch_tracking_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 text-xs font-semibold text-emerald-700 underline"
+          >
+            Track live →
+          </a>
+        )}
+      </div>
+      {/* Progress stepper */}
+      <div className="mt-2.5 flex items-center">
+        {DELIVERY_STEPS.map((s, i) => (
+          <div key={s} className="flex flex-1 items-center last:flex-none">
+            <div
+              className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold ${
+                i <= idx ? "bg-emerald-600 text-white" : "bg-emerald-100 text-emerald-400"
+              }`}
+            >
+              {i < idx || (i === idx && status === "delivered") ? "✓" : i + 1}
+            </div>
+            {i < DELIVERY_STEPS.length - 1 && (
+              <div className={`h-0.5 flex-1 ${i < idx ? "bg-emerald-600" : "bg-emerald-100"}`} />
+            )}
+          </div>
+        ))}
+      </div>
+      {(order.dispatch_carrier || order.dispatch_eta || order.dispatch_tracking) && (
+        <p className="mt-2 text-[11px] text-emerald-800">
+          {order.dispatch_carrier ? `Courier: ${order.dispatch_carrier}. ` : ""}
+          {order.dispatch_tracking ? `Tracking: ${order.dispatch_tracking}. ` : ""}
+          {order.dispatch_eta ? `Est. ${formatEta(order.dispatch_eta)}.` : ""}
+        </p>
+      )}
+      {order.dispatch_proof_url && (
+        <a
+          href={order.dispatch_proof_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-1 inline-block text-[11px] font-semibold text-emerald-700 underline"
+        >
+          View packaged-item photo
+        </a>
+      )}
+    </div>
+  );
 }
 
 // Format an ISO date (YYYY-MM-DD) as e.g. "Tue 14 Jul".
@@ -179,27 +274,7 @@ function MessagesModal({
           </>
         ) : (
           <>
-            {order?.dispatched_at && (
-              <div className="mb-3 rounded-lg bg-sky-50 px-3 py-2 text-xs text-sky-800">
-                📦 <span className="font-semibold">Your order is on the way.</span>
-                {order.dispatch_carrier ? ` Courier: ${order.dispatch_carrier}.` : ""}
-                {order.dispatch_tracking ? ` Tracking: ${order.dispatch_tracking}.` : ""}
-                {order.dispatch_eta ? ` Expected: ${formatEta(order.dispatch_eta)}.` : ""}
-                {order.dispatch_proof_url && (
-                  <>
-                    {" "}
-                    <a
-                      href={order.dispatch_proof_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-semibold underline"
-                    >
-                      view photo
-                    </a>
-                  </>
-                )}
-              </div>
-            )}
+            {order && <DeliveryStatusBanner order={order} />}
             <div className="mb-2 max-h-64 space-y-2 overflow-y-auto">
               {messages.length === 0 ? (
                 <p className="text-xs text-slate-500">
