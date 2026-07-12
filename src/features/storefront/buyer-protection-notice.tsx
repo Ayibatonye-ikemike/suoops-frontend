@@ -38,6 +38,9 @@ export function BuyerProtectionNotice({ className = "" }: { className?: string }
           </a>{" "}
           and we&apos;ll help you get your money back.
         </p>
+        <p className="mt-1 text-emerald-800">
+          Pick a courier at checkout and get your order delivered nationwide.
+        </p>
         <p className="mt-1 text-xs text-emerald-700">
           Report within about <span className="font-semibold">12 hours</span> for
           orders in your state, or <span className="font-semibold">3 days</span> for
