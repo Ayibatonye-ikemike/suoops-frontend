@@ -64,6 +64,9 @@ export function StoreCatalog({
   const [deliveryEnabled, setDeliveryEnabled] = useState(false);
   const [deliveryLoading, setDeliveryLoading] = useState(false);
   const [selectedCourier, setSelectedCourier] = useState<CourierOption | null>(null);
+  // Buyer explicitly opted out of courier delivery (service order / self-pickup).
+  // When true, no courier is sent and no delivery fee is charged.
+  const [declinedDelivery, setDeclinedDelivery] = useState(false);
 
   // Discovery: search + category filter.
   const [search, setSearch] = useState("");
@@ -139,6 +142,7 @@ export function StoreCatalog({
     ) {
       setDeliveryOptions([]);
       setSelectedCourier(null);
+      setDeclinedDelivery(false);
       setDeliveryEnabled(false);
       return;
     }
@@ -207,8 +211,12 @@ export function StoreCatalog({
     location != null &&
     count > 0 &&
     !submitting &&
-    // If the store offers couriers, a delivery option must be chosen.
-    (!deliveryEnabled || deliveryOptions.length === 0 || selectedCourier != null);
+    // If the store offers couriers, the buyer must either pick one or explicitly
+    // opt out of delivery (service order / self-pickup).
+    (!deliveryEnabled ||
+      deliveryOptions.length === 0 ||
+      selectedCourier != null ||
+      declinedDelivery);
 
   const submitOrder = async () => {
     if (!canSubmit) return;
@@ -497,11 +505,15 @@ export function StoreCatalog({
                     <p className="text-xs font-medium text-slate-700">
                       Choose your courier
                     </p>
-                    {!deliveryLoading && !selectedCourier && deliveryOptions.length > 0 && (
-                      <p className="mt-0.5 text-[11px] text-amber-600">
-                        Tap an option to continue — you decide who delivers.
-                      </p>
-                    )}
+                    {!deliveryLoading &&
+                      !selectedCourier &&
+                      !declinedDelivery &&
+                      deliveryOptions.length > 0 && (
+                        <p className="mt-0.5 text-[11px] text-amber-600">
+                          Tap an option to continue — or choose “I don’t need
+                          delivery”.
+                        </p>
+                      )}
                     {deliveryLoading ? (
                       <p className="mt-2 text-[11px] text-slate-500">
                         Fetching courier options…
@@ -516,7 +528,10 @@ export function StoreCatalog({
                             <button
                               key={`${o.courier_id}:${o.service_code}`}
                               type="button"
-                              onClick={() => setSelectedCourier(o)}
+                              onClick={() => {
+                                setSelectedCourier(o);
+                                setDeclinedDelivery(false);
+                              }}
                               className={`flex w-full items-center gap-3 rounded-xl border-2 p-2.5 text-left transition ${
                                 sel
                                   ? "border-brand-jade bg-brand-jade/5"
@@ -557,6 +572,34 @@ export function StoreCatalog({
                             </button>
                           );
                         })}
+                        {/* Opt-out: service orders or buyers who self-pickup. */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setDeclinedDelivery(true);
+                            setSelectedCourier(null);
+                          }}
+                          className={`flex w-full items-center gap-3 rounded-xl border-2 p-2.5 text-left transition ${
+                            declinedDelivery
+                              ? "border-brand-jade bg-brand-jade/5"
+                              : "border-slate-200 hover:bg-slate-50"
+                          }`}
+                        >
+                          <div className="flex h-8 w-8 items-center justify-center rounded bg-slate-100 text-sm">
+                            🖐️
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-semibold text-slate-900">
+                              I don’t need delivery
+                            </p>
+                            <p className="text-[11px] text-slate-500">
+                              Service order, or I’ll pick it up myself
+                            </p>
+                          </div>
+                          <span className="shrink-0 text-sm font-bold text-slate-500">
+                            Free
+                          </span>
+                        </button>
                       </div>
                     )}
                   </div>
