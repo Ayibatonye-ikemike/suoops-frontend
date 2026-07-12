@@ -8,7 +8,7 @@
 "use client";
 
 import { useCallback, useState, useEffect } from "react";
-import { savePhone } from "./phone-api";
+import { requestPhoneChangeOtp, savePhone } from "./phone-api";
 import { Button } from "@/components/ui/button";
 
 /**
@@ -51,6 +51,9 @@ export function PhoneNumberSection({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  // Step-up OTP challenge (shown when CHANGING an existing number).
+  const [otpChallenge, setOtpChallenge] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
 
   useEffect(() => {
     if (currentPhone) {
@@ -79,11 +82,31 @@ export function PhoneNumberSection({
 
       setLoading(true);
       const normalizedPhone = normalizePhone(phoneInput);
+      const existing = currentPhone || pendingPhone || "";
+      const isChange = Boolean(existing) && normalizedPhone !== existing;
 
       try {
-        const result = await savePhone({ phone: normalizedPhone });
+        // Changing an existing number requires a step-up code sent to the
+        // current number first.
+        if (isChange && !otpChallenge) {
+          await requestPhoneChangeOtp();
+          setPhone(normalizedPhone);
+          setOtpChallenge(true);
+          setSuccess("We sent a confirmation code to your current number.");
+          return;
+        }
+        if (isChange && otpCode.trim().length < 4) {
+          setError("Enter the confirmation code we sent you.");
+          return;
+        }
+        const result = await savePhone({
+          phone: normalizedPhone,
+          otp: isChange ? otpCode.trim() : undefined,
+        });
         setPhone(normalizedPhone);
         setStep("verified");
+        setOtpChallenge(false);
+        setOtpCode("");
         setSuccess(result.detail || "Phone number saved!");
         onPhoneVerified?.(normalizedPhone);
       } catch (err) {
@@ -95,7 +118,7 @@ export function PhoneNumberSection({
         setLoading(false);
       }
     },
-    [onPhoneVerified],
+    [onPhoneVerified, currentPhone, pendingPhone, otpChallenge, otpCode],
   );
 
   // ── Verified state ────────────────────────────────────────────────
@@ -218,8 +241,32 @@ export function PhoneNumberSection({
             Enter the number you use on WhatsApp — you&apos;ll activate it via our bot.
           </p>
         </div>
+        {otpChallenge && (
+          <div className="space-y-2">
+            <label
+              htmlFor="phone-otp"
+              className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted"
+            >
+              Confirmation code
+            </label>
+            <input
+              id="phone-otp"
+              name="phone-otp"
+              type="text"
+              inputMode="numeric"
+              maxLength={6}
+              value={otpCode}
+              onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+              placeholder="6-digit code"
+              className="w-full rounded-lg border border-brand-border bg-white px-3 py-2.5 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+            />
+            <p className="text-xs text-brand-textMuted">
+              Sent to your current number to confirm it&apos;s you — keeps your account safe.
+            </p>
+          </div>
+        )}
         <Button type="submit" disabled={loading} className="w-full">
-          {loading ? "Saving..." : "Save Number"}
+          {loading ? "Saving..." : otpChallenge ? "Confirm & Save" : "Save Number"}
         </Button>
       </form>
     </div>

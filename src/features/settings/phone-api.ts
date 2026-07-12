@@ -12,6 +12,8 @@ import { apiClient } from "@/api/client";
  */
 export interface AddPhoneRequest {
   phone: string;
+  // Step-up code, required only when CHANGING an existing number.
+  otp?: string;
 }
 
 /**
@@ -30,6 +32,15 @@ export interface PhoneVerificationResponse {
  */
 export async function savePhone(request: AddPhoneRequest): Promise<PhoneVerificationResponse> {
   const response = await apiClient.post<PhoneVerificationResponse>("/users/me/phone", request);
+  return response.data;
+}
+
+/**
+ * Request a step-up code (sent to the CURRENT number/email) to authorise
+ * changing the login phone number.
+ */
+export async function requestPhoneChangeOtp(): Promise<{ detail: string }> {
+  const response = await apiClient.post<{ detail: string }>("/users/me/phone/request-otp");
   return response.data;
 }
 
