@@ -232,29 +232,36 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
                   )}
                 </div>
               )}
-              <input
-                type="text"
-                value={tracking}
-                onChange={(e) => setTracking(e.target.value.slice(0, 120))}
-                placeholder="Courier / waybill tracking code (optional)"
-                className="block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
-              />
-              <input
-                type="text"
-                value={carrier}
-                onChange={(e) => setCarrier(e.target.value.slice(0, 80))}
-                placeholder="Courier / company name — e.g. GIG Logistics (optional)"
-                className="block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
-              />
-              <label className="block text-[11px] font-medium text-sky-800">
-                Expected delivery date (optional)
-              </label>
-              <input
-                type="date"
-                value={sentEta}
-                onChange={(e) => setSentEta(e.target.value)}
-                className="block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
-              />
+              {/* For automated courier orders, Shipbubble fills in the courier,
+                  tracking code and ETA when the pickup is booked — don't ask the
+                  seller to type them. Self-shipped orders still show these. */}
+              {!escrow.delivery_courier && (
+                <>
+                  <input
+                    type="text"
+                    value={tracking}
+                    onChange={(e) => setTracking(e.target.value.slice(0, 120))}
+                    placeholder="Courier / waybill tracking code (optional)"
+                    className="block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+                  />
+                  <input
+                    type="text"
+                    value={carrier}
+                    onChange={(e) => setCarrier(e.target.value.slice(0, 80))}
+                    placeholder="Courier / company name — e.g. GIG Logistics (optional)"
+                    className="block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+                  />
+                  <label className="block text-[11px] font-medium text-sky-800">
+                    Expected delivery date (optional)
+                  </label>
+                  <input
+                    type="date"
+                    value={sentEta}
+                    onChange={(e) => setSentEta(e.target.value)}
+                    className="block w-full rounded-lg border border-brand-border bg-white px-3 py-2 text-sm text-brand-text focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+                  />
+                </>
+              )}
               <textarea
                 value={sentNote}
                 onChange={(e) => setSentNote(e.target.value.slice(0, 255))}
