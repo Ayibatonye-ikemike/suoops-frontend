@@ -129,20 +129,20 @@ function ReportModal({
   apiBaseUrl: string;
   onClose: () => void;
 }) {
-  const [phone, setPhone] = useState("");
+  const [code, setCode] = useState("");
   const [reason, setReason] = useState("");
   const [state, setState] = useState<"idle" | "saving" | "done" | "error">("idle");
   const [message, setMessage] = useState<string | null>(null);
 
   const submit = async () => {
-    if (phone.trim().length < 6 || reason.trim().length < 3) return;
+    if (code.trim().length < 4 || reason.trim().length < 3) return;
     setState("saving");
     try {
       const res = await fetch(`${apiBaseUrl}/public/store/${slug}/report-problem`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         cache: "no-store",
-        body: JSON.stringify({ phone: phone.trim(), reason: reason.trim() }),
+        body: JSON.stringify({ code: code.trim(), reason: reason.trim() }),
       });
       const data = (await res.json().catch(() => ({}))) as { message?: string; detail?: string };
       if (!res.ok) throw new Error(data.detail || data.message || "Could not send your report.");
@@ -174,15 +174,15 @@ function ReportModal({
           <>
             <p className="mb-3 text-xs text-slate-500">
               Your payment is safely held. Tell us what went wrong and our team will step in —
-              enter the phone number you ordered with.
+              enter your 6-digit release code so we know it&apos;s you.
             </p>
             <input
-              type="tel"
-              inputMode="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="Phone you ordered with"
-              className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-jade focus:outline-none focus:ring-2 focus:ring-brand-jade/20"
+              type="text"
+              inputMode="numeric"
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+              placeholder="6-digit release code"
+              className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-center text-lg tracking-[0.3em] focus:border-brand-jade focus:outline-none focus:ring-2 focus:ring-brand-jade/20"
             />
             <textarea
               value={reason}
@@ -197,7 +197,7 @@ function ReportModal({
             <button
               type="button"
               onClick={submit}
-              disabled={phone.trim().length < 6 || reason.trim().length < 3 || state === "saving"}
+              disabled={code.trim().length < 4 || reason.trim().length < 3 || state === "saving"}
               className="mt-4 w-full rounded-xl bg-slate-800 py-3 text-sm font-semibold text-white transition hover:bg-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {state === "saving" ? "Sending…" : "Submit report"}
