@@ -23,6 +23,7 @@ export async function middleware(req: NextRequest) {
   }
 
   const clientIp =
+    req.headers.get("cf-connecting-ip")?.trim() ||
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     req.headers.get("x-real-ip")?.trim() ||
     "";
@@ -30,7 +31,11 @@ export async function middleware(req: NextRequest) {
   try {
     const res = await fetch(`${API_URL}/admin/auth/ip-allowed`, {
       method: "GET",
-      headers: clientIp ? { "x-forwarded-for": clientIp } : {},
+      // Forward the real visitor IP in X-Client-IP — a header the intermediary
+      // proxies (Cloudflare/Render) don't rewrite. X-Forwarded-For would get an
+      // extra Vercel→Cloudflare hop appended, so the backend would evaluate the
+      // allowlist against a proxy IP and wrongly block the visitor.
+      headers: clientIp ? { "x-client-ip": clientIp } : {},
       cache: "no-store",
     });
     if (res.ok) {
