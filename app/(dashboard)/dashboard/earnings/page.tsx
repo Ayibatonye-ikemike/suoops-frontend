@@ -18,17 +18,14 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { StatCard } from "@/components/ui/stat-card";
 
 interface EarningsData {
-  first_purchase_earned: number;
-  recurring_earned: number;
-  perpetual_earned: number;
   total_earned: number;
+  online_earned: number;
+  topup_earned: number;
   total_signups: number;
   total_conversions: number;
   pending_payout: number;
   custom_link: string | null;
-  commission_first: number;
-  commission_recurring: number;
-  commission_perpetual_pct: number;
+  commission_pct: number;
   recent_earnings: {
     date: string;
     type: string;
@@ -47,9 +44,11 @@ interface PayoutBank {
 }
 
 const TYPE_LABELS: Record<string, string> = {
-  commission_first_purchase: "First Purchase",
+  commission_online: "Online sale",
+  commission_perpetual: "Wallet top-up",
+  commission_first_purchase: "First purchase",
   commission_recurring: "Recurring",
-  commission_perpetual: "Perpetual",
+  commission: "Commission",
 };
 
 export default function EarningsPage() {
@@ -203,17 +202,14 @@ export default function EarningsPage() {
   }
 
   const e = earnings ?? {
-    first_purchase_earned: 0,
-    recurring_earned: 0,
-    perpetual_earned: 0,
     total_earned: 0,
+    online_earned: 0,
+    topup_earned: 0,
     total_signups: 0,
     total_conversions: 0,
     pending_payout: 0,
     custom_link: null,
-    commission_first: 500,
-    commission_recurring: 200,
-    commission_perpetual_pct: 5,
+    commission_pct: 20,
     recent_earnings: [],
   };
 
@@ -301,26 +297,18 @@ export default function EarningsPage() {
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm text-brand-textMuted">
-                First Purchases
+                From online sales
               </span>
               <span className="font-semibold text-brand-text">
-                {fmt(e.first_purchase_earned)}
+                {fmt(e.online_earned)}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-brand-textMuted">
-                Recurring (2nd–3rd)
+                From wallet top-ups
               </span>
               <span className="font-semibold text-brand-text">
-                {fmt(e.recurring_earned)}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-brand-textMuted">
-                Perpetual ({e.commission_perpetual_pct}%)
-              </span>
-              <span className="font-semibold text-brand-text">
-                {fmt(e.perpetual_earned)}
+                {fmt(e.topup_earned)}
               </span>
             </div>
             <div className="border-t border-brand-border pt-3">
@@ -345,36 +333,21 @@ export default function EarningsPage() {
           <CardContent className="space-y-4">
             <div className="rounded-xl bg-brand-bg p-3">
               <p className="text-xs font-medium uppercase tracking-wide text-brand-textMuted">
-                1st Purchase
+                Your commission
               </p>
-              <p className="mt-1 text-xl font-bold text-brand-primary">
-                {fmt(e.commission_first)}
-              </p>
-            </div>
-            <div className="rounded-xl bg-brand-bg p-3">
-              <p className="text-xs font-medium uppercase tracking-wide text-brand-textMuted">
-                2nd & 3rd Purchase
-              </p>
-              <p className="mt-1 text-xl font-bold text-brand-primary">
-                {fmt(e.commission_recurring)}
+              <p className="mt-1 text-2xl font-bold text-brand-primary">
+                {e.commission_pct}%
                 <span className="text-sm font-normal text-brand-textMuted">
                   {" "}
-                  each
+                  of SuoOps&apos; fee
                 </span>
               </p>
             </div>
-            <div className="rounded-xl bg-brand-bg p-3">
-              <p className="text-xs font-medium uppercase tracking-wide text-brand-textMuted">
-                Every Purchase After
-              </p>
-              <p className="mt-1 text-xl font-bold text-brand-primary">
-                {e.commission_perpetual_pct}%
-                <span className="text-sm font-normal text-brand-textMuted">
-                  {" "}
-                  forever
-                </span>
-              </p>
-            </div>
+            <p className="text-sm text-brand-textMuted">
+              You earn {e.commission_pct}% of the 3% SuoOps charges on every referred
+              business&apos;s sales and wallet top-ups — ongoing, for as long as
+              they&apos;re active.
+            </p>
           </CardContent>
         </Card>
       </div>
