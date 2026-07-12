@@ -36,6 +36,7 @@ interface Dispute {
   seller_circumvention_attempts: number;
   payout_state: string;
   transfer_reference: string | null;
+  payout_eta: string | null;
   disputed_at: string | null;
   created_at: string | null;
 }
@@ -79,6 +80,8 @@ function payoutLabel(state: string): { text: string; cls: string } {
       return { text: "Payout failed", cls: "bg-rose-100 text-rose-700" };
     case "refunded":
       return { text: "Refunded", cls: "bg-rose-100 text-rose-700" };
+    case "scheduled":
+      return { text: "Payout scheduled", cls: "bg-blue-50 text-blue-700" };
     case "unknown":
       return { text: "Payout status unknown", cls: "bg-slate-100 text-slate-600" };
     default:
@@ -417,7 +420,16 @@ export default function DisputesPage() {
                   <p className="text-xs text-slate-400">payout {money(d.payout_naira)}</p>
                   {(() => {
                     const st = payoutLive[d.escrow_id] ?? d.payout_state;
-                    const b = payoutLabel(st);
+                    const b =
+                      st === "scheduled" && d.payout_eta
+                        ? {
+                            text: `Auto-pays ${new Date(d.payout_eta).toLocaleString(
+                              "en-NG",
+                              { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" },
+                            )}`,
+                            cls: "bg-blue-50 text-blue-700",
+                          }
+                        : payoutLabel(st);
                     return (
                       <span
                         className={`mt-1 inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${b.cls}`}
