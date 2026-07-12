@@ -35,7 +35,7 @@ function formatEta(iso: string): string {
 }
 
 /**
- * Buyer-side order chat, authenticated by the buyer-only delivery code. Delivery
+ * Buyer-side order chat, authenticated by the buyer-only release code. Delivery
  * coordination only — the seller can't share contact/bank details or push an
  * off-platform payment (the backend masks/blocks those). Reassures the buyer to
  * never move the deal off SuoOps.
@@ -94,7 +94,7 @@ function MessagesModal({
         order?: OrderView;
         detail?: string;
       };
-      if (!res.ok) throw new Error(data.detail || "That delivery code isn't valid.");
+      if (!res.ok) throw new Error(data.detail || "That release code isn't valid.");
       setMessages(data.messages ?? []);
       setOrder(data.order ?? null);
       setLoaded(true);
@@ -156,7 +156,7 @@ function MessagesModal({
         {!loaded ? (
           <>
             <p className="mb-3 text-xs text-slate-500">
-              Enter your <span className="font-semibold">delivery code</span> to open your order
+              Enter your <span className="font-semibold">release code</span> to open your order
               chat. Keep payments and contact on SuoOps — that&apos;s what protects you.
             </p>
             <input
@@ -164,7 +164,7 @@ function MessagesModal({
               inputMode="numeric"
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-              placeholder="6-digit delivery code"
+              placeholder="6-digit release code"
               className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-center text-lg tracking-[0.3em] focus:border-brand-jade focus:outline-none focus:ring-2 focus:ring-brand-jade/20"
             />
             {err && <p className="mt-2 text-xs text-rose-600">{err}</p>}

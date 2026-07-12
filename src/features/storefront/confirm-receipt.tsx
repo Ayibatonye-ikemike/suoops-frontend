@@ -91,15 +91,15 @@ function ConfirmModal({
           <>
             <p className="mb-3 text-xs text-slate-500">
               Only confirm once you actually have your order — this releases your payment to the
-              seller. Enter the <span className="font-semibold">delivery code</span> we sent you
-              (also shown when you ordered).
+              seller. Enter the <span className="font-semibold">release code</span> we sent you
+              (also shown on your payment page). It&apos;s not the rider&apos;s code.
             </p>
             <input
               type="text"
               inputMode="numeric"
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-              placeholder="6-digit delivery code"
+              placeholder="6-digit release code"
               className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-center text-lg tracking-[0.3em] focus:border-brand-jade focus:outline-none focus:ring-2 focus:ring-brand-jade/20"
             />
             {state === "error" && message && (

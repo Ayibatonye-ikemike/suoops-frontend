@@ -74,6 +74,20 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
   const [error, setError] = useState<string | null>(null);
   const [isPolling, setIsPolling] = useState(false);
   const [payLoading, setPayLoading] = useState(false);
+  // Buyer-only escrow RELEASE code for held storefront orders. It's stashed in
+  // this browser's localStorage at checkout (keyed by invoice) and revealed here
+  // AFTER payment — it never reaches the seller or the rider.
+  const [releaseCode, setReleaseCode] = useState<string | null>(null);
+  const [codeCopied, setCodeCopied] = useState(false);
+
+  useEffect(() => {
+    try {
+      const code = window.localStorage.getItem(`suoops_release:${invoiceId}`);
+      if (code) setReleaseCode(code);
+    } catch {
+      /* storage blocked — the code is also on the buyer's WhatsApp */
+    }
+  }, [invoiceId]);
 
   const isPaid = invoice.status === "paid";
   const isAwaiting = invoice.status === "awaiting_confirmation";
@@ -338,6 +352,39 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
                 )}
               </div>
             </div>
+
+            {/* Buyer-only escrow RELEASE code (held storefront orders). Shown
+                after payment on the buyer's own device — this is NOT the courier
+                code and the rider never needs it. */}
+            {releaseCode && (
+              <div className="border-b border-slate-100 bg-brand-jade/5 px-6 py-5">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-semibold uppercase tracking-widest text-brand-jade">
+                    Your release code
+                  </h3>
+                  <button
+                    onClick={() => {
+                      copyField("release", releaseCode);
+                      setCodeCopied(true);
+                      setTimeout(() => setCodeCopied(false), 2000);
+                    }}
+                    className="rounded-full bg-white px-3 py-1 text-xs font-medium text-brand-jade ring-1 ring-brand-jade/20 transition hover:bg-brand-jade/10"
+                    aria-label="Copy release code"
+                  >
+                    {codeCopied ? "✓ Copied" : "Copy"}
+                  </button>
+                </div>
+                <div className="my-3 rounded-xl bg-white py-4 text-center text-3xl font-bold tracking-[0.4em] text-brand-jade ring-1 ring-brand-jade/10">
+                  {releaseCode}
+                </div>
+                <p className="text-xs leading-relaxed text-slate-600">
+                  Give this code to the <span className="font-semibold">seller</span>{" "}
+                  <span className="font-semibold">only after your order is in your hands</span> — it
+                  releases your payment. The delivery rider never needs it. We&apos;ve also sent it
+                  to your WhatsApp.
+                </p>
+              </div>
+            )}
 
             {/* Line Items — Transparency builds trust */}
             {lines.length > 0 && (

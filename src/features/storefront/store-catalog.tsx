@@ -48,9 +48,6 @@ export function StoreCatalog({
   const [deliveryNote, setDeliveryNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // Set when a held order returns a buyer-only delivery code: we show it before
-  // sending the buyer to payment so they can save it for confirming delivery.
-  const [pendingPay, setPendingPay] = useState<{ code: string; url: string } | null>(null);
 
   // Courier delivery options (buyer-pays-delivery). Empty/disabled → no fee.
   type CourierOption = {
@@ -240,14 +237,25 @@ export function StoreCatalog({
         const data = (await res.json().catch(() => ({}))) as { detail?: string };
         throw new Error(data.detail || "Could not place your order. Please try again.");
       }
-      const data = (await res.json()) as { authorization_url?: string; delivery_code?: string };
+      const data = (await res.json()) as {
+        authorization_url?: string;
+        delivery_code?: string;
+        invoice_id?: string;
+      };
       if (data.authorization_url) {
-        // Held order → show the buyer-only delivery code before paying, so they
-        // can confirm delivery later. Otherwise go straight to payment.
-        if (data.delivery_code) {
-          setPendingPay({ code: data.delivery_code, url: data.authorization_url });
-          setSubmitting(false);
-          return;
+        // Held order → stash the buyer-only RELEASE code on this device so we can
+        // reveal it AFTER payment (on the /pay return page), never before the
+        // buyer commits money and never to anyone but this buyer's own browser.
+        // It's also sent to their WhatsApp as the durable copy.
+        if (data.delivery_code && data.invoice_id) {
+          try {
+            window.localStorage.setItem(
+              `suoops_release:${data.invoice_id}`,
+              data.delivery_code,
+            );
+          } catch {
+            /* storage blocked — the code still arrives via WhatsApp */
+          }
         }
         window.location.href = data.authorization_url;
         return;
@@ -265,44 +273,6 @@ export function StoreCatalog({
         <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center text-sm text-slate-600">
           🔒 This store isn&apos;t taking online orders yet. Check back soon — ordering opens once
           the seller turns on secure online payments.
-        </div>
-      )}
-      {pendingPay && (
-        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
-          <div className="relative w-full max-w-sm rounded-t-2xl bg-white p-5 text-center sm:rounded-2xl">
-            <button
-              type="button"
-              aria-label="Back to order"
-              onClick={() => setPendingPay(null)}
-              className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600"
-            >
-              ✕
-            </button>
-            <p className="text-sm font-semibold text-slate-900">Save your delivery code</p>
-            <p className="mt-1 text-xs text-slate-500">
-              Give this code to the seller <span className="font-semibold">only</span> when your
-              order arrives — it releases your payment. We&apos;ve also sent it to your WhatsApp.
-            </p>
-            <div className="my-4 rounded-xl bg-brand-jade/10 py-4 text-3xl font-bold tracking-[0.4em] text-brand-jade">
-              {pendingPay.code}
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                window.location.href = pendingPay.url;
-              }}
-              className="w-full rounded-xl bg-brand-jade py-3 text-sm font-semibold text-white transition hover:bg-brand-jadeHover"
-            >
-              I&apos;ve saved it — continue to payment
-            </button>
-            <button
-              type="button"
-              onClick={() => setPendingPay(null)}
-              className="mt-2 w-full rounded-xl py-2 text-xs font-medium text-slate-500 hover:text-slate-700"
-            >
-              ← Back to my order
-            </button>
-          </div>
         </div>
       )}
       {/* Search + category filter */}
