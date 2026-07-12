@@ -324,6 +324,26 @@ export default function DisputesPage() {
                       {d.invoice_public_id || `#${d.invoice_id}`}
                     </span>
                   </div>
+                  {d.created_at && (
+                    <p className="mt-0.5 text-[11px] text-slate-400">
+                      Ordered{" "}
+                      {new Date(d.created_at).toLocaleString("en-NG", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                      {d.disputed_at
+                        ? ` · disputed ${new Date(d.disputed_at).toLocaleString("en-NG", {
+                            day: "numeric",
+                            month: "short",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}`
+                        : ""}
+                    </p>
+                  )}
                   <p className="mt-1 text-sm text-slate-600">
                     Seller:{" "}
                     <span className="font-medium">
