@@ -106,13 +106,13 @@ export default async function OgImage() {
             lineHeight: 1.35,
           }}
         >
-          Buyer-protected commerce for African business — your money is held safely
-          until the order arrives.
+          Buyer-protected commerce for African business — a storefront with
+          built-in courier delivery, held safely until the order arrives.
         </div>
 
         {/* Pillar badges */}
         <div style={{ display: "flex", gap: "16px", marginTop: "36px" }}>
-          {["🛍️ Marketplace", "🛡️ Buyer Protection", "⚙️ Operations"].map(
+          {["🛍️ Storefront", "🚚 Delivery", "🛡️ Buyer Protection"].map(
             (tag) => (
               <div
                 key={tag}
