@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronDown, ChevronRight, HelpCircle, FileText, CreditCard, MessageCircle, Shield } from "lucide-react";
+import { ChevronDown, ChevronRight, HelpCircle, FileText, CreditCard, MessageCircle, Shield, Truck } from "lucide-react";
 
 interface FAQItem {
   question: string;
@@ -91,6 +91,32 @@ const faqCategories: FAQCategory[] = [
       {
         question: "Are there any other fees?",
         answer: "Just the flat 3% per invoice. For storefront/online card and transfer payments, a small payment-processing fee from the payment provider may also apply."
+      }
+    ]
+  },
+  {
+    title: "Storefront & Delivery",
+    icon: <Truck className="h-5 w-5" />,
+    faqs: [
+      {
+        question: "How does my online storefront work?",
+        answer: "Turn on your storefront and share your shop link (suoops.com/store/your-name) anywhere — WhatsApp, Instagram, your bio. Customers browse your products, place an order, and pay online. Every order is held under buyer protection until it's delivered, then settles to your bank."
+      },
+      {
+        question: "How does delivery work?",
+        answer: "At checkout the customer sees live courier options (GIG, Fez, Sendbox, Gokada and more) with prices and delivery times, picks one, and pays for delivery as part of their order. When you're ready to ship, open the order and mark it 'Sent' — SuoOps books the courier for you. The customer can track it, and you're paid after it's delivered."
+      },
+      {
+        question: "Who pays for delivery?",
+        answer: "The customer chooses and pays for delivery at checkout, on top of the item price — you don't fund it. The courier is booked from the delivery fee the buyer paid. Buyers who don't need delivery (a service, or self-pickup) can choose 'I don't need delivery'."
+      },
+      {
+        question: "Is my payment protected as a buyer?",
+        answer: "Yes. Your payment is held safely and the seller is only paid after your order is delivered. If something goes wrong — wrong item, or it never arrives — report a problem with your release code and get a refund if it isn't resolved. Your bank transfer is confirmed instantly and no card details are stored."
+      },
+      {
+        question: "When do I (the seller) get paid for a storefront order?",
+        answer: "The buyer pays up front, but the money is held under buyer protection. For a courier order you're settled after the courier reports delivery (plus a short inspection window); for pickup orders, after the buyer confirms or the protection window ends. Payouts go straight to your Nigerian bank on the next daily settlement run — with no card chargebacks."
       }
     ]
   },

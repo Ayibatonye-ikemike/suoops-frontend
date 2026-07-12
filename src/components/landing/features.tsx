@@ -26,13 +26,13 @@ export function Features() {
             />
             <StepCard
               number={3}
-              title="Customers pay online"
-              description="Share your storefront or invoice link — customers pay by bank transfer, and orders auto-confirm and settle to your bank."
+              title="Customers order & pay online"
+              description="Share your storefront link — customers pay by transfer (held under buyer protection) and pick a courier for delivery right at checkout."
             />
             <StepCard
               number={4}
-              title="Track everything"
-              description="See who's paid, what stock is low, and whether you're tax-safe — all in one dashboard."
+              title="Ship & track everything"
+              description="Mark the order sent and we book the rider. See who's paid, what stock is low, and whether you're tax-safe — all in one dashboard."
             />
           </div>
         </div>
@@ -62,11 +62,21 @@ export function Features() {
               title="🛒 Storefront & online payments"
               features={[
                 "Share a public shop link on WhatsApp, Instagram or your bio",
-                "Customers browse your products and pay by bank transfer",
-                "Orders auto-confirm and settle straight to your bank",
-                "Just a flat 3% per invoice — no monthly fees, no plans",
+                "Customers browse, pay by bank transfer, and pick a courier at checkout",
+                "Every order is held under buyer protection until it's delivered",
+                "You just mark it sent — we settle you after delivery",
               ]}
               highlight="Your own online storefront, live in minutes."
+            />
+            <FeatureCard
+              title="🚚 Delivery, handled for you"
+              features={[
+                "Customers pick a courier and pay for delivery right at checkout",
+                "Nationwide couriers — GIG, Fez, Sendbox, Gokada and more",
+                "Just mark the order sent and we book the rider automatically",
+                "You're paid after it's delivered, so buyers order with confidence",
+              ]}
+              highlight="Sell to anyone in Nigeria — delivery is built in."
             />
             <FeatureCard
               title="📦 Inventory that actually helps you sell"

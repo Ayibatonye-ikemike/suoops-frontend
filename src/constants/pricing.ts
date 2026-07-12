@@ -63,6 +63,7 @@ export const FREE_PLAN: Plan = {
   features: [
     "All features included — no plans",
     "3% per invoice (min ₦20), from your wallet",
+    "Buyer-protected storefront with courier delivery",
     "Storefront: 3% only when the customer pays",
     "Custom branding, inventory, team & voice",
     "Tax reports, insights & daily summary",

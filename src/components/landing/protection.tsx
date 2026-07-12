@@ -18,8 +18,8 @@ export function Protection() {
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-brand-charcoal/70">
             When a customer pays, the money is held safely until the item is
-            delivered. Buyers shop without fear, sellers get paid without
-            chargebacks.
+            delivered — by a courier they pick at checkout. Buyers shop without
+            fear, sellers get paid without chargebacks.
           </p>
         </div>
 
@@ -35,6 +35,7 @@ export function Protection() {
             <ul className="mt-6 space-y-4">
               {[
                 "Your money is held safely — the seller is only paid after you get your order.",
+                "Choose a courier at checkout and track your delivery to your door.",
                 "Pay by bank transfer, confirmed instantly. No card details stored.",
                 "Something wrong? Open a dispute and get a refund if it's not resolved.",
               ].map((t) => (
@@ -57,6 +58,7 @@ export function Protection() {
             <ul className="mt-6 space-y-4">
               {[
                 "Guaranteed funds — the buyer has already paid before you ship.",
+                "Mark an order sent and we book the courier — you're paid after delivery.",
                 "No card chargebacks or fraud reversals eating your revenue.",
                 "Automatic daily settlement straight to your Nigerian bank account.",
               ].map((t) => (

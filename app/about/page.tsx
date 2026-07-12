@@ -8,14 +8,14 @@ import { AboutCTA } from "./about-cta";
 export const metadata: Metadata = {
   title: "About — The commerce operating system for African business",
   description:
-    "SuoOps is a commerce operating system that helps businesses sell, get paid, manage operations, and reach customers through a trusted marketplace built for Africa.",
+    "SuoOps is a commerce operating system that helps African businesses sell, get paid, deliver nationwide, manage operations, and reach customers through a trusted, buyer-protected marketplace.",
 };
 
 const PILLARS = [
   {
     icon: "🛍️",
     title: "Commerce",
-    body: "A shareable storefront, product discovery across shops, and a marketplace where buyers find and order from real African businesses.",
+    body: "A shareable storefront, product discovery across shops, buyer-picked courier delivery nationwide, and a marketplace where buyers find and order from real African businesses.",
   },
   {
     icon: "⚙️",
@@ -53,9 +53,9 @@ export default function AboutPage() {
             The commerce operating system for African business
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-white/80">
-            SuoOps helps businesses sell, get paid, manage operations, and reach
-            customers through a trusted marketplace — built for how African
-            businesses already work.
+            SuoOps helps businesses sell, get paid, deliver nationwide, manage
+            operations, and reach customers through a trusted marketplace —
+            built for how African businesses already work.
           </p>
         </div>
       </section>

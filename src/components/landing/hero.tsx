@@ -23,8 +23,8 @@ export function Hero({ onWatchDemo }: HeroProps) {
             </h1>
             <p className="mt-6 text-lg text-white/80 max-w-lg">
               SuoOps is the commerce operating system for African business — a
-              buyer-protected storefront, online payments, orders, inventory and
-              invoicing, in one platform.
+              buyer-protected storefront with built-in courier delivery, online
+              payments, orders, inventory and invoicing, in one platform.
             </p>
             <p className="mt-4 text-sm text-white/60 max-w-lg">
               Commerce, operations &amp; trust — built for how you already sell on
@@ -131,7 +131,10 @@ export function Hero({ onWatchDemo }: HeroProps) {
 
 function FeaturePills() {
   const features = [
-    { emoji: "💬", text: "WhatsApp invoices" },
+    { emoji: "�️", text: "Online storefront" },
+    { emoji: "🚚", text: "Nationwide delivery" },
+    { emoji: "🛡️", text: "Buyer protection" },
+    { emoji: "�💬", text: "WhatsApp invoices" },
     { emoji: "📧", text: "Email delivery" },
     { emoji: "🔐", text: "QR verification" },
     { emoji: "📱", text: "Mobile-first" },

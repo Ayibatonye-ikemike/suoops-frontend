@@ -25,7 +25,8 @@ export function Pricing() {
             <div className="text-3xl mb-2">🛍️</div>
             <h3 className="text-lg font-bold text-brand-evergreen">Storefront orders</h3>
             <p className="mt-2 text-sm text-brand-charcoal/70">
-              Share your store link. Customers order and pay online instantly.
+              Share your store link. Customers order, pay online, and pick a
+              courier for delivery — held under buyer protection until it arrives.
             </p>
             <p className="mt-4 text-3xl font-bold text-brand-evergreen">3%</p>
             <p className="text-sm text-brand-charcoal/50">
@@ -52,8 +53,9 @@ export function Pricing() {
           <div className="text-4xl mb-2">🎉</div>
           <h3 className="text-xl font-bold text-white">All features, free.</h3>
           <p className="mt-2 text-brand-mint">
-            Custom branding, inventory, team, tax reports, insights & storefront —
-            included for everyone. You only pay when you invoice.
+            Custom branding, inventory, team, tax reports, insights, storefront,
+            courier delivery &amp; buyer protection — included for everyone. You
+            only pay when you invoice.
           </p>
           <Link
             href={registerHref}

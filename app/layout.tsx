@@ -16,12 +16,14 @@ export const metadata: Metadata = {
     template: "%s | SuoOps",
   },
   description:
-    "SuoOps is the commerce operating system for African business — a buyer-protected storefront, online payments, orders, inventory and invoicing in one platform. Sell, get paid, manage operations, and grow.",
+    "SuoOps is the commerce operating system for African business — a buyer-protected storefront with built-in courier delivery, online payments, orders, inventory and invoicing in one platform. Sell, get paid, deliver nationwide, and grow.",
   keywords: [
     "commerce operating system",
     "marketplace Nigeria",
     "buyer protection",
     "storefront",
+    "courier delivery",
+    "nationwide delivery",
     "online payments",
     "WhatsApp commerce",
     "invoice",
@@ -40,13 +42,13 @@ export const metadata: Metadata = {
     siteName: "SuoOps",
     title: "SuoOps — Sell, Get Paid & Grow, all in one place",
     description:
-      "The commerce operating system for African business: a buyer-protected storefront, payments, orders, inventory and invoicing — built for how you already sell on WhatsApp.",
+      "The commerce operating system for African business: a buyer-protected storefront with courier delivery, payments, orders, inventory and invoicing — built for how you already sell on WhatsApp.",
   },
   twitter: {
     card: "summary_large_image",
     title: "SuoOps — The Commerce Operating System for African Business",
     description:
-      "Sell, get paid, manage operations, and grow — with buyer protection built in. Commerce, operations & trust in one platform.",
+      "Sell, get paid, deliver nationwide, and grow — with buyer protection built in. Commerce, operations & trust in one platform.",
   },
 };
 
