@@ -208,6 +208,39 @@ export default function UsersPage() {
     }
   }
 
+  // Credit a business's prepaid wallet (free invoice fees). Super-admin only
+  // (enforced by the backend) + audited + capped at ₦500,000 per credit.
+  async function creditWallet() {
+    if (!token || !selectedUser) return;
+    const raw = window.prompt("Amount to credit (₦), max 500,000:");
+    if (!raw) return;
+    const amount = Math.floor(Number(raw));
+    if (!Number.isFinite(amount) || amount <= 0 || amount > 500000) {
+      setError("Enter a valid amount between ₦1 and ₦500,000.");
+      return;
+    }
+    const reason = window.prompt("Reason for this credit (audited):");
+    if (!reason || reason.trim().length < 3) {
+      setError("A reason (min 3 characters) is required.");
+      return;
+    }
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
+      const res = await fetch(`${apiUrl}/admin/users/${selectedUser.id}/credit-wallet`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ amount_naira: amount, reason: reason.trim() }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.detail || "Failed to credit wallet");
+      }
+      await fetchUserDetails(selectedUser.id);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Credit failed");
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -527,7 +560,16 @@ export default function UsersPage() {
                         <div className="mt-4 p-4 rounded-lg bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-100">
                           <div className="flex items-center justify-between mb-3">
                             <h4 className="text-sm font-semibold text-slate-700">Invoice Wallet</h4>
-                            <span className="text-lg font-bold text-purple-600">₦{(userActivity.wallet_balance_naira || 0).toLocaleString()}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-lg font-bold text-purple-600">₦{(userActivity.wallet_balance_naira || 0).toLocaleString()}</span>
+                              <button
+                                onClick={creditWallet}
+                                title="Credit wallet (free invoice fees)"
+                                className="rounded-md bg-purple-600 px-2 py-1 text-xs font-medium text-white transition hover:bg-purple-700"
+                              >
+                                Credit
+                              </button>
+                            </div>
                           </div>
                           <div className="grid grid-cols-2 gap-3 text-sm">
                             <div>
