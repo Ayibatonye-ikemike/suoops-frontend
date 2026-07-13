@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { initializeWalletTopup } from "@/api/subscription";
 import { apiClient } from "@/api/client";
-import { WALLET_TOPUP_TIERS, walletNaira, topupCoverage } from "@/constants/pricing";
+import { WALLET_TOPUP_TIERS, walletNaira } from "@/constants/pricing";
 
 export default function TopUpWalletPage() {
   const router = useRouter();
@@ -75,9 +75,7 @@ export default function TopUpWalletPage() {
               }`}
             >
               <p className="text-lg font-bold text-brand-jade">₦{tier.toLocaleString()}</p>
-              <p className="mt-1 text-[10px] text-brand-textMuted">
-                covers ~₦{topupCoverage(tier).toLocaleString()}
-              </p>
+              <p className="mt-1 text-[10px] text-brand-textMuted">added to wallet</p>
             </button>
           ))}
         </div>
@@ -96,17 +94,12 @@ export default function TopUpWalletPage() {
                   ₦{(walletBalance + amount).toLocaleString()}
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-brand-textMuted">Covers roughly</span>
-                <span className="font-medium">
-                  ~₦{topupCoverage(amount).toLocaleString()} in typical invoices
-                </span>
-              </div>
             </div>
             <p className="mt-3 text-[11px] leading-snug text-brand-textMuted">
-              Estimated at the full 3% (invoices ₦667–₦66,667). Bigger invoices
-              stretch much further — the fee caps at ₦2,000 per ₦500,000, so a
-              ₦500,000 invoice costs just ₦2,000.
+              You&apos;re only charged 3% of each invoice from your wallet — and
+              never more than ₦2,000 for every ₦500,000. So a ₦500,000 invoice
+              costs ₦2,000, a ₦1,000,000 invoice ₦4,000, and small invoices as
+              little as ₦20.
             </p>
           </div>
 
