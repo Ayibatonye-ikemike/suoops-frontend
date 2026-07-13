@@ -99,10 +99,15 @@ export default function TopUpWalletPage() {
               <div className="flex justify-between">
                 <span className="text-brand-textMuted">Covers roughly</span>
                 <span className="font-medium">
-                  ₦{topupCoverage(amount).toLocaleString()} of invoices
+                  ~₦{topupCoverage(amount).toLocaleString()} in typical invoices
                 </span>
               </div>
             </div>
+            <p className="mt-3 text-[11px] leading-snug text-brand-textMuted">
+              Estimated at the full 3% (invoices ₦667–₦66,667). Bigger invoices
+              stretch much further — the fee caps at ₦2,000 per ₦500,000, so a
+              ₦500,000 invoice costs just ₦2,000.
+            </p>
           </div>
 
           {error && (
