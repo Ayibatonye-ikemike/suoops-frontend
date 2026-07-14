@@ -377,7 +377,7 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
             {releaseCode && isPaid && (
               <div className="border-b border-slate-100 bg-brand-jade/5 px-6 py-5">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-semibold uppercase tracking-widest text-brand-jade">
+                  <h3 className="text-xs font-semibold uppercase tracking-widest text-brand-jadeText">
                     Your release code
                   </h3>
                   <button

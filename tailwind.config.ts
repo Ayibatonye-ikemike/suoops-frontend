@@ -20,6 +20,10 @@ const config: Config = {
           // Accents & Surfaces
           jade: "#14B56A", // Primary CTA buttons
           jadeHover: "#109456", // Darker shade for hover states on CTAs
+          // Accessible green for TEXT/links on light backgrounds (≈5.4:1 on white,
+          // WCAG AA). Use this instead of `jade` for readable green text; keep
+          // `jade` for buttons/icon accents.
+          jadeText: "#0B7A44",
           teal: "#0F766E", // Secondary UI elements
           citrus: "#BFF74A", // Promo highlights (<10%)
           textMuted: "#E8F5EC", // Light surfaces/cards

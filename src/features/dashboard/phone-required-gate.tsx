@@ -105,7 +105,7 @@ export function PhoneRequiredGate({ children }: { children: React.ReactNode }) {
             </p>
             <button
               onClick={() => queryClient.invalidateQueries({ queryKey: ["currentUser"] })}
-              className="mt-2 text-xs text-brand-jade hover:underline"
+              className="mt-2 text-xs text-brand-jadeText hover:underline"
             >
               I&apos;ve sent a message — refresh
             </button>

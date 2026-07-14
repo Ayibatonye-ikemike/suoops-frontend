@@ -141,7 +141,7 @@ export function FeatureDiscoveryTips() {
           {currentTip.action && (
             <Link
               href={currentTip.action.href}
-              className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-brand-jade hover:text-brand-jadeHover transition"
+              className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-brand-jadeText hover:text-brand-jadeHover transition"
             >
               {currentTip.action.label}
               <ChevronRight className="h-3 w-3" />

@@ -74,7 +74,7 @@ export default function TopUpWalletPage() {
                   : "border-slate-200 bg-white hover:border-slate-300"
               }`}
             >
-              <p className="text-lg font-bold text-brand-jade">₦{tier.toLocaleString()}</p>
+              <p className="text-lg font-bold text-brand-jadeText">₦{tier.toLocaleString()}</p>
               <p className="mt-1 text-[10px] text-brand-textMuted">added to wallet</p>
             </button>
           ))}

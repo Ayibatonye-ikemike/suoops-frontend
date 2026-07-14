@@ -558,7 +558,7 @@ export default function TaxPage() {
                 </p>
                 <Link
                   href="/dashboard/expenses"
-                  className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-brand-jade hover:text-brand-teal transition"
+                  className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-brand-jadeText hover:text-brand-teal transition"
                 >
                   💸 Add expenses on the Expenses page →
                 </Link>
