@@ -1,3 +1,13 @@
+import {
+  CheckCircle2,
+  MessageCircle,
+  Package,
+  Receipt,
+  ShoppingBag,
+  Truck,
+  type LucideIcon,
+} from "lucide-react";
+
 export function Features() {
   return (
     <>
@@ -49,7 +59,8 @@ export function Features() {
 
           <div className="grid gap-8 md:grid-cols-2">
             <FeatureCard
-              title="✅ Invoicing, without complexity"
+              icon={CheckCircle2}
+              title="Invoicing, without complexity"
               features={[
                 "Create and send invoices in seconds",
                 "Track paid, pending, and overdue invoices",
@@ -59,7 +70,8 @@ export function Features() {
               highlight="Every feature included — just 3% per invoice, capped at ₦2,000 per ₦500,000."
             />
             <FeatureCard
-              title="🛒 Storefront & online payments"
+              icon={ShoppingBag}
+              title="Storefront & online payments"
               features={[
                 "Share a public shop link on WhatsApp, Instagram or your bio",
                 "Customers browse, pay by bank transfer, and pick a courier at checkout",
@@ -69,7 +81,8 @@ export function Features() {
               highlight="Your own online storefront, live in minutes."
             />
             <FeatureCard
-              title="🚚 Delivery, handled for you"
+              icon={Truck}
+              title="Delivery, handled for you"
               features={[
                 "Customers pick a courier and pay for delivery right at checkout",
                 "Nationwide couriers — GIG, Fez, Sendbox, Gokada and more",
@@ -79,7 +92,8 @@ export function Features() {
               highlight="Sell to anyone in Nigeria — delivery is built in."
             />
             <FeatureCard
-              title="📦 Inventory that actually helps you sell"
+              icon={Package}
+              title="Inventory that actually helps you sell"
               features={[
                 "Manage products and categories",
                 "Automatic stock updates when invoicing",
@@ -87,7 +101,8 @@ export function Features() {
               ]}
             />
             <FeatureCard
-              title="🧾 Simple tax insight (Nigeria-focused)"
+              icon={Receipt}
+              title="Simple tax insight (Nigeria-focused)"
               features={[
                 "See your tax band clearly",
                 "Know when you're exempt",
@@ -96,7 +111,8 @@ export function Features() {
               note="Small businesses under ₦100M annual turnover are exempt from Company Income Tax (NTA 2025)."
             />
             <FeatureCard
-              title="💬 WhatsApp Bot (your unfair advantage)"
+              icon={MessageCircle}
+              title="WhatsApp Bot (your unfair advantage)"
               features={[
                 "Create invoices by chat",
                 "Receive invoice notifications",
@@ -130,16 +146,20 @@ function StepCard({ number, title, description }: StepCardProps) {
 }
 
 interface FeatureCardProps {
+  icon: LucideIcon;
   title: string;
   features: string[];
   note?: string;
   highlight?: string;
 }
 
-function FeatureCard({ title, features, note, highlight }: FeatureCardProps) {
+function FeatureCard({ icon: Icon, title, features, note, highlight }: FeatureCardProps) {
   return (
     <div className="p-6 bg-brand-mint rounded-xl">
-      <h3 className="text-xl font-bold text-brand-evergreen mb-4">{title}</h3>
+      <h3 className="mb-4 flex items-center gap-2 text-xl font-bold text-brand-evergreen">
+        <Icon className="h-5 w-5 shrink-0 text-brand-jade" />
+        {title}
+      </h3>
       <ul className="space-y-3">
         {features.map((feature, i) => (
           <li key={i} className="flex items-start gap-2 text-brand-charcoal/80">

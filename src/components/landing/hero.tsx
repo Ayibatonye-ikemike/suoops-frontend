@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Settings, ShieldCheck, ShoppingBag } from "lucide-react";
 import { useRegisterHref } from "@/hooks/use-tracking-params";
 
 interface HeroProps {
@@ -48,15 +49,15 @@ export function Hero({ onWatchDemo }: HeroProps) {
             {/* Positioning pillars: Commerce · Operations · Trust */}
             <div className="mt-8 flex flex-wrap gap-2">
               {[
-                { icon: "🛍️", label: "Commerce" },
-                { icon: "⚙️", label: "Operations" },
-                { icon: "🛡️", label: "Trust" },
+                { Icon: ShoppingBag, label: "Commerce" },
+                { Icon: Settings, label: "Operations" },
+                { Icon: ShieldCheck, label: "Trust" },
               ].map((p) => (
                 <span
                   key={p.label}
                   className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-sm font-medium text-white/90"
                 >
-                  <span aria-hidden>{p.icon}</span>
+                  <p.Icon className="h-4 w-4" aria-hidden />
                   {p.label}
                 </span>
               ))}

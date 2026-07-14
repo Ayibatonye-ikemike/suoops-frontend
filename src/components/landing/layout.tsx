@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Store } from "lucide-react";
 
 import { MobileMenu } from "./mobile-menu";
 import { useRegisterHref } from "@/hooks/use-tracking-params";
@@ -45,9 +46,10 @@ export function Navigation() {
             </Link>
             <Link
               href="/stores"
-              className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-brand-jade/60 px-3 py-1.5 text-sm font-semibold text-brand-jadeText transition-colors hover:bg-brand-jade hover:text-white"
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-brand-jade/60 px-3 py-1.5 text-sm font-semibold text-brand-jade transition-colors hover:bg-brand-jade hover:text-white"
             >
-              🛍️ Browse Shops
+              <Store className="h-4 w-4" />
+              Browse Shops
             </Link>
             <a
               href="https://support.suoops.com"

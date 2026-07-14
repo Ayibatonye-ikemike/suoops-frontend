@@ -5,13 +5,16 @@
  * protection until it's delivered — buyers pay safely, sellers get paid without
  * chargebacks. A strong section (not the hero), placed after "how it works".
  */
+import { ShieldCheck, ShoppingCart, Store } from "lucide-react";
+
 export function Protection() {
   return (
     <section className="bg-brand-mint px-4 py-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="text-center">
           <span className="inline-flex items-center gap-2 rounded-full bg-brand-jade/15 px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-brand-teal">
-            🛡 Buyer &amp; Seller Protection
+            <ShieldCheck className="h-3.5 w-3.5" />
+            Buyer &amp; Seller Protection
           </span>
           <h2 className="mt-4 font-heading text-3xl font-bold text-brand-evergreen sm:text-4xl">
             Every order is protected — for both sides
@@ -27,8 +30,8 @@ export function Protection() {
           {/* Buyers */}
           <div className="rounded-3xl bg-white p-8 shadow-card ring-1 ring-brand-teal/10">
             <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-jade/10 text-2xl">
-                🛒
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-jade/10">
+                <ShoppingCart className="h-6 w-6 text-brand-jade" />
               </span>
               <h3 className="text-xl font-bold text-brand-evergreen">For buyers</h3>
             </div>
@@ -50,8 +53,8 @@ export function Protection() {
           {/* Sellers */}
           <div className="rounded-3xl bg-white p-8 shadow-card ring-1 ring-brand-teal/10">
             <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-jade/10 text-2xl">
-                🏪
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-jade/10">
+                <Store className="h-6 w-6 text-brand-jade" />
               </span>
               <h3 className="text-xl font-bold text-brand-evergreen">For sellers</h3>
             </div>

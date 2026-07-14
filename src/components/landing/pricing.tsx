@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Receipt, Store } from "lucide-react";
 import { FREE_PLAN } from "../../constants/pricing";
 import { useRegisterHref } from "@/hooks/use-tracking-params";
 
@@ -22,7 +23,7 @@ export function Pricing() {
         <div className="mt-12 grid gap-6 md:grid-cols-2 max-w-3xl mx-auto">
           {/* Storefront */}
           <div className="rounded-2xl bg-white p-6 border border-brand-teal/10 shadow-sm">
-            <div className="text-3xl mb-2">🛍️</div>
+            <Store className="mb-2 h-8 w-8 text-brand-jade" />
             <h3 className="text-lg font-bold text-brand-evergreen">Storefront orders</h3>
             <p className="mt-2 text-sm text-brand-charcoal/70">
               Share your store link. Customers order, pay online, and pick a
@@ -36,7 +37,7 @@ export function Pricing() {
 
           {/* Manual invoices */}
           <div className="rounded-2xl bg-white p-6 border-2 border-brand-jade shadow-sm">
-            <div className="text-3xl mb-2">🧾</div>
+            <Receipt className="mb-2 h-8 w-8 text-brand-jade" />
             <h3 className="text-lg font-bold text-brand-evergreen">Manual invoices</h3>
             <p className="mt-2 text-sm text-brand-charcoal/70">
               Create and send invoices yourself, confirm payment your way.
