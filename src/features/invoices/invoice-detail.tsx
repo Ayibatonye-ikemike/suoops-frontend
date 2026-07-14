@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
+import { FileText, Receipt } from "lucide-react";
 
 import { invoiceStatusHelpText, invoiceStatusLabels } from "./status-map";
 import { formatPaidAt } from "../../utils/formatDate";
@@ -167,7 +168,8 @@ export function InvoiceDetailPanel({
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 rounded-lg border border-brand-jade bg-brand-jade px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-brand-jadeHover whitespace-nowrap"
             >
-              📄 PDF
+              <FileText className="h-3.5 w-3.5" />
+              PDF
             </a>
           )}
           {invoice.receipt_pdf_url && invoice.status === "paid" && (
@@ -177,7 +179,8 @@ export function InvoiceDetailPanel({
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-600 bg-white px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-600 hover:text-white whitespace-nowrap"
             >
-              ✅ Receipt
+              <Receipt className="h-3.5 w-3.5" />
+              Receipt
             </a>
           )}
         </div>
