@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import { Lock, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { initializeWalletTopup } from "@/api/subscription";
 import { apiClient } from "@/api/client";
@@ -58,7 +59,7 @@ export default function TopUpWalletPage() {
                 ₦{walletBalance.toLocaleString()}
               </p>
             </div>
-            <div className="text-4xl">👛</div>
+            <Wallet className="h-9 w-9 text-brand-jade" />
           </div>
         </div>
 
@@ -117,7 +118,8 @@ export default function TopUpWalletPage() {
           </Button>
 
           <p className="mt-4 text-center text-xs text-brand-textMuted">
-            🔒 Secure payment via Paystack · a small processing fee is added at checkout
+            <Lock className="mr-1 inline-block h-3 w-3 align-text-bottom" />
+            Secure payment via Paystack · a small processing fee is added at checkout
           </p>
         </div>
 

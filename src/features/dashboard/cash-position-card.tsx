@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { AlertTriangle, Coins, Hourglass, TrendingUp } from "lucide-react";
 import { getCashPosition } from "@/api/analytics";
 import { useCurrency } from "@/hooks/use-currency";
 
@@ -33,28 +34,28 @@ export function CashPositionCard() {
       label: "Cash In Today",
       value: formatCompact(data.cash_collected_today),
       sub: `This week: ${formatCompact(data.cash_collected_this_week)}`,
-      icon: "💰",
+      Icon: Coins,
       color: "text-emerald-400",
     },
     {
       label: "Outstanding",
       value: formatCompact(data.total_outstanding),
       sub: `${data.overdue_count} overdue`,
-      icon: "⏳",
+      Icon: Hourglass,
       color: data.total_outstanding > 0 ? "text-amber-400" : "text-emerald-400",
     },
     {
       label: "Overdue",
       value: formatCompact(data.total_overdue),
       sub: data.overdue_count > 0 ? "Send reminders →" : "All clear ✓",
-      icon: "⚠️",
+      Icon: AlertTriangle,
       color: data.total_overdue > 0 ? "text-red-400" : "text-emerald-400",
     },
     {
       label: "Expected (7 days)",
       value: formatCompact(data.expected_inflow_7_days),
       sub: `${data.invoices_created_today} invoices today`,
-      icon: "📈",
+      Icon: TrendingUp,
       color: "text-blue-400",
     },
   ];
@@ -67,7 +68,7 @@ export function CashPositionCard() {
           className="rounded-lg border border-brand-border bg-white p-3 shadow-card sm:p-4"
         >
           <div className="mb-1 flex items-center gap-1.5">
-            <span className="text-lg">{card.icon}</span>
+            <card.Icon className={`h-4 w-4 ${card.color}`} />
             <span className="text-[11px] font-medium text-brand-muted sm:text-xs">
               {card.label}
             </span>
