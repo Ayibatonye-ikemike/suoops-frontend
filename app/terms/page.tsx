@@ -27,7 +27,7 @@ export default function TermsPage() {
       <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
         <h1 className="text-4xl font-bold text-slate-900">Terms of Service</h1>
         <p className="mt-4 text-lg text-slate-600">
-          Last updated: July 8, 2026
+          Last updated: July 14, 2026
         </p>
 
         <div className="mt-12 space-y-8 text-slate-700">
@@ -44,16 +44,16 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-bold text-slate-900">2. Description of Service</h2>
             <p className="mt-4">
-              SuoOps is a WhatsApp and Email-based invoice management platform that allows businesses to:
+              SuoOps is a commerce operating system for businesses. It allows businesses to:
             </p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
-              <li>Create invoices via text messages or receipt photos on WhatsApp</li>
-              <li>Send invoices to customers via WhatsApp and Email</li>
-              <li>Generate professional PDF invoices with custom branding (logos)</li>
-              <li>Track invoice status and payments with QR code verification</li>
+              <li>Create and send invoices and receipts from the web dashboard, WhatsApp or email, with custom branding, PDF and QR verification</li>
+              <li>Run a buyer-protected online storefront where customers browse, order and pay online</li>
+              <li>Accept online payments and settle proceeds to your bank</li>
+              <li>Arrange courier delivery for storefront orders (buyer-paid at checkout)</li>
+              <li>Manage inventory, expenses, customers and team members</li>
               <li>Receive automated tax compliance reports (VAT and development levy calculations)</li>
-              <li>Manage customer information and payment details</li>
-              <li>Sign in securely using Google OAuth (optional)</li>
+              <li>Sign in securely using phone or email one-time codes (OTP), and optionally Google</li>
             </ul>
           </section>
 
@@ -70,24 +70,33 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-slate-900">4. Subscription Plans</h2>
-            <p className="mt-4">We offer the following subscription tiers:</p>
+            <h2 className="text-2xl font-bold text-slate-900">4. Pricing &amp; Fees</h2>
+            <p className="mt-4">
+              SuoOps is free to use — there are no subscription plans. We charge a flat
+              commission per invoice:
+            </p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
-              <li><strong>Free Plan:</strong> ₦0 - 2 free invoices to start</li>
-              <li><strong>Starter Plan:</strong> No monthly fee - Buy invoice packs (₦1,250 per 50) + Tax reports & automation</li>
-              <li><strong>Pro Pack:</strong> ₦2,000 one-time - 20 invoices + 30 days of premium features (custom branding, tax reports, inventory, team & insights) + Priority support. No auto-renewal.</li>
-              <li><strong>Pro Features Subscription:</strong> ₦1,500/month (plus a small payment-processing fee) - recurring monthly access to premium features only (no invoices included). Auto-renews each month until cancelled.</li>
+              <li><strong>3% per invoice</strong> (minimum ₦20), <strong>capped at ₦2,000 for invoices up to ₦500,000</strong>, then +₦2,000 for every additional ₦500,000. For manually created invoices this fee is charged from your prepaid wallet when the invoice is created.</li>
+              <li><strong>Storefront orders:</strong> the 3% commission is charged only when the customer pays online.</li>
+              <li><strong>Wallet top-ups:</strong> you fund your prepaid wallet (e.g. ₦1,250 / ₦5,000 / ₦20,000) to cover invoice fees. Top-ups are not a subscription and do not auto-renew.</li>
             </ul>
             <p className="mt-4">
-              <strong>Invoice Packs:</strong> All plans can purchase additional invoice packs at ₦1,250 per 50 invoices. Starter plan users buy packs as needed with no monthly subscription fee.
+              The exact fee for each invoice is shown in-app before you confirm, and our
+              fees may change with notice.
             </p>
-          </section>          <section>
+          </section>
+          <section>
             <h2 className="text-2xl font-bold text-slate-900">5. Payment Terms</h2>
             <p className="mt-4">
-              Subscription payments are processed securely through Paystack. By subscribing, you authorize us to charge your payment method on a recurring basis. We do not store your card details.
+              Wallet top-ups and online payments are processed securely through our
+              payment partners (e.g. Paystack, Flutterwave). We do not store your card
+              details.
             </p>
             <p className="mt-4">
-              <strong>Refund Policy:</strong> We offer a 7-day money-back guarantee for first-time subscribers. After 7 days, subscription fees are non-refundable. You may cancel at any time to prevent future charges.
+              <strong>Refunds:</strong> wallet balances are consumed as per-invoice fees
+              and are generally non-refundable once used; an unused balance may be
+              refunded at our discretion. Refunds to storefront <em>buyers</em> are
+              governed by Section 7.1 (Storefront Orders &amp; Buyer Protection).
             </p>
           </section>
 
@@ -177,42 +186,22 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-slate-900">8.1. Premium Features (Business+ Plans)</h2>
+            <h2 className="text-2xl font-bold text-slate-900">8.1. Photo OCR &amp; Custom Branding</h2>
             <p className="mt-4">
-              The following premium features are available exclusively on Business and Enterprise plans:
+              These features are included free for all businesses:
             </p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
-              <li><strong>Photo OCR:</strong> Snap receipt photos and AI automatically extracts invoice details</li>
+              <li><strong>Photo OCR:</strong> Snap a receipt photo and AI extracts the invoice details automatically</li>
+              <li><strong>Custom Branding:</strong> Upload your logo for branded invoices and receipts</li>
             </ul>
-            <p className="mt-4">
-              <strong>Custom Branding</strong> (logo upload) is available on Pro, Business, and Enterprise plans.
-            </p>
             <p className="mt-4">
               <strong>Important:</strong> Receipt photos are processed using AI and immediately deleted after extraction. We do not store these files permanently.
             </p>
           </section>
-
           <section>
             <h2 className="text-2xl font-bold text-slate-900">8.2. Tax Compliance Automation</h2>
             <p className="mt-4">
-              Starter, Pro, Business, and Enterprise plans receive automated monthly tax compliance reports that include:
-            </p>
-            <ul className="mt-4 list-disc space-y-2 pl-6">
-              <li>VAT (Value Added Tax) calculations on taxable sales</li>
-              <li>Development Levy calculations (4% for non-small businesses)</li>
-              <li>Taxable, zero-rated, and exempt sales breakdowns</li>
-              <li>Assessable profit calculations based on paid invoices</li>
-            </ul>
-            <p className="mt-4">
-              Free plan users do NOT receive automated tax reports. Upgrade to Starter or higher to unlock this feature.
-            </p>
-            <p className="mt-4">
-              <strong>Disclaimer:</strong> Tax reports are generated automatically based on your invoice data and Nigerian tax laws as of the last update. These are for informational purposes and should be reviewed by a tax professional. We are not responsible for tax filing accuracy or compliance with FIRS (Federal Inland Revenue Service) regulations. You are solely responsible for filing taxes and verifying calculations.
-            </p>
-          </section>          <section>
-            <h2 className="text-2xl font-bold text-slate-900">8.2. Tax Compliance Automation</h2>
-            <p className="mt-4">
-              All users (including Free plan) receive automated monthly tax compliance reports that include:
+              All businesses receive automated monthly tax compliance reports that include:
             </p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
               <li>VAT (Value Added Tax) calculations on taxable sales</li>
@@ -277,11 +266,10 @@ export default function TermsPage() {
             <ul className="mt-4 list-disc space-y-2 pl-6">
               <li>Violation of these Terms</li>
               <li>Fraudulent or illegal activity</li>
-              <li>Non-payment of subscription fees</li>
-              <li>Extended inactivity (free accounts only)</li>
+              <li>Extended inactivity</li>
             </ul>
             <p className="mt-4">
-              You may cancel your subscription at any time from your dashboard. Upon termination, you will lose access to your data after 30 days unless you export it.
+              You may close your account at any time from your dashboard. Upon termination, you will lose access to your data after 30 days unless you export it.
             </p>
           </section>
 
@@ -323,7 +311,7 @@ export default function TermsPage() {
           <section className="rounded-lg bg-blue-50 p-6">
             <h3 className="text-lg font-bold text-slate-900">Quick Summary</h3>
             <p className="mt-2 text-sm">
-              By using SuoOps, you agree to: (1) Use the Service responsibly and legally, (2) Pay subscription fees on time, (3) Verify customer payments yourself, (4) Not hold us liable for payment disputes or WhatsApp issues, and (5) Accept that we may update these Terms with notice.
+              By using SuoOps, you agree to: (1) Use the Service responsibly and legally, (2) Keep your wallet funded for invoice fees, (3) Verify customer payments yourself, (4) Not hold us liable for payment disputes or delivery issues, and (5) Accept that we may update these Terms with notice.
             </p>
           </section>
         </div>
