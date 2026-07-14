@@ -17,6 +17,7 @@ import {
   Settings as SettingsIcon,
   TrendingUp,
   User as UserIcon,
+  Wallet,
 } from "lucide-react";
 
 import { useLogout } from "@/features/auth/use-auth-session";
@@ -246,6 +247,14 @@ export function DashboardNav() {
                 >
                   <SettingsIcon className="h-4 w-4 text-slate-500" />
                   Settings
+                </Link>
+                <Link
+                  href="/dashboard/billing/purchase"
+                  role="menuitem"
+                  className="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50"
+                >
+                  <Wallet className="h-4 w-4 text-slate-500" />
+                  Bills &amp; Payments
                 </Link>
                 <button
                   type="button"

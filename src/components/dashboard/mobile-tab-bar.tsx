@@ -16,6 +16,7 @@ import {
   Settings as SettingsIcon,
   Store,
   TrendingUp,
+  Wallet,
   X,
 } from "lucide-react";
 
@@ -44,6 +45,7 @@ const MORE_TABS: TabItem[] = [
   { href: "/dashboard/analytics", label: "Insights", Icon: BarChart3, gate: "CASH_DASHBOARD" },
   { href: "/dashboard/tax", label: "Tax", Icon: Landmark, gate: "TAX_REPORTS" },
   { href: "/dashboard/earnings", label: "Earnings", Icon: TrendingUp, gate: "INFLUENCER" },
+  { href: "/dashboard/billing/purchase", label: "Bills & Payments", Icon: Wallet, gate: null },
   { href: "/dashboard/settings", label: "Settings", Icon: SettingsIcon, gate: null },
 ];
 
