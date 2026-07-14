@@ -14,8 +14,8 @@ export function Pricing() {
             Simple pricing: 3%. That&apos;s it.
           </h2>
           <p className="mt-4 text-lg text-brand-charcoal/70 max-w-2xl mx-auto">
-            No plans. No monthly fees. Every feature is free — Suoops just takes a
-            flat <strong>3% per invoice</strong>.
+            No plans. No monthly fees. Every feature is free — Suoops just takes
+            <strong> 3% per invoice</strong>, capped at ₦2,000 per ₦500,000.
           </p>
         </div>
 
