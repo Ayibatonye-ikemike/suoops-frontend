@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { ShoppingBag } from "lucide-react";
 
 import { getConfig } from "@/lib/config";
 
@@ -65,7 +66,8 @@ export function Marketplace() {
     <section className="relative overflow-hidden border-b border-brand-teal/10 bg-gradient-to-b from-white to-brand-mint px-4 py-12 sm:py-16">
       <div className="mx-auto max-w-5xl text-center">
         <span className="inline-flex items-center gap-2 rounded-full bg-brand-jade/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-brand-teal">
-          🛍️ Suoops Marketplace
+          <ShoppingBag className="h-3.5 w-3.5" />
+          Suoops Marketplace
         </span>
         <h2 className="mt-4 font-heading text-3xl font-bold text-brand-evergreen sm:text-4xl lg:text-5xl">
           Buy from real Nigerian shops — protected

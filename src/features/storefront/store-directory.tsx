@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { ShieldCheck } from "lucide-react";
 
 type StoreCard = {
   slug: string;
@@ -156,7 +157,8 @@ export function StoreDirectory({
                 {/* Card header — brand band + logo, marketplace look */}
                 <div className="relative h-20 bg-gradient-to-br from-brand-evergreen to-brand-teal">
                   <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-white/95 px-2 py-0.5 text-[10px] font-bold text-brand-jade shadow-sm">
-                    🛡 Protected
+                    <ShieldCheck className="h-3 w-3" />
+                    Protected
                   </span>
                   <div className="absolute -bottom-6 left-1/2 -translate-x-1/2">
                     {s.logo_url ? (
