@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Bike, CheckCircle2, Package, Truck } from "lucide-react";
 
 import { getConfig } from "@/lib/config";
 
@@ -60,13 +61,13 @@ function DeliveryStatusBanner({ order }: { order: OrderView }) {
   const idx = status ? STEP_INDEX[status] ?? 0 : order.dispatched_at ? 1 : 0;
   const headline =
     order.delivery_status_label || (order.dispatched_at ? "On the way" : "Booked");
-  const emoji = ["📦", "🚚", "🛣️", "🛵", "✅"][idx] ?? "📦";
+  const StepIcon = [Package, Truck, Truck, Bike, CheckCircle2][idx] ?? Package;
 
   return (
     <div className="mb-3 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-3">
       <div className="flex items-center justify-between gap-2">
-        <p className="text-sm font-semibold text-emerald-900">
-          <span className="mr-1">{emoji}</span>
+        <p className="flex items-center gap-1.5 text-sm font-semibold text-emerald-900">
+          <StepIcon className="h-4 w-4 shrink-0" />
           {headline}
         </p>
         {order.dispatch_tracking_url && (

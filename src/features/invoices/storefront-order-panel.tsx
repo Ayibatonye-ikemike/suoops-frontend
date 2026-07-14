@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { Bike, Package, Truck } from "lucide-react";
 
 import { apiClient } from "@/api/client";
 
@@ -175,7 +176,7 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
         escrow.delivery_status_label &&
         escrow.delivery_status !== "delivered" && (
           <div className="mt-2 flex items-center justify-between gap-2 rounded-md bg-emerald-50 px-3 py-1.5 text-xs text-emerald-800">
-            <span className="font-semibold">🚚 {escrow.delivery_status_label}</span>
+            <span className="flex items-center gap-1 font-semibold"><Truck className="h-3.5 w-3.5 shrink-0" />{escrow.delivery_status_label}</span>
             {escrow.dispatch_tracking_url && (
               <a
                 href={escrow.dispatch_tracking_url}
@@ -207,7 +208,8 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
           proof you shipped a quality item, and the buyer is told it's on the way. */}
       {escrow.dispatched_at ? (
         <div className="mt-3 rounded-md bg-sky-50 px-3 py-2 text-xs text-sky-800">
-          📦 You marked this sent out
+          <Package className="mr-1 inline-block h-3.5 w-3.5 align-text-bottom" />
+          You marked this sent out
           {escrow.dispatch_carrier ? ` via ${escrow.dispatch_carrier}` : ""}
           {escrow.dispatch_tracking ? ` — tracking ${escrow.dispatch_tracking}` : ""}
           {escrow.dispatch_eta ? ` · arriving ${formatEta(escrow.dispatch_eta)}` : ""}
@@ -237,7 +239,8 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
                 <div className="rounded-md bg-amber-50 px-3 py-2 text-[11px] text-amber-800">
                   {escrow.delivery_service_type === "dropoff" ? (
                     <>
-                      📦 Drop this package off for{" "}
+                      <Package className="mr-1 inline-block h-3.5 w-3.5 align-text-bottom" />
+                      Drop this package off for{" "}
                       <span className="font-semibold">{escrow.delivery_courier}</span>
                       {escrow.delivery_dropoff_station
                         ? ` at: ${escrow.delivery_dropoff_station}`
@@ -246,7 +249,8 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
                     </>
                   ) : (
                     <>
-                      🚴 <span className="font-semibold">{escrow.delivery_courier}</span>{" "}
+                      <Bike className="mr-1 inline-block h-3.5 w-3.5 align-text-bottom" />
+                      <span className="font-semibold">{escrow.delivery_courier}</span>{" "}
                       will pick up from your store address — the buyer paid for this
                       delivery. Pack it, then save below to book the pickup.
                     </>
