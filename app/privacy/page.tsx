@@ -37,7 +37,7 @@ export default function PrivacyPage() {
             </p>
             <p className="mt-4">
               SuoOps is the data controller for the personal data described here. You can reach our Data Protection Officer (DPO) at{" "}
-              <a href="mailto:dpo@suoops.com" className="text-blue-600 hover:underline">dpo@suoops.com</a>.
+              <a href="mailto:privacy@suoops.com" className="text-blue-600 hover:underline">privacy@suoops.com</a>.
             </p>
           </section>
 
@@ -145,8 +145,8 @@ export default function PrivacyPage() {
                 info@suoops.com
               </a>{" "}
               or our Data Protection Officer at{" "}
-              <a href="mailto:dpo@suoops.com" className="text-blue-600 hover:underline">
-                dpo@suoops.com
+              <a href="mailto:privacy@suoops.com" className="text-blue-600 hover:underline">
+                privacy@suoops.com
               </a>
             </p>
           </section>
