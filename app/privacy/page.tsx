@@ -27,13 +27,17 @@ export default function PrivacyPage() {
       <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
         <h1 className="text-4xl font-bold text-slate-900">Privacy Policy</h1>
         <p className="mt-4 text-lg text-slate-600">
-          Last updated: November 9, 2025
+          Last updated: July 14, 2026
         </p>
         <div className="mt-12 space-y-8 text-slate-700">
           <section>
             <h2 className="text-2xl font-bold text-slate-900">1. Introduction</h2>
             <p className="mt-4">
-              Welcome to SuoOps (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;). We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our invoice management service.
+              Welcome to SuoOps (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;). We are committed to protecting your privacy and the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use SuoOps &mdash; our commerce operating system for businesses (invoicing, online payments, a buyer-protected storefront and courier delivery).
+            </p>
+            <p className="mt-4">
+              SuoOps is the data controller for the personal data described here. You can reach our Data Protection Officer (DPO) at{" "}
+              <a href="mailto:dpo@suoops.com" className="text-blue-600 hover:underline">dpo@suoops.com</a>.
             </p>
           </section>
 
@@ -49,6 +53,9 @@ export default function PrivacyPage() {
               <li><strong>Receipt Images:</strong> Photos of receipts sent for OCR processing (processed by AI to extract invoice details, then deleted)</li>
               <li><strong>Custom Branding:</strong> Business logos uploaded for invoice customization (stored securely on AWS S3)</li>
               <li><strong>Tax Data:</strong> VAT rates, development levy calculations, and tax compliance reports generated from your invoices</li>
+              <li><strong>Location &amp; Delivery Data:</strong> GPS coordinates and delivery addresses (used to arrange courier delivery and set the buyer-protection window)</li>
+              <li><strong>Device &amp; Technical Data:</strong> IP address and device identifiers (used to secure your account and prevent fraud)</li>
+              <li><strong>Storefront Orders:</strong> order details and order-chat messages between buyers and sellers</li>
               <li><strong>Usage Data:</strong> Information about how you use our service, including access times and features used</li>
             </ul>
           </section>
@@ -57,14 +64,16 @@ export default function PrivacyPage() {
             <h2 className="text-2xl font-bold text-slate-900">3. How We Use Your Information</h2>
             <p className="mt-4">We use your information to:</p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
-              <li>Provide and maintain our invoice management service</li>
+              <li>Provide and maintain the SuoOps platform</li>
               <li>Process and send invoices to your customers via WhatsApp and Email</li>
               <li>Generate PDF invoices and receipts with your custom branding</li>
               <li>Process receipt photos using AI to extract invoice details</li>
               <li>Calculate and generate automated tax compliance reports (VAT, development levy)</li>
               <li>Send you notifications about invoice status, payments, and tax deadlines</li>
-              <li>Process subscription payments and manage your account</li>
-              <li>Authenticate your account using Google OAuth (if you choose this option)</li>
+              <li>Enable storefront orders, buyer protection (escrow) and courier delivery</li>
+              <li>Process wallet top-ups and online payments, and manage your account</li>
+              <li>Detect and prevent fraud and abuse</li>
+              <li>Authenticate your account using phone or email one-time codes (and Google, if you choose)</li>
               <li>Improve our service and develop new features</li>
               <li>Comply with legal obligations and tax regulations</li>
             </ul>
@@ -77,7 +86,7 @@ export default function PrivacyPage() {
             </p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
               <li>Data encrypted in transit using TLS/SSL</li>
-              <li>Secure cloud storage on AWS (S3 for files and logos, RDS for database)</li>
+              <li>Secure cloud storage (S3 for files and logos, and a managed database)</li>
               <li>Regular security audits and updates</li>
               <li>Access controls and authentication for all systems</li>
               <li>Receipt photos are processed for OCR and deleted (not permanently stored)</li>
@@ -90,15 +99,20 @@ export default function PrivacyPage() {
             <h2 className="text-2xl font-bold text-slate-900">5. Third-Party Services</h2>
             <p className="mt-4">We use the following third-party services:</p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
-              <li><strong>Google OAuth:</strong> For secure single sign-on authentication (optional)</li>
-              <li><strong>WhatsApp Cloud API (Meta):</strong> For sending and receiving messages</li>
-              <li><strong>Brevo (formerly Sendinblue):</strong> For sending email notifications and invoice delivery</li>
-              <li><strong>Paystack:</strong> For processing subscription payments</li>
-              <li><strong>AWS:</strong> For cloud infrastructure and storage (S3 for files, RDS for database)</li>
+              <li><strong>Paystack &amp; Flutterwave:</strong> For processing online payments, escrow and payouts</li>
+              <li><strong>Shipbubble / GIG Logistics:</strong> For courier delivery of storefront orders (buyer name, phone and delivery address)</li>
+              <li><strong>WhatsApp Cloud API (Meta), Brevo, Amazon SES:</strong> For sending messages, SMS and email notifications</li>
+              <li><strong>AWS, Render, Vercel:</strong> For cloud hosting, database and file storage</li>
+              <li><strong>Sentry:</strong> For error monitoring and reliability</li>
+              <li><strong>Mapbox:</strong> For deriving your state/city from location for delivery and buyer protection</li>
+              <li><strong>Google OAuth:</strong> For optional single sign-on</li>
               <li><strong>OCR AI Services:</strong> For extracting invoice details from receipt photos</li>
             </ul>
             <p className="mt-4">
               These services have their own privacy policies and we encourage you to review them.
+            </p>
+            <p className="mt-4">
+              Some of these providers process data on servers outside Nigeria (for example, in the United States). We rely on their security programs and contractual data-processing terms to protect your data during such transfers.
             </p>
           </section>
 
@@ -129,6 +143,10 @@ export default function PrivacyPage() {
               To exercise these rights, contact us at{" "}
               <a href="mailto:info@suoops.com" className="text-blue-600 hover:underline">
                 info@suoops.com
+              </a>{" "}
+              or our Data Protection Officer at{" "}
+              <a href="mailto:dpo@suoops.com" className="text-blue-600 hover:underline">
+                dpo@suoops.com
               </a>
             </p>
           </section>
