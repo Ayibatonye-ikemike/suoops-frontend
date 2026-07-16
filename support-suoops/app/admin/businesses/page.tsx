@@ -94,17 +94,20 @@ function timeAgo(dateStr: string | null): string {
   return `${Math.floor(days / 365)}y ago`;
 }
 
+// Health bands — single source of truth, aligned with the backend summary/filter
+// cutoffs (Healthy >= 60, At Risk < 40). Fair (40-59) is the middle band; the
+// At-Risk card/filter groups both "At Risk" (20-39) and "Critical" (<20).
 function healthColor(score: number): string {
-  if (score >= 70) return "text-emerald-700 bg-emerald-100";
-  if (score >= 50) return "text-blue-700 bg-blue-100";
-  if (score >= 30) return "text-amber-700 bg-amber-100";
+  if (score >= 60) return "text-emerald-700 bg-emerald-100";
+  if (score >= 40) return "text-blue-700 bg-blue-100";
+  if (score >= 20) return "text-amber-700 bg-amber-100";
   return "text-red-700 bg-red-100";
 }
 
 function healthLabel(score: number): string {
-  if (score >= 70) return "Healthy";
-  if (score >= 50) return "Fair";
-  if (score >= 30) return "At Risk";
+  if (score >= 60) return "Healthy";
+  if (score >= 40) return "Fair";
+  if (score >= 20) return "At Risk";
   return "Critical";
 }
 
@@ -404,7 +407,7 @@ export default function BusinessesPage() {
                         onClick={() => setExpandedId(expandedId === biz.id ? null : biz.id)}
                         className={`border-b border-slate-50 cursor-pointer transition-colors ${
                           expandedId === biz.id ? "bg-slate-50" : "hover:bg-slate-50/50"
-                        } ${biz.health_score < 30 ? "bg-red-50/30" : ""}`}
+                        } ${biz.health_score < 40 ? "bg-red-50/30" : ""}`}
                       >
                         {/* Business */}
                         <td className="px-4 py-3">
