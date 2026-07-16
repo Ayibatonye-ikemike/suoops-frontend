@@ -54,6 +54,7 @@ interface BusinessItem {
 }
 
 interface BusinessSummary {
+  total: number;
   healthy: number;
   at_risk: number;
   inactive: number;
@@ -272,7 +273,7 @@ export default function BusinessesPage() {
             <Users className="h-4 w-4" />
             All Businesses
           </div>
-          <p className="mt-1 text-xl font-bold text-slate-900">{data?.total || 0}</p>
+          <p className="mt-1 text-xl font-bold text-slate-900">{data?.summary.total ?? 0}</p>
         </button>
         <button
           onClick={() => { setRiskFilter("healthy"); setPage(1); }}
@@ -381,8 +382,8 @@ export default function BusinessesPage() {
                       </button>
                     </th>
                     <th className="px-4 py-3">
-                      <button onClick={() => handleSort("total_revenue")} className="flex items-center gap-1 hover:text-slate-700">
-                        Revenue <ArrowUpDown className="h-3 w-3" />
+                      <button onClick={() => handleSort("total_revenue")} className="flex items-center gap-1 hover:text-slate-700" title="Total invoiced revenue (money billed, not necessarily collected)">
+                        Invoiced <ArrowUpDown className="h-3 w-3" />
                       </button>
                     </th>
                     <th className="px-4 py-3">
@@ -391,7 +392,7 @@ export default function BusinessesPage() {
                       </button>
                     </th>
                     <th className="px-4 py-3">
-                      <button onClick={() => handleSort("collection_rate")} className="flex items-center gap-1 hover:text-slate-700">
+                      <button onClick={() => handleSort("collection_rate")} className="flex items-center gap-1 hover:text-slate-700" title="Share of invoices marked paid in-app. Offline/bank-transfer payments that weren't marked paid are not counted, so this understates real collection for manual-invoice sellers.">
                         Collection <ArrowUpDown className="h-3 w-3" />
                       </button>
                     </th>
@@ -514,7 +515,7 @@ export default function BusinessesPage() {
                               <div className="space-y-2 text-sm">
                                 <p className="font-medium text-slate-700">Financials</p>
                                 <div className="flex justify-between">
-                                  <span className="text-slate-500">Revenue</span>
+                                  <span className="text-slate-500">Invoiced</span>
                                   <span className="font-semibold text-emerald-700">{formatNaira(biz.total_revenue)}</span>
                                 </div>
                                 <div className="flex justify-between">
