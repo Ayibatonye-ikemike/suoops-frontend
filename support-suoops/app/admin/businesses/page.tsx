@@ -53,11 +53,20 @@ interface BusinessItem {
   risk_flags: string[];
 }
 
+interface BusinessSummary {
+  healthy: number;
+  at_risk: number;
+  inactive: number;
+  never_invoiced: number;
+  upgrade_candidates: number;
+}
+
 interface BusinessListResponse {
   businesses: BusinessItem[];
   total: number;
   page: number;
   page_size: number;
+  summary: BusinessSummary;
 }
 
 type SortKey = "health_score" | "total_revenue" | "invoices_total" | "created_at" | "last_login" | "name" | "collection_rate";
@@ -225,11 +234,14 @@ export default function BusinessesPage() {
 
   const totalPages = data ? Math.ceil(data.total / pageSize) : 0;
 
-  // Summary stats from current page (or total)
-  const summaryAtRisk = data?.businesses.filter(b => b.health_score < 30).length || 0;
-  const summaryHealthy = data?.businesses.filter(b => b.health_score >= 60).length || 0;
-  const summaryNeverInvoiced = data?.businesses.filter(b => b.risk_flags.includes("never_invoiced")).length || 0;
-  const summaryUpgradeCandidates = data?.businesses.filter(b => b.risk_flags.includes("upgrade_candidate")).length || 0;
+  // Summary stats across ALL matching businesses (from the backend aggregate,
+  // not just the current page — the page is sorted worst-first, so page-derived
+  // counts would wrongly show e.g. "Healthy 0").
+  const summaryAtRisk = data?.summary.at_risk || 0;
+  const summaryHealthy = data?.summary.healthy || 0;
+  const summaryInactive = data?.summary.inactive || 0;
+  const summaryNeverInvoiced = data?.summary.never_invoiced || 0;
+  const summaryUpgradeCandidates = data?.summary.upgrade_candidates || 0;
 
   if (error && !data) {
     return (
@@ -287,7 +299,7 @@ export default function BusinessesPage() {
             <Clock className="h-4 w-4" />
             Inactive
           </div>
-          <p className="mt-1 text-xl font-bold text-amber-700">{summaryNeverInvoiced}</p>
+          <p className="mt-1 text-xl font-bold text-amber-700">{summaryInactive}</p>
         </button>
       </div>
 
