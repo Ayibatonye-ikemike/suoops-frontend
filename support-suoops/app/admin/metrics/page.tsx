@@ -907,8 +907,8 @@ export default function MetricsPage() {
                       <div className="flex items-center gap-3">
                         <CheckCircle className="h-5 w-5 text-green-500" />
                         <div>
-                          <p className="text-sm font-medium text-green-800">WhatsApp Users</p>
-                          <p className="text-xs text-green-600">Phone verified, connected to bot</p>
+                          <p className="text-sm font-medium text-green-800">Phone-Verified (WhatsApp)</p>
+                          <p className="text-xs text-green-600">Verified phone — reachable on WhatsApp</p>
                         </div>
                       </div>
                       <span className="text-2xl font-bold text-green-700">{growth.whatsapp_users ?? 0}</span>
@@ -917,8 +917,8 @@ export default function MetricsPage() {
                       <div className="flex items-center gap-3">
                         <AlertTriangle className="h-5 w-5 text-amber-500" />
                         <div>
-                          <p className="text-sm font-medium text-amber-800">Email-Only Users</p>
-                          <p className="text-xs text-amber-600">No WhatsApp — limited engagement</p>
+                          <p className="text-sm font-medium text-amber-800">Not Phone-Verified</p>
+                          <p className="text-xs text-amber-600">Email-only or phone not yet verified</p>
                         </div>
                       </div>
                       <span className="text-2xl font-bold text-amber-700">{growth.email_only_users ?? 0}</span>
