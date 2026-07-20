@@ -39,6 +39,10 @@ type Storefront = {
   open_to: string | null;
   reviews: { count: number; average: number | null };
   products: StoreProduct[];
+  // Present only when the slug exists but the store isn't live (owner hasn't
+  // enabled it yet, or it's under moderation). Other fields may be absent.
+  offline?: boolean;
+  offline_reason?: "disabled" | "suspended" | "delisted";
 };
 
 type RouteProps = { params: Promise<{ slug: string }> };
@@ -62,6 +66,7 @@ export async function generateMetadata({ params }: RouteProps): Promise<Metadata
     const store = await fetchStore(slug, apiBaseUrl);
     if (!store) return { title: "Store Not Found — Suoops" };
     const name = store.business_name || "Store";
+    if (store.offline) return { title: `${name} — currently offline · Suoops` };
     const base =
       store.description || `Browse ${name}'s products and order online.`;
     const description = `${base} Protected by SuoOps — your money is held safely until your order arrives.`;
@@ -92,6 +97,37 @@ export default async function StorePage({ params }: RouteProps) {
   const { apiBaseUrl } = getConfig();
   const store = await fetchStore(slug, apiBaseUrl);
   if (!store) notFound();
+
+  // Slug exists but the store isn't live — show a friendly "offline" screen
+  // instead of a dead 404 (e.g. owner shared the link before enabling it).
+  if (store.offline) {
+    const offName = store.business_name || "This store";
+    const offInitial = offName[0]?.toUpperCase() ?? "S";
+    const offMsg =
+      store.offline_reason === "suspended"
+        ? "This store is temporarily unavailable while under review."
+        : store.offline_reason === "delisted"
+          ? "This store is no longer available."
+          : "This store is currently offline.";
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-slate-50 to-slate-100 px-6 text-center">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-evergreen text-2xl font-bold text-white shadow-lg">
+          {offInitial}
+        </div>
+        <h1 className="mt-5 text-xl font-bold text-slate-800">{offName}</h1>
+        <p className="mt-2 max-w-sm text-sm text-slate-500">{offMsg}</p>
+        <p className="mt-1 max-w-sm text-xs text-slate-400">
+          Please check back soon, or contact the seller directly.
+        </p>
+        <a
+          href="https://suoops.com"
+          className="mt-6 rounded-full bg-brand-evergreen px-5 py-2 text-sm font-medium text-white transition hover:opacity-90"
+        >
+          Discover other stores
+        </a>
+      </div>
+    );
+  }
 
   const name = store.business_name || "Store";
   const initial = name[0]?.toUpperCase() ?? "S";
