@@ -154,6 +154,7 @@ function PriorityBadge({ priority }: { priority: string }) {
 export default function AdminDashboard() {
   const { token, authFetch } = useAdminAuth();
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [summary, setSummary] = useState<{ commission: number; gmv: number } | null>(null);
   const [recentTickets, setRecentTickets] = useState<RecentTicket[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -173,6 +174,11 @@ export default function AdminDashboard() {
         if (!statsRes.ok) throw new Error("Failed to fetch stats");
         const statsData = await statsRes.json();
         setStats(statsData);
+
+        // Commission/GMV from the SHARED source of truth so the Dashboard and
+        // the Platform Metrics page always agree (this month).
+        const sumRes = await authFetch(`${apiUrl}/admin/metrics/summary?period=month`);
+        if (sumRes.ok) setSummary(await sumRes.json());
 
         // Fetch recent tickets
         const ticketsRes = await authFetch(`${apiUrl}/support/admin/tickets?limit=5`);
@@ -241,8 +247,8 @@ export default function AdminDashboard() {
         />
         <StatCard
           title="Commission This Month"
-          value={fmtNaira(stats?.revenue.this_month || 0)}
-          subtitle={`${fmtNaira(stats?.revenue.gmv_this_month || 0)} processed (GMV)`}
+          value={fmtNaira(summary?.commission ?? stats?.revenue.this_month ?? 0)}
+          subtitle={`${fmtNaira(summary?.gmv ?? 0)} GMV this month`}
           icon={TrendingUp}
         />
       </div>

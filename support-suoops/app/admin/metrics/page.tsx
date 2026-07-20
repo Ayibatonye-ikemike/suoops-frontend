@@ -328,6 +328,18 @@ interface ActivityAnalytics {
 
 type Tab = "overview" | "growth" | "activity" | "diagnostic";
 
+type Period = "week" | "month" | "year" | "all";
+
+interface MetricsSummary {
+  period: string;
+  label: string;
+  commission: number;
+  gmv: number;
+  invoices: number;
+  new_users: number;
+  active_users: number;
+}
+
 // ─── Zero-Invoice Diagnostic Types ───────────────────────────────
 
 interface ZeroInvoiceCohort {
@@ -389,6 +401,8 @@ export default function MetricsPage() {
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [topUpPage, setTopUpPage] = useState(1);
+  const [period, setPeriod] = useState<Period>("month");
+  const [summary, setSummary] = useState<MetricsSummary | null>(null);
   const PAGE_SIZE = 10;
 
   useEffect(() => {
@@ -417,6 +431,18 @@ export default function MetricsPage() {
 
     fetchAll();
   }, [token]);
+
+  // Filterable headline numbers (single source of truth, week/month/year/all).
+  useEffect(() => {
+    if (!token) return;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
+    fetch(`${apiUrl}/admin/metrics/summary?period=${period}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => d && setSummary(d))
+      .catch(() => {});
+  }, [token, period]);
 
   // Fetch diagnostic data when tab is activated
   useEffect(() => {
@@ -537,32 +563,53 @@ export default function MetricsPage() {
         <>
           {/* ═══ OVERVIEW TAB ═══ */}
 
-          {/* Overview Stats */}
+          {/* Period filter — drives the four headline cards below */}
+          <div className="flex flex-wrap items-center gap-2 mb-3">
+            <span className="text-sm text-slate-500">Period:</span>
+            {(["week", "month", "year", "all"] as Period[]).map((p) => (
+              <button
+                key={p}
+                onClick={() => setPeriod(p)}
+                className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${
+                  period === p
+                    ? "bg-emerald-600 text-white"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {p === "week" ? "Week" : p === "month" ? "Month" : p === "year" ? "Year" : "All time"}
+              </button>
+            ))}
+            {summary && (
+              <span className="ml-1 text-xs text-slate-400">({summary.label})</span>
+            )}
+          </div>
+
+          {/* Overview Stats — filtered by the selected period */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard
               title="Registered Users"
               value={totalUsers.toLocaleString()}
-              subtitle={`${metrics?.total_customers || 0} invoiced customers`}
+              subtitle={`${(summary?.new_users ?? 0).toLocaleString()} new ${(summary?.label ?? "").toLowerCase()}`}
               icon={Users}
             />
             <StatCard
-              title="Total Invoices"
-              value={metrics?.total_invoices?.toLocaleString() || "0"}
-              subtitle={`${metrics?.paid_invoices || 0} paid`}
+              title={`Invoices (${summary?.label ?? "This month"})`}
+              value={(summary?.invoices ?? 0).toLocaleString()}
+              subtitle={`${metrics?.paid_invoices || 0} paid all-time`}
               icon={FileText}
               color="blue"
             />
             <StatCard
-              title="Commission (This Month)"
-              value={formatCurrency(metrics?.commission_this_month || 0)}
-              subtitle={`Wallet ${formatCurrency(metrics?.commission_wallet_this_month || 0)} · Online ${formatCurrency(metrics?.commission_online_this_month || 0)}`}
+              title={`Commission (${summary?.label ?? "This month"})`}
+              value={formatCurrency(summary?.commission ?? 0)}
+              subtitle={`${(summary?.active_users ?? 0).toLocaleString()} active sellers`}
               icon={DollarSign}
               color="emerald"
             />
             <StatCard
-              title="Payment Volume (GMV)"
-              value={formatCurrency(metrics?.total_revenue_amount || 0)}
-              subtitle="From paid invoices"
+              title={`Payment Volume (${summary?.label ?? "This month"})`}
+              value={formatCurrency(summary?.gmv ?? 0)}
+              subtitle="GMV — paid invoices"
               icon={Receipt}
               color="orange"
             />
