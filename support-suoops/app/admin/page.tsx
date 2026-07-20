@@ -54,6 +54,13 @@ interface RecentTicket {
   created_at: string;
 }
 
+/** Format Naira with M/k suffixes (e.g. ₦70.4M, ₦42.9k) — avoids "₦70365k". */
+function fmtNaira(amount: number): string {
+  if (amount >= 1_000_000) return `₦${(amount / 1_000_000).toFixed(1)}M`;
+  if (amount >= 1_000) return `₦${(amount / 1_000).toFixed(1)}k`;
+  return `₦${amount.toLocaleString()}`;
+}
+
 function StatCard({
   title,
   value,
@@ -234,8 +241,8 @@ export default function AdminDashboard() {
         />
         <StatCard
           title="Commission This Month"
-          value={`₦${((stats?.revenue.this_month || 0) / 1000).toFixed(1)}k`}
-          subtitle={`₦${((stats?.revenue.gmv_this_month || 0) / 1000).toFixed(0)}k processed (GMV)`}
+          value={fmtNaira(stats?.revenue.this_month || 0)}
+          subtitle={`${fmtNaira(stats?.revenue.gmv_this_month || 0)} processed (GMV)`}
           icon={TrendingUp}
         />
       </div>
