@@ -141,7 +141,7 @@ export default function UsersPage() {
     }
   }
 
-  // Export users as CSV for Brevo
+  // Export contacts as a Zoho Campaigns-ready CSV (marketing moved off Brevo)
   async function exportUsersCSV() {
     if (!token) return;
     
@@ -157,7 +157,7 @@ export default function UsersPage() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "suoops_users.csv";
+      a.download = "suoops_contacts.csv";
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -253,7 +253,7 @@ export default function UsersPage() {
           className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition text-sm font-medium"
         >
           <Download className="h-4 w-4" />
-          Export CSV (Brevo)
+          Export CSV (Zoho)
         </button>
       </div>
 
