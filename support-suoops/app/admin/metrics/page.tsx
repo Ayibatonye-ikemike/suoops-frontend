@@ -1006,7 +1006,7 @@ export default function MetricsPage() {
                     <TrendingUp className="h-5 w-5 text-emerald-500" />
                     <div>
                       <h3 className="font-semibold text-slate-900">Commission Trend</h3>
-                      <p className="text-xs text-slate-500">Suoops earnings (0.1% manual · 3% storefront) per month</p>
+                      <p className="text-xs text-slate-500">Suoops earnings (0.2% manual · 3% storefront) per month</p>
                     </div>
                   </div>
                   <MiniBarChart data={growth.commission_trend} color="bg-emerald-500" />

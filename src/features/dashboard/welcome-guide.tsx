@@ -273,11 +273,11 @@ export function WelcomeGuide() {
           <div className="flex items-center gap-2 mb-1">
             <Sparkles className="h-5 w-5 text-brand-jade" />
             <h2 className="text-lg sm:text-xl font-bold text-brand-text">
-              Welcome, {firstName}! Fees as low as 0.1%.
+              Welcome, {firstName}! Fees as low as 0.2%.
             </h2>
           </div>
           <p className="text-sm text-brand-textMuted">
-            Every feature is free — we only take 0.1% when you invoice.
+            Every feature is free — we only take 0.2% when you invoice.
           </p>
         </div>
 
@@ -304,12 +304,12 @@ export function WelcomeGuide() {
               <span className="text-2xl">🧾</span>
               <div>
                 <h3 className="text-base font-bold text-brand-text">Manual invoices</h3>
-                <p className="text-xs text-brand-jade font-semibold">0.1% from your wallet</p>
+                <p className="text-xs text-brand-jade font-semibold">0.2% from your wallet</p>
               </div>
             </div>
             <ul className="space-y-2 text-xs text-slate-600 mb-4">
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> Create &amp; confirm payment yourself</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> 0.1% (min ₦50, about ₦100 per ₦100k) charged at creation</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> 0.2% (min ₦50, about ₦200 per ₦100k) charged at creation</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> Top up: ₦1,250 / ₦5,000 / ₦20,000</li>
             </ul>
           </div>

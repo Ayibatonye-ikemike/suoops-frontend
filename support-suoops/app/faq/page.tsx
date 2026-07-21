@@ -26,7 +26,7 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: "Is Suoops free to use?",
-        answer: "Yes. Every feature is free — custom branding, tax reports, inventory, team access and your storefront. There are no plans or monthly fees. Fees are as low as 0.1%: you pay just 0.1% per manual invoice (minimum ₦50 — about ₦100 per ₦100,000), and 3% on storefront orders paid online. New accounts also start with a small free wallet balance so you can send your first invoices at no cost."
+        answer: "Yes. Every feature is free — custom branding, tax reports, inventory, team access and your storefront. There are no plans or monthly fees. Fees are as low as 0.2%: you pay just 0.2% per manual invoice (minimum ₦50 — about ₦200 per ₦100,000), and 3% on storefront orders paid online. New accounts also start with a small free wallet balance so you can send your first invoices at no cost."
       },
       {
         question: "How do I set up my business profile?",
@@ -44,7 +44,7 @@ const faqCategories: FAQCategory[] = [
     faqs: [
       {
         question: "Can I add my logo to invoices?",
-        answer: "Yes! Upload your business logo in Settings and it will appear on all your PDF invoices. Custom branding is free — every feature is included; you only pay 0.1% when you invoice."
+        answer: "Yes! Upload your business logo in Settings and it will appear on all your PDF invoices. Custom branding is free — every feature is included; you only pay 0.2% when you invoice."
       },
       {
         question: "How do I add VAT/Tax to invoices?",
@@ -70,7 +70,7 @@ const faqCategories: FAQCategory[] = [
     faqs: [
       {
         question: "How does pricing work?",
-        answer: "Suoops is free with every feature included, and fees are as low as 0.1%. Manual invoices cost 0.1% (minimum ₦50 — about ₦100 per ₦100,000), taken from your prepaid wallet when you create the invoice. Storefront/online orders are 3% (capped at ₦2,000 per ₦500,000), taken from the customer's payment. No plans, no monthly fees."
+        answer: "Suoops is free with every feature included, and fees are as low as 0.2%. Manual invoices cost 0.2% (minimum ₦50 — about ₦200 per ₦100,000), taken from your prepaid wallet when you create the invoice. Storefront/online orders are 3% (capped at ₦2,000 per ₦500,000), taken from the customer's payment. No plans, no monthly fees."
       },
       {
         question: "Do I need a subscription?",
@@ -78,7 +78,7 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: "What is the invoice wallet?",
-        answer: "The prepaid wallet funds manual invoicing. Each manual invoice costs just 0.1% (min ₦50 — about ₦100 per ₦100,000), deducted when you create it. Top up anytime — ₦1,250, ₦5,000 or ₦20,000 — from Settings → Billing. New accounts start with a small free balance."
+        answer: "The prepaid wallet funds manual invoicing. Each manual invoice costs just 0.2% (min ₦50 — about ₦200 per ₦100,000), deducted when you create it. Top up anytime — ₦1,250, ₦5,000 or ₦20,000 — from Settings → Billing. New accounts start with a small free balance."
       },
       {
         question: "How do online payments work?",
