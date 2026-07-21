@@ -206,6 +206,7 @@ export function PaymentsStorefrontSection() {
   const storeEnabled = storefront.data?.enabled ?? false;
   const link = storefront.data?.link ?? null;
   const productCount = storefront.data?.product_count ?? 0;
+  const suggestions = storefront.data?.suggestions ?? [];
 
   // Everything on the storefront tab is required before it can be saved.
   const stateSet = Boolean(details.state.trim());
@@ -338,6 +339,20 @@ export function PaymentsStorefrontSection() {
             >
               Add products →
             </Link>
+          </div>
+        ) : null}
+
+        {productCount > 0 && suggestions.length > 0 ? (
+          <div className="mt-3 rounded-lg border border-sky-200 bg-sky-50 p-3">
+            <p className="text-xs font-semibold text-sky-900">Boost your store</p>
+            <ul className="mt-1.5 space-y-1">
+              {suggestions.map((s) => (
+                <li key={s} className="flex items-start gap-1.5 text-xs text-sky-800">
+                  <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-sky-400" />
+                  <span>{s}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         ) : null}
 

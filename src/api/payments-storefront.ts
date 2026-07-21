@@ -27,6 +27,10 @@ export interface StorefrontStatus {
   hours?: StorefrontHours | null;
   announcement?: string | null;
   views?: number;
+  has_logo?: boolean;
+  online_payments?: boolean;
+  listable_product_count?: number;
+  suggestions?: string[];
 }
 
 export interface StorefrontUpdate {
