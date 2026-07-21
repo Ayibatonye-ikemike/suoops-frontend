@@ -215,13 +215,19 @@ export default function StorefrontsPage() {
 
       {/* Status filter cards */}
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-6">
-        {/* Live = discoverable in the public global search (logo + online pay + active product). Display-only. */}
-        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+        {/* Live = complete AND discoverable in public search — same gate as the marketplace. Display-only. */}
+        <div
+          className="rounded-lg border border-blue-200 bg-blue-50 p-4"
+          title="Complete + discoverable in public search: storefront on, logo, online payments, a product with a photo & description, a store description, and a location. Matches the marketplace exactly."
+        >
           <div className="flex items-center gap-2 text-sm text-blue-600">
             <Store className="h-4 w-4" />
             Live in search
           </div>
           <p className="mt-1 text-xl font-bold text-blue-700">{counts.live ?? 0}</p>
+          <p className="mt-0.5 text-[10px] leading-tight text-blue-500">
+            on · logo · pay · product w/ photo+desc · description · location
+          </p>
         </div>
         {([
           { key: "all", label: "All Stores", value: counts.total, color: "text-slate-900" },
