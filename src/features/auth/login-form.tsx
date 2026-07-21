@@ -35,6 +35,9 @@ export function LoginForm() {
   const [step, setStep] = useState<Step>("identifier");
   const [identifier, setIdentifier] = useState("");
   const [identifierType, setIdentifierType] = useState<"phone" | "email">("phone");
+  // Where the OTP was actually delivered (a phone login is emailed the code when
+  // the account has an email on file, to avoid paid WhatsApp messages).
+  const [otpChannel, setOtpChannel] = useState<"whatsapp" | "email">("whatsapp");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -76,12 +79,14 @@ export function LoginForm() {
       try {
         if (isPhone) {
           const phone = normalizePhone(identifier.trim());
-          await requestLoginOTP({ phone });
+          const res = await requestLoginOTP({ phone });
           setIdentifier(phone);
+          setOtpChannel(res?.detail?.toLowerCase().includes("email") ? "email" : "whatsapp");
         } else {
           const normalizedEmail = identifier.trim().toLowerCase();
           await requestLoginOTP({ email: normalizedEmail });
           setIdentifier(normalizedEmail);
+          setOtpChannel("email");
         }
         setDeliveryFailure(null);
         setStep("otp");
@@ -115,7 +120,7 @@ export function LoginForm() {
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       if (otp.length !== 6) {
-        setError(identifierType === "phone" ? "Enter the 6-digit code sent to your WhatsApp." : "Enter the 6-digit code sent to your email.");
+        setError(otpChannel === "whatsapp" ? "Enter the 6-digit code sent to your WhatsApp." : "Enter the 6-digit code sent to your email.");
         return;
       }
       setLoading(true);
@@ -174,9 +179,10 @@ export function LoginForm() {
 
   // Poll for asynchronous WhatsApp delivery-status updates (failed delivery
   // is reported via Meta webhook well after the synchronous send returned
-  // "accepted"). Email OTPs deliver synchronously so we only poll for phone.
+  // "accepted"). Email OTPs deliver synchronously so we only poll when the
+  // code actually went out over WhatsApp.
   useEffect(() => {
-    if (step !== "otp" || identifierType !== "phone" || !identifier) {
+    if (step !== "otp" || otpChannel !== "whatsapp" || !identifier) {
       return;
     }
     let cancelled = false;
@@ -205,7 +211,7 @@ export function LoginForm() {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [step, identifierType, identifier]);
+  }, [step, otpChannel, identifier]);
 
   const handleGoogleSignIn = useCallback(() => {
     // Provide callback URL with optional next param so backend returns it and callback page can route properly.
@@ -222,7 +228,7 @@ export function LoginForm() {
         <div className="space-y-2 text-center">
           <h1 className="text-2xl font-semibold text-slate-900">Enter the code</h1>
           <p className="text-sm text-slate-500">
-            We sent a 6-digit OTP to <span className="font-semibold text-slate-700">{identifier}</span>{identifierType === "phone" ? " on WhatsApp" : ""}
+            We sent a 6-digit OTP to <span className="font-semibold text-slate-700">{identifier}</span>{otpChannel === "whatsapp" ? " on WhatsApp" : " — check your email"}
           </p>
         </div>
         {error ? (
