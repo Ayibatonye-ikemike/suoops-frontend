@@ -78,7 +78,7 @@ export function SalesFunnelBanner() {
             </h3>
             <p className="text-sm text-slate-600 mb-4">
               Send a professional invoice in seconds — via WhatsApp or right here.
-              You only pay a low 0.2% when you invoice.
+              You only pay a low 0.5% when you invoice.
             </p>
             <div className="flex flex-wrap gap-3">
               {hasPhone ? (
