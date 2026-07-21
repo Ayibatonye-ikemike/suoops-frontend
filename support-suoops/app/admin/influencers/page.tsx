@@ -723,7 +723,7 @@ export default function InfluencersPage() {
                 className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
               />
               <p className="text-xs text-slate-400 mt-1">
-                Share of SuoOps&apos; 3% fee on every referred transaction — paid for
+                Share of SuoOps&apos; commission on every referred transaction — paid for
                 life while active. Default 20%.
               </p>
             </div>

@@ -26,7 +26,7 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: "Is Suoops free to use?",
-        answer: "Yes. Every feature is free — custom branding, tax reports, inventory, team access and your storefront. There are no plans or monthly fees. You only pay a flat 3% per invoice (minimum ₦20, capped at ₦2,000 for invoices up to ₦500,000, then +₦2,000 per additional ₦500,000). New accounts also start with a small free wallet balance so you can send your first invoices at no cost."
+        answer: "Yes. Every feature is free — custom branding, tax reports, inventory, team access and your storefront. There are no plans or monthly fees. Fees are as low as 1%: you pay just 1% per manual invoice (minimum ₦100, capped at ₦1,000 for invoices up to ₦500,000, then +₦1,000 per additional ₦500,000), and 3% on storefront orders paid online. New accounts also start with a small free wallet balance so you can send your first invoices at no cost."
       },
       {
         question: "How do I set up my business profile?",
@@ -44,7 +44,7 @@ const faqCategories: FAQCategory[] = [
     faqs: [
       {
         question: "Can I add my logo to invoices?",
-        answer: "Yes! Upload your business logo in Settings and it will appear on all your PDF invoices. Custom branding is free — every feature is included under the flat 3% model."
+        answer: "Yes! Upload your business logo in Settings and it will appear on all your PDF invoices. Custom branding is free — every feature is included; you only pay 1% when you invoice."
       },
       {
         question: "How do I add VAT/Tax to invoices?",
@@ -70,15 +70,15 @@ const faqCategories: FAQCategory[] = [
     faqs: [
       {
         question: "How does pricing work?",
-        answer: "Suoops is free with every feature included. You only pay a flat 3% per invoice (minimum ₦20, capped at ₦2,000 for invoices up to ₦500,000, then +₦2,000 per additional ₦500,000). For manual invoices the 3% is taken from your prepaid wallet when you create the invoice. For storefront/online payments it is taken from the customer's payment. No plans, no monthly fees."
+        answer: "Suoops is free with every feature included, and fees are as low as 1%. Manual invoices cost 1% (minimum ₦100, capped at ₦1,000 for invoices up to ₦500,000, then +₦1,000 per additional ₦500,000), taken from your prepaid wallet when you create the invoice. Storefront/online orders are 3% (capped at ₦2,000 per ₦500,000), taken from the customer's payment. No plans, no monthly fees."
       },
       {
         question: "Do I need a subscription?",
-        answer: "No. There are no subscriptions or plans. Custom branding, tax reports, inventory, team access and your storefront are all free. You simply fund a prepaid wallet and pay a flat 3% per invoice."
+        answer: "No. There are no subscriptions or plans. Custom branding, tax reports, inventory, team access and your storefront are all free. You simply fund a prepaid wallet and pay just 1% per manual invoice (3% on storefront orders paid online)."
       },
       {
         question: "What is the invoice wallet?",
-        answer: "The prepaid wallet funds manual invoicing. Each manual invoice costs a flat 3% (min ₦20, max ₦2,000), deducted when you create it. Top up anytime — ₦1,250, ₦5,000 or ₦20,000 — from Settings → Billing. New accounts start with a small free balance."
+        answer: "The prepaid wallet funds manual invoicing. Each manual invoice costs just 1% (min ₦100, capped at ₦1,000 per ₦500,000), deducted when you create it. Top up anytime — ₦1,250, ₦5,000 or ₦20,000 — from Settings → Billing. New accounts start with a small free balance."
       },
       {
         question: "How do online payments work?",
@@ -90,7 +90,7 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: "Are there any other fees?",
-        answer: "Just the flat 3% per invoice. For storefront/online card and transfer payments, a small payment-processing fee from the payment provider may also apply."
+        answer: "Just 1% per manual invoice (3% on storefront orders paid online). For storefront/online card and transfer payments, a small payment-processing fee from the payment provider may also apply."
       }
     ]
   },

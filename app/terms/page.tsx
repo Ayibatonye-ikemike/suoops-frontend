@@ -72,12 +72,12 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-bold text-slate-900">4. Pricing &amp; Fees</h2>
             <p className="mt-4">
-              SuoOps is free to use — there are no subscription plans. We charge a flat
-              commission per invoice:
+              SuoOps is free to use — there are no subscription plans. We charge a
+              commission per invoice, with fees as low as 1%:
             </p>
             <ul className="mt-4 list-disc space-y-2 pl-6">
-              <li><strong>3% per invoice</strong> (minimum ₦20), <strong>capped at ₦2,000 for invoices up to ₦500,000</strong>, then +₦2,000 for every additional ₦500,000. For manually created invoices this fee is charged from your prepaid wallet when the invoice is created.</li>
-              <li><strong>Storefront orders:</strong> the 3% commission is charged only when the customer pays online.</li>
+              <li><strong>Manual invoices — 1%</strong> (minimum ₦100), <strong>capped at ₦1,000 for invoices up to ₦500,000</strong>, then +₦1,000 for every additional ₦500,000. This fee is charged from your prepaid wallet when the invoice is created.</li>
+              <li><strong>Storefront orders — 3%</strong> (capped at ₦2,000 per ₦500,000), charged only when the customer pays online.</li>
               <li><strong>Wallet top-ups:</strong> you fund your prepaid wallet (e.g. ₦1,250 / ₦5,000 / ₦20,000) to cover invoice fees. Top-ups are not a subscription and do not auto-renew.</li>
             </ul>
             <p className="mt-4">

@@ -78,7 +78,7 @@ export function LowBalanceBanner() {
               <p className="mt-1 text-sm text-gray-600">
                 {isZeroBalance
                   ? "Top up to keep creating manual invoices — or share your storefront so customers pay online."
-                  : "Top up so you never miss creating an invoice. We take just 3% each."}
+                  : "Top up so you never miss creating an invoice. We take just 1% each."}
               </p>
             </div>
             {!isZeroBalance && (

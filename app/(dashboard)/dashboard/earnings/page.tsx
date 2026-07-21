@@ -344,7 +344,7 @@ export default function EarningsPage() {
               </p>
             </div>
             <p className="text-sm text-brand-textMuted">
-              You earn {e.commission_pct}% of the 3% SuoOps charges on every referred
+              You earn {e.commission_pct}% of the commission SuoOps charges on every referred
               business&apos;s sales and wallet top-ups — ongoing, for as long as
               they&apos;re active.
             </p>

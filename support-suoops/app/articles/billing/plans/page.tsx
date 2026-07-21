@@ -30,7 +30,7 @@ export default function PlansArticle() {
             Pricing & Your Invoice Wallet
           </h1>
           <p className="mt-3 text-lg text-slate-600">
-            Every feature is <strong>free</strong>. You only pay a flat <strong>3% per invoice</strong> —
+            Every feature is <strong>free</strong>. Fees as low as <strong>1% per invoice</strong> —
             no plans, no monthly fees.
           </p>
         </div>
@@ -44,7 +44,7 @@ export default function PlansArticle() {
               <h3 className="font-bold text-slate-900">Manual invoices</h3>
             </div>
             <div className="mb-4">
-              <span className="text-3xl font-bold text-slate-900">3%</span>
+              <span className="text-3xl font-bold text-slate-900">1%</span>
               <span className="text-slate-500 ml-2">per invoice</span>
             </div>
             <ul className="space-y-2 text-sm">
@@ -54,7 +54,7 @@ export default function PlansArticle() {
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>Minimum ₦20, capped at ₦2,000 per ₦500,000</span>
+                <span>Minimum ₦100, capped at ₦1,000 per ₦500,000</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
@@ -103,8 +103,8 @@ export default function PlansArticle() {
         <article className="prose prose-slate prose-emerald max-w-none">
           <h2>Your invoice wallet</h2>
           <p>
-            Manual invoices are funded by a prepaid wallet. Each manual invoice costs a flat 3%
-            (minimum ₦20, capped at ₦2,000 for invoices up to ₦500,000, then +₦2,000 per additional
+            Manual invoices are funded by a prepaid wallet. Each manual invoice costs just 1%
+            (minimum ₦100, capped at ₦1,000 for invoices up to ₦500,000, then +₦1,000 per additional
             ₦500,000), deducted when you create the invoice. New accounts
             start with a small free balance so you can send your first invoices at no cost.
           </p>
@@ -126,7 +126,7 @@ export default function PlansArticle() {
 
           <h3>When am I charged?</h3>
           <p>
-            For manual invoices, the flat 3% is taken from your wallet the moment you create the
+            For manual invoices, the 1% fee is taken from your wallet the moment you create the
             invoice. For storefront/online payments, the 3% is taken from the customer&apos;s payment
             when they pay — nothing upfront.
           </p>
@@ -134,7 +134,7 @@ export default function PlansArticle() {
           <h3>Are there any plans or monthly fees?</h3>
           <p>
             No. There are no subscriptions, tiers or monthly fees. Every feature is included for
-            everyone; you only ever pay the flat 3% per invoice.
+            everyone; you only pay 1% when you invoice (3% on storefront orders paid online).
           </p>
 
           <h3>What happens if my wallet runs out?</h3>
@@ -146,8 +146,8 @@ export default function PlansArticle() {
 
           <h3>Are there other fees?</h3>
           <p>
-            Just the flat 3% per invoice. For storefront/online card and transfer payments, a small
-            payment-processing fee from the payment provider may also apply.
+            Just 1% per manual invoice (3% on storefront orders). For storefront/online card and
+            transfer payments, a small payment-processing fee from the payment provider may also apply.
           </p>
         </article>
 
@@ -155,7 +155,7 @@ export default function PlansArticle() {
         <div className="mt-12 rounded-xl bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 p-8 text-center">
           <h3 className="text-xl font-bold text-slate-900 mb-2">Ready to get started?</h3>
           <p className="text-slate-600 mb-4">
-            Every feature is free — you only pay a flat 3% when you invoice.
+            Every feature is free — you only pay 1% when you invoice.
           </p>
           <a
             href="https://suoops.com/dashboard/settings"
