@@ -257,7 +257,7 @@ export function RegisterForm() {
         } else {
           setError(
             message ||
-              "We couldn't send your verification code. Make sure the number is an active WhatsApp account on this device, then try again."
+              "We couldn't send your verification code. Check that your email address is correct, then try again."
           );
         }
       } finally {
@@ -276,7 +276,7 @@ export function RegisterForm() {
         return;
       }
       if (otp.length !== 6) {
-        setError("Enter the 6-digit code sent to your WhatsApp.");
+        setError("Enter the 6-digit code sent to your email.");
         return;
       }
       // OTP looks valid — move to bank details step
@@ -412,9 +412,9 @@ export function RegisterForm() {
     return (
       <form className="flex w-full max-w-md flex-col gap-6 rounded-2xl bg-white p-10 shadow-xl" onSubmit={handleVerifyOTP}>
         <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold text-slate-900">Verify your WhatsApp</h1>
+          <h1 className="text-2xl font-semibold text-slate-900">Verify your email</h1>
           <p className="text-sm text-slate-500">
-            Enter the verification code sent to <span className="font-semibold text-slate-700">{formValues?.phone}</span> on WhatsApp
+            Enter the verification code sent to <span className="font-semibold text-slate-700">{formValues?.email}</span>. You&apos;ll verify your WhatsApp number next.
           </p>
         </div>
         {error ? (
