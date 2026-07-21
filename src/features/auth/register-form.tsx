@@ -174,6 +174,16 @@ export function RegisterForm() {
         return;
       }
 
+      // Email is required — login verification codes are sent by email.
+      if (!emailValue) {
+        setError("Please enter your email address — we send your login codes there.");
+        return;
+      }
+      if (!emailValue.includes("@") || !emailValue.split("@")[1]?.includes(".")) {
+        setError("Please enter a valid email address.");
+        return;
+      }
+
       if (!acceptTerms) {
         setError("Please accept the Terms & Conditions to continue.");
         return;
@@ -183,13 +193,9 @@ export function RegisterForm() {
         name: String(form.get("name") ?? "").trim(),
         phone,
         business_name: businessName,
+        email: emailValue,
         accept_terms: true,
       };
-
-      // Email is optional — include if provided
-      if (emailValue) {
-        payload.email = emailValue;
-      }
       // Include referral code if it looks valid (length >= 3)
       // Backend will do final validation - this ensures code is sent even if
       // frontend validation had network issues
@@ -589,13 +595,15 @@ export function RegisterForm() {
         />
       </label>
       <label className="flex flex-col gap-2 text-left text-sm font-semibold text-slate-700">
-        Email address <span className="text-xs font-normal text-slate-400">Optional</span>
+        Email address
         <input
           name="email"
           type="email"
+          required
           placeholder="you@example.com"
           className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-base font-normal text-slate-900 outline-none transition focus:border-green-600 focus:ring-2 focus:ring-green-600/20"
         />
+        <span className="text-xs font-normal text-slate-400">We send your login verification codes here.</span>
       </label>
       
       {/* Referral Code Input */}
