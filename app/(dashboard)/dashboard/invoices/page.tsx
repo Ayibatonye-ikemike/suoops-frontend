@@ -4,7 +4,6 @@ import { Suspense } from "react";
 import { Plus } from "lucide-react";
 
 import { InvoiceListWithDetail } from "@/features/invoices/invoice-list-with-detail";
-import { PhoneRequiredGate } from "@/features/dashboard/phone-required-gate";
 import { BankDetailsRequiredGate } from "@/features/dashboard/bank-details-required-gate";
 import { useNewInvoiceDrawer } from "@/features/dashboard/new-invoice-provider";
 
@@ -29,9 +28,8 @@ function NewInvoiceButton() {
  */
 export default function InvoicesPage() {
   return (
-    <PhoneRequiredGate>
-      <BankDetailsRequiredGate>
-        <main className="min-h-screen">
+    <BankDetailsRequiredGate>
+      <main className="min-h-screen">
           <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
             <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
@@ -51,6 +49,5 @@ export default function InvoicesPage() {
           </div>
         </main>
       </BankDetailsRequiredGate>
-    </PhoneRequiredGate>
   );
 }

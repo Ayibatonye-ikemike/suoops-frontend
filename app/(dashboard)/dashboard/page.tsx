@@ -12,7 +12,6 @@ import { CashPositionCard } from "@/features/dashboard/cash-position-card";
 import { ProfessionalismScoreCard } from "@/features/dashboard/professionalism-score-card";
 import { WelcomeGuide } from "@/features/dashboard/welcome-guide";
 import { ProWelcomeModal } from "@/features/dashboard/pro-welcome-modal";
-import { PhoneRequiredGate } from "@/features/dashboard/phone-required-gate";
 import { BankDetailsRequiredGate } from "@/features/dashboard/bank-details-required-gate";
 import { NewUserOnboarding } from "@/features/dashboard/new-user-onboarding";
 import { DashboardNudges } from "@/features/dashboard/dashboard-nudges";
@@ -98,9 +97,8 @@ function InvoiceListWrapper() {
 
 export default function DashboardPage() {
   return (
-    <PhoneRequiredGate>
-      <BankDetailsRequiredGate>
-        <NewUserOnboarding>
+    <BankDetailsRequiredGate>
+      <NewUserOnboarding>
           <main className="min-h-screen">
             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
               <DashboardHero />
@@ -143,6 +141,5 @@ export default function DashboardPage() {
           </main>
         </NewUserOnboarding>
       </BankDetailsRequiredGate>
-    </PhoneRequiredGate>
   );
 }
