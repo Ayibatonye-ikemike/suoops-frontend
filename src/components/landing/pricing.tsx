@@ -16,7 +16,7 @@ export function Pricing() {
           </h2>
           <p className="mt-4 text-lg text-brand-charcoal/70 max-w-2xl mx-auto">
             No plans. No monthly fees. Every feature is free — Suoops takes just
-            <strong> 1% when you invoice</strong> (capped at ₦1,000 per ₦500,000),
+            <strong> 1% when you invoice</strong> (capped at ₦500 per ₦500,000),
             and 3% only on storefront orders paid online.
           </p>
         </div>
@@ -45,7 +45,7 @@ export function Pricing() {
             </p>
             <p className="mt-4 text-3xl font-bold text-brand-evergreen">1%</p>
             <p className="text-sm text-brand-charcoal/50">
-              Min ₦100, capped at ₦1,000 up to ₦500k, from your prepaid wallet at creation.
+              Min ₦100, capped at ₦500 up to ₦500k, from your prepaid wallet at creation.
             </p>
           </div>
         </div>

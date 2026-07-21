@@ -5,7 +5,7 @@
  * - One free tier. All features are free for everyone.
  * - Fees as low as 1%:
  *   • Manual invoices: max(1% of amount, ₦100) from a prepaid wallet at
- *     creation, capped at ₦1,000 per ₦500,000 of transaction value.
+ *     creation, capped at ₦500 per ₦500,000 of transaction value.
  *   • Storefront orders: 3% commission when the customer pays online,
  *     capped at ₦2,000 per ₦500,000.
  * - Wallet top-ups replace "packs": ₦1,250 / ₦5,000 / ₦20,000.
@@ -23,7 +23,7 @@ export const PLATFORM_FEE_PERCENT = STOREFRONT_FEE_PERCENT;
 /** Minimum fee (₦) charged per manual invoice. */
 export const MANUAL_INVOICE_MIN_FEE = 100;
 /** Base fee cap (₦) per ₦500,000 band for a manual invoice. */
-export const MANUAL_INVOICE_MAX_FEE = 1000;
+export const MANUAL_INVOICE_MAX_FEE = 500;
 /** Transaction value (₦) per fee-cap tier. */
 export const FEE_CAP_TIER_NAIRA = 500_000;
 /** Wallet top-up amounts (₦) sold to fund manual invoicing. */
