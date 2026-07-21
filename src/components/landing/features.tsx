@@ -67,7 +67,7 @@ export function Features() {
                 "Works with any Nigerian bank — no forced lock-in",
                 "Custom branding and team access — included, no plans",
               ]}
-              highlight="Every feature included — just 0.5% per invoice (about ₦500 per ₦100,000)."
+              highlight="Every feature included — just 0.5% per invoice (min ₦100, capped ₦400 under ₦500,000)."
             />
             <FeatureCard
               icon={ShoppingBag}

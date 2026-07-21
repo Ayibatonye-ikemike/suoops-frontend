@@ -26,7 +26,7 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: "Is Suoops free to use?",
-        answer: "Yes. Every feature is free — custom branding, tax reports, inventory, team access and your storefront. There are no plans or monthly fees. Fees are as low as 0.5%: you pay just 0.5% per manual invoice (minimum ₦50 — about ₦500 per ₦100,000), and 3% on storefront orders paid online. New accounts also start with a small free wallet balance so you can send your first invoices at no cost."
+        answer: "Yes. Every feature is free — custom branding, tax reports, inventory, team access and your storefront. There are no plans or monthly fees. Fees are as low as 0.5%: you pay just 0.5% per manual invoice (minimum ₦100, capped at ₦400 for invoices under ₦500,000 — uncapped 0.5% above), and 3% on storefront orders paid online. New accounts also start with a small free wallet balance so you can send your first invoices at no cost."
       },
       {
         question: "How do I set up my business profile?",
@@ -70,7 +70,7 @@ const faqCategories: FAQCategory[] = [
     faqs: [
       {
         question: "How does pricing work?",
-        answer: "Suoops is free with every feature included, and fees are as low as 0.5%. Manual invoices cost 0.5% (minimum ₦50 — about ₦500 per ₦100,000), taken from your prepaid wallet when you create the invoice. Storefront/online orders are 3% (capped at ₦2,000 per ₦500,000), taken from the customer's payment. No plans, no monthly fees."
+        answer: "Suoops is free with every feature included, and fees are as low as 0.5%. Manual invoices cost 0.5% (minimum ₦100, capped at ₦400 for invoices under ₦500,000 — uncapped 0.5% above), taken from your prepaid wallet when you create the invoice. Storefront/online orders are 3% (capped at ₦2,000 per ₦500,000), taken from the customer's payment. No plans, no monthly fees."
       },
       {
         question: "Do I need a subscription?",
@@ -78,7 +78,7 @@ const faqCategories: FAQCategory[] = [
       },
       {
         question: "What is the invoice wallet?",
-        answer: "The prepaid wallet funds manual invoicing. Each manual invoice costs just 0.5% (min ₦50 — about ₦500 per ₦100,000), deducted when you create it. Top up anytime — ₦1,250, ₦5,000 or ₦20,000 — from Settings → Billing. New accounts start with a small free balance."
+        answer: "The prepaid wallet funds manual invoicing. Each manual invoice costs just 0.5% (min ₦100, capped ₦400 under ₦500,000 — uncapped above), deducted when you create it. Top up anytime — ₦1,250, ₦5,000 or ₦20,000 — from Settings → Billing. New accounts start with a small free balance."
       },
       {
         question: "How do online payments work?",

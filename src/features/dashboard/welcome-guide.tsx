@@ -309,7 +309,7 @@ export function WelcomeGuide() {
             </div>
             <ul className="space-y-2 text-xs text-slate-600 mb-4">
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> Create &amp; confirm payment yourself</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> 0.5% (min ₦50, about ₦500 per ₦100k) charged at creation</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> 0.5% (min ₦100, capped ₦400 under ₦500k) charged at creation</li>
               <li className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> Top up: ₦1,250 / ₦5,000 / ₦20,000</li>
             </ul>
           </div>

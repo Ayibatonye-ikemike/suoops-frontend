@@ -54,7 +54,7 @@ export default function PlansArticle() {
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
-                <span>Minimum ₦50 (about ₦500 per ₦100,000)</span>
+                <span>Minimum ₦100, capped ₦400 under ₦500,000 (uncapped 0.5% above)</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald-500" />
@@ -104,7 +104,7 @@ export default function PlansArticle() {
           <h2>Your invoice wallet</h2>
           <p>
             Manual invoices are funded by a prepaid wallet. Each manual invoice costs just 0.5%
-            (minimum ₦50 — about ₦500 per ₦100,000), deducted when you create the invoice. New
+            (minimum ₦100, capped at ₦400 for invoices under ₦500,000 — uncapped 0.5% above), deducted when you create the invoice. New
             accounts start with a small free balance so you can send your first invoices at no cost.
           </p>
           <ul>
