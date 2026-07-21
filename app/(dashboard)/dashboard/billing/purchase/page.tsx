@@ -44,10 +44,9 @@ export default function TopUpWalletPage() {
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-brand-text">Top up your wallet</h1>
           <p className="mt-2 text-brand-textMuted">
-            Fees as low as 1%. We take just 1% per invoice (minimum ₦50, capped at ₦100
-            for invoices up to ₦100,000, then +₦100 per additional ₦100,000), charged from
-            your wallet when you create one. Storefront orders pay 3% only when the customer
-            pays online.
+            Fees as low as 0.1%. We take just 0.1% per invoice (minimum ₦50 — about ₦100
+            per ₦100,000), charged from your wallet when you create one. Storefront orders
+            pay 3% only when the customer pays online.
           </p>
         </div>
 
@@ -101,7 +100,7 @@ export default function TopUpWalletPage() {
               <span className="font-semibold text-brand-text">
                 Make as many invoices as you want — no monthly limit.
               </span>{" "}
-              Each invoice takes a small 1% fee from your wallet, capped at
+              Each invoice takes a small 0.1% fee from your wallet — about
               ₦100 per ₦100,000. So a ₦100,000 invoice costs ₦100, a
               ₦1,000,000 invoice ₦1,000, with a ₦50 minimum on small invoices.
             </p>

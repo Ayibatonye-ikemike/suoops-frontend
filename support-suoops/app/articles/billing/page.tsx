@@ -5,7 +5,7 @@ const articles = [
   { 
     slug: "plans", 
     title: "Pricing & your invoice wallet",
-    description: "How the 1% invoice fee works, funding your prepaid wallet, and online payments — no plans or monthly fees."
+    description: "How the 0.1% invoice fee works, funding your prepaid wallet, and online payments — no plans or monthly fees."
   },
 ];
 
@@ -30,7 +30,7 @@ export default function BillingPage() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-slate-900">Pricing & Billing</h1>
-              <p className="text-slate-600">Fees as low as 1%, your wallet, and online payments</p>
+              <p className="text-slate-600">Fees as low as 0.1%, your wallet, and online payments</p>
             </div>
           </div>
         </div>
