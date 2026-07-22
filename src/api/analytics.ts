@@ -193,3 +193,45 @@ export async function getCustomerInsights(
   );
   return response.data;
 }
+
+// ── Storefront Insights ───────────────────────────────────────────
+
+export interface StorefrontTopProduct {
+  name: string;
+  units: number;
+  revenue: number;
+}
+
+export interface StorefrontInsights {
+  enabled: boolean;
+  slug: string | null;
+  store_url: string | null;
+  // Store-lifetime counters
+  views: number;
+  reviews: number;
+  avg_rating: number | null;
+  conversion_rate: number;
+  // Period-scoped order metrics
+  period: string;
+  orders: number;
+  paid_orders: number;
+  abandoned_orders: number;
+  gmv: number;
+  avg_order_value: number;
+  awaiting_release: number;
+  refunds: number;
+  disputes: number;
+  restock_requests: number;
+  top_products: StorefrontTopProduct[];
+}
+
+export async function getStorefrontInsights(
+  period: "7d" | "30d" | "90d" | "1y" | "all" = "30d",
+  currency: "NGN" | "USD" = "NGN"
+): Promise<StorefrontInsights> {
+  const response = await apiClient.get<StorefrontInsights>(
+    `/analytics/storefront-insights?period=${period}&currency=${currency}`
+  );
+  return response.data;
+}
+

@@ -10,6 +10,7 @@ import { AgingReportCard } from "@/features/analytics/aging-report-card";
 import { MonthlyTrendsChart } from "@/features/analytics/monthly-trends-chart";
 import { TopCustomersCard } from "@/features/analytics/top-customers-card";
 import { ConversionFunnelCard } from "@/features/analytics/conversion-funnel-card";
+import { StorefrontInsightsCard } from "@/features/analytics/storefront-insights-card";
 import { useCurrencyStore } from "@/stores/currency-store";
 import { useCurrency } from "@/hooks/use-currency";
 
@@ -116,31 +117,71 @@ export default function AnalyticsPage() {
 
         {/* Analytics Content */}
         {analytics && (
-          <div className="space-y-6">
-            {/* Revenue Cards */}
-            <RevenueCards metrics={analytics.revenue} currency={currency} />
-
-            {/* Metrics Grid */}
-            <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-3">
-              <InvoiceMetricsCard metrics={analytics.invoices} />
-              <CustomerMetricsCard metrics={analytics.customers} />
-              <AgingReportCard aging={analytics.aging} currency={currency} />
-            </div>
-
-            {/* Charts Row */}
-            <div className="grid gap-4 sm:gap-6 grid-cols-1 xl:grid-cols-2">
-              <MonthlyTrendsChart
-                trends={analytics.monthly_trends}
-                currency={currency}
+          <div className="space-y-8">
+            {/* Revenue */}
+            <section className="space-y-4">
+              <SectionHeading
+                title="Revenue"
+                subtitle="Money earned, awaiting payment and overdue"
               />
-              <ConversionFunnelCard period={period} />
-            </div>
+              <RevenueCards metrics={analytics.revenue} currency={currency} />
+            </section>
 
-            {/* Bottom Row */}
-            <TopCustomersCard period={period} currency={currency} />
+            {/* Storefront */}
+            <section className="space-y-4">
+              <SectionHeading
+                title="Storefront"
+                subtitle="Your online store — views, orders, ratings and demand"
+              />
+              <StorefrontInsightsCard period={period} currency={currency} />
+            </section>
+
+            {/* Invoices & customers */}
+            <section className="space-y-4">
+              <SectionHeading
+                title="Invoices & customers"
+                subtitle="Status breakdown, customer mix and what's owed"
+              />
+              <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-3">
+                <InvoiceMetricsCard metrics={analytics.invoices} />
+                <CustomerMetricsCard metrics={analytics.customers} />
+                <AgingReportCard aging={analytics.aging} currency={currency} />
+              </div>
+            </section>
+
+            {/* Trends & conversion */}
+            <section className="space-y-4">
+              <SectionHeading
+                title="Trends & conversion"
+                subtitle="How revenue moves over time and where invoices convert"
+              />
+              <div className="grid gap-4 sm:gap-6 grid-cols-1 xl:grid-cols-2">
+                <MonthlyTrendsChart
+                  trends={analytics.monthly_trends}
+                  currency={currency}
+                />
+                <ConversionFunnelCard period={period} />
+              </div>
+              <TopCustomersCard period={period} currency={currency} />
+            </section>
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function SectionHeading({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle?: string;
+}) {
+  return (
+    <div className="border-b border-white/10 pb-2">
+      <h2 className="text-lg sm:text-xl font-semibold text-white">{title}</h2>
+      {subtitle && <p className="text-xs text-brand-mint">{subtitle}</p>}
     </div>
   );
 }
