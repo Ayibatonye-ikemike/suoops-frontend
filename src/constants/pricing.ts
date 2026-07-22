@@ -41,6 +41,19 @@ export function manualInvoiceFee(amount: number): number {
   return Math.max(capped, MANUAL_INVOICE_MIN_FEE);
 }
 
+/**
+ * Storefront service fee (₦) the BUYER pays on top of the goods, for a goods
+ * subtotal of `amount` (₦): 3%, min ₦20, capped at ₦2,000 per ₦500,000 band.
+ * Mirrors backend app/utils/feature_gate.py `platform_fee_kobo(channel="storefront")`.
+ */
+export function storefrontFee(amount: number): number {
+  if (amount <= 0) return 0;
+  const feeKobo = Math.round(amount * STOREFRONT_FEE_PERCENT); // amount(₦) * 3 = kobo
+  const floorKobo = 2000; // ₦20
+  const capKobo = 200_000 * Math.max(1, Math.ceil(amount / FEE_CAP_TIER_NAIRA));
+  return Math.min(Math.max(feeKobo, floorKobo), capKobo) / 100;
+}
+
 /** Convert a kobo wallet balance to whole Naira. */
 export function walletNaira(kobo: number | null | undefined): number {
   return Math.floor((kobo ?? 0) / 100);

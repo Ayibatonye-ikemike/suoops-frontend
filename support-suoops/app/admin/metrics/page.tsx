@@ -334,7 +334,11 @@ interface MetricsSummary {
   period: string;
   label: string;
   commission: number;
+  commission_storefront?: number;
+  commission_manual?: number;
   gmv: number;
+  gmv_storefront?: number;
+  gmv_manual?: number;
   invoices: number;
   new_users: number;
   active_users: number;
@@ -589,7 +593,7 @@ export default function MetricsPage() {
             <StatCard
               title="Registered Users"
               value={totalUsers.toLocaleString()}
-              subtitle={`${(summary?.new_users ?? 0).toLocaleString()} new ${(summary?.label ?? "").toLowerCase()}`}
+              subtitle={`${(summary?.new_users ?? 0).toLocaleString()} new · ${(summary?.active_users ?? 0).toLocaleString()} active sellers`}
               icon={Users}
             />
             <StatCard
@@ -602,14 +606,14 @@ export default function MetricsPage() {
             <StatCard
               title={`Commission (${summary?.label ?? "This month"})`}
               value={formatCurrency(summary?.commission ?? 0)}
-              subtitle={`${(summary?.active_users ?? 0).toLocaleString()} active sellers`}
+              subtitle={`Storefront ${formatCurrency(summary?.commission_storefront ?? 0)} · Manual ${formatCurrency(summary?.commission_manual ?? 0)}`}
               icon={DollarSign}
               color="emerald"
             />
             <StatCard
               title={`Payment Volume (${summary?.label ?? "This month"})`}
               value={formatCurrency(summary?.gmv ?? 0)}
-              subtitle="GMV — paid invoices"
+              subtitle={`Storefront ${formatCurrency(summary?.gmv_storefront ?? 0)} · Manual ${formatCurrency(summary?.gmv_manual ?? 0)}`}
               icon={Receipt}
               color="orange"
             />

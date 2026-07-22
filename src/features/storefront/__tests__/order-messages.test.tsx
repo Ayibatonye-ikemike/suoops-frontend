@@ -16,7 +16,7 @@ describe("BuyerMessages", () => {
     vi.restoreAllMocks();
   });
 
-  it("opens the thread with the delivery code and shows messages", async () => {
+  it("opens the thread with the release code and shows messages", async () => {
     const user = userEvent.setup();
     global.fetch = mockFetchOnce({
       messages: [
@@ -26,7 +26,7 @@ describe("BuyerMessages", () => {
 
     render(<BuyerMessages slug="jade-store" />);
     await user.click(screen.getByText("Message the seller"));
-    await user.type(screen.getByPlaceholderText("6-digit delivery code"), "481920");
+    await user.type(screen.getByPlaceholderText("6-digit release code"), "481920");
     await user.click(screen.getByText("Open chat"));
 
     await waitFor(() => expect(screen.getByText("On my way!")).toBeInTheDocument());
@@ -53,7 +53,7 @@ describe("BuyerMessages", () => {
 
     render(<BuyerMessages slug="jade-store" />);
     await user.click(screen.getByText("Message the seller"));
-    await user.type(screen.getByPlaceholderText("6-digit delivery code"), "481920");
+    await user.type(screen.getByPlaceholderText("6-digit release code"), "481920");
     await user.click(screen.getByText("Open chat"));
     await waitFor(() => screen.getByPlaceholderText("Message about your delivery…"));
 

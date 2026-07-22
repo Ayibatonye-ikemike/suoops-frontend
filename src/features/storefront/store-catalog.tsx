@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import { storefrontFee } from "@/constants/pricing";
 import { getConfig } from "@/lib/config";
 import { CurrentLocationCapture, type CapturedLocation } from "./current-location-capture";
 
@@ -200,7 +201,10 @@ export function StoreCatalog({
   }, [checkoutOpen, customerPhone, location, cartSig, slug, apiBaseUrl]);
 
   const deliveryFee = selectedCourier?.amount ?? 0;
-  const grandTotal = total + deliveryFee;
+  // The buyer pays a small service fee on top of the goods so the seller keeps
+  // the full listed price. Mirrors the backend charge (3%, min ₦20, capped).
+  const serviceFee = storefrontFee(total);
+  const grandTotal = total + serviceFee + deliveryFee;
   const cheapestAmount = deliveryOptions.length
     ? Math.min(...deliveryOptions.map((o) => o.amount))
     : 0;
@@ -457,6 +461,12 @@ export function StoreCatalog({
                 <span className="text-slate-600">Subtotal</span>
                 <span className="text-slate-900">{formatCurrency(total)}</span>
               </div>
+              {serviceFee > 0 && (
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate-600">Service fee</span>
+                  <span className="text-slate-900">{formatCurrency(serviceFee)}</span>
+                </div>
+              )}
               {selectedCourier && (
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-slate-600">
