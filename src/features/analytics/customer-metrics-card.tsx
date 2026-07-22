@@ -17,11 +17,11 @@ export function CustomerMetricsCard({ metrics }: CustomerMetricsCardProps) {
       </div>
 
       {/* Repeat Rate */}
-      <div className="mb-4 rounded-lg bg-purple-50 p-3 sm:p-4 border border-purple-200">
-        <p className="text-xs font-semibold uppercase tracking-wide text-purple-900 opacity-80">
+      <div className="mb-4 rounded-lg bg-teal-50 p-3 sm:p-4 border border-teal-200">
+        <p className="text-xs font-semibold uppercase tracking-wide text-teal-900 opacity-80">
           Repeat Customer Rate
         </p>
-        <p className="mt-1 text-2xl sm:text-3xl font-bold text-purple-900">
+        <p className="mt-1 text-2xl sm:text-3xl font-bold text-teal-900">
           {metrics.repeat_customer_rate.toFixed(1)}%
         </p>
         <p className="mt-1 text-xs text-brand-textMuted">

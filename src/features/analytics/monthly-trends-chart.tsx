@@ -122,7 +122,7 @@ export function MonthlyTrendsChart({
         </div>
         <div className="text-center">
           <p className="text-xs text-brand-textMuted">Avg Profit</p>
-          <p className="text-sm font-bold text-blue-600">
+          <p className="text-sm font-bold text-teal-600">
             {formatAmount(
               trends.reduce((sum, t) => sum + t.profit, 0) / trends.length
             )}

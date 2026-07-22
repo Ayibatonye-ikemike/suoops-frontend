@@ -20,9 +20,9 @@ export function RevenueCards({ metrics, currency }: RevenueCardsProps) {
       title: "Total Revenue",
       value: formatAmount(metrics.total_revenue),
       subtitle: `Avg: ${formatAmount(metrics.average_invoice_value)}/invoice`,
-      color: "bg-blue-50 border-blue-200",
-      textColor: "text-blue-900",
-      iconColor: "text-blue-600",
+      color: "bg-teal-50 border-teal-200",
+      textColor: "text-teal-900",
+      iconColor: "text-teal-600",
       icon: "💰",
     },
     {

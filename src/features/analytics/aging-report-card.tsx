@@ -41,12 +41,12 @@ export function AgingReportCard({ aging, currency }: AgingReportCardProps) {
         </span>
       </div>
 
-      {/* Total Outstanding */}
-      <div className="mb-4 rounded-lg bg-rose-50 p-3 sm:p-4 border border-rose-200">
-        <p className="text-xs font-semibold uppercase tracking-wide text-rose-900 opacity-80">
+      {/* Total Outstanding — money owed to you (on-brand, not alarming) */}
+      <div className="mb-4 rounded-lg bg-brand-background p-3 sm:p-4 border border-brand-border">
+        <p className="text-xs font-semibold uppercase tracking-wide text-brand-jadeText opacity-90">
           Total Outstanding
         </p>
-        <p className="mt-1 text-2xl sm:text-3xl font-bold text-rose-900 break-words">
+        <p className="mt-1 text-2xl sm:text-3xl font-bold text-brand-evergreen break-words">
           {formatAmount(aging.total_outstanding)}
         </p>
         <p className="mt-1 text-xs text-brand-textMuted">Accounts receivable</p>

@@ -34,15 +34,15 @@ export function ConversionFunnelCard({ period }: ConversionFunnelCardProps) {
   }
 
   const chartData = [
-    { stage: "Created", count: data.funnel.created, color: "#3b82f6" },
-    { stage: "Sent", count: data.funnel.sent, color: "#8b5cf6" },
+    { stage: "Created", count: data.funnel.created, color: "#0F766E" },
+    { stage: "Sent", count: data.funnel.sent, color: "#14B56A" },
     { stage: "Viewed", count: data.funnel.viewed, color: "#10b981" },
     {
       stage: "Awaiting",
       count: data.funnel.awaiting_confirmation,
       color: "#f59e0b",
     },
-    { stage: "Paid", count: data.funnel.paid, color: "#059669" },
+    { stage: "Paid", count: data.funnel.paid, color: "#0B7A44" },
   ];
 
   return (
@@ -105,7 +105,7 @@ export function ConversionFunnelCard({ period }: ConversionFunnelCardProps) {
         </div>
         <div>
           <p className="text-xs text-brand-textMuted">Viewed → Paid</p>
-          <p className="text-lg font-bold text-blue-600">
+          <p className="text-lg font-bold text-teal-600">
             {data.conversion_rates.viewed_to_paid.toFixed(1)}%
           </p>
         </div>

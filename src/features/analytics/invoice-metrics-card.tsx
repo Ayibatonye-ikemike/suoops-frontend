@@ -16,7 +16,7 @@ export function InvoiceMetricsCard({ metrics }: InvoiceMetricsCardProps) {
     {
       label: "Awaiting",
       value: metrics.awaiting_confirmation,
-      color: "text-blue-600",
+      color: "text-teal-600",
     },
     { label: "Failed", value: metrics.failed_invoices, color: "text-rose-600" },
   ];

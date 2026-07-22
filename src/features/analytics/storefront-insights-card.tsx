@@ -73,8 +73,8 @@ export function StorefrontInsightsCard({
       label: "Orders",
       value: data.orders.toLocaleString(),
       sub: `${data.paid_orders} paid · ${data.abandoned_orders} abandoned`,
-      accent: "text-blue-900",
-      bg: "bg-blue-50 border-blue-200",
+      accent: "text-teal-900",
+      bg: "bg-teal-50 border-teal-200",
     },
     {
       label: "Sales (goods)",
@@ -87,8 +87,8 @@ export function StorefrontInsightsCard({
       label: "Avg order",
       value: money(data.avg_order_value),
       sub: "per paid order",
-      accent: "text-purple-900",
-      bg: "bg-purple-50 border-purple-200",
+      accent: "text-teal-900",
+      bg: "bg-teal-50 border-teal-200",
     },
     {
       label: "Awaiting release",
@@ -246,7 +246,7 @@ function Chip({
   const tones: Record<string, string> = {
     rose: "border-rose-200 bg-rose-50 text-rose-700",
     amber: "border-amber-200 bg-amber-50 text-amber-700",
-    blue: "border-blue-200 bg-blue-50 text-blue-700",
+    blue: "border-teal-200 bg-teal-50 text-teal-700",
   };
   return (
     <span className={`rounded-full border px-2.5 py-1 font-medium ${tones[tone]}`}>
