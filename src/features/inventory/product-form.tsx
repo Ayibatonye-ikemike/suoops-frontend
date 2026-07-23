@@ -327,39 +327,69 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
             </span>
           </label>
 
-          {/* Stock — only for products */}
-          {formData.track_stock && (
+          {/* Quantity — stock for products, optional availability for services */}
+          {(formData.track_stock || formData.fulfilment_type !== "physical") && (
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  How many in stock?
+                  {formData.fulfilment_type !== "physical"
+                    ? "Available quantity "
+                    : "How many in stock?"}
+                  {formData.fulfilment_type !== "physical" && (
+                    <span className="font-normal text-gray-400">(optional)</span>
+                  )}
                 </label>
                 <input
                   type="number"
                   min="0"
-                  value={formData.quantity_in_stock}
-                  onChange={(e) => setFormData({ ...formData, quantity_in_stock: Number(e.target.value) })}
-                  disabled={isEditing}
+                  value={formData.quantity_in_stock || ""}
+                  onChange={(e) => {
+                    const q = Number(e.target.value);
+                    setFormData((prev) => ({
+                      ...prev,
+                      quantity_in_stock: q,
+                      // A service with a quantity becomes limited (tracked);
+                      // blank/0 means unlimited.
+                      ...(prev.fulfilment_type !== "physical"
+                        ? { track_stock: q > 0 }
+                        : {}),
+                    }));
+                  }}
+                  // Physical stock is edited via stock adjustment (audit trail);
+                  // services can be edited inline, on add or edit.
+                  disabled={isEditing && formData.fulfilment_type === "physical"}
+                  placeholder={
+                    formData.fulfilment_type !== "physical" ? "Unlimited" : undefined
+                  }
                   className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade disabled:opacity-50 disabled:cursor-not-allowed"
                 />
-                {isEditing && (
-                  <p className="text-xs text-gray-500 mt-1">Use stock adjustment to change.</p>
+                {formData.fulfilment_type !== "physical" ? (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Set how many you can take — or leave blank for unlimited.
+                  </p>
+                ) : (
+                  isEditing && (
+                    <p className="text-xs text-gray-500 mt-1">Use stock adjustment to change.</p>
+                  )
                 )}
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Alert me at
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  value={formData.reorder_level}
-                  onChange={(e) => setFormData({ ...formData, reorder_level: Number(e.target.value) })}
-                  className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
-                />
-                <p className="text-xs text-gray-500 mt-1">We&apos;ll remind you to restock.</p>
-              </div>
+              {/* Restock alert — physical stock only */}
+              {formData.fulfilment_type === "physical" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Alert me at
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={formData.reorder_level}
+                    onChange={(e) => setFormData({ ...formData, reorder_level: Number(e.target.value) })}
+                    className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">We&apos;ll remind you to restock.</p>
+                </div>
+              )}
             </div>
           )}
 

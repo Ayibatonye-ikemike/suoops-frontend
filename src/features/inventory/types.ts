@@ -80,6 +80,7 @@ export interface ProductUpdate {
   category_id?: number | null;
   cost_price?: number | null;
   selling_price?: number;
+  quantity_in_stock?: number;
   reorder_level?: number;
   reorder_quantity?: number;
   unit?: string;
