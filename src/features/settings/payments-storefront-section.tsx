@@ -18,6 +18,7 @@ import {
 } from "@/api/payments-storefront";
 import { getBankDetails } from "@/api/bank-details";
 import { CurrentLocationCapture, type CapturedLocation } from "@/features/storefront/current-location-capture";
+import { copyText, downloadDataUrl } from "@/lib/download";
 
 // The generated OpenAPI types don't yet include online_payments_enabled on the
 // bank-details response; extend locally until types are regenerated.
@@ -223,13 +224,10 @@ export function PaymentsStorefrontSection() {
   });
 
   const copyLink = async () => {
-    if (!link || typeof navigator === "undefined" || !navigator.clipboard) return;
-    try {
-      await navigator.clipboard.writeText(link);
+    if (!link) return;
+    if (await copyText(link)) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* ignore */
     }
   };
 
@@ -402,13 +400,16 @@ export function PaymentsStorefrontSection() {
                       Scan to open your storefront. Print it, put it on your shop,
                       flyers or packaging.
                     </p>
-                    <a
-                      href={storefrontQr.data.qr_png}
-                      download="storefront-qr.png"
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const qr = storefrontQr.data?.qr_png;
+                        if (qr) downloadDataUrl(qr, "storefront-qr.png", "My storefront");
+                      }}
                       className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-brand-jade px-3 py-2 text-xs font-semibold text-white transition hover:bg-brand-jadeHover"
                     >
                       <Download className="h-3.5 w-3.5" /> Download
-                    </a>
+                    </button>
                   </>
                 ) : (
                   <p className="py-6 text-xs text-amber-600">

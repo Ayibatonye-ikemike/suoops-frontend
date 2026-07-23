@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { X, Download, Copy, Check } from "lucide-react";
 import { apiClient } from "@/api/client";
+import { copyText, downloadDataUrl } from "@/lib/download";
 
 interface ScanToPay {
   pay_url: string;
@@ -36,10 +37,16 @@ export function ScanToPayModal({ productId, productName, onClose }: ScanToPayMod
     (error as { response?: { data?: { detail?: string } } })?.response?.data?.detail;
 
   const copyLink = async () => {
-    if (!data?.pay_url || typeof navigator === "undefined" || !navigator.clipboard) return;
-    await navigator.clipboard.writeText(data.pay_url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (!data?.pay_url) return;
+    if (await copyText(data.pay_url)) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  const downloadQr = () => {
+    if (!data?.qr_png) return;
+    void downloadDataUrl(data.qr_png, `scan-to-pay-${productId}.png`, productName);
   };
 
   return (
@@ -72,13 +79,13 @@ export function ScanToPayModal({ productId, productName, onClose }: ScanToPayMod
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={data.qr_png} alt="Scan to pay QR code" className="mx-auto h-52 w-52" />
               <div className="mt-4 flex items-center justify-center gap-2">
-                <a
-                  href={data.qr_png}
-                  download={`scan-to-pay-${productId}.png`}
+                <button
+                  type="button"
+                  onClick={downloadQr}
                   className="inline-flex items-center gap-1.5 rounded-lg bg-brand-jade px-3 py-2 text-sm font-semibold text-white hover:bg-brand-jadeHover transition-colors"
                 >
                   <Download className="h-4 w-4" /> Download
-                </a>
+                </button>
                 <button
                   onClick={copyLink}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
