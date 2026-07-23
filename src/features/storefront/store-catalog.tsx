@@ -379,7 +379,15 @@ export function StoreCatalog({
               <div className="aspect-square w-full bg-slate-100">
                 {p.image_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={p.image_url} alt={p.name} className="h-full w-full object-cover" />
+                  <img
+                    src={p.image_url}
+                    alt={p.name}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                    width={360}
+                    height={360}
+                  />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-slate-300">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-10 w-10">

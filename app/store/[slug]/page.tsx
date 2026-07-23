@@ -48,11 +48,15 @@ type Storefront = {
 
 type RouteProps = { params: Promise<{ slug: string }> };
 
-export const dynamic = "force-dynamic";
+// Cache the storefront HTML on Vercel's CDN for 60s so repeat visits render
+// instantly instead of blocking on a fresh backend round-trip every time. Order
+// actions are client-side, so this only affects the catalog snapshot.
+export const revalidate = 60;
 
 async function fetchStore(slug: string, apiBaseUrl: string): Promise<Storefront | null> {
   const res = await fetch(`${apiBaseUrl}/public/store/${encodeURIComponent(slug)}`, {
-    cache: "no-store",
+    // Match the page revalidate so a refresh reuses the same fetch.
+    next: { revalidate: 60 },
     headers: { "Content-Type": "application/json" },
   });
   if (res.status === 404) return null;
