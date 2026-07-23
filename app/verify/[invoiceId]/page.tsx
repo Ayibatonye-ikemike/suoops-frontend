@@ -10,6 +10,8 @@ type Verification = {
   business_name: string;
   verification_code: string;
   items: { description: string; quantity: number }[];
+  fulfilment_status: string | null;
+  fulfilment_label: string | null;
   created_at: string;
   verified_at: string;
   authentic: boolean;
@@ -62,6 +64,21 @@ const STATUS_STYLE: Record<string, string> = {
   awaiting_confirmation: "bg-amber-100 text-amber-700",
   cancelled: "bg-rose-100 text-rose-700",
   failed: "bg-rose-100 text-rose-700",
+};
+
+// Fulfilment banner styling — did the seller render the service / deliver the goods?
+const FULFILMENT: Record<string, { box: string; icon: string }> = {
+  delivered: { box: "border-emerald-200 bg-emerald-50 text-emerald-800", icon: "✓" },
+  rendered: { box: "border-emerald-200 bg-emerald-50 text-emerald-800", icon: "✓" },
+  confirmed: { box: "border-emerald-200 bg-emerald-50 text-emerald-800", icon: "✓" },
+  released: { box: "border-emerald-200 bg-emerald-50 text-emerald-800", icon: "✓" },
+  sent: { box: "border-sky-200 bg-sky-50 text-sky-800", icon: "🚚" },
+  preparing: { box: "border-amber-200 bg-amber-50 text-amber-800", icon: "⏳" },
+  in_progress: { box: "border-amber-200 bg-amber-50 text-amber-800", icon: "⏳" },
+  unpaid: { box: "border-amber-200 bg-amber-50 text-amber-800", icon: "⏳" },
+  disputed: { box: "border-rose-200 bg-rose-50 text-rose-800", icon: "⚠️" },
+  refunded: { box: "border-slate-200 bg-slate-50 text-slate-700", icon: "↩️" },
+  canceled: { box: "border-slate-200 bg-slate-50 text-slate-700", icon: "✕" },
 };
 
 export default async function VerifyInvoicePage({ params }: RouteProps) {
@@ -124,6 +141,20 @@ export default async function VerifyInvoicePage({ params }: RouteProps) {
               {data.business_name}
             </p>
           </div>
+
+          {/* Fulfilment — has the seller rendered/delivered? (storefront orders) */}
+          {data.fulfilment_label && (
+            <div
+              className={`mt-4 flex items-center gap-2 rounded-xl border px-3 py-2.5 ${
+                (FULFILMENT[data.fulfilment_status ?? ""] ?? FULFILMENT.preparing).box
+              }`}
+            >
+              <span className="text-base">
+                {(FULFILMENT[data.fulfilment_status ?? ""] ?? FULFILMENT.preparing).icon}
+              </span>
+              <span className="text-sm font-semibold">{data.fulfilment_label}</span>
+            </div>
+          )}
 
           <dl className="mt-4 space-y-3 border-t border-dashed border-slate-200 pt-4 text-sm">
             <div className="flex items-center justify-between">

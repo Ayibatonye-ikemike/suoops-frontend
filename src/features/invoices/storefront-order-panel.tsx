@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { Bike, Package, Truck } from "lucide-react";
+import { Bike, CheckCircle2, Package, Truck } from "lucide-react";
 
 import { apiClient } from "@/api/client";
 
@@ -113,6 +113,25 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
     },
   });
 
+  const markRendered = useMutation({
+    mutationFn: async () => {
+      const res = await apiClient.post(
+        `/inventory/storefront/orders/${invoiceId}/mark-delivered`,
+        new FormData(),
+      );
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Marked as done — buyers can see the service was rendered.");
+      qc.invalidateQueries({ queryKey: ["orderEscrow", invoiceId] });
+    },
+    onError: (err) => {
+      const detail = (err as { response?: { data?: { detail?: string } } })
+        ?.response?.data?.detail;
+      toast.error(detail || "Could not update. Please try again.");
+    },
+  });
+
   const markSent = useMutation({
     mutationFn: async () => {
       const fd = new FormData();
@@ -181,6 +200,27 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
           full amount automatically when the buyer-protection window ends, or sooner
           when the buyer confirms it&apos;s done.
         </div>
+        {escrow.confirmed_at ? (
+          <p className="mt-2 flex items-center gap-1 text-xs font-semibold text-brand-jade">
+            <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+            Buyer confirmed the service was rendered.
+          </p>
+        ) : escrow.delivered_at ? (
+          <p className="mt-2 flex items-center gap-1 text-xs font-semibold text-brand-jade">
+            <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+            You marked this as done — it shows as rendered on the receipt QR.
+          </p>
+        ) : escrow.held ? (
+          <button
+            type="button"
+            onClick={() => markRendered.mutate()}
+            disabled={markRendered.isPending}
+            className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-brand-jade px-3 py-2 text-xs font-semibold text-white transition hover:bg-brand-jade/90 disabled:opacity-60"
+          >
+            <CheckCircle2 className="h-4 w-4 shrink-0" />
+            {markRendered.isPending ? "Saving…" : "Mark service as done"}
+          </button>
+        ) : null}
         {invoiceId && escrow.held ? (
           <OrderMessageThread invoiceId={invoiceId} unread={escrow.unread_messages ?? 0} />
         ) : null}
