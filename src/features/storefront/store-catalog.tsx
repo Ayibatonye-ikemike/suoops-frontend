@@ -15,6 +15,7 @@ export type StoreProduct = {
   image_url: string | null;
   in_stock: boolean;
   category?: string | null;
+  fulfilment_type?: "physical" | "service" | "digital" | null;
 };
 
 type Props = {
@@ -205,6 +206,14 @@ export function StoreCatalog({
   // the full listed price. Mirrors the backend charge (3%, min ₦20, capped).
   const serviceFee = storefrontFee(total);
   const grandTotal = total + serviceFee + deliveryFee;
+  // A cart made up ENTIRELY of service/digital items isn't shipped, so we skip
+  // the delivery address, GPS and courier picker for it.
+  const noDelivery =
+    cartEntries.length > 0 &&
+    cartEntries.every(([id]) => {
+      const ft = productById.get(Number(id))?.fulfilment_type ?? "physical";
+      return ft === "service" || ft === "digital";
+    });
   const cheapestAmount = deliveryOptions.length
     ? Math.min(...deliveryOptions.map((o) => o.amount))
     : 0;
@@ -212,18 +221,20 @@ export function StoreCatalog({
   const canSubmit =
     customerName.trim().length > 0 &&
     customerPhone.trim().length >= 6 &&
-    location != null &&
     count > 0 &&
     !submitting &&
-    // A delivery address / landmark is always required (the GPS pin may not be
-    // where the buyer wants delivery).
-    deliveryNote.trim().length >= 4 &&
-    // If the store offers couriers, the buyer must either pick one or explicitly
-    // opt out of delivery (service order / self-pickup).
-    (!deliveryEnabled ||
-      deliveryOptions.length === 0 ||
-      selectedCourier != null ||
-      declinedDelivery);
+    // Service/digital orders need no delivery details; physical orders do.
+    (noDelivery ||
+      (location != null &&
+        // A delivery address / landmark is required (the GPS pin may not be
+        // where the buyer wants delivery).
+        deliveryNote.trim().length >= 4 &&
+        // If the store offers couriers, the buyer must either pick one or
+        // explicitly opt out of delivery (self-pickup).
+        (!deliveryEnabled ||
+          deliveryOptions.length === 0 ||
+          selectedCourier != null ||
+          declinedDelivery)));
 
   const submitOrder = async () => {
     if (!canSubmit) return;
@@ -499,6 +510,13 @@ export function StoreCatalog({
                 placeholder="Your phone (e.g. 08012345678)"
                 className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-jade focus:outline-none focus:ring-2 focus:ring-brand-jade/20"
               />
+              {noDelivery ? (
+                <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-[11px] text-emerald-700">
+                  ✓ No delivery needed — this is a service/digital order. Your
+                  payment is still held safely until you confirm it’s done.
+                </div>
+              ) : (
+              <>
               <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
                 <p className="text-xs font-medium text-slate-700">Your delivery location</p>
                 <p className="mb-2 text-[11px] text-slate-500">
@@ -633,6 +651,8 @@ export function StoreCatalog({
                   tell the seller exactly where to send it.
                 </p>
               </div>
+              </>
+              )}
             </div>
 
             {error && (

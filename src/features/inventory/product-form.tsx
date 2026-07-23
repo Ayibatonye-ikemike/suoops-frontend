@@ -49,6 +49,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
     reorder_quantity: product?.reorder_quantity ?? 20,
     unit: product?.unit ?? "pcs",
     track_stock: product?.track_stock ?? true,
+    fulfilment_type: product?.fulfilment_type ?? "physical",
   });
 
   const [error, setError] = useState<string | null>(null);
@@ -163,7 +164,13 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  onClick={() => setFormData({ ...formData, track_stock: true })}
+                  onClick={() =>
+                    setFormData({
+                      ...formData,
+                      track_stock: true,
+                      fulfilment_type: "physical",
+                    })
+                  }
                   className={`rounded-xl border-2 p-3 text-left transition ${
                     formData.track_stock
                       ? "border-brand-jade bg-emerald-50 dark:bg-emerald-900/20"
@@ -176,7 +183,13 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setFormData({ ...formData, track_stock: false })}
+                  onClick={() =>
+                    setFormData({
+                      ...formData,
+                      track_stock: false,
+                      fulfilment_type: "service",
+                    })
+                  }
                   className={`rounded-xl border-2 p-3 text-left transition ${
                     !formData.track_stock
                       ? "border-brand-jade bg-emerald-50 dark:bg-emerald-900/20"
@@ -185,7 +198,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
                 >
                   <div className="text-xl">🛠️</div>
                   <div className="text-sm font-semibold text-gray-900 dark:text-white">Service</div>
-                  <div className="text-xs text-gray-500">Freelance, digital — no stock</div>
+                  <div className="text-xs text-gray-500">Freelance, digital — no delivery</div>
                 </button>
               </div>
             </div>

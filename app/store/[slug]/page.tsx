@@ -17,6 +17,7 @@ type StoreProduct = {
   image_url: string | null;
   in_stock: boolean;
   category: string | null;
+  fulfilment_type?: "physical" | "service" | "digital" | null;
 };
 
 type Storefront = {

@@ -45,6 +45,7 @@ export interface Product {
   unit: string;
   is_active: boolean;
   track_stock: boolean;
+  fulfilment_type: "physical" | "service" | "digital";
   image_url?: string | null;
   is_low_stock: boolean;
   is_out_of_stock: boolean;
@@ -67,6 +68,7 @@ export interface ProductCreate {
   reorder_quantity?: number;
   unit?: string;
   track_stock?: boolean;
+  fulfilment_type?: "physical" | "service" | "digital";
   image_url?: string | null;
 }
 
@@ -83,6 +85,7 @@ export interface ProductUpdate {
   unit?: string;
   track_stock?: boolean;
   is_active?: boolean;
+  fulfilment_type?: "physical" | "service" | "digital";
   image_url?: string | null;
 }
 
