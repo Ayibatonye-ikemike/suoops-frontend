@@ -396,10 +396,10 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
                   {releaseCode}
                 </div>
                 <p className="text-xs leading-relaxed text-slate-600">
-                  Give this code to the <span className="font-semibold">seller</span>{" "}
-                  <span className="font-semibold">only after your order is in your hands</span> — it
-                  releases your payment. The delivery rider never needs it. We&apos;ve also sent it
-                  to your WhatsApp.
+                  Share this code with the <span className="font-semibold">seller</span>{" "}
+                  <span className="font-semibold">only after you&apos;ve received what you paid for</span> — it
+                  releases your payment. Don&apos;t share it before then, or with anyone else. We&apos;ve
+                  also sent it to your WhatsApp.
                 </p>
               </div>
             )}

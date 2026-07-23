@@ -21,7 +21,7 @@ export function ConfirmReceipt({ slug }: { slug: string }) {
         onClick={() => setOpen(true)}
         className="text-xs font-semibold text-brand-jade hover:underline"
       >
-        Got your order? Confirm you received it
+        Got what you paid for? Confirm you received it
       </button>
       <button
         type="button"
@@ -75,7 +75,7 @@ function ConfirmModal({
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4">
       <div className="w-full max-w-sm rounded-t-2xl bg-white p-5 sm:rounded-2xl">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-base font-bold text-slate-900">Confirm you got your order</h3>
+          <h3 className="text-base font-bold text-slate-900">Confirm you got what you paid for</h3>
           <button
             type="button"
             onClick={onClose}

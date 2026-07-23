@@ -34,6 +34,7 @@ interface OrderEscrow {
   delivery_courier: string | null;
   delivery_service_type: string | null;
   delivery_dropoff_station: string | null;
+  requires_delivery?: boolean;
   unread_messages?: number;
 }
 
@@ -159,6 +160,33 @@ export function StorefrontOrderPanel({ invoiceId }: { invoiceId: string | null }
   // proof (photo/tracking) is exactly what helps our team resolve it. (These
   // actions never release funds; only the window/buyer code/admin do.)
   const showActions = escrow.held;
+
+  // Service/digital orders don't ship — no dispatch/delivery workflow. Buyer
+  // protection is still on: paid automatically after the window, or when the
+  // buyer confirms.
+  if (escrow.requires_delivery === false) {
+    return (
+      <div className="rounded-lg border border-brand-jade/30 bg-brand-jade/5 p-4">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-xs font-semibold uppercase tracking-wide text-brand-jade">
+            Buyer protection
+          </p>
+          <span className="text-xs font-medium text-brand-textMuted">
+            You get ₦{escrow.payout_naira.toLocaleString("en-NG", { minimumFractionDigits: 2 })}
+          </span>
+        </div>
+        <p className="mt-2 text-sm text-brand-text">{statusLine}</p>
+        <div className="mt-2 rounded-md bg-emerald-50 px-3 py-2 text-xs text-emerald-800">
+          🛠️ This is a service order — nothing to deliver. You&apos;ll be paid your
+          full amount automatically when the buyer-protection window ends, or sooner
+          when the buyer confirms it&apos;s done.
+        </div>
+        {invoiceId && escrow.held ? (
+          <OrderMessageThread invoiceId={invoiceId} unread={escrow.unread_messages ?? 0} />
+        ) : null}
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-lg border border-brand-jade/30 bg-brand-jade/5 p-4">
