@@ -8,7 +8,7 @@ interface PlanModalProps {
 
 /**
  * Legacy "upgrade" modal. Under the commission model there are no plans — every
- * feature is free and we take a flat 3% per invoice. Kept (with the same props)
+ * feature is free; manual invoices are 0.5% and storefront customers pay the 3%. Kept (with the same props)
  * because a few older gated views still render it; it now just explains billing.
  */
 export function PlanSelectionModal({ isOpen, onClose }: PlanModalProps) {
@@ -32,13 +32,14 @@ export function PlanSelectionModal({ isOpen, onClose }: PlanModalProps) {
           <h2 className="mt-2 text-2xl font-bold">Everything is free</h2>
           <p className="mt-2 text-brand-textMuted">
             All features are included — custom branding, inventory, team, tax
-            reports and more. We simply take a flat 3% per invoice.
+            reports and more. Manual invoices are just 0.5%, and on your
+            storefront customers pay the 3%.
           </p>
         </div>
 
         <div className="mt-6 rounded-xl border border-brand-border bg-brand-background p-4 text-sm text-brand-textMuted">
-          Manual invoices use your prepaid wallet (3%, min ₦20, ₦2,000 cap up to ₦500k, at creation).
-          Storefront orders pay 3% only when the customer pays online.
+          Manual invoices use your prepaid wallet (0.5%, min ₦100, ₦400 cap under ₦500k, at creation).
+          Storefront orders: the customer pays the 3% when they pay online — you keep your full price.
         </div>
 
         <div className="mt-6 flex justify-end gap-3">

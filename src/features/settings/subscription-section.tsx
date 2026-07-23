@@ -36,11 +36,12 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
           <h2 className="text-[22px] font-semibold text-brand-text">Billing &amp; wallet</h2>
           <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-textMuted">
             <span className="block h-1 w-6 rounded-full bg-brand-jade/60" />
-            3% per invoice · all features free
+            Fees from 0.5% · all features free
           </span>
         </div>
         <p className="mt-2 text-sm text-brand-textMuted">
-          Every feature is included. We take a flat 3% per invoice.
+          Every feature is included. Manual invoices are just 0.5%, and on your
+          storefront the customer pays the 3% — you keep your full price.
         </p>
       </div>
 
