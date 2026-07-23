@@ -16,6 +16,7 @@ export type StoreProduct = {
   in_stock: boolean;
   category?: string | null;
   fulfilment_type?: "physical" | "service" | "digital" | null;
+  pack_price?: number | null;
 };
 
 type Props = {
@@ -202,10 +203,18 @@ export function StoreCatalog({
   }, [checkoutOpen, customerPhone, location, cartSig, slug, apiBaseUrl]);
 
   const deliveryFee = selectedCourier?.amount ?? 0;
+  // Automatic packaging: ONE flat pack per order — the highest pack price among
+  // items in the cart whose category carries a pack fee. Mirrors the backend.
+  const packFee = (() => {
+    const prices = cartEntries
+      .map(([id]) => productById.get(Number(id))?.pack_price ?? 0)
+      .filter((v) => v > 0);
+    return prices.length ? Math.max(...prices) : 0;
+  })();
   // The buyer pays a small service fee on top of the goods so the seller keeps
   // the full listed price. Mirrors the backend charge (3%, min ₦20, capped).
-  const serviceFee = storefrontFee(total);
-  const grandTotal = total + serviceFee + deliveryFee;
+  const serviceFee = storefrontFee(total + packFee);
+  const grandTotal = total + packFee + serviceFee + deliveryFee;
   // A cart made up ENTIRELY of service/digital items isn't shipped, so we skip
   // the delivery address, GPS and courier picker for it.
   const noDelivery =
@@ -472,6 +481,12 @@ export function StoreCatalog({
                 <span className="text-slate-600">Subtotal</span>
                 <span className="text-slate-900">{formatCurrency(total)}</span>
               </div>
+              {packFee > 0 && (
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate-600">Packaging</span>
+                  <span className="text-slate-900">{formatCurrency(packFee)}</span>
+                </div>
+              )}
               {serviceFee > 0 && (
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-slate-600">Service fee</span>

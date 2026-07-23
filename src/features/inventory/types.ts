@@ -11,6 +11,7 @@ export interface ProductCategory {
   description?: string | null;
   color?: string | null;
   is_active: boolean;
+  pack_price?: number | null;
   product_count: number;
 }
 
@@ -19,6 +20,7 @@ export interface ProductCategoryCreate {
   description?: string | null;
   color?: string | null;
   is_active?: boolean;
+  pack_price?: number | null;
 }
 
 export interface ProductCategoryUpdate {
@@ -26,6 +28,7 @@ export interface ProductCategoryUpdate {
   description?: string | null;
   color?: string | null;
   is_active?: boolean;
+  pack_price?: number | null;
 }
 
 // Product Types

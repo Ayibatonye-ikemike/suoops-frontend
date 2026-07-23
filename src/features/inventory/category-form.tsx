@@ -22,6 +22,7 @@ export function CategoryForm({ category, onClose, onSuccess }: CategoryFormProps
     description: category?.description ?? "",
     color: category?.color ?? "#10b981", // Default emerald color
     is_active: category?.is_active ?? true,
+    pack_price: category?.pack_price ?? null,
   });
 
   const [error, setError] = useState<string | null>(null);
@@ -151,6 +152,31 @@ export function CategoryForm({ category, onClose, onSuccess }: CategoryFormProps
                 />
               ))}
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Pack / packaging fee (₦)
+            </label>
+            <input
+              type="number"
+              min={0}
+              step="0.01"
+              inputMode="decimal"
+              value={formData.pack_price ?? ""}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  pack_price: e.target.value === "" ? null : Number(e.target.value),
+                })
+              }
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm focus:border-brand-jade focus:outline-none focus:ring-1 focus:ring-brand-jade"
+              placeholder="e.g. 200 — leave blank for no packaging"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Added automatically to a storefront order that includes any item in
+              this category (one flat pack per order). Leave blank if none.
+            </p>
           </div>
 
           <div className="flex items-center gap-2">
