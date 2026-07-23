@@ -124,6 +124,18 @@ export function StoreCatalog({
     }
   }, [productById]);
 
+  // Deep link from a category QR: /store/{slug}?category={name}. Pre-filter the
+  // catalog to that category so a scan lands straight on those items.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const raw = new URLSearchParams(window.location.search).get("category");
+    if (!raw) return;
+    const match = categories.find(
+      (c) => c.toLowerCase() === raw.trim().toLowerCase(),
+    );
+    if (match) setActiveCategory(match);
+  }, [categories]);
+
   const cartSig = useMemo(
     () =>
       Object.entries(cart)

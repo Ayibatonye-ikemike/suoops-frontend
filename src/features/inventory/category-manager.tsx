@@ -1,15 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { Pencil, Trash2, Plus, QrCode } from "lucide-react";
 import { useCategories, useDeleteCategory } from "./use-inventory";
 import { CategoryForm } from "./category-form";
+import { CategoryQrModal } from "./category-qr-modal";
 import type { ProductCategory } from "./types";
 import { toast } from "react-hot-toast";
 
 export function CategoryManager() {
   const [showForm, setShowForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState<ProductCategory | null>(null);
+  const [qrCategory, setQrCategory] = useState<ProductCategory | null>(null);
   
   const { data: categories, isLoading } = useCategories(false);
   const deleteCategory = useDeleteCategory();
@@ -127,6 +129,13 @@ export function CategoryManager() {
                   </div>
                   <div className="flex items-center gap-2 ml-4">
                     <button
+                      onClick={() => setQrCategory(category)}
+                      className="p-1.5 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                      title="Category QR code"
+                    >
+                      <QrCode className="h-4 w-4" />
+                    </button>
+                    <button
                       onClick={() => handleEdit(category)}
                       className="p-1.5 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                       title="Edit category"
@@ -155,6 +164,15 @@ export function CategoryManager() {
           category={editingCategory}
           onClose={handleCloseForm}
           onSuccess={handleSuccess}
+        />
+      )}
+
+      {/* Category QR Modal */}
+      {qrCategory && (
+        <CategoryQrModal
+          categoryId={qrCategory.id}
+          categoryName={qrCategory.name}
+          onClose={() => setQrCategory(null)}
         />
       )}
     </>
