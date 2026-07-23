@@ -17,7 +17,7 @@ const HIGHLIGHTS = [
   "Tax reports (PIT + CIT)",
   "Custom logo branding",
   "Inventory & margin analysis",
-  "Team management (3 members)",
+  "Team management (5 members)",
   "Cash insights & dormancy alerts",
   "Daily WhatsApp business summary",
 ];

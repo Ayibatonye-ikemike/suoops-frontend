@@ -207,7 +207,7 @@ export function TeamManagementSection() {
             Team Management
           </h3>
           <p className="text-sm text-gray-600">
-            Create a team to invite up to 3 members to collaborate
+            Create a team to invite up to 5 members to collaborate
           </p>
         </CardHeader>
         <CardContent>
