@@ -15,6 +15,7 @@ export type StoreProduct = {
   image_url: string | null;
   in_stock: boolean;
   category?: string | null;
+  category_id?: number | null;
   fulfilment_type?: "physical" | "service" | "digital" | null;
   pack_price?: number | null;
 };
@@ -124,17 +125,28 @@ export function StoreCatalog({
     }
   }, [productById]);
 
-  // Deep link from a category QR: /store/{slug}?category={name}. Pre-filter the
-  // catalog to that category so a scan lands straight on those items.
+  // Deep link from a category QR: /store/{slug}?category_id={id} (rename-proof)
+  // — resolve the category's CURRENT name from its id. Falls back to a legacy
+  // ?category={name} link. Pre-filters the catalog to that category.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const raw = new URLSearchParams(window.location.search).get("category");
+    const params = new URLSearchParams(window.location.search);
+    const idRaw = params.get("category_id");
+    if (idRaw) {
+      const id = Number(idRaw);
+      const named = products.find((p) => p.category_id === id && p.category);
+      if (named?.category) {
+        setActiveCategory(named.category);
+        return;
+      }
+    }
+    const raw = params.get("category");
     if (!raw) return;
     const match = categories.find(
       (c) => c.toLowerCase() === raw.trim().toLowerCase(),
     );
     if (match) setActiveCategory(match);
-  }, [categories]);
+  }, [categories, products]);
 
   const cartSig = useMemo(
     () =>
