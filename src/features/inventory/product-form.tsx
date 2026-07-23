@@ -155,54 +155,60 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
             </div>
           )}
 
-          {/* What are you adding? Drives the rest of the form. */}
-          {!isEditing && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                What are you adding?
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() =>
-                    setFormData({
-                      ...formData,
-                      track_stock: true,
-                      fulfilment_type: "physical",
-                    })
-                  }
-                  className={`rounded-xl border-2 p-3 text-left transition ${
-                    formData.track_stock
-                      ? "border-brand-jade bg-emerald-50 dark:bg-emerald-900/20"
-                      : "border-gray-200 dark:border-gray-600 hover:border-gray-300"
-                  }`}
-                >
-                  <div className="text-xl">📦</div>
-                  <div className="text-sm font-semibold text-gray-900 dark:text-white">Product</div>
-                  <div className="text-xs text-gray-500">Something you stock &amp; count</div>
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setFormData({
-                      ...formData,
-                      track_stock: false,
-                      fulfilment_type: "service",
-                    })
-                  }
-                  className={`rounded-xl border-2 p-3 text-left transition ${
-                    !formData.track_stock
-                      ? "border-brand-jade bg-emerald-50 dark:bg-emerald-900/20"
-                      : "border-gray-200 dark:border-gray-600 hover:border-gray-300"
-                  }`}
-                >
-                  <div className="text-xl">🛠️</div>
-                  <div className="text-sm font-semibold text-gray-900 dark:text-white">Service</div>
-                  <div className="text-xs text-gray-500">Freelance, digital — no delivery</div>
-                </button>
-              </div>
+          {/* What are you adding? Drives the rest of the form. Editable while
+              editing too, so a service mistakenly saved as a Product (or vice
+              versa) can be corrected — it only affects orders placed afterwards. */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              What are you adding?
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() =>
+                  setFormData({
+                    ...formData,
+                    track_stock: true,
+                    fulfilment_type: "physical",
+                  })
+                }
+                className={`rounded-xl border-2 p-3 text-left transition ${
+                  formData.track_stock
+                    ? "border-brand-jade bg-emerald-50 dark:bg-emerald-900/20"
+                    : "border-gray-200 dark:border-gray-600 hover:border-gray-300"
+                }`}
+              >
+                <div className="text-xl">📦</div>
+                <div className="text-sm font-semibold text-gray-900 dark:text-white">Product</div>
+                <div className="text-xs text-gray-500">Something you stock &amp; count</div>
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setFormData({
+                    ...formData,
+                    track_stock: false,
+                    fulfilment_type: "service",
+                  })
+                }
+                className={`rounded-xl border-2 p-3 text-left transition ${
+                  !formData.track_stock
+                    ? "border-brand-jade bg-emerald-50 dark:bg-emerald-900/20"
+                    : "border-gray-200 dark:border-gray-600 hover:border-gray-300"
+                }`}
+              >
+                <div className="text-xl">🛠️</div>
+                <div className="text-sm font-semibold text-gray-900 dark:text-white">Service</div>
+                <div className="text-xs text-gray-500">Freelance, digital — no delivery</div>
+              </button>
             </div>
-          )}
+            {isEditing && (
+              <p className="mt-2 text-xs text-gray-500">
+                Changing this only affects new orders. Orders already placed keep
+                the type they had at checkout.
+              </p>
+            )}
+          </div>
 
           {/* Name — the essential */}
           <div>
