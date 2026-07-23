@@ -9,6 +9,7 @@ type Verification = {
   customer_name: string;
   business_name: string;
   verification_code: string;
+  items: { description: string; quantity: number }[];
   created_at: string;
   verified_at: string;
   authentic: boolean;
@@ -40,13 +41,18 @@ function formatAmount(raw: string): string {
   return raw?.startsWith("₦") ? raw : `₦${raw ?? "0"}`;
 }
 
-function formatDate(iso: string): string {
+// Date + time in the business's timezone (WAT), e.g. "23 Jul 2026, 14:21".
+function formatDateTime(iso: string): string {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString("en-GB", {
+  return d.toLocaleString("en-GB", {
     day: "numeric",
     month: "short",
     year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "Africa/Lagos",
   });
 }
 
@@ -143,7 +149,7 @@ export default async function VerifyInvoicePage({ params }: RouteProps) {
             <div className="flex items-center justify-between">
               <dt className="text-slate-500">Issued</dt>
               <dd className="font-medium text-slate-800">
-                {formatDate(data.created_at)}
+                {formatDateTime(data.created_at)}
               </dd>
             </div>
             <div className="flex items-center justify-between">
@@ -153,6 +159,28 @@ export default async function VerifyInvoicePage({ params }: RouteProps) {
               </dd>
             </div>
           </dl>
+
+          {/* What was bought */}
+          {data.items && data.items.length > 0 && (
+            <div className="mt-4 border-t border-dashed border-slate-200 pt-4">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                Items
+              </p>
+              <ul className="space-y-1.5 text-sm">
+                {data.items.map((it, i) => (
+                  <li
+                    key={`${it.description}-${i}`}
+                    className="flex items-center justify-between gap-3"
+                  >
+                    <span className="truncate text-slate-700">{it.description}</span>
+                    <span className="shrink-0 font-medium text-slate-500">
+                      × {it.quantity}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Unique authenticity code */}
           <div className="mt-4 rounded-xl bg-brand-background p-3 text-center">
@@ -169,7 +197,7 @@ export default async function VerifyInvoicePage({ params }: RouteProps) {
         </div>
 
         <p className="mt-6 text-center text-[11px] text-brand-citrus/80">
-          🔐 Verified by SuoOps · {formatDate(data.verified_at)}
+          🔐 Verified by SuoOps · {formatDateTime(data.verified_at)}
         </p>
       </div>
     </div>
