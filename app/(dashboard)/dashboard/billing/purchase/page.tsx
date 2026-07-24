@@ -7,7 +7,7 @@ import { Lock, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { initializeWalletTopup } from "@/api/subscription";
 import { apiClient } from "@/api/client";
-import { WALLET_TOPUP_TIERS, walletNaira } from "@/constants/pricing";
+import { WALLET_TOPUP_TIERS, walletNaira, FEE_EXPLAINER, WALLET_FEE_FINEPRINT } from "@/constants/pricing";
 
 export default function TopUpWalletPage() {
   const router = useRouter();
@@ -44,9 +44,7 @@ export default function TopUpWalletPage() {
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-brand-text">Top up your wallet</h1>
           <p className="mt-2 text-brand-textMuted">
-            Fees as low as 0.5%. We take just 0.5% per invoice (minimum ₦100, capped at ₦400
-            for invoices under ₦500,000 — uncapped 0.5% above), charged from your wallet when
-            you create one. Storefront orders pay 3% only when the customer pays online.
+            {FEE_EXPLAINER}
           </p>
         </div>
 
@@ -100,9 +98,7 @@ export default function TopUpWalletPage() {
               <span className="font-semibold text-brand-text">
                 Make as many invoices as you want — no monthly limit.
               </span>{" "}
-              Each invoice takes a small 0.5% fee from your wallet — minimum ₦100,
-              capped at ₦400 for invoices under ₦500,000. So a ₦100,000 invoice costs
-              ₦400; from ₦500,000 up it's a flat 0.5% (₦500,000 → ₦2,500).
+              {WALLET_FEE_FINEPRINT}
             </p>
           </div>
 

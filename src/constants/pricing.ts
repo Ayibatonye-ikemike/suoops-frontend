@@ -31,6 +31,30 @@ export const FEE_CAP_TIER_NAIRA = 500_000;
 /** Wallet top-up amounts (₦) sold to fund manual invoicing. */
 export const WALLET_TOPUP_TIERS = [1250, 5000, 20000] as const;
 
+// ── Human-readable fee copy — SINGLE SOURCE OF TRUTH ───────────────────────
+// Built from the numbers above so the wording can never drift from the actual
+// rates. Every screen that describes fees (the Billing card in Settings, the
+// wallet top-up page, etc.) MUST use these instead of re-typing the copy.
+const _uncapStr = MANUAL_UNCAP_THRESHOLD_NAIRA.toLocaleString();
+const _uncapFeeStr = Math.round(
+  (MANUAL_UNCAP_THRESHOLD_NAIRA * MANUAL_FEE_PERCENT) / 100,
+).toLocaleString();
+
+/** Short headline, e.g. "Fees from 0.5% · all features free". */
+export const FEE_HEADLINE = `Fees from ${MANUAL_FEE_PERCENT}% · all features free`;
+
+/** One-line "who pays what" summary for the billing card. */
+export const FEE_SUMMARY_SHORT = `Every feature is included. Manual invoices are just ${MANUAL_FEE_PERCENT}%, and on your storefront the customer pays the ${STOREFRONT_FEE_PERCENT}% — you keep your full price.`;
+
+/** Wallet card subtitle. */
+export const WALLET_FEE_TAGLINE = `Funds manual invoices (${MANUAL_FEE_PERCENT}%, min ₦${MANUAL_INVOICE_MIN_FEE}, ₦${MANUAL_INVOICE_MAX_FEE} cap under ₦${MANUAL_UNCAP_THRESHOLD_NAIRA / 1000}k, charged at creation)`;
+
+/** Full explainer for the top-up page header. */
+export const FEE_EXPLAINER = `Fees as low as ${MANUAL_FEE_PERCENT}%. We take just ${MANUAL_FEE_PERCENT}% per invoice (minimum ₦${MANUAL_INVOICE_MIN_FEE}, capped at ₦${MANUAL_INVOICE_MAX_FEE} for invoices under ₦${_uncapStr} — uncapped ${MANUAL_FEE_PERCENT}% above), charged from your wallet when you create one. Storefront orders pay ${STOREFRONT_FEE_PERCENT}% only when the customer pays online.`;
+
+/** Fine print for the top-up summary. */
+export const WALLET_FEE_FINEPRINT = `Each invoice takes a small ${MANUAL_FEE_PERCENT}% fee from your wallet — minimum ₦${MANUAL_INVOICE_MIN_FEE}, capped at ₦${MANUAL_INVOICE_MAX_FEE} for invoices under ₦${_uncapStr}. So a ₦100,000 invoice costs ₦${MANUAL_INVOICE_MAX_FEE}; from ₦${_uncapStr} up it's a flat ${MANUAL_FEE_PERCENT}% (₦${_uncapStr} → ₦${_uncapFeeStr}).`;
+
 /** Fee (₦) charged from the wallet for a manual invoice of `amount` (₦). */
 export function manualInvoiceFee(amount: number): number {
   const pct = Math.round((amount * MANUAL_FEE_PERCENT) / 100);

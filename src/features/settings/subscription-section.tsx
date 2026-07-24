@@ -1,7 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { walletNaira, WALLET_TOPUP_TIERS } from "../../constants/pricing";
+import {
+  walletNaira,
+  WALLET_TOPUP_TIERS,
+  FEE_HEADLINE,
+  FEE_SUMMARY_SHORT,
+  WALLET_FEE_TAGLINE,
+} from "../../constants/pricing";
 
 interface SubscriptionSectionProps {
   user?: {
@@ -36,12 +42,11 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
           <h2 className="text-[22px] font-semibold text-brand-text">Billing &amp; wallet</h2>
           <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-textMuted">
             <span className="block h-1 w-6 rounded-full bg-brand-jade/60" />
-            Fees from 0.5% · all features free
+            {FEE_HEADLINE}
           </span>
         </div>
         <p className="mt-2 text-sm text-brand-textMuted">
-          Every feature is included. Manual invoices are just 0.5%, and on your
-          storefront the customer pays the 3% — you keep your full price.
+          {FEE_SUMMARY_SHORT}
         </p>
       </div>
 
@@ -54,7 +59,7 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
               <p className="text-xs text-brand-textMuted">
                 {isLow
                   ? "⚠️ Running low — top up to keep creating manual invoices"
-                  : "Funds manual invoices (3%, min ₦20, ₦2,000 cap up to ₦500k, charged at creation)"}
+                  : WALLET_FEE_TAGLINE}
               </p>
             </div>
             <span className={`text-2xl font-bold ${isLow ? "text-amber-600" : "text-brand-jade"}`}>
