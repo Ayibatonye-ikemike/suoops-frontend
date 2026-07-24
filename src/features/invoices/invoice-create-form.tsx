@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   useCreateInvoice,
@@ -53,6 +53,11 @@ export function InvoiceCreateForm() {
   const [upgradeUrl, setUpgradeUrl] = useState<string | null>(null);
 
   const mutation = useCreateInvoice();
+  // Synchronous double-submit guard. `mutation.isPending` only disables the
+  // button on the NEXT React render, so a fast double-tap (or a laggy device
+  // while the app is under stress) can fire two submits and create duplicate
+  // invoices. This ref blocks the second submit immediately, in the same tick.
+  const submittingRef = useRef(false);
   const {
     data: quota,
     isLoading: quotaLoading,
@@ -96,6 +101,7 @@ export function InvoiceCreateForm() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submittingRef.current) return; // a submit is already in flight
     setError(null);
     setShowBankDetailsError(false);
     setLastPdfUrl(null);
@@ -145,6 +151,7 @@ export function InvoiceCreateForm() {
               ],
       };
 
+      submittingRef.current = true;
       const invoice = await mutation.mutateAsync(payload);
       setLastPdfUrl(invoice.pdf_url ?? null);
       resetForm();
@@ -219,6 +226,8 @@ export function InvoiceCreateForm() {
         "Unable to create invoice. Please check that all fields are filled correctly. " +
         "If the problem persists, try refreshing the page."
       );
+    } finally {
+      submittingRef.current = false;
     }
   }
 
