@@ -56,7 +56,6 @@ export function InvoiceCreateForm() {
   const {
     data: quota,
     isLoading: quotaLoading,
-    isError: quotaErrorState,
   } = useInvoiceQuota();
 
   function updateLine(id: string, patch: Partial<LineDraft>) {
@@ -344,7 +343,6 @@ export function InvoiceCreateForm() {
       <InvoiceFormMessages
         invoiceType="revenue"
         quota={quota}
-        quotaError={quotaErrorState}
         error={error}
         quotaErrorMessage={quotaError}
         lastPdfUrl={lastPdfUrl}

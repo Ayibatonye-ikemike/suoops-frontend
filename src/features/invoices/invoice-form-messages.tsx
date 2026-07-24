@@ -9,7 +9,6 @@ interface InvoiceFormMessagesProps {
         can_create: boolean;
       }
     | undefined;
-  quotaError: boolean;
   error: string | null;
   quotaErrorMessage: string | null;
   lastPdfUrl: string | null;
@@ -20,7 +19,6 @@ interface InvoiceFormMessagesProps {
 export function InvoiceFormMessages({
   invoiceType,
   quota,
-  quotaError,
   error,
   quotaErrorMessage,
   lastPdfUrl,
@@ -40,10 +38,6 @@ export function InvoiceFormMessages({
         <p className="text-xs text-brand-textMuted">
           ✅ Expenses don&apos;t count against your invoice limit
         </p>
-      )}
-
-      {quotaError && (
-        <p className="text-xs text-rose-600">Failed to load quota info</p>
       )}
 
       {/* Error Messages */}
