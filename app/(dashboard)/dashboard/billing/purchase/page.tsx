@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { Lock, Wallet } from "lucide-react";
+import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { WalletBalanceCard } from "@/components/wallet-balance-card";
 import { initializeWalletTopup } from "@/api/subscription";
 import { apiClient } from "@/api/client";
 import { WALLET_TOPUP_TIERS, walletNaira, FEE_EXPLAINER, WALLET_FEE_FINEPRINT } from "@/constants/pricing";
@@ -49,17 +50,11 @@ export default function TopUpWalletPage() {
         </div>
 
         {/* Current wallet balance */}
-        <div className="mb-6 rounded-2xl border border-brand-border bg-white p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-brand-textMuted">Wallet balance</p>
-              <p className="text-2xl font-bold text-brand-primary">
-                ₦{walletBalance.toLocaleString()}
-              </p>
-            </div>
-            <Wallet className="h-9 w-9 text-brand-jade" />
-          </div>
-        </div>
+        <WalletBalanceCard
+          label="Wallet balance"
+          naira={walletBalance}
+          className="mb-6"
+        />
 
         {/* Tier selection */}
         <div className="mb-6 grid grid-cols-3 gap-3">

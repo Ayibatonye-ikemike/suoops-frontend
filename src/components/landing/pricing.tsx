@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Receipt, Store } from "lucide-react";
-import { FREE_PLAN } from "../../constants/pricing";
+import { FREE_PLAN, FEE_TAGLINE_SHORT } from "../../constants/pricing";
 import { useRegisterHref } from "@/hooks/use-tracking-params";
 
 export function Pricing() {
@@ -12,7 +12,7 @@ export function Pricing() {
       <div className="mx-auto max-w-5xl">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-brand-evergreen sm:text-4xl">
-            Fees as low as 0.5%.
+            {FEE_TAGLINE_SHORT}.
           </h2>
           <p className="mt-4 text-lg text-brand-charcoal/70 max-w-2xl mx-auto">
             No plans. No monthly fees. Every feature is free — Suoops takes just

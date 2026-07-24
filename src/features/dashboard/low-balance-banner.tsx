@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 
 import { dismiss as dismissBanner, isDismissed } from "@/lib/dismissals";
-import { walletNaira } from "@/constants/pricing";
+import { walletNaira, MANUAL_FEE_PERCENT } from "@/constants/pricing";
 
 type CurrentUser = components["schemas"]["UserOut"] & { wallet_balance_kobo?: number };
 
@@ -78,7 +78,7 @@ export function LowBalanceBanner() {
               <p className="mt-1 text-sm text-gray-600">
                 {isZeroBalance
                   ? "Top up to keep creating manual invoices — or share your storefront so customers pay online."
-                  : "Top up so you never miss creating an invoice. We take just 0.5% each."}
+                  : `Top up so you never miss creating an invoice. We take just ${MANUAL_FEE_PERCENT}% each.`}
               </p>
             </div>
             {!isZeroBalance && (

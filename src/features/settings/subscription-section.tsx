@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { WalletBalanceCard } from "@/components/wallet-balance-card";
 import {
   walletNaira,
   WALLET_TOPUP_TIERS,
@@ -53,19 +54,16 @@ export function SubscriptionSection({ user }: SubscriptionSectionProps) {
       <div className="px-6 py-5 sm:px-8 sm:py-6">
         {/* Wallet balance */}
         <div className="rounded-2xl border border-brand-border bg-brand-background p-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="text-sm font-semibold text-brand-text">Invoice wallet</p>
-              <p className="text-xs text-brand-textMuted">
-                {isLow
-                  ? "⚠️ Running low — top up to keep creating manual invoices"
-                  : WALLET_FEE_TAGLINE}
-              </p>
-            </div>
-            <span className={`text-2xl font-bold ${isLow ? "text-amber-600" : "text-brand-jade"}`}>
-              ₦{wallet.toLocaleString()}
-            </span>
-          </div>
+          <WalletBalanceCard
+            label="Invoice wallet"
+            naira={wallet}
+            low={isLow}
+            subtitle={
+              isLow
+                ? "⚠️ Running low — top up to keep creating manual invoices"
+                : WALLET_FEE_TAGLINE
+            }
+          />
 
           <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-brand-textMuted">

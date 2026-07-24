@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { apiClient } from "@/api/client";
+import { FEE_TAGLINE_SHORT, MANUAL_FEE_PERCENT } from "@/constants/pricing";
 
 const PLAN_CHOSEN_KEY = "plan-chosen";
 const PRICING_SNOOZED_KEY = "pricing-snoozed-at";
@@ -273,11 +274,11 @@ export function WelcomeGuide() {
           <div className="flex items-center gap-2 mb-1">
             <Sparkles className="h-5 w-5 text-brand-jade" />
             <h2 className="text-lg sm:text-xl font-bold text-brand-text">
-              Welcome, {firstName}! Fees as low as 0.5%.
+              Welcome, {firstName}! {FEE_TAGLINE_SHORT}.
             </h2>
           </div>
           <p className="text-sm text-brand-textMuted">
-            Every feature is free — we only take 0.5% when you invoice.
+            Every feature is free — we only take {MANUAL_FEE_PERCENT}% when you invoice.
           </p>
         </div>
 

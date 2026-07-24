@@ -43,6 +43,9 @@ const _uncapFeeStr = Math.round(
 /** Short headline, e.g. "Fees from 0.5% · all features free". */
 export const FEE_HEADLINE = `Fees from ${MANUAL_FEE_PERCENT}% · all features free`;
 
+/** Ultra-short headline, e.g. "Fees as low as 0.5%". */
+export const FEE_TAGLINE_SHORT = `Fees as low as ${MANUAL_FEE_PERCENT}%`;
+
 /** One-line "who pays what" summary for the billing card. */
 export const FEE_SUMMARY_SHORT = `Every feature is included. Manual invoices are just ${MANUAL_FEE_PERCENT}%, and on your storefront the customer pays the ${STOREFRONT_FEE_PERCENT}% — you keep your full price.`;
 
