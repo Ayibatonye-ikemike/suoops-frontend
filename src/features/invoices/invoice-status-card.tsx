@@ -9,16 +9,20 @@ export function InvoiceStatusCard() {
 
   const invoices = useMemo(() => Array.isArray(data?.items) ? data.items : [], [data]);
 
-  // Status counts for display
+  // Counts must reflect ALL invoices, not just the loaded page — use the
+  // server-computed totals (data.total + data.status_counts). Fall back to the
+  // loaded set only if those fields are absent.
   const statusCounts = useMemo(() => {
+    const sc = data?.status_counts;
     return {
-      total: invoices.length,
-      pending: invoices.filter((inv) => inv.status === "pending").length,
-      awaiting: invoices.filter((inv) => inv.status === "awaiting_confirmation")
-        .length,
-      paid: invoices.filter((inv) => inv.status === "paid").length,
+      total: data?.total ?? invoices.length,
+      pending: sc?.pending ?? invoices.filter((inv) => inv.status === "pending").length,
+      awaiting:
+        sc?.awaiting_confirmation ??
+        invoices.filter((inv) => inv.status === "awaiting_confirmation").length,
+      paid: sc?.paid ?? invoices.filter((inv) => inv.status === "paid").length,
     };
-  }, [invoices]);
+  }, [data, invoices]);
 
   const lastUpdated = useMemo(() => {
     if (!dataUpdatedAt) {
