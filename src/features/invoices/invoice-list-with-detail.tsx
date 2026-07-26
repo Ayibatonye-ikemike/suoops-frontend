@@ -16,7 +16,10 @@ function formatInvoiceAmount(amount: number, currency: string): string {
 }
 
 export function InvoiceListWithDetail() {
-  const { data, isLoading, error } = useInvoices();
+  // Load 50 at a time; "Load more" grows the window so filtering/search can
+  // reach invoices beyond the first page (people make far more than 50).
+  const [limit, setLimit] = useState(50);
+  const { data, isLoading, error, isFetching } = useInvoices(0, limit);
   const searchParams = useSearchParams();
   const invoiceIdFromUrl = searchParams.get("invoice");
   
@@ -136,6 +139,9 @@ export function InvoiceListWithDetail() {
           </h2>
           <p className="mt-1 text-xs text-brand-textMuted">
             See which invoices are paid and which need follow-up
+            {typeof data?.total === "number" && data.total > 0
+              ? ` · showing ${invoices.length} of ${data.total}`
+              : ""}
           </p>
         </div>
 
@@ -251,6 +257,21 @@ export function InvoiceListWithDetail() {
             </div>
           )}
         </div>
+
+        {/* Load more — pull the next page so filtering/search covers older
+            invoices too, not just the first 50. */}
+        {data?.has_more && (
+          <button
+            type="button"
+            onClick={() => setLimit((l) => l + 50)}
+            disabled={isFetching}
+            className="mt-3 w-full rounded-lg border border-brand-jade/50 bg-brand-jade/10 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-brand-evergreen transition hover:border-brand-jade/70 disabled:opacity-60"
+          >
+            {isFetching
+              ? "Loading…"
+              : `Load more (${data.total - invoices.length} more)`}
+          </button>
+        )}
       </div>
 
       {/* Invoice Detail Panel - Rendered separately to be placed in parent grid */}

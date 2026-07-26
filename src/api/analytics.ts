@@ -223,14 +223,16 @@ export interface StorefrontInsights {
   disputes: number;
   restock_requests: number;
   top_products: StorefrontTopProduct[];
+  top_products_total: number;
 }
 
 export async function getStorefrontInsights(
   period: "7d" | "30d" | "90d" | "1y" | "all" = "30d",
-  currency: "NGN" | "USD" = "NGN"
+  currency: "NGN" | "USD" = "NGN",
+  topLimit = 5
 ): Promise<StorefrontInsights> {
   const response = await apiClient.get<StorefrontInsights>(
-    `/analytics/storefront-insights?period=${period}&currency=${currency}`
+    `/analytics/storefront-insights?period=${period}&currency=${currency}&top_limit=${topLimit}`
   );
   return response.data;
 }

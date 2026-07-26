@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getStorefrontInsights } from "@/api/analytics";
 
@@ -19,9 +20,12 @@ export function StorefrontInsightsCard({
   period,
   currency,
 }: StorefrontInsightsCardProps) {
+  // Show the top 5 by default; expand to pull the full list of sold products.
+  const [showAllProducts, setShowAllProducts] = useState(false);
+  const topLimit = showAllProducts ? 100 : 5;
   const { data, isLoading } = useQuery({
-    queryKey: ["storefrontInsights", period, currency],
-    queryFn: () => getStorefrontInsights(period, currency),
+    queryKey: ["storefrontInsights", period, currency, topLimit],
+    queryFn: () => getStorefrontInsights(period, currency, topLimit),
     staleTime: 60000,
   });
 
@@ -187,9 +191,9 @@ export function StorefrontInsightsCard({
       {data.top_products.length > 0 && (
         <div className="mt-5">
           <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
-            Top products ({PERIOD_LABEL[period] ?? period})
+            {showAllProducts ? "All products" : "Top products"} ({PERIOD_LABEL[period] ?? period})
           </p>
-          <ul className="space-y-2">
+          <ul className="max-h-72 space-y-2 overflow-y-auto">
             {data.top_products.map((p, i) => (
               <li
                 key={`${p.name}-${i}`}
@@ -210,6 +214,18 @@ export function StorefrontInsightsCard({
               </li>
             ))}
           </ul>
+          {(data.top_products_total > data.top_products.length ||
+            showAllProducts) && (
+            <button
+              type="button"
+              onClick={() => setShowAllProducts((v) => !v)}
+              className="mt-3 text-xs font-semibold text-brand-jadeText hover:underline"
+            >
+              {showAllProducts
+                ? "Show top 5"
+                : `Show all ${data.top_products_total} products →`}
+            </button>
+          )}
         </div>
       )}
     </div>
