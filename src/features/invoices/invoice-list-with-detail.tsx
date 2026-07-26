@@ -16,48 +16,55 @@ function formatInvoiceAmount(amount: number, currency: string): string {
 }
 
 export function InvoiceListWithDetail() {
-  // Load 50 at a time; "Load more" grows the window so filtering/search can
-  // reach invoices beyond the first page (people make far more than 50).
-  const [limit, setLimit] = useState(50);
-  const { data, isLoading, error, isFetching } = useInvoices(0, limit);
   const searchParams = useSearchParams();
   const invoiceIdFromUrl = searchParams.get("invoice");
-  
+
   const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(
     null
   );
   const [statusFilter, setStatusFilter] = useState<string>("awaiting_confirmation");
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  // Load 50 at a time; "Load more" grows the window. Status + search run
+  // SERVER-SIDE so they span every invoice, not just the loaded page.
+  const [limit, setLimit] = useState(50);
 
-  const invoices = useMemo(() => Array.isArray(data?.items) ? data.items : [], [data]);
+  // Debounce the search box so we don't fire a request per keystroke.
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(searchQuery), 300);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
 
-  // Filter invoices by status and search query
-  const filteredInvoices = useMemo(() => {
-    let filtered = invoices;
+  // Reset paging when the filters change so we start from the first page.
+  useEffect(() => {
+    setLimit(50);
+  }, [statusFilter, debouncedSearch]);
 
-    // Apply status filter
-    if (statusFilter !== "all") {
-      filtered = filtered.filter((inv) => inv.status === statusFilter);
-    }
+  const { data, isLoading, error, isFetching } = useInvoices(0, limit, {
+    status: statusFilter,
+    search: debouncedSearch,
+  });
 
-    // Apply search filter
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (inv) =>
-          inv.invoice_id.toLowerCase().includes(query) ||
-          inv.amount.toString().includes(query)
-      );
-    }
+  const invoices = useMemo(() => (Array.isArray(data?.items) ? data.items : []), [data]);
 
-    return filtered;
-  }, [invoices, statusFilter, searchQuery]);
+  // Server already applied status + search, so the visible list IS the result.
+  const filteredInvoices = invoices;
 
   const hasInvoices = invoices.length > 0;
   const hasFilteredInvoices = filteredInvoices.length > 0;
 
-  // Status counts for filter badges
+  // Status counts come from the server (accurate across ALL pages), falling
+  // back to the loaded set if the field isn't present.
   const statusCounts = useMemo(() => {
+    const sc = data?.status_counts;
+    if (sc) {
+      return {
+        all: sc.all ?? 0,
+        pending: sc.pending ?? 0,
+        awaiting_confirmation: sc.awaiting_confirmation ?? 0,
+        paid: sc.paid ?? 0,
+      };
+    }
     return {
       all: invoices.length,
       pending: invoices.filter((inv) => inv.status === "pending").length,
@@ -66,7 +73,7 @@ export function InvoiceListWithDetail() {
       ).length,
       paid: invoices.filter((inv) => inv.status === "paid").length,
     };
-  }, [invoices]);
+  }, [data, invoices]);
 
   // Auto-select invoice from URL query param or default to first
   useEffect(() => {
@@ -74,7 +81,7 @@ export function InvoiceListWithDetail() {
       setSelectedInvoiceId(null);
       return;
     }
-    
+
     // If invoice ID is in URL, select it (even if not in current filter)
     if (invoiceIdFromUrl && invoices.some(inv => inv.invoice_id === invoiceIdFromUrl)) {
       setSelectedInvoiceId(invoiceIdFromUrl);
@@ -82,7 +89,7 @@ export function InvoiceListWithDetail() {
       setStatusFilter("all");
       return;
     }
-    
+
     if (
       selectedInvoiceId &&
       filteredInvoices.some(
@@ -148,7 +155,7 @@ export function InvoiceListWithDetail() {
         {/* Search */}
         <input
           type="text"
-          placeholder="Search by ID or amount..."
+          placeholder="Search by customer, ID or amount..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="mb-4 w-full rounded-lg border border-brand-border bg-white px-4 py-2.5 text-sm text-brand-text outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
@@ -227,7 +234,7 @@ export function InvoiceListWithDetail() {
                 </div>
               );
             })
-          ) : hasInvoices ? (
+          ) : statusFilter !== "all" || debouncedSearch.trim() ? (
             <div className="rounded-lg border border-dashed border-brand-border bg-brand-background p-6 text-center">
               <p className="text-sm text-brand-textMuted">
                 No invoices match your filters.
