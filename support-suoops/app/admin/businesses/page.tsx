@@ -59,6 +59,7 @@ interface BusinessSummary {
   inactive: number;
   never_invoiced: number;
   upgrade_candidates: number;
+  excluded_count: number;
 }
 
 interface BusinessListResponse {
@@ -319,6 +320,11 @@ export default function BusinessesPage() {
             All Businesses
           </div>
           <p className="mt-1 text-xl font-bold text-slate-900">{data?.summary.total ?? 0}</p>
+          {(data?.summary.excluded_count ?? 0) > 0 && (
+            <p className="mt-0.5 text-[10px] text-slate-400" title="Internal/test accounts (METRICS_EXCLUDED_EMAILS) hidden from analytics">
+              +{data?.summary.excluded_count} internal excluded
+            </p>
+          )}
         </button>
         <button
           onClick={() => { setRiskFilter("healthy"); setPage(1); }}
