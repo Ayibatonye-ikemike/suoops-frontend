@@ -49,6 +49,7 @@ interface BusinessItem {
   avg_invoice_value: number;
   health_score: number;
   risk_flags: string[];
+  has_outlier_invoice: boolean;
 }
 
 interface BusinessSummary {
@@ -300,6 +301,11 @@ export default function BusinessesPage() {
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Business Intelligence</h1>
         <p className="text-slate-500">Health & activity for every business on SuoOps</p>
+        <p className="mt-0.5 text-xs text-slate-400">
+          Revenue = <strong>Invoiced</strong> (billed), lifetime — differs from Metrics/Dashboard{" "}
+          <strong>GMV</strong> (paid, in the selected period). Single invoices above ₦50M are
+          capped out and flagged ⚠.
+        </p>
       </div>
 
       {/* Quick Stats */}
@@ -457,7 +463,17 @@ export default function BusinessesPage() {
 
                         {/* Revenue */}
                         <td className="px-4 py-3">
-                          <div className="text-sm font-semibold text-slate-900">{formatNaira(biz.total_revenue)}</div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-sm font-semibold text-slate-900">{formatNaira(biz.total_revenue)}</span>
+                            {biz.has_outlier_invoice && (
+                              <span
+                                className="inline-flex items-center rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700"
+                                title="Has a revenue invoice above ₦50M — excluded from this total (likely junk/test). Investigate."
+                              >
+                                ⚠ outlier
+                              </span>
+                            )}
+                          </div>
                           {biz.total_expenses > 0 && (
                             <div className="text-xs text-slate-400">
                               Net: {formatNaira(biz.net_income)}
