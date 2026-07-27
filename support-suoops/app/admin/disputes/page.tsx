@@ -50,7 +50,20 @@ interface DisputeListResponse {
   has_more: boolean;
 }
 
+interface BusinessGroup {
+  seller_id: number;
+  seller_name: string | null;
+  seller_business: string | null;
+  seller_store_status: string | null;
+  held_count: number;
+  disputed_count: number;
+  review_count: number;
+  held_total_naira: number;
+  oldest_created_at: string | null;
+}
+
 type Filter = "disputed" | "review" | "held" | "refunded" | "released" | "all";
+type View = "orders" | "business";
 
 const FILTERS: Filter[] = ["disputed", "review", "held", "refunded", "released", "all"];
 
@@ -111,6 +124,9 @@ export default function DisputesPage() {
   const [payoutLive, setPayoutLive] = useState<Record<number, string>>({});
   const [payoutBusy, setPayoutBusy] = useState<number | null>(null);
   const [bulkBusy, setBulkBusy] = useState<number | null>(null);
+  const [view, setView] = useState<View>("orders");
+  const [groups, setGroups] = useState<BusinessGroup[]>([]);
+  const [groupsLoading, setGroupsLoading] = useState(false);
 
   // Debounce the search box so we don't hit the API on every keystroke.
   useEffect(() => {
@@ -182,10 +198,10 @@ export default function DisputesPage() {
   // Retry payouts for ALL held orders from one business in a single action.
   // Server-side it reconciles each order's rail first (Flutterwave for storefront
   // orders) and only resends failed/unknown transfers — never double-pays.
-  async function retryAllForSeller(sellerId: number, sampleEscrowId: number) {
+  async function retryAllForSeller(sellerId: number) {
     if (
       !window.confirm(
-        "Retry payouts for ALL held orders from this business? Safe — it reconciles each order first and won't double-pay any transfer already in flight.",
+        "Retry payouts for ALL held orders from this business? Safe — it reconciles each order first and won't double-pay any transfer already in flight. Eligible orders are sent as ONE consolidated transfer.",
       )
     )
       return;
@@ -199,7 +215,7 @@ export default function DisputesPage() {
         });
       let res = await doPost();
       if (res.status === 428) {
-        await authFetch(`${API}/admin/disputes/${sampleEscrowId}/step-up-otp`, {
+        await authFetch(`${API}/admin/money/step-up-otp`, {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -213,6 +229,7 @@ export default function DisputesPage() {
       const body = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(body.detail || "Bulk retry failed");
       await fetchData(0);
+      if (view === "business") await fetchGroups();
       if (body.message) alert(body.message);
     } catch (err) {
       alert(err instanceof Error ? err.message : "Bulk retry failed");
@@ -258,6 +275,28 @@ export default function DisputesPage() {
   useEffect(() => {
     fetchData(0);
   }, [fetchData]);
+
+  const fetchGroups = useCallback(async () => {
+    if (!token) return;
+    setGroupsLoading(true);
+    try {
+      const res = await authFetch(`${API}/admin/disputes/by-business`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const body = await res.json();
+        setGroups(body.businesses ?? []);
+      }
+    } catch {
+      /* leave prior groups */
+    } finally {
+      setGroupsLoading(false);
+    }
+  }, [token, authFetch]);
+
+  useEffect(() => {
+    if (view === "business") fetchGroups();
+  }, [view, fetchGroups]);
 
   async function resolve(escrowId: number, action: "refund" | "release") {
     let suspendSeller = false;
@@ -388,6 +427,99 @@ export default function DisputesPage() {
         ))}
       </div>
 
+      {/* View: per-order queue vs per-business rollup */}
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => setView("orders")}
+          className={`rounded-full px-3 py-1 text-sm font-medium ${view === "orders" ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+        >
+          By order
+        </button>
+        <button
+          type="button"
+          onClick={() => setView("business")}
+          className={`rounded-full px-3 py-1 text-sm font-medium ${view === "business" ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+        >
+          By business
+        </button>
+      </div>
+
+      {view === "business" && (
+        <div className="space-y-2">
+          {groupsLoading ? (
+            <p className="py-10 text-center text-slate-400">Loading…</p>
+          ) : groups.length === 0 ? (
+            <div className="rounded-lg border border-slate-200 bg-white p-10 text-center text-slate-400">
+              No businesses with held or disputed orders.
+            </div>
+          ) : (
+            groups.map((g) => (
+              <div
+                key={g.seller_id}
+                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+              >
+                <div className="min-w-0">
+                  <p className="font-semibold text-slate-800">
+                    {g.seller_business || g.seller_name || `#${g.seller_id}`}
+                    {g.seller_store_status && g.seller_store_status !== "active" && (
+                      <span className="ml-1 text-xs text-rose-600">({g.seller_store_status})</span>
+                    )}
+                  </p>
+                  <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px]">
+                    <span className="rounded-full bg-blue-100 px-2 py-0.5 font-medium text-blue-700">
+                      {g.held_count} held
+                    </span>
+                    {g.disputed_count > 0 && (
+                      <span className="rounded-full bg-amber-100 px-2 py-0.5 font-medium text-amber-700">
+                        {g.disputed_count} disputed
+                      </span>
+                    )}
+                    {g.review_count > 0 && (
+                      <span className="rounded-full bg-rose-100 px-2 py-0.5 font-medium text-rose-700">
+                        {g.review_count} review
+                      </span>
+                    )}
+                    <span className="text-slate-500">held total {money(g.held_total_naira)}</span>
+                    {g.oldest_created_at && (
+                      <span className="text-slate-400">
+                        oldest {new Date(g.oldest_created_at).toLocaleDateString()}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearch(g.seller_business || g.seller_name || "");
+                      setFilter("held");
+                      setView("orders");
+                    }}
+                    className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50"
+                  >
+                    View orders
+                  </button>
+                  {g.held_count > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => retryAllForSeller(g.seller_id)}
+                      disabled={bulkBusy === g.seller_id}
+                      className="inline-flex items-center gap-1 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                    >
+                      <RefreshCw className={`h-3.5 w-3.5 ${bulkBusy === g.seller_id ? "animate-spin" : ""}`} />
+                      Retry all held
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {view === "orders" && (
+        <>
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <input
           type="search"
@@ -477,7 +609,7 @@ export default function DisputesPage() {
                       ordersPerSeller[d.seller_id] > 1 &&
                       firstRowBySeller[d.seller_id] === d.escrow_id && (
                         <button
-                          onClick={() => retryAllForSeller(d.seller_id, d.escrow_id)}
+                          onClick={() => retryAllForSeller(d.seller_id)}
                           disabled={bulkBusy === d.seller_id}
                           className="ml-2 inline-flex items-center gap-1 rounded-md bg-indigo-600 px-2 py-0.5 text-[11px] font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
                           title="Reconcile & retry payouts for every held order from this business"
@@ -655,6 +787,8 @@ export default function DisputesPage() {
             </button>
           )}
         </div>
+      )}
+        </>
       )}
     </div>
   );
