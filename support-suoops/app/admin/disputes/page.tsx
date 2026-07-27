@@ -127,6 +127,7 @@ export default function DisputesPage() {
   const [view, setView] = useState<View>("orders");
   const [groups, setGroups] = useState<BusinessGroup[]>([]);
   const [groupsLoading, setGroupsLoading] = useState(false);
+  const [groupsError, setGroupsError] = useState("");
 
   // Debounce the search box so we don't hit the API on every keystroke.
   useEffect(() => {
@@ -279,6 +280,7 @@ export default function DisputesPage() {
   const fetchGroups = useCallback(async () => {
     if (!token) return;
     setGroupsLoading(true);
+    setGroupsError("");
     try {
       const res = await authFetch(`${API}/admin/disputes/by-business`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -286,9 +288,12 @@ export default function DisputesPage() {
       if (res.ok) {
         const body = await res.json();
         setGroups(body.businesses ?? []);
+      } else {
+        const body = await res.json().catch(() => ({}));
+        setGroupsError(body.detail || `Couldn't load businesses (HTTP ${res.status}).`);
       }
-    } catch {
-      /* leave prior groups */
+    } catch (err) {
+      setGroupsError(err instanceof Error ? err.message : "Couldn't load businesses.");
     } finally {
       setGroupsLoading(false);
     }
@@ -367,15 +372,6 @@ export default function DisputesPage() {
     }
   }
 
-  if (error && items.length === 0) {
-    return (
-      <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
-        <AlertCircle className="mx-auto mb-2 h-8 w-8 text-red-500" />
-        <p className="text-red-700">{error}</p>
-      </div>
-    );
-  }
-
   const disputes = items;
 
   // Display-only: how many loaded orders belong to each business, so an admin
@@ -403,7 +399,10 @@ export default function DisputesPage() {
         </div>
         <button
           type="button"
-          onClick={() => fetchData(0)}
+          onClick={() => {
+            fetchData(0);
+            if (view === "business") fetchGroups();
+          }}
           className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-50"
         >
           <RefreshCw className="h-4 w-4" /> Refresh
@@ -449,6 +448,10 @@ export default function DisputesPage() {
         <div className="space-y-2">
           {groupsLoading ? (
             <p className="py-10 text-center text-slate-400">Loading…</p>
+          ) : groupsError ? (
+            <div className="flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 p-6 text-center text-red-700">
+              <AlertCircle className="h-5 w-5" /> {groupsError}
+            </div>
           ) : groups.length === 0 ? (
             <div className="rounded-lg border border-slate-200 bg-white p-10 text-center text-slate-400">
               No businesses with held or disputed orders.
@@ -520,6 +523,11 @@ export default function DisputesPage() {
 
       {view === "orders" && (
         <>
+      {error && (
+        <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          <AlertCircle className="h-4 w-4" /> {error}
+        </div>
+      )}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <input
           type="search"
