@@ -53,6 +53,7 @@ interface StorefrontItem {
   owner_risk_score: number;
   owner_phone: string | null;
   owner_email: string | null;
+  not_live_reasons: string[];
   quality_score: number;
   risk_flags: string[];
 }
@@ -347,6 +348,16 @@ export default function StorefrontsPage() {
                   {(s.owner_phone || s.owner_email) && (
                     <div className="text-[10px] text-slate-400">
                       {s.owner_phone}{s.owner_phone && s.owner_email ? " · " : ""}{s.owner_email}
+                    </div>
+                  )}
+                  {/* Exactly why the store isn't in public live search (empty = live). */}
+                  {s.not_live_reasons.length === 0 ? (
+                    <div className="mt-1 inline-flex items-center gap-0.5 rounded-full bg-emerald-100 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700">
+                      Live in search
+                    </div>
+                  ) : (
+                    <div className="mt-1 text-[10px] leading-tight text-amber-700" title="Missing to appear in public live search">
+                      <span className="font-medium">Not live:</span> {s.not_live_reasons.join(" · ")}
                     </div>
                   )}
                 </td>
