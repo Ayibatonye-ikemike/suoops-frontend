@@ -110,6 +110,7 @@ export default function DisputesPage() {
   const [busyId, setBusyId] = useState<number | null>(null);
   const [payoutLive, setPayoutLive] = useState<Record<number, string>>({});
   const [payoutBusy, setPayoutBusy] = useState<number | null>(null);
+  const [bulkBusy, setBulkBusy] = useState<number | null>(null);
 
   // Debounce the search box so we don't hit the API on every keystroke.
   useEffect(() => {
@@ -175,6 +176,48 @@ export default function DisputesPage() {
       alert(err instanceof Error ? err.message : "Retry failed");
     } finally {
       setPayoutBusy(null);
+    }
+  }
+
+  // Retry payouts for ALL held orders from one business in a single action.
+  // Server-side it reconciles each order's rail first (Flutterwave for storefront
+  // orders) and only resends failed/unknown transfers — never double-pays.
+  async function retryAllForSeller(sellerId: number, sampleEscrowId: number) {
+    if (
+      !window.confirm(
+        "Retry payouts for ALL held orders from this business? Safe — it reconciles each order first and won't double-pay any transfer already in flight.",
+      )
+    )
+      return;
+    setBulkBusy(sellerId);
+    try {
+      const doPost = (otp?: string) =>
+        authFetch(`${API}/admin/businesses/${sellerId}/retry-held-payouts`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ otp }),
+        });
+      let res = await doPost();
+      if (res.status === 401) {
+        await authFetch(`${API}/admin/disputes/${sampleEscrowId}/step-up-otp`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const otp =
+          window.prompt(
+            "This moves money for multiple orders. Enter the confirmation code sent to your admin email:",
+          ) || "";
+        if (!otp) return;
+        res = await doPost(otp);
+      }
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.detail || "Bulk retry failed");
+      await fetchData(0);
+      if (body.message) alert(body.message);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Bulk retry failed");
+    } finally {
+      setBulkBusy(null);
     }
   }
 
@@ -302,6 +345,11 @@ export default function DisputesPage() {
     acc[d.seller_id] = (acc[d.seller_id] || 0) + 1;
     return acc;
   }, {});
+  // First loaded row per seller — anchors the one-per-business "retry all" button.
+  const firstRowBySeller: Record<number, number> = {};
+  for (const d of disputes) {
+    if (firstRowBySeller[d.seller_id] === undefined) firstRowBySeller[d.seller_id] = d.escrow_id;
+  }
 
   return (
     <div className="space-y-6">
@@ -425,6 +473,19 @@ export default function DisputesPage() {
                         {ordersPerSeller[d.seller_id]} orders here
                       </span>
                     )}
+                    {(filter === "held" || filter === "all") &&
+                      ordersPerSeller[d.seller_id] > 1 &&
+                      firstRowBySeller[d.seller_id] === d.escrow_id && (
+                        <button
+                          onClick={() => retryAllForSeller(d.seller_id, d.escrow_id)}
+                          disabled={bulkBusy === d.seller_id}
+                          className="ml-2 inline-flex items-center gap-1 rounded-md bg-indigo-600 px-2 py-0.5 text-[11px] font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+                          title="Reconcile & retry payouts for every held order from this business"
+                        >
+                          <RefreshCw className={`h-3 w-3 ${bulkBusy === d.seller_id ? "animate-spin" : ""}`} />
+                          {bulkBusy === d.seller_id ? "Retrying…" : "Retry all held for this business"}
+                        </button>
+                      )}
                   </p>
                   <p className="text-sm text-slate-600">
                     Buyer: {d.customer_name || "—"}{" "}
