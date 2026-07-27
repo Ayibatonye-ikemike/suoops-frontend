@@ -44,6 +44,10 @@ interface Dispute {
 interface DisputeListResponse {
   disputes: Dispute[];
   total: number;
+  total_capped: boolean;
+  skip: number;
+  limit: number;
+  has_more: boolean;
 }
 
 type Filter = "disputed" | "review" | "held" | "refunded" | "released" | "all";
@@ -91,13 +95,27 @@ function payoutLabel(state: string): { text: string; cls: string } {
 
 export default function DisputesPage() {
   const { token, authFetch } = useAdminAuth();
-  const [data, setData] = useState<DisputeListResponse | null>(null);
+  const [items, setItems] = useState<Dispute[]>([]);
+  const [meta, setMeta] = useState<{ total: number; total_capped: boolean; has_more: boolean }>({
+    total: 0,
+    total_capped: false,
+    has_more: false,
+  });
+  const [skip, setSkip] = useState(0);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<Filter>("disputed");
   const [busyId, setBusyId] = useState<number | null>(null);
   const [payoutLive, setPayoutLive] = useState<Record<number, string>>({});
   const [payoutBusy, setPayoutBusy] = useState<number | null>(null);
+
+  // Debounce the search box so we don't hit the API on every keystroke.
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), 300);
+    return () => clearTimeout(t);
+  }, [search]);
 
   async function checkPayout(escrowId: number) {
     setPayoutBusy(escrowId);
@@ -160,25 +178,42 @@ export default function DisputesPage() {
     }
   }
 
-  const fetchData = useCallback(async () => {
-    if (!token) return;
-    setIsLoading(true);
-    try {
-      const res = await authFetch(`${API}/admin/disputes?status_filter=${filter}&limit=200`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) throw new Error("Failed to load disputes");
-      setData(await res.json());
-      setError("");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Error loading disputes");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [token, authFetch, filter]);
+  const fetchData = useCallback(
+    async (nextSkip = 0) => {
+      if (!token) return;
+      setIsLoading(true);
+      try {
+        const params = new URLSearchParams({
+          status_filter: filter,
+          limit: "50",
+          skip: String(nextSkip),
+        });
+        if (debouncedSearch.trim()) params.set("search", debouncedSearch.trim());
+        const res = await authFetch(`${API}/admin/disputes?${params.toString()}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Failed to load disputes");
+        const body: DisputeListResponse = await res.json();
+        // First page (or filter/search change) replaces; "Load more" appends.
+        setItems((prev) => (nextSkip === 0 ? body.disputes : [...prev, ...body.disputes]));
+        setMeta({
+          total: body.total,
+          total_capped: body.total_capped,
+          has_more: body.has_more,
+        });
+        setSkip(nextSkip);
+        setError("");
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Error loading disputes");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [token, authFetch, filter, debouncedSearch],
+  );
 
   useEffect(() => {
-    fetchData();
+    fetchData(0);
   }, [fetchData]);
 
   async function resolve(escrowId: number, action: "refund" | "release") {
@@ -250,7 +285,7 @@ export default function DisputesPage() {
     }
   }
 
-  if (error && !data) {
+  if (error && items.length === 0) {
     return (
       <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
         <AlertCircle className="mx-auto mb-2 h-8 w-8 text-red-500" />
@@ -259,7 +294,7 @@ export default function DisputesPage() {
     );
   }
 
-  const disputes = data?.disputes || [];
+  const disputes = items;
 
   return (
     <div className="space-y-6">
@@ -274,7 +309,7 @@ export default function DisputesPage() {
         </div>
         <button
           type="button"
-          onClick={fetchData}
+          onClick={() => fetchData(0)}
           className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-50"
         >
           <RefreshCw className="h-4 w-4" /> Refresh
@@ -297,6 +332,27 @@ export default function DisputesPage() {
           </button>
         ))}
       </div>
+
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <input
+          type="search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search invoice, seller or customer…"
+          className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm sm:max-w-xs"
+        />
+        <p className="shrink-0 text-xs text-slate-500">
+          {meta.total_capped ? `${meta.total.toLocaleString()}+` : meta.total.toLocaleString()}{" "}
+          {filter === "all" ? "orders" : `${filter} orders`}
+        </p>
+      </div>
+
+      {(filter === "held" || filter === "all") && (
+        <p className="rounded-lg bg-blue-50 px-3 py-2 text-xs text-blue-700">
+          ℹ️ Held orders auto-release to sellers on schedule — no manual action needed.
+          Only <strong>Disputed</strong> and <strong>Review</strong> need a decision.
+        </p>
+      )}
 
       {isLoading ? (
         <p className="py-10 text-center text-slate-400">Loading…</p>
@@ -512,6 +568,16 @@ export default function DisputesPage() {
               )}
             </div>
           ))}
+          {meta.has_more && (
+            <button
+              type="button"
+              onClick={() => fetchData(skip + 50)}
+              disabled={isLoading}
+              className="w-full rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-60"
+            >
+              {isLoading ? "Loading…" : "Load more"}
+            </button>
+          )}
         </div>
       )}
     </div>
