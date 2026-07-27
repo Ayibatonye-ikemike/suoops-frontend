@@ -18,6 +18,7 @@ import {
   Play,
   TrendingUp,
   ExternalLink,
+  User,
 } from "lucide-react";
 import { useAdminAuth } from "../layout";
 
@@ -50,6 +51,8 @@ interface StorefrontItem {
   created_at: string;
   owner_flagged: boolean;
   owner_risk_score: number;
+  owner_phone: string | null;
+  owner_email: string | null;
   quality_score: number;
   risk_flags: string[];
 }
@@ -336,6 +339,16 @@ export default function StorefrontsPage() {
                       </a>
                     ) : "—"}
                   </div>
+                  {/* Owner trace: who runs this store */}
+                  <div className="mt-1 flex items-center gap-1 text-[11px] text-slate-500" title="Store owner">
+                    <User className="h-3 w-3 text-slate-400" />
+                    <span>{s.name}</span>
+                  </div>
+                  {(s.owner_phone || s.owner_email) && (
+                    <div className="text-[10px] text-slate-400">
+                      {s.owner_phone}{s.owner_phone && s.owner_email ? " · " : ""}{s.owner_email}
+                    </div>
+                  )}
                 </td>
                 <td className="px-4 py-3">
                   {statusBadge(s.store_status)}

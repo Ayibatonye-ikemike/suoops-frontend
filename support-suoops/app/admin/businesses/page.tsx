@@ -7,7 +7,6 @@ import {
   ArrowUpDown,
   ChevronLeft,
   ChevronRight,
-  Crown,
   FileText,
   Users,
   AlertTriangle,
@@ -17,7 +16,6 @@ import {
   Target,
   Shield,
   Heart,
-  Filter,
 } from "lucide-react";
 import { useAdminAuth } from "../layout";
 
@@ -70,9 +68,21 @@ interface BusinessListResponse {
   summary: BusinessSummary;
 }
 
+interface InvoiceRow {
+  id: number;
+  invoice_id: string;
+  amount: number;
+  status: string;
+  invoice_type: string;
+  channel: string | null;
+  customer_name: string | null;
+  created_at: string;
+  due_date: string | null;
+  paid_at: string | null;
+}
+
 type SortKey = "health_score" | "total_revenue" | "invoices_total" | "created_at" | "last_login" | "name" | "collection_rate";
 type RiskFilter = "" | "at_risk" | "healthy" | "inactive" | "churned";
-type PlanFilter = "" | "free" | "starter" | "pro";
 
 // ─── Helpers ─────────────────────────────────────────────────────
 
@@ -112,37 +122,16 @@ function healthLabel(score: number): string {
   return "Critical";
 }
 
-function planBadge(plan: string) {
+function invoiceStatusBadge(status: string) {
   const styles: Record<string, string> = {
-    pro: "bg-purple-100 text-purple-700",
-    starter: "bg-blue-100 text-blue-700",
-    free: "bg-slate-100 text-slate-600",
+    paid: "bg-emerald-100 text-emerald-700",
+    pending: "bg-amber-100 text-amber-700",
+    overdue: "bg-red-100 text-red-700",
+    cancelled: "bg-slate-100 text-slate-500",
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${styles[plan] || styles.free}`}>
-      {plan.toUpperCase()}
-    </span>
-  );
-}
-
-function subStatusBadge(status: string, daysUntil: number | null) {
-  const styles: Record<string, string> = {
-    active: "bg-emerald-100 text-emerald-700",
-    expiring_soon: "bg-amber-100 text-amber-700",
-    expired: "bg-red-100 text-red-700",
-    free: "bg-slate-100 text-slate-500",
-  };
-  const labels: Record<string, string> = {
-    active: daysUntil !== null ? `${daysUntil}d left` : "Active",
-    expiring_soon: `${daysUntil ?? 0}d left`,
-    expired: "Expired",
-    free: "Free",
-  };
-  return (
-    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${styles[status] || styles.free}`}>
-      {status === "expired" && <AlertCircle className="h-3 w-3" />}
-      {status === "expiring_soon" && <AlertTriangle className="h-3 w-3" />}
-      {labels[status] || status}
+    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${styles[status] || "bg-slate-100 text-slate-500"}`}>
+      {status}
     </span>
   );
 }
@@ -152,10 +141,7 @@ function riskFlagBadge(flag: string) {
     never_invoiced: { label: "Never Invoiced", color: "bg-slate-100 text-slate-600", icon: FileText },
     inactive_30d: { label: "Inactive 30d", color: "bg-amber-100 text-amber-700", icon: Clock },
     inactive_60d: { label: "Inactive 60d", color: "bg-red-100 text-red-700", icon: UserX },
-    subscription_expired: { label: "Sub Expired", color: "bg-red-100 text-red-700", icon: AlertCircle },
-    subscription_expiring: { label: "Sub Expiring", color: "bg-amber-100 text-amber-700", icon: AlertTriangle },
     low_collection: { label: "Low Collection", color: "bg-orange-100 text-orange-700", icon: Target },
-    upgrade_candidate: { label: "Upgrade ↑", color: "bg-purple-100 text-purple-700", icon: Crown },
     power_user: { label: "Power User", color: "bg-emerald-100 text-emerald-700", icon: Zap },
   };
   const info = map[flag] || { label: flag, color: "bg-slate-100 text-slate-500", icon: AlertCircle };
@@ -180,7 +166,6 @@ export default function BusinessesPage() {
   const [page, setPage] = useState(1);
   const [sortBy, setSortBy] = useState<SortKey>("health_score");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [planFilter, setPlanFilter] = useState<PlanFilter>("");
   const [riskFilter, setRiskFilter] = useState<RiskFilter>("");
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
@@ -188,6 +173,32 @@ export default function BusinessesPage() {
 
   // Expanded row
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  // Lazy-loaded per-business invoice drill-down
+  const [invoicesById, setInvoicesById] = useState<Record<number, InvoiceRow[]>>({});
+  const [invLoadingId, setInvLoadingId] = useState<number | null>(null);
+
+  const toggleExpand = useCallback(async (bizId: number) => {
+    const opening = expandedId !== bizId;
+    setExpandedId(opening ? bizId : null);
+    if (!opening || invoicesById[bizId] || !token) return;
+    setInvLoadingId(bizId);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
+      const res = await fetch(`${apiUrl}/admin/businesses/${bizId}/invoices?limit=20`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const body = await res.json();
+        setInvoicesById((prev) => ({ ...prev, [bizId]: body.invoices ?? [] }));
+      } else {
+        setInvoicesById((prev) => ({ ...prev, [bizId]: [] }));
+      }
+    } catch {
+      setInvoicesById((prev) => ({ ...prev, [bizId]: [] }));
+    } finally {
+      setInvLoadingId(null);
+    }
+  }, [expandedId, invoicesById, token]);
 
   const fetchData = useCallback(async () => {
     if (!token) return;
@@ -200,7 +211,6 @@ export default function BusinessesPage() {
         sort_by: sortBy,
         sort_order: sortOrder,
       });
-      if (planFilter) params.set("plan_filter", planFilter);
       if (riskFilter) params.set("risk_filter", riskFilter);
       if (search) params.set("search", search);
 
@@ -214,7 +224,7 @@ export default function BusinessesPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [token, page, sortBy, sortOrder, planFilter, riskFilter, search, pageSize]);
+  }, [token, page, sortBy, sortOrder, riskFilter, search, pageSize]);
 
   useEffect(() => {
     fetchData();
@@ -245,7 +255,6 @@ export default function BusinessesPage() {
   const summaryHealthy = data?.summary.healthy || 0;
   const summaryInactive = data?.summary.inactive || 0;
   const summaryNeverInvoiced = data?.summary.never_invoiced || 0;
-  const summaryUpgradeCandidates = data?.summary.upgrade_candidates || 0;
 
   if (error && !data) {
     return (
@@ -322,20 +331,6 @@ export default function BusinessesPage() {
           </div>
         </form>
 
-        <div className="flex items-center gap-2">
-          <Filter className="h-4 w-4 text-slate-400" />
-          <select
-            value={planFilter}
-            onChange={(e) => { setPlanFilter(e.target.value as PlanFilter); setPage(1); }}
-            className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none"
-          >
-            <option value="">All Plans</option>
-            <option value="free">Free</option>
-            <option value="starter">Starter</option>
-            <option value="pro">Pro</option>
-          </select>
-        </div>
-
         <select
           value={riskFilter}
           onChange={(e) => { setRiskFilter(e.target.value as RiskFilter); setPage(1); }}
@@ -348,9 +343,9 @@ export default function BusinessesPage() {
           <option value="churned">Churned</option>
         </select>
 
-        {(search || planFilter || riskFilter) && (
+        {(search || riskFilter) && (
           <button
-            onClick={() => { setSearch(""); setSearchInput(""); setPlanFilter(""); setRiskFilter(""); setPage(1); }}
+            onClick={() => { setSearch(""); setSearchInput(""); setRiskFilter(""); setPage(1); }}
             className="rounded-lg bg-slate-100 px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-200"
           >
             Clear Filters
@@ -375,7 +370,6 @@ export default function BusinessesPage() {
                         Business <ArrowUpDown className="h-3 w-3" />
                       </button>
                     </th>
-                    <th className="px-4 py-3">Plan</th>
                     <th className="px-4 py-3">
                       <button onClick={() => handleSort("health_score")} className="flex items-center gap-1 hover:text-slate-700">
                         Health <ArrowUpDown className="h-3 w-3" />
@@ -405,7 +399,7 @@ export default function BusinessesPage() {
                     <>
                       <tr
                         key={biz.id}
-                        onClick={() => setExpandedId(expandedId === biz.id ? null : biz.id)}
+                        onClick={() => toggleExpand(biz.id)}
                         className={`border-b border-slate-50 cursor-pointer transition-colors ${
                           expandedId === biz.id ? "bg-slate-50" : "hover:bg-slate-50/50"
                         } ${biz.health_score < 40 ? "bg-red-50/30" : ""}`}
@@ -417,14 +411,6 @@ export default function BusinessesPage() {
                           </div>
                           <div className="text-xs text-slate-500">
                             {biz.business_name ? biz.name : biz.phone}
-                          </div>
-                        </td>
-
-                        {/* Plan */}
-                        <td className="px-4 py-3">
-                          <div className="flex flex-col gap-1">
-                            {planBadge(biz.plan)}
-                            {biz.plan !== "free" && subStatusBadge(biz.subscription_status, biz.days_until_expiry)}
                           </div>
                         </td>
 
@@ -493,7 +479,7 @@ export default function BusinessesPage() {
                       {/* Expanded Detail Row */}
                       {expandedId === biz.id && (
                         <tr key={`${biz.id}-detail`} className="bg-slate-50">
-                          <td colSpan={8} className="px-4 py-4">
+                          <td colSpan={7} className="px-4 py-4">
                             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                               {/* Contact */}
                               <div className="space-y-2 text-sm">
@@ -559,34 +545,52 @@ export default function BusinessesPage() {
                                 </div>
                               </div>
 
-                              {/* Subscription & Flags */}
+                              {/* Risk Flags */}
                               <div className="space-y-2 text-sm">
-                                <p className="font-medium text-slate-700">Subscription</p>
-                                <div className="flex justify-between">
-                                  <span className="text-slate-500">Plan</span>
-                                  {planBadge(biz.plan)}
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="text-slate-500">Balance</span>
-                                  <span className={`font-semibold ${biz.invoice_balance <= 2 ? "text-red-600" : "text-slate-700"}`}>
-                                    {biz.invoice_balance} invoices
-                                  </span>
-                                </div>
-                                {biz.subscription_expires_at && (
-                                  <div className="flex justify-between">
-                                    <span className="text-slate-500">Expires</span>
-                                    <span className="text-xs">{new Date(biz.subscription_expires_at).toLocaleDateString()}</span>
+                                <p className="font-medium text-slate-700">Risk Flags</p>
+                                {biz.risk_flags.length > 0 ? (
+                                  <div className="flex flex-wrap gap-1">
+                                    {biz.risk_flags.map((f) => riskFlagBadge(f))}
                                   </div>
-                                )}
-                                {biz.risk_flags.length > 0 && (
-                                  <div className="pt-2">
-                                    <p className="text-xs font-medium text-slate-500 mb-1">Risk Flags</p>
-                                    <div className="flex flex-wrap gap-1">
-                                      {biz.risk_flags.map((f) => riskFlagBadge(f))}
-                                    </div>
-                                  </div>
+                                ) : (
+                                  <p className="text-xs text-slate-400">No risk flags</p>
                                 )}
                               </div>
+                            </div>
+
+                            {/* Invoices drill-down (lazy-loaded on expand) */}
+                            <div className="mt-4 border-t border-slate-200 pt-3">
+                              <p className="mb-2 text-sm font-medium text-slate-700">Recent invoices</p>
+                              {invLoadingId === biz.id ? (
+                                <p className="text-xs text-slate-400">Loading invoices…</p>
+                              ) : (invoicesById[biz.id]?.length ?? 0) === 0 ? (
+                                <p className="text-xs text-slate-400">No invoices yet.</p>
+                              ) : (
+                                <div className="overflow-x-auto">
+                                  <table className="w-full text-xs">
+                                    <thead className="text-left text-slate-400">
+                                      <tr>
+                                        <th className="py-1 pr-3 font-medium">Invoice</th>
+                                        <th className="py-1 pr-3 font-medium">Customer</th>
+                                        <th className="py-1 pr-3 font-medium text-right">Amount</th>
+                                        <th className="py-1 pr-3 font-medium">Status</th>
+                                        <th className="py-1 font-medium">Date</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {invoicesById[biz.id]?.map((inv) => (
+                                        <tr key={inv.id} className="border-t border-slate-100">
+                                          <td className="py-1 pr-3 font-mono text-slate-500">{inv.invoice_id}</td>
+                                          <td className="py-1 pr-3 text-slate-600">{inv.customer_name || "—"}</td>
+                                          <td className="py-1 pr-3 text-right font-semibold text-slate-800">{formatNaira(inv.amount)}</td>
+                                          <td className="py-1 pr-3">{invoiceStatusBadge(inv.status)}</td>
+                                          <td className="py-1 text-slate-400">{new Date(inv.created_at).toLocaleDateString()}</td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              )}
                             </div>
                           </td>
                         </tr>
@@ -595,7 +599,7 @@ export default function BusinessesPage() {
                   ))}
                   {data?.businesses.length === 0 && (
                     <tr>
-                      <td colSpan={8} className="px-6 py-12 text-center text-slate-500">
+                      <td colSpan={7} className="px-6 py-12 text-center text-slate-500">
                         No businesses match your filters
                       </td>
                     </tr>
@@ -638,18 +642,6 @@ export default function BusinessesPage() {
       {/* Insights Footer */}
       {data && data.businesses.length > 0 && (
         <div className="grid gap-3 sm:grid-cols-3 text-sm">
-          {summaryUpgradeCandidates > 0 && (
-            <div className="rounded-lg border border-purple-200 bg-purple-50 p-4 flex items-start gap-3">
-              <Crown className="h-5 w-5 text-purple-600 shrink-0 mt-0.5" />
-              <div>
-                <p className="font-medium text-purple-800">Upgrade Candidates</p>
-                <p className="text-purple-600 text-xs mt-1">
-                  {summaryUpgradeCandidates} free users are actively invoicing but running low on balance.
-                  Great targets for Starter/Pro upsell.
-                </p>
-              </div>
-            </div>
-          )}
           {summaryNeverInvoiced > 0 && (
             <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 flex items-start gap-3">
               <UserX className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />

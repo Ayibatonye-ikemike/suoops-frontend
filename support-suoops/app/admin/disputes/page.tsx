@@ -296,6 +296,13 @@ export default function DisputesPage() {
 
   const disputes = items;
 
+  // Display-only: how many loaded orders belong to each business, so an admin
+  // can see at a glance when several disputes come from the same seller.
+  const ordersPerSeller = disputes.reduce<Record<number, number>>((acc, d) => {
+    acc[d.seller_id] = (acc[d.seller_id] || 0) + 1;
+    return acc;
+  }, {});
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -408,6 +415,14 @@ export default function DisputesPage() {
                     {d.seller_store_status && d.seller_store_status !== "active" && (
                       <span className="ml-1 text-xs text-rose-600">
                         ({d.seller_store_status})
+                      </span>
+                    )}
+                    {ordersPerSeller[d.seller_id] > 1 && (
+                      <span
+                        className="ml-1 inline-flex items-center rounded-full bg-indigo-100 px-1.5 py-0.5 text-[10px] font-medium text-indigo-700"
+                        title="Number of loaded held/disputed orders from this business"
+                      >
+                        {ordersPerSeller[d.seller_id]} orders here
                       </span>
                     )}
                   </p>
