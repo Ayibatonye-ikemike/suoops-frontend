@@ -157,7 +157,7 @@ function riskFlagBadge(flag: string) {
 // ─── Page ────────────────────────────────────────────────────────
 
 export default function BusinessesPage() {
-  const { token } = useAdminAuth();
+  const { token, user, authFetch } = useAdminAuth();
   const [data, setData] = useState<BusinessListResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -199,6 +199,36 @@ export default function BusinessesPage() {
       setInvLoadingId(null);
     }
   }, [expandedId, invoicesById, token]);
+
+  // Super-admin: confirm an invoice the low-trust guard held for review. Only
+  // after verifying the payment landed — this counts toward GMV.
+  async function forceConfirm(bizId: number, invoiceId: string) {
+    if (
+      !window.confirm(
+        `Mark ${invoiceId} as PAID? This bypasses the low-trust hold and WILL count toward GMV. Only do this after you've verified the payment actually landed.`,
+      )
+    )
+      return;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.suoops.com";
+    try {
+      const res = await authFetch(`${apiUrl}/admin/invoices/${invoiceId}/force-confirm`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.detail || "Force-confirm failed");
+      // Refresh this business's invoices so the new status shows.
+      const inv = await authFetch(`${apiUrl}/admin/businesses/${bizId}/invoices?limit=20`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (inv.ok) {
+        const b = await inv.json();
+        setInvoicesById((prev) => ({ ...prev, [bizId]: b.invoices ?? [] }));
+      }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Force-confirm failed");
+    }
+  }
 
   const fetchData = useCallback(async () => {
     if (!token) return;
@@ -575,6 +605,7 @@ export default function BusinessesPage() {
                                         <th className="py-1 pr-3 font-medium text-right">Amount</th>
                                         <th className="py-1 pr-3 font-medium">Status</th>
                                         <th className="py-1 font-medium">Date</th>
+                                        {user?.is_super_admin && <th className="py-1 pl-3 font-medium text-right">Action</th>}
                                       </tr>
                                     </thead>
                                     <tbody>
@@ -585,6 +616,19 @@ export default function BusinessesPage() {
                                           <td className="py-1 pr-3 text-right font-semibold text-slate-800">{formatNaira(inv.amount)}</td>
                                           <td className="py-1 pr-3">{invoiceStatusBadge(inv.status)}</td>
                                           <td className="py-1 text-slate-400">{new Date(inv.created_at).toLocaleDateString()}</td>
+                                          {user?.is_super_admin && (
+                                            <td className="py-1 pl-3 text-right">
+                                              {inv.status !== "paid" && inv.status !== "cancelled" && inv.invoice_type === "revenue" && (
+                                                <button
+                                                  onClick={() => forceConfirm(biz.id, inv.invoice_id)}
+                                                  className="rounded-md border border-emerald-300 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700 hover:bg-emerald-50"
+                                                  title="Verify the payment landed, then mark paid (bypasses the low-trust hold; counts toward GMV)"
+                                                >
+                                                  Confirm paid
+                                                </button>
+                                              )}
+                                            </td>
+                                          )}
                                         </tr>
                                       ))}
                                     </tbody>

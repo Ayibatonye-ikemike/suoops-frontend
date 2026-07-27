@@ -155,7 +155,7 @@ export default function DisputesPage() {
           body: JSON.stringify({ otp }),
         });
       let res = await doPost();
-      if (res.status === 401) {
+      if (res.status === 428) {
         await authFetch(`${API}/admin/disputes/${escrowId}/step-up-otp`, {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
@@ -198,7 +198,7 @@ export default function DisputesPage() {
           body: JSON.stringify({ otp }),
         });
       let res = await doPost();
-      if (res.status === 401) {
+      if (res.status === 428) {
         await authFetch(`${API}/admin/disputes/${sampleEscrowId}/step-up-otp`, {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
@@ -301,7 +301,7 @@ export default function DisputesPage() {
           }),
         });
       let res = await doPost();
-      if (res.status === 401) {
+      if (res.status === 428) {
         // High-value action → step-up: send a code to the admin email, then retry.
         await authFetch(`${API}/admin/disputes/${escrowId}/step-up-otp`, {
           method: "POST",
