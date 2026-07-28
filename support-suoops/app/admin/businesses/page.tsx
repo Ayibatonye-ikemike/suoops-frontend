@@ -81,6 +81,7 @@ interface InvoiceRow {
   created_at: string;
   due_date: string | null;
   paid_at: string | null;
+  payment_method: string;
 }
 
 type SortKey = "health_score" | "total_revenue" | "invoices_total" | "created_at" | "last_login" | "name" | "collection_rate";
@@ -138,6 +139,30 @@ function invoiceStatusBadge(status: string) {
   );
 }
 
+// How a paid invoice was collected. 'manual' (self-marked) is highlighted amber
+// because a large self-marked invoice may not reflect money that actually moved.
+function paymentMethodBadge(method: string) {
+  if (!method) return <span className="text-slate-300">—</span>;
+  const styles: Record<string, string> = {
+    online: "bg-emerald-100 text-emerald-700",
+    storefront: "bg-blue-100 text-blue-700",
+    manual: "bg-amber-100 text-amber-700",
+  };
+  const labels: Record<string, string> = {
+    online: "Online",
+    storefront: "Storefront",
+    manual: "Manual",
+  };
+  return (
+    <span
+      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${styles[method] || "bg-slate-100 text-slate-500"}`}
+      title={method === "manual" ? "Self-marked as paid — verify money actually moved" : "Collected via a payment rail"}
+    >
+      {labels[method] || method}
+    </span>
+  );
+}
+
 function riskFlagBadge(flag: string) {
   const map: Record<string, { label: string; color: string; icon: React.ElementType }> = {
     never_invoiced: { label: "Never Invoiced", color: "bg-slate-100 text-slate-600", icon: FileText },
@@ -145,6 +170,7 @@ function riskFlagBadge(flag: string) {
     inactive_60d: { label: "Inactive 60d", color: "bg-red-100 text-red-700", icon: UserX },
     low_collection: { label: "Low Collection", color: "bg-orange-100 text-orange-700", icon: Target },
     power_user: { label: "Power User", color: "bg-emerald-100 text-emerald-700", icon: Zap },
+    duplicate_invoices: { label: "Duplicate invoices", color: "bg-red-100 text-red-700", icon: AlertCircle },
   };
   const info = map[flag] || { label: flag, color: "bg-slate-100 text-slate-500", icon: AlertCircle };
   const Icon = info.icon;
@@ -626,6 +652,7 @@ export default function BusinessesPage() {
                                         <th className="py-1 pr-3 font-medium">Customer</th>
                                         <th className="py-1 pr-3 font-medium text-right">Amount</th>
                                         <th className="py-1 pr-3 font-medium">Status</th>
+                                        <th className="py-1 pr-3 font-medium">Via</th>
                                         <th className="py-1 font-medium">Date</th>
                                         {user?.is_super_admin && <th className="py-1 pl-3 font-medium text-right">Action</th>}
                                       </tr>
@@ -637,6 +664,7 @@ export default function BusinessesPage() {
                                           <td className="py-1 pr-3 text-slate-600">{inv.customer_name || "—"}</td>
                                           <td className="py-1 pr-3 text-right font-semibold text-slate-800">{formatNaira(inv.amount)}</td>
                                           <td className="py-1 pr-3">{invoiceStatusBadge(inv.status)}</td>
+                                          <td className="py-1 pr-3">{paymentMethodBadge(inv.payment_method)}</td>
                                           <td className="py-1 text-slate-400">{new Date(inv.created_at).toLocaleDateString()}</td>
                                           {user?.is_super_admin && (
                                             <td className="py-1 pl-3 text-right">
