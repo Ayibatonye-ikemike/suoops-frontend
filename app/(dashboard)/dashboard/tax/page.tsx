@@ -149,17 +149,28 @@ export default function TaxPage() {
     refetchOnWindowFocus: false,
   });
 
-  // Fetch expense records for the current period
+  // Fetch expense records for the SAME period the report covers, so the
+  // itemized "Recorded Expenses" list reconciles with the report's Expenses
+  // total. GET /invoices/ returns a paginated envelope { items, total, ... },
+  // so we read `.items` (not the raw body). Only paid expenses are counted —
+  // matching the tax computation (compute_expenses_by_date_range).
   const { data: expenses } = useQuery<ExpenseRecord[]>({
-    queryKey: ["taxExpenses", reportYear, reportMonth],
+    queryKey: ["taxExpenses", report?.start_date, report?.end_date],
+    enabled: !!report?.start_date && !!report?.end_date,
     queryFn: async () => {
-      const start = `${reportYear}-${String(reportMonth).padStart(2, "0")}-01`;
-      const lastDay = new Date(reportYear, reportMonth, 0).getDate();
-      const end = `${reportYear}-${String(reportMonth).padStart(2, "0")}-${lastDay}`;
-      const response = await apiClient.get<ExpenseRecord[]>("/invoices/", {
-        params: { invoice_type: "expense", start_date: start, end_date: end },
-      });
-      return response.data;
+      const response = await apiClient.get<{ items: ExpenseRecord[] }>(
+        "/invoices/",
+        {
+          params: {
+            invoice_type: "expense",
+            status: "paid",
+            start_date: report!.start_date,
+            end_date: report!.end_date,
+            limit: 200,
+          },
+        }
+      );
+      return Array.isArray(response.data?.items) ? response.data.items : [];
     },
   });
 
@@ -508,16 +519,23 @@ export default function TaxPage() {
         {/* Recorded Expenses */}
         <Card className="mt-6 sm:mt-8">
           <CardHeader className="border-b border-brand-border/60 px-4 sm:px-6">
-            <h2 className="text-lg font-semibold text-brand-text">
-              Recorded Expenses ({new Date(reportYear, reportMonth - 1).toLocaleString("default", { month: "long", year: "numeric" })})
-            </h2>
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+              <h2 className="text-lg font-semibold text-brand-text">
+                Recorded Expenses{report?.period_label ? ` — ${report.period_label}` : ""}
+              </h2>
+              {report && (
+                <span className="text-sm text-brand-textMuted">
+                  Total: {formatWhole(report.total_expenses || 0)}
+                </span>
+              )}
+            </div>
           </CardHeader>
           <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
             {expenses && expenses.length > 0 ? (
               <div className="space-y-3">
                 {expenses.map((exp) => (
                   <div
-                    key={exp.id}
+                    key={exp.invoice_id}
                     className="flex items-center justify-between rounded-lg border border-brand-border bg-brand-background p-3"
                   >
                     <div className="flex-1">
