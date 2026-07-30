@@ -52,7 +52,6 @@ export function WhatsAppVerificationModal({
 }: WhatsAppVerificationModalProps) {
   const queryClient = useQueryClient();
   const [step, setStep] = useState<Step>("input");
-  const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -61,7 +60,6 @@ export function WhatsAppVerificationModal({
   useEffect(() => {
     if (isOpen && !prevOpenRef.current) {
       setStep("input");
-      setPhone("");
       setError(null);
       setLoading(false);
     }
@@ -134,7 +132,6 @@ export function WhatsAppVerificationModal({
 
                   try {
                     await savePhone({ phone: normalizedPhone });
-                    setPhone(normalizedPhone);
                     setStep("success");
                     queryClient.invalidateQueries({ queryKey: ["currentUser"] });
                     onVerified?.(normalizedPhone);

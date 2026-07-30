@@ -150,7 +150,7 @@ export function LoginForm() {
         setLoading(false);
       }
     },
-    [nextRoute, otp, identifier, identifierType, router, setTokens]
+    [nextRoute, otp, otpChannel, identifier, identifierType, router, setTokens]
   );
 
   const handleResend = useCallback(async () => {

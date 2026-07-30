@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { AlertTriangle, Mail, MessageCircle, User, Image, Building2, CreditCard, Users } from "lucide-react";
+import { AlertTriangle, Mail, MessageCircle, User, Image as ImageIcon, Building2, CreditCard, Users } from "lucide-react";
 
 import { apiClient } from "@/api/client";
 import { getBankDetails } from "@/api/bank-details";
@@ -211,7 +211,7 @@ export default function SettingsPage() {
               <CardHeader className="border-b border-brand-border/60 px-4 sm:px-6">
                 <div className="flex items-center gap-3">
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-100 text-purple-600">
-                    <Image className="h-5 w-5" />
+                    <ImageIcon className="h-5 w-5" />
                   </div>
                   <div>
                     <h2 className="text-lg sm:text-[22px] font-semibold text-brand-text">Business Logo</h2>

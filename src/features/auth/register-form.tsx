@@ -264,7 +264,7 @@ export function RegisterForm() {
         setLoading(false);
       }
     },
-    [startResendCountdown, referralCode, referralValid, acceptTerms]
+    [startResendCountdown, referralCode, referralValid, acceptTerms, signupSource]
   );
 
   const handleVerifyOTP = useCallback(

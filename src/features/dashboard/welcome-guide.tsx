@@ -10,7 +10,7 @@ import {
   Circle,
   Building2,
   Landmark,
-  Image,
+  Image as ImageIcon,
   ChevronDown,
   ChevronUp,
   ShoppingCart,
@@ -141,7 +141,7 @@ export function WelcomeGuide() {
       description: "Look professional on invoices",
       done: hasLogo,
       href: "/dashboard/settings#logo",
-      icon: <Image className="h-4 w-4" />,
+      icon: <ImageIcon className="h-4 w-4" />,
     },
     {
       id: "online_payments",
@@ -195,7 +195,7 @@ export function WelcomeGuide() {
           aria-hidden
         >
           {/* eslint-disable-next-line jsx-a11y/alt-text */}
-          <Image className="h-4 w-4" />
+          <ImageIcon className="h-4 w-4" />
         </span>
         <div className="min-w-0 flex-1">
           <p className="font-semibold leading-tight">Add your business logo</p>

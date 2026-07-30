@@ -282,6 +282,9 @@ export function InvoiceClient({ initialInvoice, invoiceId, apiBaseUrl }: Props) 
           {/* Business Identity */}
           <div className="flex items-center gap-3">
             {invoice.business_logo_url ? (
+              // external per-business logo URL (arbitrary host); next/image would
+              // require allow-listing every seller's image host in next.config.
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={invoice.business_logo_url}
                 alt={invoice.business_name ?? "Business"}

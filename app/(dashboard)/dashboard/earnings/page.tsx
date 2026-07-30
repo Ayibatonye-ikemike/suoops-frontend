@@ -137,7 +137,7 @@ export default function EarningsPage() {
       console.error("Error saving payout:", error);
       let errorMsg = "Could not save payout account. Please try again.";
       
-      const responseData = (error as any)?.response?.data;
+      const responseData = (error as { response?: { data?: { detail?: unknown } } })?.response?.data;
       if (responseData?.detail) {
         if (Array.isArray(responseData.detail)) {
           // Pydantic validation errors
@@ -168,7 +168,7 @@ export default function EarningsPage() {
       console.error("Error clearing payout:", error);
       let errorMsg = "Could not switch account now. Please try again.";
       
-      const responseData = (error as any)?.response?.data;
+      const responseData = (error as { response?: { data?: { detail?: unknown } } })?.response?.data;
       if (responseData?.detail) {
         if (Array.isArray(responseData.detail)) {
           // Pydantic validation errors

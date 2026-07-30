@@ -1,16 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   MessageCircle,
   ArrowRight,
-  FileText,
   Zap,
   TrendingUp,
   Bell,
   BarChart3,
-  CheckCircle2,
   Smartphone,
 } from "lucide-react";
 import Link from "next/link";

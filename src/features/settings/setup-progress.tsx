@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, Circle, MessageCircle, User, Image, Building2, CreditCard } from "lucide-react";
+import { CheckCircle2, Circle, MessageCircle, User, Image as ImageIcon, Building2, CreditCard } from "lucide-react";
 
 interface SetupStep {
   label: string;
@@ -40,7 +40,7 @@ export function SetupProgress({
     {
       label: "Upload logo",
       done: Boolean(hasLogo),
-      icon: <Image className="h-4 w-4" />,
+      icon: <ImageIcon className="h-4 w-4" />,
     },
     {
       label: "Add bank details",

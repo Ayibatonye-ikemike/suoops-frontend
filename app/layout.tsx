@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Inter, Poppins } from "next/font/google";
+import Script from "next/script";
 import { ReactQueryProvider } from "@/lib/react-query-provider";
 import { AuthProvider } from "@/features/auth/auth-provider";
 import { CookieConsent } from "@/components/cookie-consent";
@@ -57,8 +58,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
       <head>
         {/* Google tag (gtag.js) — GA4 */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-DB7HG9NZNN"></script>
-        <script
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-DB7HG9NZNN"
+          strategy="afterInteractive"
+        />
+        <Script
+          id="gtag-init"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
