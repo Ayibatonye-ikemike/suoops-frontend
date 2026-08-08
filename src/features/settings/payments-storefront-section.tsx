@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { Check, Copy, CreditCard, Download, ExternalLink, QrCode, Store } from "lucide-react";
-import Link from "next/link";
 
 import {
   disableStorefront,
@@ -19,6 +18,7 @@ import {
 import { getBankDetails } from "@/api/bank-details";
 import { CurrentLocationCapture, type CapturedLocation } from "@/features/storefront/current-location-capture";
 import { copyText, downloadDataUrl } from "@/lib/download";
+import { StorefrontSetupGuide } from "./storefront-setup-guide";
 
 // The generated OpenAPI types don't yet include online_payments_enabled on the
 // bank-details response; extend locally until types are regenerated.
@@ -206,14 +206,19 @@ export function PaymentsStorefrontSection() {
   );
   const storeEnabled = storefront.data?.enabled ?? false;
   const link = storefront.data?.link ?? null;
-  const productCount = storefront.data?.product_count ?? 0;
-  const suggestions = storefront.data?.suggestions ?? [];
+  const hasLogo = storefront.data?.has_logo ?? false;
+  const hasListableProduct = (storefront.data?.listable_product_count ?? 0) > 0;
 
   // Everything on the storefront tab is required before it can be saved.
   const stateSet = Boolean(details.state.trim());
   const hoursSet = Object.keys(hours).length > 0;
   const descSet = desc.trim().length > 0;
   const detailsComplete = descSet && stateSet && hoursSet;
+  const savedDetailsComplete = Boolean(
+    storefront.data?.description?.trim() &&
+    storefront.data?.state?.trim() &&
+    Object.keys(storefront.data?.hours ?? {}).length > 0,
+  );
 
   const storefrontQr = useQuery({
     queryKey: ["storefrontQr"],
@@ -234,7 +239,7 @@ export function PaymentsStorefrontSection() {
   return (
     <div className="space-y-6">
       {/* ── Online Payments ── */}
-      <div className="rounded-xl border border-brand-border p-4">
+      <div id="online-payments" className="scroll-mt-20 rounded-xl border border-brand-border p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
             <CreditCard className="h-4 w-4 text-brand-jade" />
@@ -296,7 +301,7 @@ export function PaymentsStorefrontSection() {
       </div>
 
       {/* ── Public Storefront ── */}
-      <div className="rounded-xl border border-brand-border p-4">
+      <div id="storefront" className="scroll-mt-20 rounded-xl border border-brand-border p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
             <Store className="h-4 w-4 text-brand-jade" />
@@ -321,38 +326,19 @@ export function PaymentsStorefrontSection() {
           Instagram, or your bio.
         </p>
 
-        {storeEnabled && productCount === 0 ? (
-          <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3">
-            <p className="text-xs font-semibold text-amber-900">
-              Your storefront is empty
-            </p>
-            <p className="mt-0.5 text-xs text-amber-800">
-              Add products to your inventory so customers have something to order
-              — until then your storefront link shows nothing. It also boosts your
-              professionalism score.
-            </p>
-            <Link
-              href="/dashboard/inventory"
-              className="mt-2 inline-flex items-center gap-1 rounded-md bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-amber-700"
-            >
-              Add products →
-            </Link>
-          </div>
-        ) : null}
-
-        {productCount > 0 && suggestions.length > 0 ? (
-          <div className="mt-3 rounded-lg border border-sky-200 bg-sky-50 p-3">
-            <p className="text-xs font-semibold text-sky-900">Boost your store</p>
-            <ul className="mt-1.5 space-y-1">
-              {suggestions.map((s) => (
-                <li key={s} className="flex items-start gap-1.5 text-xs text-sky-800">
-                  <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-sky-400" />
-                  <span>{s}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : null}
+        <StorefrontSetupGuide
+          storeEnabled={storeEnabled}
+          hasLogo={hasLogo}
+          detailsComplete={savedDetailsComplete}
+          hasListableProduct={hasListableProduct}
+          hasBankDetails={hasBank}
+          paymentsEnabled={payEnabled}
+          storeLink={link}
+          enablingStore={enableShop.isPending}
+          enablingPayments={enablePayments.isPending}
+          onEnableStore={() => enableShop.mutate()}
+          onEnablePayments={() => enablePayments.mutate()}
+        />
 
         {storeEnabled && link ? (
           <div className="mt-3 space-y-2">
@@ -418,7 +404,7 @@ export function PaymentsStorefrontSection() {
                 )}
               </div>
             ) : null}
-            <div>
+            <div id="storefront-details" className="scroll-mt-20">
               <label className="block text-xs font-medium text-brand-textMuted">
                 Store link
               </label>

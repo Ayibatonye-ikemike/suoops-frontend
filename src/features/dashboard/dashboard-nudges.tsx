@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { apiClient } from "@/api/client";
+import { getStorefront } from "@/api/payments-storefront";
 import { isDismissed } from "@/lib/dismissals";
 
 import { FeatureDiscoveryTips } from "./feature-discovery-tips";
 import { LowBalanceBanner } from "./low-balance-banner";
 import { OnlinePaymentsSpotlight } from "./online-payments-spotlight";
 import { SalesFunnelBanner } from "./sales-funnel-banner";
+import { StorefrontSetupBanner } from "./storefront-setup-banner";
 import { WhatsAppSetupBanner } from "./whatsapp-setup-banner";
 
 interface UserData {
@@ -55,9 +57,16 @@ export function DashboardNudges() {
     staleTime: 60_000,
   });
 
+  const { data: storefront, isLoading: storefrontLoading } = useQuery({
+    queryKey: ["storefrontStatus"],
+    queryFn: getStorefront,
+    retry: false,
+    staleTime: 60_000,
+  });
+
   // Don't render anything during SSR or while user data is unknown — avoids
   // a flash of the wrong banner before priority is established.
-  if (!hydrated || isLoading || !user) return null;
+  if (!hydrated || isLoading || storefrontLoading || !user) return null;
 
   const plan = (user.plan || "free").toLowerCase();
   const isPro = plan === "pro";
@@ -69,7 +78,13 @@ export function DashboardNudges() {
     return <WhatsAppSetupBanner />;
   }
 
-  // 2. Low balance — only relevant to FREE users with ≤2 invoices left
+  // 2. Storefront completion — stays visible until every server-reported
+  //    storefront requirement is complete.
+  if (storefront?.enabled && (storefront.suggestions?.length ?? 0) > 0) {
+    return <StorefrontSetupBanner suggestions={storefront.suggestions ?? []} />;
+  }
+
+  // 3. Low balance — only relevant to FREE users with ≤2 invoices left
   if (
     !isPro &&
     balance <= 2 &&
@@ -78,12 +93,12 @@ export function DashboardNudges() {
     return <LowBalanceBanner />;
   }
 
-  // 3. Sales funnel — first-invoice activation
+  // 4. Sales funnel — first-invoice activation
   if (!isPro && !hasInvoiced) {
     return <SalesFunnelBanner />;
   }
 
-  // 4. Online payments spotlight — adoption nudge for users not yet monetizing
+  // 5. Online payments spotlight — adoption nudge for users not yet monetizing
   //    online. Hides automatically once they enable it.
   if (
     !user.online_payments_enabled &&
@@ -92,6 +107,6 @@ export function DashboardNudges() {
     return <OnlinePaymentsSpotlight />;
   }
 
-  // 5. Feature tip — last priority, exploratory
+  // 6. Feature tip — last priority, exploratory
   return <FeatureDiscoveryTips />;
 }

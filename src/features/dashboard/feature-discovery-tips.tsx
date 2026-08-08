@@ -4,8 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import { X, Lightbulb, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
-const SEEN_KEY = "feature-tips-seen";
-const DISMISSED_KEY = "feature-tips-dismissed";
+const SEEN_KEY = "feature-tips-v2-seen";
+const DISMISSED_KEY = "feature-tips-v2-dismissed";
 
 interface FeatureTip {
   id: string;
@@ -15,13 +15,46 @@ interface FeatureTip {
   action?: { label: string; href: string };
 }
 
-const TIPS: FeatureTip[] = [
+export const FEATURE_TIPS: FeatureTip[] = [
+  {
+    id: "storefront",
+    icon: "🛍️",
+    title: "Sell from your own online storefront",
+    description:
+      "Add products or services, publish your shop, and share one link anywhere you sell.",
+    action: { label: "Set up Storefront", href: "/dashboard/settings#storefront" },
+  },
+  {
+    id: "buyer-protection-delivery",
+    icon: "🛡️",
+    title: "Buyer protection and delivery are built in",
+    description:
+      "Storefront customers pay online and choose delivery. Track protected orders from Invoices.",
+    action: { label: "View Orders", href: "/dashboard/invoices" },
+  },
+  {
+    id: "inventory",
+    icon: "📦",
+    title: "Know what is in stock",
+    description:
+      "Manage products and services, update quantities, and get low-stock warnings before you run out.",
+    action: { label: "Open Inventory", href: "/dashboard/inventory" },
+  },
+  {
+    id: "invoice-verification",
+    icon: "🔐",
+    title: "Send branded, verifiable invoices",
+    description:
+      "Your invoices can include your logo, payment details, and a QR code customers can scan to verify them.",
+    action: { label: "Open Invoices", href: "/dashboard/invoices" },
+  },
   {
     id: "expense-whatsapp",
     icon: "💸",
     title: "Track expenses via WhatsApp",
     description:
       'Text "Expense: ₦5,000 for transport" or snap a receipt photo to the bot — it logs automatically.',
+    action: { label: "Open WhatsApp", href: "https://wa.me/2348106865807?text=Hi" },
   },
   {
     id: "analytics",
@@ -42,9 +75,9 @@ const TIPS: FeatureTip[] = [
   {
     id: "tax-report",
     icon: "🏛️",
-    title: "Download tax reports (Pro)",
+    title: "Download Nigeria-focused tax reports",
     description:
-      "Auto-calculated PIT, VAT & dev levy reports with PDF download. No accountant needed.",
+      "See your tax position clearly and download reports without accounting jargon.",
     action: { label: "Open Tax", href: "/dashboard/tax" },
   },
   {
@@ -53,6 +86,15 @@ const TIPS: FeatureTip[] = [
     title: "Get reports on WhatsApp",
     description:
       'Text "report" to the bot for a 30-day business snapshot. Text "tax report" for your tax summary.',
+    action: { label: "Open WhatsApp", href: "https://wa.me/2348106865807?text=report" },
+  },
+  {
+    id: "team",
+    icon: "👥",
+    title: "Give your team the right access",
+    description:
+      "Invite team members so they can help run the business without sharing your login.",
+    action: { label: "Manage Team", href: "/dashboard/settings#team" },
   },
   {
     id: "currency",
@@ -86,7 +128,7 @@ export function FeatureDiscoveryTips() {
       return;
     }
     const seen = getSeenTips();
-    const unseen = TIPS.filter((t) => !seen.includes(t.id));
+    const unseen = FEATURE_TIPS.filter((t) => !seen.includes(t.id));
     if (unseen.length === 0) {
       // All seen — hide permanently
       localStorage.setItem(DISMISSED_KEY, "true");

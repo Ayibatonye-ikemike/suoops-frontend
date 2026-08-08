@@ -41,6 +41,8 @@ export default function SettingsPage() {
       logo: "business",
       "bank-details": "business",
       "business-name": "business",
+      storefront: "business",
+      "online-payments": "business",
       subscription: "billing",
       team: "team",
     };
