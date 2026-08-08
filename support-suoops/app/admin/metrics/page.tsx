@@ -341,6 +341,9 @@ interface MetricsSummary {
   gmv_manual?: number;
   invoices: number;
   expense_amount: number;
+  documented_expense_amount: number;
+  self_reported_expense_amount: number;
+  flagged_expense_amount: number;
   expense_entries: number;
   expense_users: number;
   new_users: number;
@@ -623,7 +626,7 @@ export default function MetricsPage() {
             <StatCard
               title={`Expenses (${summary?.label ?? "This month"})`}
               value={formatCurrency(summary?.expense_amount ?? 0)}
-              subtitle={`${(summary?.expense_entries ?? 0).toLocaleString()} entries · ${(summary?.expense_users ?? 0).toLocaleString()} businesses`}
+              subtitle={`Receipt ${formatCurrency(summary?.documented_expense_amount ?? 0)} · Self-reported ${formatCurrency(summary?.self_reported_expense_amount ?? 0)} · Flagged ${formatCurrency(summary?.flagged_expense_amount ?? 0)}`}
               icon={TrendingDown}
               color="red"
             />

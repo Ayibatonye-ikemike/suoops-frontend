@@ -44,6 +44,9 @@ interface MonthlyReport {
   month: number | null;
   total_revenue: number;
   total_expenses: number;
+  documented_expenses: number;
+  self_reported_expenses: number;
+  flagged_expenses: number;
   cogs_amount: number;
   assessable_profit: number;
   levy_amount: number;
@@ -82,11 +85,11 @@ interface MonthlyReport {
 
 interface ExpenseRecord {
   id: number;
-  invoice_id: string;
   amount: number;
-  due_date: string;
-  vendor_name: string | null;
+  expense_date: string;
+  merchant: string | null;
   receipt_url: string | null;
+  record_status: "self_reported" | "documented" | "flagged";
   created_at: string;
 }
 
@@ -158,24 +161,26 @@ export default function TaxPage() {
     queryKey: ["taxExpenses", report?.start_date, report?.end_date],
     enabled: !!report?.start_date && !!report?.end_date,
     queryFn: async () => {
-      const response = await apiClient.get<{ items: ExpenseRecord[] }>(
-        "/invoices/",
+      const response = await apiClient.get<ExpenseRecord[]>(
+        "/expenses/",
         {
           params: {
-            invoice_type: "expense",
-            status: "paid",
             start_date: report!.start_date,
             end_date: report!.end_date,
             limit: 200,
           },
         }
       );
-      return Array.isArray(response.data?.items) ? response.data.items : [];
+      return Array.isArray(response.data) ? response.data : [];
     },
   });
 
   const handleDownload = async () => {
     if (!report || !report.id) return;
+    const confirmed = window.confirm(
+      "I confirm these records are accurate and supported where required. SuoOps organizes your records but does not certify expenses or provide tax advice."
+    );
+    if (!confirmed) return;
     try {
       const res = await apiClient.get(`/tax/reports/${report.id}/download`);
       if (res.data.pdf_url) {
@@ -524,9 +529,12 @@ export default function TaxPage() {
                 Recorded Expenses{report?.period_label ? ` — ${report.period_label}` : ""}
               </h2>
               {report && (
-                <span className="text-sm text-brand-textMuted">
-                  Total: {formatWhole(report.total_expenses || 0)}
-                </span>
+                <div className="text-right text-sm text-brand-textMuted">
+                  <div>Total: {formatWhole(report.total_expenses || 0)}</div>
+                  <div className="text-xs">
+                    Receipt attached {formatWhole(report.documented_expenses || 0)} · Self-reported {formatWhole(report.self_reported_expenses || 0)} · Flagged {formatWhole(report.flagged_expenses || 0)}
+                  </div>
+                </div>
               )}
             </div>
           </CardHeader>
@@ -535,7 +543,7 @@ export default function TaxPage() {
               <div className="space-y-3">
                 {expenses.map((exp) => (
                   <div
-                    key={exp.invoice_id}
+                    key={exp.id}
                     className="flex items-center justify-between rounded-lg border border-brand-border bg-brand-background p-3"
                   >
                     <div className="flex-1">
@@ -543,17 +551,21 @@ export default function TaxPage() {
                         <span className="font-semibold text-brand-text">
                           {formatWhole(typeof exp.amount === "string" ? parseFloat(exp.amount) : exp.amount)}
                         </span>
-                        {exp.receipt_url && (
-                          <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">
-                            📎 Receipt
-                          </span>
-                        )}
+                        <span className={`rounded px-2 py-0.5 text-xs ${
+                          exp.record_status === "flagged"
+                            ? "bg-red-100 text-red-700"
+                            : exp.record_status === "documented"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-amber-100 text-amber-700"
+                        }`}>
+                          {exp.record_status === "flagged" ? "Possible duplicate" : exp.record_status === "documented" ? "Receipt attached" : "Self-reported"}
+                        </span>
                       </div>
                       <p className="text-sm text-brand-textMuted">
-                        {exp.vendor_name || "Unknown Vendor"}
+                        {exp.merchant || "Unknown Vendor"}
                       </p>
                       <p className="text-xs text-brand-textMuted">
-                        {new Date(exp.due_date || exp.created_at).toLocaleDateString()}
+                        {new Date(exp.expense_date || exp.created_at).toLocaleDateString()}
                       </p>
                     </div>
                     {exp.receipt_url && (

@@ -12,7 +12,6 @@ import { MessageCircle, Plus, Trash2 } from "lucide-react";
 // Types
 interface Expense {
   id: number;
-  invoice_id: string;  // Invoice ID for deletion
   amount: number;
   expense_date: string;
   category: string;
@@ -20,6 +19,9 @@ interface Expense {
   merchant: string | null;
   verified: boolean;
   channel: string | null;
+  receipt_url: string | null;
+  record_status: "self_reported" | "documented" | "flagged";
+  possible_duplicate: boolean;
 }
 
 interface ExpenseStats {
@@ -27,20 +29,6 @@ interface ExpenseStats {
   total_revenue: number;
   actual_profit: number;
   expense_to_revenue_ratio: number;
-}
-
-interface ExpenseInvoiceResponse {
-  id: number;
-  invoice_id: string;
-  amount: string | number;
-  due_date?: string | null;
-  created_at?: string | null;
-  category?: string | null;
-  lines?: Array<{ description?: string | null }>;
-  vendor_name?: string | null;
-  merchant?: string | null;
-  verified?: boolean;
-  channel?: string | null;
 }
 
 const CATEGORIES = [
@@ -77,30 +65,14 @@ export default function ExpensesPage() {
     queryFn: async () => {
       const start = `${year}-${String(month).padStart(2, "0")}-01`;
       const end = `${year}-${String(month).padStart(2, "0")}-${new Date(year, month, 0).getDate()}`;
-      // Use unified invoice endpoint with invoice_type filter.
-      // NOTE: GET /invoices/ returns a paginated envelope { items, total, ... },
-      // so we read `.items` (not the raw body) before mapping.
-      const response = await apiClient.get<{ items: ExpenseInvoiceResponse[] }>("/invoices/", { 
+      const response = await apiClient.get<Expense[]>("/expenses/", {
         params: { 
-          invoice_type: "expense",
           start_date: start, 
           end_date: end,
           limit: 200,
         } 
       });
-      const items = Array.isArray(response.data?.items) ? response.data.items : [];
-      // Map invoice format to expense format for display
-      return items.map((inv) => ({
-        id: inv.id,
-        invoice_id: inv.invoice_id,  // For deletion
-        amount: typeof inv.amount === "string" ? parseFloat(inv.amount) : inv.amount ?? 0,
-        expense_date: inv.due_date || inv.created_at || start,
-        category: inv.category || "other",
-        description: inv.lines?.[0]?.description || null,
-        merchant: inv.vendor_name || inv.merchant || null,
-        verified: Boolean(inv.verified),
-        channel: inv.channel ?? null,
-      }));
+      return Array.isArray(response.data) ? response.data : [];
     },
   });
 
@@ -115,24 +87,12 @@ export default function ExpensesPage() {
 
   const createExpense = useMutation({
     mutationFn: async (data: typeof form) => {
-      // Create expense as invoice with type='expense'
-      return (await apiClient.post("/invoices/", {
-        invoice_type: "expense",
+      return (await apiClient.post("/expenses/", {
         amount: parseFloat(data.amount),
-        due_date: data.expense_date,
+        expense_date: data.expense_date,
         category: data.category,
-        vendor_name: data.merchant || "Unknown Vendor",
         merchant: data.merchant,
-        lines: [{
-          description: data.description || data.category,
-          quantity: 1,
-          unit_price: parseFloat(data.amount),
-        }],
-        notes: data.description,
-        channel: "dashboard",
-        input_method: "manual",
-        verified: true,
-        status: "paid",  // Expenses are immediately marked as paid
+        description: data.description,
       })).data;
     },
     onSuccess: () => {
@@ -143,7 +103,7 @@ export default function ExpensesPage() {
   });
 
   const deleteExpense = useMutation({
-    mutationFn: async (invoiceId: string) => (await apiClient.delete(`/invoices/${invoiceId}`)).data,
+    mutationFn: async (expenseId: number) => (await apiClient.delete(`/expenses/${expenseId}`)).data,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
       queryClient.invalidateQueries({ queryKey: ["expenseStats"] });
@@ -273,12 +233,18 @@ export default function ExpensesPage() {
           {expenses && expenses.length > 0 ? (
             <div className="space-y-2">
               {expenses.map((exp) => (
-                <div key={exp.invoice_id} className="flex justify-between items-start p-3 border rounded hover:bg-gray-50">
+                <div key={exp.id} className="flex justify-between items-start p-3 border rounded hover:bg-gray-50">
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{formatWhole(exp.amount)}</span>
                       <span className="text-xs bg-gray-200 px-2 py-1 rounded">{catLabel(exp.category)}</span>
-                      {!exp.verified && <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Unverified</span>}
+                      {exp.record_status === "flagged" ? (
+                        <span className="rounded bg-red-100 px-2 py-1 text-xs text-red-800">Possible duplicate</span>
+                      ) : exp.record_status === "documented" ? (
+                        <span className="rounded bg-emerald-100 px-2 py-1 text-xs text-emerald-800">Receipt attached</span>
+                      ) : (
+                        <span className="rounded bg-amber-100 px-2 py-1 text-xs text-amber-800">Self-reported</span>
+                      )}
                     </div>
                     {exp.description && <p className="text-sm text-gray-600 mt-1">{exp.description}</p>}
                     {exp.merchant && <p className="text-xs text-gray-500">@ {exp.merchant}</p>}
@@ -286,7 +252,7 @@ export default function ExpensesPage() {
                       {new Date(exp.expense_date).toLocaleDateString()} {exp.channel && `• via ${exp.channel}`}
                     </p>
                   </div>
-                  <Button aria-label="Delete expense" title="Delete expense" onClick={() => confirm("Delete this expense?") && deleteExpense.mutate(exp.invoice_id)} disabled={deleteExpense.isPending}>
+                  <Button aria-label="Delete expense" title="Delete expense" onClick={() => confirm("Delete this expense?") && deleteExpense.mutate(exp.id)} disabled={deleteExpense.isPending}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
