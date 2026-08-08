@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { StatCard } from "@/components/ui/stat-card";
 import { useCurrency } from "@/hooks/use-currency";
+import { MessageCircle, Plus, Trash2 } from "lucide-react";
 
 // Types
 interface Expense {
@@ -59,7 +60,7 @@ const CATEGORIES = [
 export default function ExpensesPage() {
   const queryClient = useQueryClient();
   const now = new Date();
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useState(true);
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth() + 1);
   
@@ -137,7 +138,6 @@ export default function ExpensesPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
       queryClient.invalidateQueries({ queryKey: ["expenseStats"] });
-      setShowForm(false);
       setForm({ amount: "", expense_date: now.toISOString().split("T")[0], category: "other", description: "", merchant: "" });
     },
   });
@@ -160,7 +160,21 @@ export default function ExpensesPage() {
           <h1 className="text-xl font-bold sm:text-2xl md:text-3xl">Expense Tracking</h1>
           <p className="mt-1 text-xs text-gray-600 sm:text-sm">Track business expenses and analyze spending</p>
         </div>
-        <Button onClick={() => setShowForm(!showForm)} className="w-full sm:w-auto">+ Add Expense</Button>
+        <div className="flex w-full gap-2 sm:w-auto">
+          <a
+            href="https://wa.me/2348106865807?text=Expense%20%E2%82%A65000%20for%20transport"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-md border border-emerald-200 bg-white px-4 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-50 sm:flex-none"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Add on WhatsApp
+          </a>
+          <Button onClick={() => setShowForm(!showForm)} className="flex-1 gap-2 sm:flex-none">
+            <Plus className="h-4 w-4" />
+            Quick add
+          </Button>
+        </div>
       </div>
 
       {/* Period Selector */}
@@ -196,10 +210,13 @@ export default function ExpensesPage() {
       {/* Add Form */}
       {showForm && (
         <Card>
-          <CardHeader className="px-4 sm:px-6"><h3 className="text-lg font-semibold sm:text-xl">Add New Expense</h3></CardHeader>
+          <CardHeader className="px-4 sm:px-6">
+            <h3 className="text-lg font-semibold sm:text-xl">Quick add expense</h3>
+            <p className="mt-1 text-sm text-gray-600">Record what you spent to see your real profit and keep tax records complete.</p>
+          </CardHeader>
           <CardContent className="px-4 sm:px-6">
             <form onSubmit={(e) => { e.preventDefault(); createExpense.mutate(form); }} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <div>
                   <label className="block text-sm font-medium mb-1">Amount ({symbol}) *</label>
                   <input
@@ -208,18 +225,13 @@ export default function ExpensesPage() {
                     className="w-full border rounded px-3 py-2"
                     value={form.amount}
                     onChange={(e) => setForm({ ...form, amount: e.target.value })}
+                    placeholder="5,000"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Date *</label>
-                  <input
-                    type="date"
-                    className="w-full border rounded px-3 py-2"
-                    value={form.expense_date}
-                    onChange={(e) => setForm({ ...form, expense_date: e.target.value })}
-                    required
-                  />
+                  <label className="block text-sm font-medium mb-1">What was it for?</label>
+                  <input type="text" className="w-full border rounded px-3 py-2" placeholder="Transport, data, supplies..." value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Category *</label>
@@ -227,18 +239,27 @@ export default function ExpensesPage() {
                     {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                   </select>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Merchant</label>
-                  <input type="text" className="w-full border rounded px-3 py-2" value={form.merchant} onChange={(e) => setForm({ ...form, merchant: e.target.value })} />
+              </div>
+              <details className="rounded-md border border-gray-200 px-3 py-2">
+                <summary className="cursor-pointer text-sm font-medium text-gray-600">Date and merchant</summary>
+                <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Date *</label>
+                    <input type="date" className="w-full border rounded px-3 py-2" value={form.expense_date} onChange={(e) => setForm({ ...form, expense_date: e.target.value })} required />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Merchant</label>
+                    <input type="text" className="w-full border rounded px-3 py-2" placeholder="Optional" value={form.merchant} onChange={(e) => setForm({ ...form, merchant: e.target.value })} />
+                  </div>
                 </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Description</label>
-                <textarea className="w-full border rounded px-3 py-2" rows={3} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-              </div>
+              </details>
+              {createExpense.isError && <p className="text-sm text-red-600">Could not save this expense. Please try again.</p>}
               <div className="flex gap-2 justify-end">
                 <Button type="button" onClick={() => setShowForm(false)}>Cancel</Button>
-                <Button type="submit" disabled={createExpense.isPending}>{createExpense.isPending ? "Adding..." : "Add Expense"}</Button>
+                <Button type="submit" disabled={createExpense.isPending} className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  {createExpense.isPending ? "Saving..." : "Save expense"}
+                </Button>
               </div>
             </form>
           </CardContent>
@@ -252,7 +273,7 @@ export default function ExpensesPage() {
           {expenses && expenses.length > 0 ? (
             <div className="space-y-2">
               {expenses.map((exp) => (
-                <div key={exp.id} className="flex justify-between items-start p-3 border rounded hover:bg-gray-50">
+                <div key={exp.invoice_id} className="flex justify-between items-start p-3 border rounded hover:bg-gray-50">
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{formatWhole(exp.amount)}</span>
@@ -265,8 +286,8 @@ export default function ExpensesPage() {
                       {new Date(exp.expense_date).toLocaleDateString()} {exp.channel && `• via ${exp.channel}`}
                     </p>
                   </div>
-                  <Button onClick={() => confirm("Delete?") && deleteExpense.mutate(exp.invoice_id)} disabled={deleteExpense.isPending}>
-                    🗑️
+                  <Button aria-label="Delete expense" title="Delete expense" onClick={() => confirm("Delete this expense?") && deleteExpense.mutate(exp.invoice_id)} disabled={deleteExpense.isPending}>
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               ))}

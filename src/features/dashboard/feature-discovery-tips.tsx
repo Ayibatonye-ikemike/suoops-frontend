@@ -4,8 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import { X, Lightbulb, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
-const SEEN_KEY = "feature-tips-v2-seen";
-const DISMISSED_KEY = "feature-tips-v2-dismissed";
+const SEEN_KEY = "feature-tips-v3-seen";
+const DISMISSED_KEY = "feature-tips-v3-dismissed";
 
 interface FeatureTip {
   id: string;
@@ -16,6 +16,22 @@ interface FeatureTip {
 }
 
 export const FEATURE_TIPS: FeatureTip[] = [
+  {
+    id: "expense-habit",
+    icon: "💸",
+    title: "Revenue is not profit",
+    description:
+      "Record transport, data, stock and other costs to see what you truly earned and keep tax reports accurate. Add one on the dashboard or WhatsApp.",
+    action: { label: "Quick add Expense", href: "/dashboard/expenses" },
+  },
+  {
+    id: "expense-whatsapp",
+    icon: "💬",
+    title: "Log spending in one WhatsApp message",
+    description:
+      'Text "Expense ₦5,000 for transport" to SuoOps and it appears in your expense records automatically.',
+    action: { label: "Add on WhatsApp", href: "https://wa.me/2348106865807?text=Expense%20%E2%82%A65000%20for%20transport" },
+  },
   {
     id: "storefront",
     icon: "🛍️",
@@ -49,28 +65,12 @@ export const FEATURE_TIPS: FeatureTip[] = [
     action: { label: "Open Invoices", href: "/dashboard/invoices" },
   },
   {
-    id: "expense-whatsapp",
-    icon: "💸",
-    title: "Track expenses via WhatsApp",
-    description:
-      'Text "Expense: ₦5,000 for transport" or snap a receipt photo to the bot — it logs automatically.',
-    action: { label: "Open WhatsApp", href: "https://wa.me/2348106865807?text=Hi" },
-  },
-  {
     id: "analytics",
     icon: "📊",
     title: "See your business insights",
     description:
       "View revenue trends, invoice metrics & top customers on the Insights page.",
     action: { label: "Open Insights", href: "/dashboard/analytics" },
-  },
-  {
-    id: "expense-dashboard",
-    icon: "📝",
-    title: "Track spending on the Expenses page",
-    description:
-      "Log expenses with categories & receipts. They're auto-included in your tax reports.",
-    action: { label: "Open Expenses", href: "/dashboard/expenses" },
   },
   {
     id: "tax-report",

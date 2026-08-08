@@ -11,11 +11,17 @@ describe("FEATURE_TIPS", () => {
       "buyer-protection-delivery",
       "inventory",
       "invoice-verification",
-      "expense-dashboard",
+      "expense-habit",
+      "expense-whatsapp",
       "analytics",
       "tax-report",
       "team",
     ]));
+
+    expect(FEATURE_TIPS.find((tip) => tip.id === "expense-habit")?.action?.href)
+      .toBe("/dashboard/expenses");
+    expect(FEATURE_TIPS.find((tip) => tip.id === "expense-whatsapp")?.action?.href)
+      .toContain("wa.me/2348106865807");
   });
 
   it("does not describe included features as Pro-only", () => {

@@ -340,6 +340,9 @@ interface MetricsSummary {
   gmv_storefront?: number;
   gmv_manual?: number;
   invoices: number;
+  expense_amount: number;
+  expense_entries: number;
+  expense_users: number;
   new_users: number;
   active_users: number;
 }
@@ -589,7 +592,7 @@ export default function MetricsPage() {
           </div>
 
           {/* Overview Stats — filtered by the selected period */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             <StatCard
               title="Registered Users"
               value={totalUsers.toLocaleString()}
@@ -616,6 +619,13 @@ export default function MetricsPage() {
               subtitle={`Storefront ${formatCurrency(summary?.gmv_storefront ?? 0)} · Manual ${formatCurrency(summary?.gmv_manual ?? 0)}`}
               icon={Receipt}
               color="orange"
+            />
+            <StatCard
+              title={`Expenses (${summary?.label ?? "This month"})`}
+              value={formatCurrency(summary?.expense_amount ?? 0)}
+              subtitle={`${(summary?.expense_entries ?? 0).toLocaleString()} entries · ${(summary?.expense_users ?? 0).toLocaleString()} businesses`}
+              icon={TrendingDown}
+              color="red"
             />
           </div>
 
@@ -694,6 +704,12 @@ export default function MetricsPage() {
               value={topUpBuyerCount}
               total={totalUsers || 1}
               color="bg-purple-500"
+            />
+            <ProgressBar
+              label={`Recording Expenses (${summary?.label ?? "This month"})`}
+              value={summary?.expense_users || 0}
+              total={totalUsers || 1}
+              color="bg-red-500"
             />
           </div>
 
