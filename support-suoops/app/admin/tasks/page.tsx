@@ -32,7 +32,25 @@ interface TaskScheduleResponse {
   };
 }
 
-const TASK_INFO: Record<string, { label: string; description: string; color: string }> = {
+const TASK_INFO: Record<
+  string,
+  {
+    label: string;
+    description: string;
+    color: string;
+    task?: string;
+    automaticLabel?: string;
+    canTrigger?: boolean;
+  }
+> = {
+  welcome: {
+    label: "Welcome to SuoOps",
+    description:
+      "Sent automatically after signup. Run Now broadcasts the current email + WhatsApp welcome once to every account.",
+    color: "emerald",
+    automaticLabel: "Automatic after signup",
+    canTrigger: true,
+  },
   feature_announcement: {
     label: "Feature Announcement (one-off)",
     description:
@@ -43,21 +61,25 @@ const TASK_INFO: Record<string, { label: string; description: string; color: str
     label: "Engagement Emails",
     description: "Activation, monetization, and tip emails to users based on lifecycle stage",
     color: "violet",
+    task: "engagement.send_lifecycle_emails",
   },
   daily_summary: {
     label: "Daily Summary",
     description: "WhatsApp business summary for PRO users (revenue, expenses, overdue)",
     color: "blue",
+    task: "summary.send_daily_summaries",
   },
   overdue_reminders: {
     label: "Overdue Reminders",
     description: "WhatsApp reminders for users with overdue invoices",
     color: "amber",
+    task: "maintenance.send_overdue_reminders",
   },
   tax_reports: {
     label: "Monthly Tax Reports",
     description: "Auto-generate tax reports on the 1st of each month",
     color: "emerald",
+    task: "tax.generate_previous_month_reports",
   },
   reconcile_brevo_dry: {
     label: "Brevo Reconcile (Preview)",
@@ -101,6 +123,12 @@ export default function TasksPage() {
 
   async function triggerTask(taskKey: string) {
     if (!token) return;
+    if (
+      taskKey === "welcome" &&
+      !window.confirm("Broadcast the Welcome to SuoOps email and WhatsApp message to all accounts?")
+    ) {
+      return;
+    }
     setTriggeringTask(taskKey);
     setTriggerResult(null);
     try {
@@ -108,8 +136,8 @@ export default function TasksPage() {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error("Failed to trigger task");
       const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Failed to trigger task");
       setTriggerResult({ key: taskKey, message: data.message });
     } catch (err) {
       setTriggerResult({ key: taskKey, message: err instanceof Error ? err.message : "Failed" });
@@ -224,16 +252,9 @@ export default function TasksPage() {
           {/* Task Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Object.entries(TASK_INFO).map(([key, info]) => {
-              const scheduleEntry = schedule.schedule.find(
-                (s) => s.task === ({
-                  engagement: "engagement.send_lifecycle_emails",
-                  daily_summary: "summary.send_daily_summaries",
-                  overdue_reminders: "maintenance.send_overdue_reminders",
-                  tax_reports: "tax.generate_previous_month_reports",
-                  reconcile_brevo_dry: "maintenance.reconcile_brevo_contacts",
-                  reconcile_brevo: "maintenance.reconcile_brevo_contacts",
-                }[key])
-              );
+              const scheduleEntry = info.task
+                ? schedule.schedule.find((entry) => entry.task === info.task)
+                : undefined;
 
               return (
                 <div key={key} className="rounded-xl border bg-white overflow-hidden">
@@ -257,6 +278,13 @@ export default function TasksPage() {
                       </div>
                     )}
 
+                    {info.automaticLabel && (
+                      <div className="mt-3 flex items-center gap-2 text-xs font-medium text-emerald-700">
+                        <CheckCircle2 className="h-3.5 w-3.5" />
+                        <span>{info.automaticLabel}</span>
+                      </div>
+                    )}
+
                     {triggerResult?.key === key && (
                       <div className="mt-3 rounded-lg bg-emerald-50 border border-emerald-200 px-3 py-2 text-sm text-emerald-700 flex items-center gap-2">
                         <CheckCircle2 className="h-4 w-4 shrink-0" />
@@ -265,20 +293,22 @@ export default function TasksPage() {
                     )}
                   </div>
 
-                  <div className="border-t px-5 py-3 bg-slate-50 flex items-center justify-end">
-                    <button
-                      onClick={() => triggerTask(key)}
-                      disabled={triggeringTask === key}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 disabled:opacity-50"
-                    >
-                      {triggeringTask === key ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Play className="h-4 w-4" />
-                      )}
-                      Run Now
-                    </button>
-                  </div>
+                  {(!info.automaticLabel || info.canTrigger) && (
+                    <div className="border-t px-5 py-3 bg-slate-50 flex items-center justify-end gap-3">
+                      <button
+                        onClick={() => triggerTask(key)}
+                        disabled={triggeringTask === key}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 disabled:opacity-50"
+                      >
+                        {triggeringTask === key ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Play className="h-4 w-4" />
+                        )}
+                        Run Now
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })}
