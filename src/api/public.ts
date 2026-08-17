@@ -13,9 +13,14 @@ export interface PublicTestimonial {
 }
 
 export async function getPublicTestimonials(): Promise<PublicTestimonial[]> {
-  const res = await fetch(`${apiBaseUrl}/public/testimonials`, {
-    next: { revalidate: 3600 },
-  });
-  if (!res.ok) return [];
-  return res.json();
+  try {
+    const res = await fetch(`${apiBaseUrl}/public/testimonials`, {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return [];
+    const data: unknown = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
 }

@@ -10,7 +10,7 @@ import type { components } from "@/api/types";
 import { BankDetailsForm } from "@/features/settings/bank-details-form";
 import { SubscriptionSection } from "@/features/settings/subscription-section";
 import { TeamManagementSection } from "@/features/settings/team-management-section";
-import { LogoUpload } from "@/features/settings/logo-upload";
+import { LogoUpload, StorefrontCoverUpload } from "@/features/settings/logo-upload";
 import { PhoneNumberSection } from "@/features/settings/phone-number-section";
 import { PaymentsStorefrontSection } from "@/features/settings/payments-storefront-section";
 import { ProfileSection } from "@/features/settings/profile-section";
@@ -216,15 +216,24 @@ export default function SettingsPage() {
                     <ImageIcon className="h-5 w-5" />
                   </div>
                   <div>
-                    <h2 className="text-lg sm:text-[22px] font-semibold text-brand-text">Business Logo</h2>
+                    <h2 className="text-lg sm:text-[22px] font-semibold text-brand-text">Business Images</h2>
                     <p className="text-xs text-brand-textMuted">
-                      Shows on your invoices — customers trust branded invoices more
+                      Add a compact logo and a wide storefront cover
                     </p>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="pt-4 sm:pt-6 px-4 sm:px-6">
-                <LogoUpload />
+                <div className="space-y-6">
+                  <section>
+                    <h3 className="mb-3 text-sm font-semibold text-brand-text">Business logo</h3>
+                    <LogoUpload />
+                  </section>
+                  <section className="border-t border-brand-border pt-6">
+                    <h3 className="mb-3 text-sm font-semibold text-brand-text">Landscape storefront cover</h3>
+                    <StorefrontCoverUpload />
+                  </section>
+                </div>
               </CardContent>
             </Card>
 

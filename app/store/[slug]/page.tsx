@@ -25,6 +25,7 @@ type Storefront = {
   business_name: string | null;
   description: string | null;
   logo_url: string | null;
+  storefront_cover_url: string | null;
   online_payments_enabled: boolean;
   whatsapp_url: string | null;
   announcement: string | null;
@@ -139,8 +140,17 @@ export default async function StorePage({ params }: RouteProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
-      <header className="bg-brand-evergreen px-4 pb-8 pt-6">
-        <div className="mx-auto flex max-w-3xl items-center gap-3">
+      <header className="relative min-h-[220px] overflow-hidden bg-brand-evergreen px-4 pb-8 pt-6 sm:min-h-[280px]">
+        {store.storefront_cover_url && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={store.storefront_cover_url}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        )}
+        <div className={`absolute inset-0 ${store.storefront_cover_url ? "bg-black/55" : "bg-transparent"}`} />
+        <div className="relative mx-auto flex max-w-3xl items-center gap-3">
           {store.logo_url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -185,7 +195,7 @@ export default async function StorePage({ params }: RouteProps) {
           </div>
         </div>
         {store.location.address && (
-          <div className="mx-auto mt-3 max-w-3xl">
+          <div className="relative mx-auto mt-3 max-w-3xl">
             <a
               href={store.location.maps_url ?? "#"}
               target="_blank"

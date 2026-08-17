@@ -10,7 +10,34 @@ import type { components } from "@/api/types";
 import { Button } from "@/components/ui/button";
 import { PlanSelectionModal } from "./plan-selection-modal";
 
-type CurrentUser = components["schemas"]["UserOut"];
+type CurrentUser = components["schemas"]["UserOut"] & {
+  storefront_cover_url?: string | null;
+};
+
+type BrandingImageKind = "logo" | "storefront-cover";
+
+const BRANDING_IMAGE_CONFIG = {
+  logo: {
+    field: "logo_url" as const,
+    endpoint: "/users/me/logo",
+    label: "Logo",
+    description: "Shown on your invoices, receipts, and storefront",
+    recommendation: "Square image, minimum 200x200px",
+    previewClass: "h-24 w-24 rounded-xl p-2",
+    imageClass: "object-contain",
+    sizes: "96px",
+  },
+  "storefront-cover": {
+    field: "storefront_cover_url" as const,
+    endpoint: "/users/me/storefront-cover",
+    label: "Storefront cover",
+    description: "Shown as the wide landscape image at the top of your storefront",
+    recommendation: "Landscape image, ideally 1600x600px",
+    previewClass: "aspect-[8/3] w-full max-w-xl rounded-lg",
+    imageClass: "object-cover",
+    sizes: "(max-width: 640px) 100vw, 576px",
+  },
+};
 
 interface PlanFeatureError {
   error: string;
@@ -53,7 +80,8 @@ const isPlanFeatureError = (
   return detail && typeof detail === "object" && "upgrade_url" in detail;
 };
 
-export function LogoUpload() {
+function BrandingImageUpload({ kind }: { kind: BrandingImageKind }) {
+  const config = BRANDING_IMAGE_CONFIG[kind];
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string>("");
@@ -80,7 +108,7 @@ export function LogoUpload() {
       const formData = new FormData();
       formData.append("file", file);
 
-      const response = await apiClient.post("/users/me/logo", formData, {
+      const response = await apiClient.post(config.endpoint, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -99,7 +127,7 @@ export function LogoUpload() {
         setPlanError(err.response.data.detail);
         setError("");
       } else {
-        setError(getErrorMessage(err, "Failed to upload logo"));
+        setError(getErrorMessage(err, `Failed to upload ${config.label.toLowerCase()}`));
         setPlanError(null);
       }
     },
@@ -107,7 +135,7 @@ export function LogoUpload() {
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiClient.delete("/users/me/logo");
+      const response = await apiClient.delete(config.endpoint);
       return response.data;
     },
     onSuccess: () => {
@@ -122,7 +150,7 @@ export function LogoUpload() {
         setPlanError(err.response.data.detail);
         setError("");
       } else {
-        setError(getErrorMessage(err, "Failed to remove logo"));
+        setError(getErrorMessage(err, `Failed to remove ${config.label.toLowerCase()}`));
         setPlanError(null);
       }
     },
@@ -173,7 +201,7 @@ export function LogoUpload() {
     if (
       typeof window === "undefined" ||
       window.confirm(
-        "Are you sure you want to remove your logo? It will no longer appear on invoices."
+        `Are you sure you want to remove your ${config.label.toLowerCase()}?`
       )
     ) {
       deleteMutation.mutate();
@@ -195,39 +223,39 @@ export function LogoUpload() {
     return (
       <div className="space-y-4">
         <p className="text-sm text-brand-textMuted">
-          Unable to load logo settings.
+          Unable to load {config.label.toLowerCase()} settings.
         </p>
       </div>
     );
   }
 
-  const currentLogo = user?.logo_url;
-  const displayLogo = previewUrl || currentLogo;
+  const currentImage = user[config.field];
+  const displayImage = previewUrl || currentImage;
+  const inputId = `${kind}-upload`;
 
   return (
     <div className="space-y-4">
-      {/* Current/Preview Logo */}
-      {displayLogo && (
-        <div className="flex items-center gap-4 text-brand-text">
-          <div className="relative h-24 w-24 overflow-hidden rounded-xl border border-brand-border bg-white p-2">
+      {displayImage && (
+        <div className={kind === "logo" ? "flex items-center gap-4 text-brand-text" : "space-y-3 text-brand-text"}>
+          <div className={`relative overflow-hidden border border-brand-border bg-white ${config.previewClass}`}>
             <Image
-              src={displayLogo}
-              alt="Business logo"
+              src={displayImage}
+              alt={config.label}
               fill
-              sizes="96px"
-              className="object-contain"
+              sizes={config.sizes}
+              className={config.imageClass}
               unoptimized
             />
           </div>
           <div className="flex-1">
             <p className="text-xs font-semibold uppercase tracking-wide text-brand-textMuted">
-              {previewUrl ? "Preview" : "Current Logo"}
+              {previewUrl ? "Preview" : `Current ${config.label}`}
             </p>
             <p className="mt-1.5 text-sm text-brand-text">
-              Shown on your invoices and receipts
+              {config.description}
             </p>
           </div>
-          {currentLogo && !previewUrl && (
+          {currentImage && !previewUrl && (
             <Button
               onClick={handleRemove}
               disabled={deleteMutation.isPending}
@@ -240,18 +268,17 @@ export function LogoUpload() {
         </div>
       )}
 
-      {/* Upload Section */}
-      {!currentLogo || previewUrl ? (
+      {!currentImage || previewUrl ? (
         <div className="space-y-3">
           <div className="flex items-center gap-3">
             <label
-              htmlFor="logo-upload"
+              htmlFor={inputId}
               className="cursor-pointer rounded-lg border border-brand-border bg-white px-4 py-2 text-xs font-semibold uppercase tracking-wide text-brand-text transition hover:bg-brand-background"
             >
               {previewUrl ? "Choose Different File" : "Choose File"}
             </label>
             <input
-              id="logo-upload"
+              id={inputId}
               type="file"
               accept="image/png,image/jpeg,image/jpg,image/svg+xml"
               onChange={handleFileSelect}
@@ -271,7 +298,7 @@ export function LogoUpload() {
                 disabled={uploadMutation.isPending}
                 className="min-w-[140px]"
               >
-                {uploadMutation.isPending ? "Uploading" : "Upload Logo"}
+                  {uploadMutation.isPending ? "Uploading" : `Upload ${config.label}`}
               </Button>
               <Button
                 type="button"
@@ -291,17 +318,17 @@ export function LogoUpload() {
 
           <p className="text-xs text-brand-textMuted">
             Accepted formats: PNG, JPG, JPEG, SVG • Max size: 5MB • Recommended:
-            Square logo, minimum 200x200px
+            {config.recommendation}
           </p>
         </div>
       ) : (
         <label
-          htmlFor="logo-upload-replace"
+          htmlFor={`${inputId}-replace`}
           className="inline-block cursor-pointer rounded-lg border border-brand-border bg-white px-4 py-2 text-xs font-semibold uppercase tracking-wide text-brand-text transition hover:bg-brand-background"
         >
-          Replace Logo
+          Replace {config.label}
           <input
-            id="logo-upload-replace"
+            id={`${inputId}-replace`}
             type="file"
             accept="image/png,image/jpeg,image/jpg,image/svg+xml"
             onChange={handleFileSelect}
@@ -313,13 +340,13 @@ export function LogoUpload() {
       {/* Success Message */}
       {uploadMutation.isSuccess && (
         <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
-          ✓ Logo uploaded successfully!
+          {config.label} uploaded successfully
         </div>
       )}
 
       {deleteMutation.isSuccess && (
         <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
-          ✓ Logo removed successfully
+          {config.label} removed successfully
         </div>
       )}
 
@@ -376,4 +403,12 @@ export function LogoUpload() {
       />
     </div>
   );
+}
+
+export function LogoUpload() {
+  return <BrandingImageUpload kind="logo" />;
+}
+
+export function StorefrontCoverUpload() {
+  return <BrandingImageUpload kind="storefront-cover" />;
 }
