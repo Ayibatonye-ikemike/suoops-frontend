@@ -17,12 +17,13 @@ export function Protection() {
             Buyer &amp; Seller Protection
           </span>
           <h2 className="mt-4 font-heading text-3xl font-bold text-brand-evergreen sm:text-4xl">
-            Every order is protected — for both sides
+            Commerce should be trusted by default
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-brand-charcoal/70">
             When a customer pays, the money is held safely until the item is
-            delivered — by a courier they pick at checkout. Buyers shop without
-            fear, sellers get paid without chargebacks.
+            delivered — by a courier they pick at checkout. No payment promises
+            or transfer screenshots: buyers know their order is protected, and
+            sellers know the funds are real.
           </p>
         </div>
 

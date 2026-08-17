@@ -13,11 +13,11 @@ const poppins = Poppins({ subsets: ["latin"], weight: ["600", "700"], display: "
 export const metadata: Metadata = {
   metadataBase: new URL("https://suoops.com"),
   title: {
-    default: "SuoOps — The Commerce Operating System for African Business",
+    default: "SuoOps — The Operating System for African Commerce",
     template: "%s | SuoOps",
   },
   description:
-    "SuoOps is the commerce operating system for African business — a buyer-protected storefront with built-in courier delivery, online payments, orders, inventory and invoicing in one platform. Sell, get paid, deliver nationwide, and grow.",
+    "Stop running your business from memory. SuoOps organizes storefronts, payments, orders, delivery, inventory, invoices, and expenses into one traceable system for every African business, big or small.",
   keywords: [
     "commerce operating system",
     "marketplace Nigeria",
@@ -41,15 +41,15 @@ export const metadata: Metadata = {
     locale: "en_NG",
     url: "https://suoops.com",
     siteName: "SuoOps",
-    title: "SuoOps — Sell, Get Paid & Grow, all in one place",
+    title: "SuoOps — Stop running your business from memory",
     description:
-      "The commerce operating system for African business: a buyer-protected storefront with courier delivery, payments, orders, inventory and invoicing — built for how you already sell on WhatsApp.",
+      "Move orders, payment screenshots, inventory, invoices, and expenses out of scattered chats and notebooks into one organized, traceable system.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "SuoOps — The Commerce Operating System for African Business",
+    title: "SuoOps — The Operating System for African Commerce",
     description:
-      "Sell, get paid, deliver nationwide, and grow — with buyer protection built in. Commerce, operations & trust in one platform.",
+      "Every business deserves structure, visibility, trust, and control — whether big or small.",
   },
 };
 

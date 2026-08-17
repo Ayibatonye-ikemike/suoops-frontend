@@ -16,10 +16,11 @@ export function Features() {
         <div className="mx-auto max-w-7xl">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-brand-evergreen sm:text-4xl">
-              Built for WhatsApp-first businesses
+              From scattered chats to one clear system
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg text-brand-charcoal/70">
-              Text an invoice, send it instantly, and know exactly where your money stands.
+              Keep selling the way you already do. SuoOps records the orders,
+              payments, stock, expenses, and follow-ups you should not have to remember.
             </p>
           </div>
 

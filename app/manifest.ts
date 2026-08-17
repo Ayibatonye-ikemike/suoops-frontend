@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "SuoOps — Invoice & Expense Management",
+    name: "SuoOps — Business, Organized",
     short_name: "SuoOps",
     description:
-      "Create invoices, track payments, and manage expenses — straight from WhatsApp. Built for Small Scale Businesses (SMEs).",
+      "Move orders, payments, inventory, invoices, and expenses out of memory and into one organized system.",
     start_url: "/dashboard",
     display: "standalone",
     background_color: "#0a1628",

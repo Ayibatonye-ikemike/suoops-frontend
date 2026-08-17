@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Settings, ShieldCheck, ShoppingBag } from "lucide-react";
+import { Eye, Settings, ShieldCheck } from "lucide-react";
 import { useRegisterHref } from "@/hooks/use-tracking-params";
 
 interface HeroProps {
@@ -18,18 +18,18 @@ export function Hero({ onWatchDemo }: HeroProps) {
           {/* Left: Text Content */}
           <div className="flex flex-col justify-center">
             <h1 className="font-heading text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-              Sell, get paid, and grow —
+              Stop running your business
               <br />
-              <span className="text-brand-citrus">all in one place</span>
+              <span className="text-brand-citrus"> from memory</span>
             </h1>
             <p className="mt-6 text-lg text-white/80 max-w-lg">
-              SuoOps is the commerce operating system for African business — a
-              buyer-protected storefront with built-in courier delivery, online
-              payments, orders, inventory and invoicing, in one platform.
+              Orders buried in chats. Payment screenshots. Inventory in notebooks.
+              SuoOps brings your storefront, payments, orders, delivery, inventory,
+              invoices, and expenses into one organized, traceable system.
             </p>
             <p className="mt-4 text-sm text-white/60 max-w-lg">
-              Commerce, operations &amp; trust — built for how you already sell on
-              WhatsApp.
+              Every business deserves structure, visibility, trust, and control —
+              whether big or small.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <Link
@@ -46,11 +46,11 @@ export function Hero({ onWatchDemo }: HeroProps) {
               </button>
             </div>
 
-            {/* Positioning pillars: Commerce · Operations · Trust */}
+            {/* Positioning pillars: Structure · Visibility · Trust */}
             <div className="mt-8 flex flex-wrap gap-2">
               {[
-                { Icon: ShoppingBag, label: "Commerce" },
-                { Icon: Settings, label: "Operations" },
+                { Icon: Settings, label: "Structure" },
+                { Icon: Eye, label: "Visibility" },
                 { Icon: ShieldCheck, label: "Trust" },
               ].map((p) => (
                 <span

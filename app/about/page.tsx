@@ -6,9 +6,9 @@ import { Navigation, Footer } from "@/components/landing/layout";
 import { AboutCTA } from "./about-cta";
 
 export const metadata: Metadata = {
-  title: "About — The commerce operating system for African business",
+  title: "About — The operating system for African commerce",
   description:
-    "SuoOps is a commerce operating system that helps African businesses sell, get paid, deliver nationwide, manage operations, and reach customers through a trusted, buyer-protected marketplace.",
+    "SuoOps exists to end business by memory. We organize orders, payments, delivery, inventory, invoices, and expenses into one traceable system for every African business, big or small.",
 };
 
 const PILLARS = [
@@ -19,8 +19,8 @@ const PILLARS = [
   },
   {
     icon: "⚙️",
-    title: "Operations",
-    body: "Invoicing, payments, orders, inventory and business insight — the day-to-day tools to run and grow, in one workflow.",
+    title: "Structure",
+    body: "Invoicing, payments, orders, inventory, expenses and business insight — recorded in one workflow, not lost in memory or scattered across tools.",
   },
   {
     icon: "🛡️",
@@ -50,12 +50,12 @@ export default function AboutPage() {
             About SuoOps
           </span>
           <h1 className="mt-5 font-heading text-4xl font-bold leading-tight sm:text-5xl">
-            The commerce operating system for African business
+            SuoOps exists to end business by memory
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-lg text-white/80">
-            SuoOps helps businesses sell, get paid, deliver nationwide, manage
-            operations, and reach customers through a trusted marketplace —
-            built for how African businesses already work.
+            Orders buried in chats. Payments reduced to screenshots. Inventory
+            tracked in notebooks. Customers lost in scattered conversations.
+            We believe every business deserves a better way.
           </p>
         </div>
       </section>
@@ -68,7 +68,8 @@ export default function AboutPage() {
               Our Vision
             </h2>
             <p className="mt-4 font-heading text-2xl font-bold text-brand-evergreen">
-              To build the operating system for African commerce.
+              Every business deserves structure, visibility, trust, and control —
+              whether big or small.
             </p>
           </div>
           <div className="rounded-3xl bg-white p-8 shadow-card ring-1 ring-brand-teal/10">
@@ -76,8 +77,8 @@ export default function AboutPage() {
               Our Mission
             </h2>
             <p className="mt-4 font-heading text-2xl font-bold text-brand-evergreen">
-              We help businesses sell, get paid, manage operations, and grow
-              through a trusted commerce platform built for Africa.
+              Bring the records that power commerce out of memory, screenshots,
+              notebooks, and scattered chats into one organized, traceable system.
             </p>
           </div>
         </div>
@@ -88,11 +89,11 @@ export default function AboutPage() {
         <div className="mx-auto max-w-6xl">
           <div className="text-center">
             <h2 className="font-heading text-3xl font-bold text-brand-evergreen sm:text-4xl">
-              Commerce · Operations · Trust
+              Commerce · Structure · Trust
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg text-brand-charcoal/70">
-              Most tools solve one piece of the workflow. SuoOps brings the whole
-              of commerce together in a single platform.
+              Most tools solve one piece of the workflow. SuoOps brings commerce
+              together so your business is visible, traceable, and trusted by default.
             </p>
           </div>
           <div className="mt-14 grid gap-6 md:grid-cols-3">
@@ -144,9 +145,8 @@ export default function AboutPage() {
       <section className="bg-brand-evergreen px-4 py-20 text-white sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <p className="font-heading text-2xl font-semibold leading-snug sm:text-3xl">
-            SuoOps is a commerce operating system that enables businesses to sell,
-            accept payments, manage operations, and reach customers through a
-            trusted marketplace.
+            Stop relying on what you remember. Build your business on records you
+            can see, transactions you can trace, and commerce people can trust.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Suspense
